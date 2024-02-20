@@ -19,18 +19,18 @@
 - Presentation of the current app to TA (0 min) (skiping this part for this meeting)
 ----
 - Talking Points: (Inform/ brainstorm/ decision making/ discuss)
-  - Discuss about the git assignment (8 min)
-  - Make a plan about how to work on the Code Of Conduct: 
+  - Discuss about the git assignment (5 min)
+  - Make a plan about how to work on the Code of Conduct: 
      1. Take 2 minutes to read the assignment if haven't done already (2 min)
-     2. Any remarks/brainstorms? (4 min)
-     3. Devide the sections to the members of our team (10 min)
-     4. Make a shared google docs for the Code of Conduct (5 min)
+     2. Any remarks/brainstorms? - Discussion about the sectios of the Code of Conduct remaining (20 min)
+     3. Devide the sections to the members of our team (5 min)
+     4. Make a shared google docs for the Code of Conduct (3 min)
      5. Decide on a specific time for finalising and submitting the Code of Conduct (3 min) 
   - Discussion about when to start with the actual coding (3 min)
 ------
 
 - Summarize action points: Who , what , when? (3 min)
-- Feedback round: What went well and what can be improved next time? (4 min)
-- Planned meeting duration != actual duration? Where/why did you mis -estimate? (3 min)
-- Question round: Does anyone have anything to add before the meeting closes? (4 min)
+- Feedback round: What went well and what can be improved next time? (2 min)
+- Planned meeting duration != actual duration? Where/why did you mis -estimate? (2 min)
+- Question round: Does anyone have anything to add before the meeting closes? (2 min)
 - Closure (1 min)
