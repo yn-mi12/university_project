@@ -24,7 +24,6 @@
      1. Take 2 minutes to read the assignment if haven't done already (2 min)
      2. Any remarks/brainstorms? - Discussion about the sectios of the Code of Conduct remaining (20 min)
      3. Devide the sections to the members of our team (5 min)
-     4. Make a shared google docs for the Code of Conduct (3 min)
      5. Decide on a specific time for finalising and submitting the Code of Conduct (3 min) 
   - Discussion about when to start with the actual coding (3 min)
 ------
