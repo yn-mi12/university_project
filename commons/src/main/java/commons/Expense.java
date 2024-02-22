@@ -148,7 +148,6 @@ public class Expense {
 
     /**
      * checks if two objects have the same properties.
-     *
      * @param o - the object we are comparing with
      * @return true if the objects are equal
      */
