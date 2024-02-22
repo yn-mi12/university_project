@@ -160,7 +160,10 @@ public class Expense {
             return false;
         }
         Expense expense = (Expense) o;
-        return Double.compare(amount, expense.amount) == 0 && Objects.equals(description, expense.description) && Objects.equals(currency, expense.currency) && Objects.equals(giver, expense.giver) && Objects.equals(receivers, expense.receivers) && Objects.equals(date, expense.date);
+        return Double.compare(amount, expense.amount) == 0 && Objects.equals(description,
+                expense.description) && Objects.equals(currency, expense.currency)
+                && Objects.equals(giver, expense.giver) && Objects.equals(receivers, expense.receivers)
+                && Objects.equals(date, expense.date);
     }
 
     /**
