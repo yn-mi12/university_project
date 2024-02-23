@@ -15,12 +15,12 @@ public class EventRepoStorage implements EventRepository {
     }
 
     /***
-     * Gets all the events in a new list
+     * Gets all the events in a list
      * @return all events
      */
     @Override
     public List<Event> getAllEvents() {
-        return new ArrayList<>(events);
+        return events;
     }
 
     /***
@@ -59,14 +59,6 @@ public class EventRepoStorage implements EventRepository {
                 break;
             }
         }
-    }
-
-    /***
-     * Getter for the events
-     * @return the events in a list
-     */
-    public List<Event> getEvents() {
-        return events;
     }
 
     /***
