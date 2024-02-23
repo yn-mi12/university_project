@@ -51,7 +51,14 @@ public class EventRepoStorage implements EventRepository {
      */
     @Override
     public void updateEvent(Event updatedEvent) {
-        // Implement logic to update the event in the repository
+        for(int i = 0; i < events.size(); i++)
+        {
+            if(events.get(i).getInviteCode().equals(updatedEvent.getInviteCode())){
+                events.remove(i);
+                events.add(updatedEvent);
+                break;
+            }
+        }
     }
 
     /***
