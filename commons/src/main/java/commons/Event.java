@@ -148,4 +148,25 @@ public class Event {
                 ", expenses=" + expenses +
                 '}';
     }
+
+
+//     public void addExpense(Expense expense){
+//        expenses.add(expense);
+//     }
+//
+//     public void removeExpense(Expense expense){
+//        expenses.add(expense);
+//     }
+//
+//     public double expensesSum(){
+//        return expenses.stream()
+//     }
+//
+//     public void editExpense(Expense expense, String toEdit){
+//        switch (toEdit){
+//            case "description": expense.setDescription();
+//        }
+//     }
+//
+//     public static String editExpenseDescription()
 }
