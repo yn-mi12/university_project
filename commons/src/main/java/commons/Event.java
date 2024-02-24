@@ -42,7 +42,7 @@ public class Event {
      */
     public void setTitle(String title) {
         this.title = title;
-    }
+    } //enough for editing the title?
 
     /**
      * Getter for the participants
@@ -149,23 +149,30 @@ public class Event {
     }
 
 
-//     public void addExpense(Expense expense){
-//        expenses.add(expense);
-//     }
-//
-//     public void removeExpense(Expense expense){
-//        expenses.add(expense);
-//     }
-//
-//     public double expensesSum(){
-//        return expenses.stream()
-//     }
-//
-//     public void editExpense(Expense expense, String toEdit){
-//        switch (toEdit){
-//            case "description": expense.setDescription();
-//        }
-//     }
-//
-//     public static String editExpenseDescription()
+    /**
+     * Add an expense to the event
+     * @param expense the new expense
+     */
+     public void addExpense(Expense expense){
+        expenses.add(expense);
+     }
+
+    /**
+     * Remove an expense from the event
+     * @param expense the expense to be removed
+     */
+     public void removeExpense(Expense expense){
+        expenses.add(expense);
+     }
+
+    /**
+     * Compute and return the expenses sum of the event
+     * @return the sum of the expenses
+     */
+     public double expensesSum(){
+        return expenses.stream()
+                .mapToDouble(expense -> expense.getAmount())
+                .sum();
+     }
+
 }
