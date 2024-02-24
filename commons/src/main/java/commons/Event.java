@@ -139,13 +139,34 @@ public class Event {
      */
     @Override
     public String toString() {
-        return "Event{" +
-                "title='" + title + '\'' +
-                ", participants=" + participants +
-                ", inviteCode='" + inviteCode + '\'' +
-                ", debts=" + debts +
-                ", expenses=" + expenses +
-                '}';
+        String result = "Event{ " + "\n" +
+                "Title: " + title + "\n" +
+                "Participants: ";
+        for (int i = 0; i < participants.size(); i++){
+            result += participants.get(i).toString();
+            if (i < participants.size() - 1){
+                result += ", ";
+            }
+        }
+        result += "\n" +
+                "Invite Code: " + inviteCode + "\n" +
+                "Debts: ";
+        for (int i = 0; i < debts.size(); i++){
+            result += debts.get(i).toString();
+            if (i < debts.size() - 1){
+                result += ", ";
+            }
+        }
+        result += "\n" +
+                "Expenses: ";
+        for (int i = 0; i < expenses.size(); i++){
+            result += expenses.get(i).toString();
+            if (i < expenses.size() - 1){
+                result += ", ";
+            }
+        }
+        result += "}";
+        return result;
     }
 
 
@@ -162,7 +183,7 @@ public class Event {
      * @param expense the expense to be removed
      */
      public void removeExpense(Expense expense){
-        expenses.add(expense);
+        expenses.remove(expense);
      }
 
     /**
@@ -173,6 +194,10 @@ public class Event {
         return expenses.stream()
                 .mapToDouble(expense -> expense.getAmount())
                 .sum();
+     }
+
+     public void addParticipant(Person person){
+         participants.add(person);
      }
 
 }
