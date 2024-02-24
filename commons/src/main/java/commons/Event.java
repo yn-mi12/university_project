@@ -196,6 +196,10 @@ public class Event {
                 .sum();
      }
 
+    /**
+     * Adds a participant to the event
+     * @param person the participant to be added
+     */
      public void addParticipant(Person person){
          participants.add(person);
      }
