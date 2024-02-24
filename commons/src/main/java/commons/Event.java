@@ -42,7 +42,7 @@ public class Event {
      */
     public void setTitle(String title) {
         this.title = title;
-    }
+    } //enough for editing the title?
 
     /**
      * Getter for the participants
@@ -139,33 +139,69 @@ public class Event {
      */
     @Override
     public String toString() {
-        return "Event{" +
-                "title='" + title + '\'' +
-                ", participants=" + participants +
-                ", inviteCode='" + inviteCode + '\'' +
-                ", debts=" + debts +
-                ", expenses=" + expenses +
-                '}';
+        String result = "Event{ " + "\n" +
+                "Title: " + title + "\n" +
+                "Participants: ";
+        for (int i = 0; i < participants.size(); i++){
+            result += participants.get(i).toString();
+            if (i < participants.size() - 1){
+                result += ", ";
+            }
+        }
+        result += "\n" +
+                "Invite Code: " + inviteCode + "\n" +
+                "Debts: ";
+        for (int i = 0; i < debts.size(); i++){
+            result += debts.get(i).toString();
+            if (i < debts.size() - 1){
+                result += ", ";
+            }
+        }
+        result += "\n" +
+                "Expenses: ";
+        for (int i = 0; i < expenses.size(); i++){
+            result += expenses.get(i).toString();
+            if (i < expenses.size() - 1){
+                result += ", ";
+            }
+        }
+        result += "}";
+        return result;
     }
 
 
-//     public void addExpense(Expense expense){
-//        expenses.add(expense);
-//     }
-//
-//     public void removeExpense(Expense expense){
-//        expenses.add(expense);
-//     }
-//
-//     public double expensesSum(){
-//        return expenses.stream()
-//     }
-//
-//     public void editExpense(Expense expense, String toEdit){
-//        switch (toEdit){
-//            case "description": expense.setDescription();
-//        }
-//     }
-//
-//     public static String editExpenseDescription()
+    /**
+     * Add an expense to the event
+     * @param expense the new expense
+     */
+     public void addExpense(Expense expense){
+        expenses.add(expense);
+     }
+
+    /**
+     * Remove an expense from the event
+     * @param expense the expense to be removed
+     */
+     public void removeExpense(Expense expense){
+        expenses.remove(expense);
+     }
+
+    /**
+     * Compute and return the expenses sum of the event
+     * @return the sum of the expenses
+     */
+     public double expensesSum(){
+        return expenses.stream()
+                .mapToDouble(expense -> expense.getAmount())
+                .sum();
+     }
+
+    /**
+     * Adds a participant to the event
+     * @param person the participant to be added
+     */
+     public void addParticipant(Person person){
+         participants.add(person);
+     }
+
 }
