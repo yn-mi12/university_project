@@ -24,19 +24,19 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import client.Config;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import org.jetbrains.annotations.NotNull;
 
 public class ServerUtils {
 
-	private static final String SERVER = "http://localhost:8080/";
-
 	public void getQuotesTheHardWay() throws IOException, URISyntaxException {
-		var url = new URI("http://localhost:8080/api/quotes").toURL();
+		var url = new URI(getServer() + "api/quotes").toURL();
 		var is = url.openConnection().getInputStream();
 		var br = new BufferedReader(new InputStreamReader(is));
 		String line;
@@ -47,7 +47,7 @@ public class ServerUtils {
 
 	public List<Quote> getQuotes() {
 		return ClientBuilder.newClient(new ClientConfig()) //
-				.target(SERVER).path("api/quotes") //
+				.target(getServer()).path("api/quotes") //
 				.request(APPLICATION_JSON) //
 				.accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Quote>>() {});
@@ -55,9 +55,18 @@ public class ServerUtils {
 
 	public Quote addQuote(Quote quote) {
 		return ClientBuilder.newClient(new ClientConfig()) //
-				.target(SERVER).path("api/quotes") //
+				.target(getServer()).path("api/quotes") //
 				.request(APPLICATION_JSON) //
 				.accept(APPLICATION_JSON) //
 				.post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
+	}
+
+	/**
+	 * Simple utility function to get the current server address.
+	 *
+	 * @return The current host address of the backend.
+	 */
+	private @NotNull String getServer() {
+		return Config.get().getHost();
 	}
 }
