@@ -1,0 +1,2 @@
+# The backend server address to connect to
+host: "http://localhost:8080/"
