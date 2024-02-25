@@ -3,8 +3,8 @@ package server.api;
 import java.util.List;
 import java.util.Random;
 
+import commons.EventTemp;
 import commons.Person;
-import commons.Event;
 import server.database.EventRepository;
 
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/events")
+@RequestMapping("api/events")
 public class EventController {
 
     private final Random random;
@@ -37,7 +37,7 @@ public class EventController {
      * @return - All the Events
      */
     @GetMapping(path = { "", "/" })
-    public List<Event> getAll() {
+    public List<EventTemp> getAll() {
         return repo.findAll();
     }
 
@@ -47,7 +47,7 @@ public class EventController {
      * @return - The Event with the id specified
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Event> getById(@PathVariable("id") long id) {
+    public ResponseEntity<EventTemp> getById(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
@@ -60,14 +60,13 @@ public class EventController {
      * @return - The saved Event
      */
     @PostMapping(path = { "", "/" })
-    public ResponseEntity<Event> add(@RequestBody Event event) {
+    public ResponseEntity<EventTemp> save(@RequestBody EventTemp event) {
 
-        if (isNullOrEmpty(event.getTitle()) || isNullOrEmpty(event.getInviteCode())
-                || isNullOrEmpty(event.getParticipants())) {
+        if (isNullOrEmpty(event.getTitle()) || isNullOrEmpty(event.getInviteCode())) {
             return ResponseEntity.badRequest().build();
         }
 
-        Event saved = repo.save(event);
+        EventTemp saved = repo.save(event);
         return ResponseEntity.ok(saved);
     }
 
@@ -90,7 +89,7 @@ public class EventController {
      * @return - A randomly selected Event
      */
     @GetMapping("rnd")
-    public ResponseEntity<Event> getRandom() {
+    public ResponseEntity<EventTemp> getRandom() {
         var events = repo.findAll();
         var idx = random.nextInt((int) repo.count());
         return ResponseEntity.ok(events.get(idx));
