@@ -67,27 +67,44 @@ class EventRepoStorageTest {
 
     @Test
     void testEquals() {
+        events1.createEvent(event1);
+        events2.createEvent(event1);
+        assertEquals(events1,events2);
+    }
+
+    @Test
+    void testNotEquals() {
+        events1.createEvent(event1);
+        events2.createEvent(event2);
+        assertNotEquals(events1,events2);
+    }
+
+    void testNotEqualsNull() {
+        events1.createEvent(event1);
+        assertNotEquals(events1,null);
     }
 
     @Test
     void testHashCode() {
+        events1.createEvent(event1);
+        events2.createEvent(event1);
+        assertEquals(events1.hashCode(),events2.hashCode());
+        assertEquals(events1.hashCode(),events1.hashCode());
+        events2.createEvent(event1);
+        assertNotEquals(events1.hashCode(),events2.hashCode());
     }
 
-//    @Test
-//    void testToString() {
-//        events1.createEvent(nullevent);
-//        events1.createEvent(nullevent);
-//        events1.createEvent(nullevent);
-//        events1.createEvent(nullevent);
-//        String x = "EventRepoStorage{" + "events=" + events1.getAllEvents() + '}';
-//        assertEquals("EventRepoStorage{events=" +
-//                "[Event{title='Event 1', participants=[null], " +
-//                "inviteCode='1234', debts=[], expenses=[]}, " +
-//                "Event{title='Event 1', participants=[null], " +
-//                "inviteCode='1234', debts=[], expenses=[]}, " +
-//                "Event{title='Event 1', participants=[null], " +
-//                "inviteCode='1234', debts=[], expenses=[]}, " +
-//                "Event{title='Event 1', participants=[null], " +
-//                "inviteCode='1234', debts=[], expenses=[]}]}",events1.toString());
-//    }
+    @Test
+    void testToString() {
+        events1.createEvent(nullevent);
+        events1.createEvent(nullevent);
+        events1.createEvent(nullevent);
+        events1.createEvent(nullevent);
+        String x = "EventRepoStorage{" + "events=" + events1.getAllEvents() + '}';
+        assertEquals("EventRepoStorage{events=[" +
+                                "EventTemp{id=0, title='Event 1', inviteCode='1234'}, " +
+                                    "EventTemp{id=0, title='Event 1', inviteCode='1234'}, " +
+                                        "EventTemp{id=0, title='Event 1', inviteCode='1234'}, " +
+                                            "EventTemp{id=0, title='Event 1', inviteCode='1234'}]}",events1.toString());
+    }
 }

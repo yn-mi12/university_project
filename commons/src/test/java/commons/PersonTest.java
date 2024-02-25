@@ -48,9 +48,11 @@ public class PersonTest {
 
 	@Test
 	public void hasToString() {
-		var actual = new Person("a", "b").toString();
-		assertTrue(actual.contains(Person.class.getSimpleName()));
-		assertTrue(actual.contains("\n"));
-		assertTrue(actual.contains("firstName"));
+		var x = new Person("a", "b");
+		var actual = x.toString();
+		assertEquals("Person{" + "id=" + x.getId() + ", firstName='" + x.getFirstName() + '\'' + ", lastName='" + x.getLastName() + '\'' + '}',actual);
+		//assertTrue(actual.contains(Person.class.getSimpleName()));
+		//assertTrue(actual.contains("\n"));
+		//assertTrue(actual.contains("firstName"));
 	}
 }
