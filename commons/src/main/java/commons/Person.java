@@ -26,6 +26,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.util.Random;
+
 @Entity
 public class Person {
 
@@ -44,6 +46,8 @@ public class Person {
 	public Person(String firstName, String lastName) {
 		this.firstName = firstName;
 		this.lastName = lastName;
+		String x = firstName + lastName;
+		this.id = x.hashCode();
 	}
 
 	@Override
