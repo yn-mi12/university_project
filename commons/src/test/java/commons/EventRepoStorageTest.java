@@ -13,26 +13,26 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class EventRepoStorageTest {
     private EventRepoStorage events1;
     private EventRepoStorage events2;
-    private Event event1;
-    private Event event2;
-    private Event updatedevent;
-    private Event nullevent;
+    private EventTemp event1;
+    private EventTemp event2;
+    private EventTemp updatedevent;
+    private EventTemp nullevent;
 
     @BeforeEach
     void setUp() {
         events1 = new EventRepoStorage();
         events2 = new EventRepoStorage();
-        event1 = new Event(new Person("Riley", "Smith"), "Event 1", "1234");
-        event2 = new Event(new Person("Juan", "Carter"), "Event 2", "0000");
-        updatedevent = new Event(new Person("Harley", "Quinn"), "Event 1", "1234");
-        nullevent = new Event(null, "Event 1", "1234");
+        event1 = new EventTemp("Event 1", "1234");
+        event2 = new EventTemp("Event 2", "0000");
+        updatedevent = new EventTemp( "Event 1", "1234");
+        nullevent = new EventTemp("Event 1", "1234");
     }
 
     @Test
     void getAllEvents() {
         events1.createEvent(event1);
         events1.createEvent(event2);
-        ArrayList<Event> x = new ArrayList<>();
+        ArrayList<EventTemp> x = new ArrayList<>();
         x.add(event1);
         x.add(event2);
         assertEquals(x,events1.getAllEvents());

@@ -27,7 +27,6 @@ public class Event {
         this.debts = new ArrayList<Debt>(); //empty list by default
         this.expenses = new ArrayList<Expense>(); //empty list by default
     }
-
     /**
      * Getter for the title
      * @return the event's title
