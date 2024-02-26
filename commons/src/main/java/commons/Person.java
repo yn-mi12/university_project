@@ -15,16 +15,18 @@
  */
 package commons;
 
-import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
+//import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+//import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
+//import java.util.Random;
 
 @Entity
 public class Person {
@@ -44,6 +46,8 @@ public class Person {
 	public Person(String firstName, String lastName) {
 		this.firstName = firstName;
 		this.lastName = lastName;
+		String x = firstName + lastName;
+		this.id = x.hashCode();
 	}
 
 	@Override
@@ -58,6 +62,18 @@ public class Person {
 
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
+		return "Person{" + "id=" + id + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + '}';
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
 	}
 }

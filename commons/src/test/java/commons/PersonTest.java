@@ -34,6 +34,7 @@ public class PersonTest {
 	public void equalsHashCode() {
 		var a = new Person("a", "b");
 		var b = new Person("a", "b");
+		assertEquals(a.hashCode(), b.hashCode());
 		assertEquals(a, b);
 		assertEquals(a.hashCode(), b.hashCode());
 	}
@@ -48,9 +49,32 @@ public class PersonTest {
 
 	@Test
 	public void hasToString() {
-		var actual = new Person("a", "b").toString();
-		assertTrue(actual.contains(Person.class.getSimpleName()));
-		assertTrue(actual.contains("\n"));
-		assertTrue(actual.contains("firstName"));
+		var x = new Person("a", "b");
+		var actual = x.toString();
+		assertEquals("Person{" + "id=" + x.getId() + ", firstName='" + x.getFirstName() + '\'' + ", lastName='" + x.getLastName() + '\'' + '}',actual);
+		//assertTrue(actual.contains(Person.class.getSimpleName()));
+		//assertTrue(actual.contains("\n"));
+		//assertTrue(actual.contains("firstName"));
+	}
+
+
+	@Test
+	void getId() {
+		var x = new Person("a", "b");
+		var y = new Person("a", "b");
+		assertEquals(x.getId(),y.getId());
+		assertEquals(x.getId(),x.getId());
+	}
+
+	@Test
+	void getFirstName() {
+		var x = new Person("a", "b");
+		assertEquals("a",x.getFirstName());
+	}
+
+	@Test
+	void getLastName() {
+		var x = new Person("a", "b");
+		assertEquals("b",x.getLastName());
 	}
 }
