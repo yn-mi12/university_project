@@ -1,12 +1,12 @@
 # Week 2 meeting agenda
-| Key | Value |
-| --- | --- |
-| Date: | 20-02-2024 |
-| Time: | 15:45 - 16:45 |
-| Location: | DW PC1 Cubicle 13 |
-| Chair | Maria Zmpainou |
+| Key          | Value             |
+|--------------|-------------------|
+| Date:        | 20-02-2024        |
+| Time:        | 15:45 - 16:45     |
+| Location:    | DW PC1 Cubicle 13 |
+| Chair        | Maria Zmpainou    |
 | Minute Taker | Kasparas Savickis |
-| Attendees: |  |
+| Attendees:   |                   |
 
 ## Agenda Items:
 - Opening by chair (1 min)
