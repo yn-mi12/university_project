@@ -1,3 +1,5 @@
+# Week 3 meeting agenda
+
 | Key          | Value             |
 |--------------|-------------------|
 | Date:        | 2024-02-27        |
@@ -8,7 +10,7 @@
 | Attendees:   | TBD               |
 
 
-Agenda Items:
+## Agenda Items:
 - Opening by chair (1 min)
 - Check -in: How is everyone doing? (3 min)
 - Announcements by the team (1 min)
@@ -23,7 +25,7 @@ Agenda Items:
     - Database implementation
         1. How to store events in database (7 min)
         2. Design a database schema (7 min)
-    - Sprint Planning (6 min)
+    - Sprint Planning (6 min) (Do not know if needed already)
     - Next meeting: time and location (2 min)
 - Summarize action points: Who , what , when? (2 min)
 ---
