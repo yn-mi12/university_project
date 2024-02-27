@@ -3,11 +3,11 @@
 | Key          | Value             |
 |--------------|-------------------|
 | Date:        | 2024-02-27        |
-| Time:        | TBD               |
-| Location:    | TBD               |
+| Time:        | 15:45 - 16:45     |
+| Location:    | DW PC1 Cubicle 13 |
 | Chair        | Kasparas Savickis |
 | Minute Taker | Yana Mihaylova    |
-| Attendees:   | TBD               |
+| Attendees:   | Ioana-Lisandra Draganescu, TA<br/> Daniel Dumitru<br/> Yana Mihaylova<br/> Jake Nijssen<br/> Ipshit Raychaudhuri<br/> Kasparas Savickis<br/>  Maria Zmpainou |
 
 
 ## Agenda Items:
