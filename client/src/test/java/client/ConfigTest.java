@@ -15,7 +15,7 @@ public class ConfigTest {
         Config config = Config.get();
         assertEquals(config.getHost(), "http://localhost:8080/");
         config.setHost("test");
-        assertEquals(config.getCurrentLocale(), "English");
+        assertEquals(config.getCurrentLocaleName(), "English");
         config.save();
         config = Config.reload();
         assertEquals(config.getHost(), "test");
