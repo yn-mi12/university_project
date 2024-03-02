@@ -20,6 +20,9 @@ public class Expense {
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
+    @ManyToOne
+    @JoinColumn(name = "tag_id")
+    private Tag tag;
 
     /**
      * creates an Expense object.

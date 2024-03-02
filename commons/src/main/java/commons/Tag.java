@@ -26,6 +26,10 @@ public class Tag {
         this.color = color;
     }
 
+    public Tag() {
+        // For Object mapping
+    }
+
     /**
      * Getter for the id of the Tag
      * @return - The id of the Tag
