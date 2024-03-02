@@ -3,9 +3,9 @@ package commons;
 import java.util.List;
 
 public interface EventRepository {
-    List<EventTemp> getAllEvents();
-    EventTemp getEventByInviteCode(String inviteCode);
-    void createEvent(EventTemp event);
+    List<Event> getAllEvents();
+    Event getEventByInviteCode(String inviteCode);
+    void createEvent(Event event);
 
-    void updateEvent(EventTemp event);
+    void updateEvent(Event event);
 }

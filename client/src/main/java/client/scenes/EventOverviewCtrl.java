@@ -2,7 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-import commons.EventTemp;
+import commons.Event;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,14 +19,14 @@ public class EventOverviewCtrl implements Initializable {
     private final ServerUtilsEvent server;
     private final EventCtrl evntCtrl;
 
-    private ObservableList<EventTemp> data;
+    private ObservableList<Event> data;
 
     @FXML
-    private TableView<EventTemp> table;
+    private TableView<Event> table;
     @FXML
-    private TableColumn<EventTemp, String> colTitle;
+    private TableColumn<Event, String> colTitle;
     @FXML
-    private TableColumn<EventTemp, String> colInviteCode;
+    private TableColumn<Event, String> colInviteCode;
 
     @Inject
     public EventOverviewCtrl(ServerUtilsEvent server, EventCtrl mainCtrl) {
@@ -44,7 +44,7 @@ public class EventOverviewCtrl implements Initializable {
         evntCtrl.showAdd();
     }
     public void modify(){
-        EventTemp event = table.getSelectionModel().getSelectedItem();
+        Event event = table.getSelectionModel().getSelectedItem();
         evntCtrl.showModify(event);
     }
 

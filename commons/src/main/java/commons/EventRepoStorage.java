@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class EventRepoStorage implements EventRepository {
-    private List<EventTemp> events;
+    private List<Event> events;
 
     /**
      * Creates a new Event list
@@ -19,7 +19,7 @@ public class EventRepoStorage implements EventRepository {
      * @return all events
      */
     @Override
-    public List<EventTemp> getAllEvents() {
+    public List<Event> getAllEvents() {
         return events;
     }
 
@@ -29,7 +29,7 @@ public class EventRepoStorage implements EventRepository {
      * @return the event corresponding the invite code or null if it is not found
      */
     @Override
-    public EventTemp getEventByInviteCode(String inviteCode) {
+    public Event getEventByInviteCode(String inviteCode) {
         return events.stream()
                 .filter(event -> inviteCode.equals(event.getInviteCode()))
                 .findFirst()
@@ -41,7 +41,7 @@ public class EventRepoStorage implements EventRepository {
      * @param event the event to be added
      */
     @Override
-    public void createEvent(EventTemp event) {
+    public void createEvent(Event event) {
         events.add(event);
     }
 
@@ -51,7 +51,7 @@ public class EventRepoStorage implements EventRepository {
      * @param updatedEvent the event to be replaced/updated
      */
     @Override
-    public void updateEvent(EventTemp updatedEvent) {
+    public void updateEvent(Event updatedEvent) {
         for(int i = 0; i < events.size(); i++)
         {
             if(events.get(i).getInviteCode().equals(updatedEvent.getInviteCode())){
@@ -66,7 +66,7 @@ public class EventRepoStorage implements EventRepository {
      * Setter for the events
      * @param events the new events list
      */
-    public void setEvents(List<EventTemp> events) {
+    public void setEvents(List<Event> events) {
         this.events = events;
     }
 

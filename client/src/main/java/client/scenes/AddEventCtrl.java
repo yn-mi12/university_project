@@ -4,7 +4,7 @@ package client.scenes;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 
-import commons.EventTemp;
+import commons.Event;
 
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
@@ -49,11 +49,14 @@ public class AddEventCtrl {
         clearFields();
         mainCtrl.showOverview();
     }
-    private EventTemp getEvent() {
+    private Event getEvent() {
         System.out.println("Get event");
         var inviteCode = this.inviteCode.getText();
         var title = this.title.getText();
-        return new EventTemp(title,inviteCode);
+        return new Event(title);
+        //I deleted the inviteCode from the parameters of Event because
+        // it is not given as a parameter to the constructor.
+        //It is created inside the constructor
     }
     private void clearFields() {
         title.clear();
