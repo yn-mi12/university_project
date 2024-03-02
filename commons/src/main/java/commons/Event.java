@@ -2,7 +2,7 @@
 package commons;
 
 import jakarta.persistence.*;
-//
+
 //import java.util.ArrayList;
 //import java.util.List;
 import java.util.UUID;
@@ -14,7 +14,9 @@ public class Event {
     private long id;
     private String title;
     private String inviteCode;
+//    @OneToMany(cascade = CascadeType.ALL)
 //    private List<Participant> participants;
+//    @OneToMany(cascade = CascadeType.ALL)
 //    private List<Expense> expenses;
 
     public Event(String title) {
@@ -31,7 +33,7 @@ public class Event {
 
 //    public void addCreator(Participant creator){
 //        this.participants.add(creator);
-////        creator should be automatically added as a participant when the vent is created
+////        creator should be automatically added as a participant when the event is created
 //    }
 
     public long getId() {
