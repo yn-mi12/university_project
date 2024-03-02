@@ -17,6 +17,9 @@ public class Expense {
     private String currency;
     private double amount;
     private Date date;
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
 
     /**
      * creates an Expense object.
