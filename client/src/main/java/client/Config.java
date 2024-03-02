@@ -126,12 +126,18 @@ public final class Config {
     @ConfigSerializable
     public static class SupportedLocale {
 
-        @Required
         @NodeKey
+        @Required
+        @Setting("name")
         private String name;
 
         @Required
         private String code;
+
+        /**
+         * For deserialization purposes only, do not use!
+         */
+        private SupportedLocale(){}
 
         /**
          * Construct a new supported locale for the frontend.
