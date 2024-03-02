@@ -30,14 +30,22 @@ public class Main extends Application {
 
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
+    private static Stage primaryStage;
 
-    public static void main(String[] args) throws URISyntaxException, IOException {
+    public static void main(String[] args) {
         launch();
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) {
+        Main.primaryStage = primaryStage;
+        reloadUI();
+    }
 
+    /**
+     * Reloads the UI with new resource definitions, like language.
+     */
+    public static void reloadUI() {
         var overview = FXML.load(EventOverviewCtrl.class, "client", "scenes", "EventOverview.fxml");
         var add = FXML.load(AddEventCtrl.class, "client", "scenes", "AddEvent.fxml");
         var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");

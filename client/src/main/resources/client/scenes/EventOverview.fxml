@@ -9,13 +9,13 @@
             prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EventOverviewCtrl">
     <children>
-        <Button layoutX="350.0" layoutY="360.0" mnemonicParsing="false" onAction="#addEvent" text="Add Event" />
-        <Button layoutX="430.0" layoutY="360.0" mnemonicParsing="false" onAction="#modify" text="Modify"/>
-        <Button layoutX="503.0" layoutY="360.0" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
+        <Button layoutX="350.0" layoutY="360.0" mnemonicParsing="false" onAction="#addEvent" text="%add_event" />
+        <Button layoutX="430.0" layoutY="360.0" mnemonicParsing="false" onAction="#modify" text="%modify"/>
+        <Button layoutX="503.0" layoutY="360.0" mnemonicParsing="false" onAction="#refresh" text="%refresh" />
         <TableView fx:id="table" layoutX="14.0" layoutY="14.0" prefHeight="337.0" prefWidth="572.0">
             <columns>
-                <TableColumn fx:id="colTitle" prefWidth="113.0" text="Title" />
-                <TableColumn fx:id="colInviteCode" prefWidth="114.0" text="Invite Code" />
+                <TableColumn fx:id="colTitle" prefWidth="113.0" text="%title" />
+                <TableColumn fx:id="colInviteCode" prefWidth="114.0" text="%invite_code" />
             </columns>
         </TableView>
     </children>

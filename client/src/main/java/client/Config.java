@@ -13,6 +13,7 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -69,8 +70,29 @@ public final class Config {
      *
      * @return The locale of the frontend.
      */
-    public @NotNull String getCurrentLocale() {
+    public @NotNull String getCurrentLocaleName() {
         return currentLocale;
+    }
+
+    /**
+     * Gets the current {@link Locale} of the current configured language.
+     *
+     * @return The current {@link Locale} of the current language.
+     * @throws IllegalStateException If the current locale is not supported by the config.
+     */
+    public @NotNull Locale getCurrentLocale() throws IllegalStateException {
+        SupportedLocale supportedLocale = null;
+        for (SupportedLocale locale : supportedLocales) {
+            if (getCurrentLocaleName().equalsIgnoreCase(locale.getName())) {
+                supportedLocale = locale;
+                break;
+            }
+        }
+
+        if (supportedLocale == null)
+            throw new IllegalStateException("Illegal config state, current locale must be supported");
+
+        return Locale.of(supportedLocale.getCode());
     }
 
     /**
