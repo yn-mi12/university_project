@@ -59,4 +59,15 @@ public class ParticipantController {
         return ResponseEntity.ok(events.get(idx));
     }
 
+    @GetMapping(path = { "/email/{id}" })
+    public ResponseEntity<Object> getEmail(@PathVariable("id") long id) {
+        if (id < 0 || !repo.existsById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+        if(isNullOrEmpty(repo.findById(id).get().getEmail())){
+            return ResponseEntity.badRequest().build();
+        }
+        else return ResponseEntity.ok(repo.findById(id).get().getEmail());
+    }
+
 }
