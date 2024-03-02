@@ -55,12 +55,6 @@ public class ModifyEventCtrl {
         clearFields();
         mainCtrl.showOverview();
     }
-//    private Event getOldTitle() {
-//        //System.out.println("Get event");
-//        var inviteCode = this.inviteCode.getText();
-//        var title = this.title.getText();
-//        return new Event(title,inviteCode);
-//    }
     private void clearFields() {
         oldTitle.clear();
         newTitle.clear();

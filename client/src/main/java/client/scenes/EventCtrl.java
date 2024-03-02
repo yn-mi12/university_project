@@ -20,18 +20,21 @@ public class EventCtrl {
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
-    public void initShowOverview(Pair<EventOverviewCtrl, Parent> overview){
+
+    public void initShowOverview(Pair<EventOverviewCtrl, Parent> overview) {
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
 
         showOverview();
         primaryStage.show();
     }
-    public void initAdd(Pair<AddEventCtrl, Parent> add){
+
+    public void initAdd(Pair<AddEventCtrl, Parent> add) {
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
     }
-    public void initModify(Pair<ModifyEventCtrl, Parent> modify){
+
+    public void initModify(Pair<ModifyEventCtrl, Parent> modify) {
         this.modifyCtrl = modify.getKey();
         this.modify = new Scene(modify.getValue());
     }
@@ -45,8 +48,10 @@ public class EventCtrl {
     public void showAdd() {
         primaryStage.setTitle("Events: Adding Event");
         primaryStage.setScene(add);
+        this.addCtrl.setInviteCode(addCtrl.getEvent().getInviteCode());
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
+
     public void showModify(Event selectedEvent) {
         primaryStage.setTitle("Events: Modify event");
         this.modifyCtrl.oldTitle.setText(selectedEvent.getTitle());

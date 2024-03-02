@@ -34,7 +34,6 @@ public class AddEventCtrl {
 
     public void ok() {
         try {
-            //server.addQuote(new Quote(null,""));
             System.out.println("Add event");
             server.addEvent(getEvent());
         } catch (WebApplicationException e) {
@@ -49,9 +48,17 @@ public class AddEventCtrl {
         clearFields();
         mainCtrl.showOverview();
     }
-    private Event getEvent() {
+
+    public TextField getInviteCode() {
+        return inviteCode;
+    }
+
+    public void setInviteCode(String inviteCode) {
+        this.inviteCode.setText(inviteCode);
+    }
+
+    public Event getEvent() {
         System.out.println("Get event");
-        var inviteCode = this.inviteCode.getText();
         var title = this.title.getText();
         return new Event(title);
         //I deleted the inviteCode from the parameters of Event because
