@@ -3,54 +3,40 @@ package commons;
 import jakarta.persistence.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
-
+@Entity
 public class Expense {
-    /**
-     * what is the type of the expense.
-     */
     private String description;
-    /**
-     * //what currency is used.
-     */
+    @ManyToOne
+    private Participant paidBy;
     private String currency;
-    /**
-     * //who paid.
-     */
-    private Person giver;
-    /**
-     * //who received the item/service.
-     */
-    private List<Person> receivers;
-    /**
-     * //the cost of the expense.
-     */
     private double amount;
-    /**
-     * //on what date was the expense made.
-     */
     private Date date;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     /**
      * creates an Expense object.
      *
      * @param description - type of expense
      * @param currency    - type of currency
-     * @param giver       - person who paid
-     * @param receivers   - people who received the item/service
+     * @param paidBy      - who paid for the expense
      * @param amount      - cost of the expense
      * @param date        - date of the expense
      */
-    public Expense(String description, String currency, Person giver,
-                   List<Person> receivers, double amount, Date date) {
+    public Expense(String description, String currency, Participant paidBy,
+                   double amount, Date date) {
         this.description = description;
         this.currency = currency;
-        this.giver = giver;
-        this.receivers = receivers;
+        this.paidBy = paidBy;
         this.amount = amount;
         this.date = date;
+    }
+
+    public Expense() {
+
     }
 
     /**
@@ -86,38 +72,6 @@ public class Expense {
     }
 
     /**
-     * @return the giver (person who paid)
-     */
-    public Person getGiver() {
-        return giver;
-    }
-
-    /**
-     * set the giver of an expense.
-     *
-     * @param giver - the specified giver
-     */
-    public void setGiver(Person giver) {
-        this.giver = giver;
-    }
-
-    /**
-     * @return the receivers of the expense
-     */
-    public List<Person> getReceivers() {
-        return receivers;
-    }
-
-    /**
-     * set the receivers of an expense.
-     *
-     * @param receivers - the specified one or many receivers
-     */
-    public void setReceivers(List<Person> receivers) {
-        this.receivers = receivers;
-    }
-
-    /**
      * @return the cost of the expense
      */
     public double getAmount() {
@@ -150,45 +104,67 @@ public class Expense {
     }
 
     /**
-     * checks if two objects have the same properties.
-     * @param o - the object we are comparing with
-     * @return true if the objects are equal
+     * @return - the id of the expense
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * @return the person who paid
+     */
+    public Participant getPaidBy() {
+        return paidBy;
+    }
+
+    /**
+     * set the person who paid for the expense.
+     *
+     * @param paidBy - the specified person
+     */
+    public void setPaidBy(Participant paidBy) {
+        this.paidBy = paidBy;
+    }
+
+    /**
+     * compares two objects to see if they have the same attributes.
+     *
+     * @param o - the object we are comparing the current object with
+     * @return true if the objects have the same properties
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Expense expense = (Expense) o;
-        return Double.compare(amount, expense.amount) == 0 && Objects.equals(description,
-                expense.description) && Objects.equals(currency, expense.currency)
-                && Objects.equals(giver, expense.giver) && Objects.equals(receivers, expense.receivers)
-                && Objects.equals(date, expense.date);
+        return Double.compare(amount, expense.amount) == 0
+                && Objects.equals(description, expense.description)
+                && Objects.equals(paidBy, expense.paidBy)
+                && Objects.equals(currency, expense.currency)
+                && Objects.equals(date, expense.date)
+                && Objects.equals(id, expense.id);
     }
 
     /**
-     * @return a unique number for each object
+     * @return a unique number corresponding to the attributes of the object
+     * equals objects have the same hashcode.
      */
     @Override
     public int hashCode() {
-        return Objects.hash(description, currency, giver, receivers, amount, date);
+        return Objects.hash(description, paidBy, currency, amount, date, id);
     }
 
     /**
-     * @return the information an object contains in a readable format
+     * @return the information the object contains in a human-readable format
      */
     @Override
     public String toString() {
-        return "Expense{" +
-                "description='" + description + '\'' +
-                ", currency='" + currency + '\'' +
-                ", giver=" + giver +
-                ", receivers=" + receivers +
-                ", amount=" + amount +
-                ", date=" + date +
-                '}';
+        return "Expense: " +
+                description + '\'' +
+                ", paid by " + paidBy +
+                ", currency is '" + currency + '\'' +
+                ", amount is " + amount +
+                "\ndate is" + date +
+                ", id=" + id;
     }
 }
