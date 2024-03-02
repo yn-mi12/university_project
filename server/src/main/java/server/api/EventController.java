@@ -3,7 +3,7 @@ package server.api;
 import java.util.List;
 import java.util.Random;
 
-import commons.EventTemp;
+import commons.Event;
 import commons.Person;
 import server.database.EventRepository;
 
@@ -37,7 +37,7 @@ public class EventController {
      * @return - All the Events
      */
     @GetMapping(path = { "", "/" })
-    public List<EventTemp> getAll() {
+    public List<Event> getAll() {
         return repo.findAll();
     }
 
@@ -47,7 +47,7 @@ public class EventController {
      * @return - The Event with the id specified
      */
     @GetMapping("/{id}")
-    public ResponseEntity<EventTemp> getById(@PathVariable("id") long id) {
+    public ResponseEntity<Event> getById(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
@@ -60,13 +60,13 @@ public class EventController {
      * @return - The saved Event
      */
     @PostMapping(path = { "", "/" })
-    public ResponseEntity<EventTemp> save(@RequestBody EventTemp event) {
+    public ResponseEntity<Event> save(@RequestBody Event event) {
 
         if (isNullOrEmpty(event.getTitle()) || isNullOrEmpty(event.getInviteCode())) {
             return ResponseEntity.badRequest().build();
         }
 
-        EventTemp saved = repo.save(event);
+        Event saved = repo.save(event);
         return ResponseEntity.ok(saved);
     }
 
@@ -89,7 +89,7 @@ public class EventController {
      * @return - A randomly selected Event
      */
     @GetMapping("rnd")
-    public ResponseEntity<EventTemp> getRandom() {
+    public ResponseEntity<Event> getRandom() {
         var events = repo.findAll();
         var idx = random.nextInt((int) repo.count());
         return ResponseEntity.ok(events.get(idx));

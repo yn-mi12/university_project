@@ -24,9 +24,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import commons.Event;
 import org.glassfish.jersey.client.ClientConfig;
 
-import commons.EventTemp;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
@@ -43,7 +43,7 @@ public class ServerUtilsEvent {
         }
     }
 
-    public List<EventTemp> getEvents() {
+    public List<Event> getEvents() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/events") //
                 .request(APPLICATION_JSON) //
@@ -52,23 +52,23 @@ public class ServerUtilsEvent {
                 });
     }
 
-    public EventTemp addEvent(EventTemp event) {
+    public Event addEvent(Event event) {
         System.out.println("Add event" + event);
 
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/events") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(event, APPLICATION_JSON), EventTemp.class);
+                .post(Entity.entity(event, APPLICATION_JSON), Event.class);
     }
-    public EventTemp modifyEvent(EventTemp event) {
+    public Event modifyEvent(Event event) {
         //System.out.println("Add event" + event);
 
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/events") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(event, APPLICATION_JSON), EventTemp.class);
+                .post(Entity.entity(event, APPLICATION_JSON), Event.class);
     }
 
 }

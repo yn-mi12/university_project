@@ -2,7 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-import commons.EventTemp;
+import commons.Event;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -16,7 +16,7 @@ public class ModifyEventCtrl {
 
     @FXML
     public TextField oldTitle;
-    private EventTemp selectedEvent;
+    private Event selectedEvent;
 
     @FXML
     private TextField newTitle;
@@ -30,17 +30,17 @@ public class ModifyEventCtrl {
         mainCtrl.showOverview();
     }
 
-    public EventTemp getSelectedEvent() {
+    public Event getSelectedEvent() {
         return selectedEvent;
     }
 
-    public void setSelectedEvent(EventTemp selectedEvent) {
+    public void setSelectedEvent(Event selectedEvent) {
         this.selectedEvent = selectedEvent;
     }
 
     public void ok() {
         try {
-            EventTemp modifiedEvent = getSelectedEvent();
+            Event modifiedEvent = getSelectedEvent();
             modifiedEvent.setTitle(newTitle.getText());
             server.addEvent(modifiedEvent);
         } catch (WebApplicationException e) {
@@ -55,11 +55,11 @@ public class ModifyEventCtrl {
         clearFields();
         mainCtrl.showOverview();
     }
-//    private EventTemp getOldTitle() {
+//    private Event getOldTitle() {
 //        //System.out.println("Get event");
 //        var inviteCode = this.inviteCode.getText();
 //        var title = this.title.getText();
-//        return new EventTemp(title,inviteCode);
+//        return new Event(title,inviteCode);
 //    }
     private void clearFields() {
         oldTitle.clear();

@@ -1,6 +1,6 @@
 package client.scenes;
 
-import commons.EventTemp;
+import commons.Event;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -47,7 +47,7 @@ public class EventCtrl {
         primaryStage.setScene(add);
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
-    public void showModify(EventTemp selectedEvent) {
+    public void showModify(Event selectedEvent) {
         primaryStage.setTitle("Events: Modify event");
         this.modifyCtrl.oldTitle.setText(selectedEvent.getTitle());
         this.modifyCtrl.setSelectedEvent(selectedEvent);

@@ -1,7 +1,7 @@
 package server.database;
 
-import commons.EventTemp;
+import commons.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EventRepository extends JpaRepository<EventTemp, Long> {
+public interface EventRepository extends JpaRepository<Event, Long> {
 }
