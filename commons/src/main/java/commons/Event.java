@@ -3,8 +3,8 @@ package commons;
 
 import jakarta.persistence.*;
 
-//import java.util.ArrayList;
-//import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -14,27 +14,30 @@ public class Event {
     private long id;
     private String title;
     private String inviteCode;
-//    @OneToMany(cascade = CascadeType.ALL)
-//    private List<Participant> participants;
-//    @OneToMany(cascade = CascadeType.ALL)
-//    private List<Expense> expenses;
+    @ManyToMany
+    @JoinTable(
+            name = "event_participant",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "participant_id")
+    )
+    private List<Participant> participants = new ArrayList<>();
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Expense> expenses = new ArrayList<>();
 
     public Event(String title) {
         this.title = title;
         this.inviteCode = UUID.randomUUID().toString();
         //let me know if the generation of the invite code is fine like this when reviewing
-//        this.participants = new ArrayList<>();
-//        this.expenses = new ArrayList<>();
     }
 
     public Event() {
 
     }
 
-//    public void addCreator(Participant creator){
-//        this.participants.add(creator);
-////        creator should be automatically added as a participant when the event is created
-//    }
+    public void addCreator(Participant creator){
+        this.participants.add(creator);
+//        creator should be automatically added as a participant when the event is created
+    }
 
     public long getId() {
         return id;
