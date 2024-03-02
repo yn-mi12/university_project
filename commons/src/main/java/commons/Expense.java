@@ -7,15 +7,16 @@ import java.util.Objects;
 
 @Entity
 public class Expense {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String description;
-    @ManyToOne
+    @ManyToOne(targetEntity = Participant.class, optional = false)
+    @JoinColumn(name = "PARTICIPANT_FK", nullable = false)
     private Participant paidBy;
     private String currency;
     private double amount;
     private Date date;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
     /**
      * creates an Expense object.
