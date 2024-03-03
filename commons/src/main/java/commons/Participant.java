@@ -18,8 +18,36 @@ public class Participant {
      * Optional parameter. Will not be part of toString, equals or hashcode.
      */
     public String email;
+
     @ManyToMany(mappedBy = "participants")
     private List<Event> events = new ArrayList<>();
+    @OneToMany(mappedBy = "paidBy")
+    private List<Expense> expenses = new ArrayList<>();
+    @OneToMany(mappedBy = "lender")
+    private List<Debt> debtsLendTo = new ArrayList<>();
+    @OneToMany(mappedBy = "borrower")
+    private List<Debt> debtsOwedTo = new ArrayList<>();
+
+    public void addExpense(Expense expense) {
+        expenses.add(expense);
+    }
+
+    public List<Expense> getExpenses() {
+        return expenses;
+    }
+
+    public void addDebtsLendTo(Debt debt) {
+        debtsLendTo.add(debt);
+    }
+    public List<Debt> getDebtsLendTo() {
+        return debtsLendTo;
+    }
+    public void addDebtsOwedTo(Debt debt) {
+        debtsOwedTo.add(debt);
+    }
+    public List<Debt> getDebtsOwedTo() {
+        return debtsOwedTo;
+    }
 
     public Participant(String firstName, String lastName) {
         this.firstName = firstName;
