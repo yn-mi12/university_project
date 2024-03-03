@@ -13,12 +13,12 @@ public class Debt {
     private long id;
 
     @OneToOne
-    private Person lender;
+    private Participant lender;
     /**
      * borrower needs to pay to lender.
      */
     @OneToOne
-    private Person borrower;
+    private Participant borrower;
     @ManyToOne
     private Expense source;
     /**
@@ -44,7 +44,7 @@ public class Debt {
      * @param currency - type of currency
      * @param isSettled - is the debt settled
      */
-    public Debt(Person lender, Person borrower, Expense source, double amount, boolean isSettled, String currency) {
+    public Debt(Participant lender, Participant borrower, Expense source, double amount, boolean isSettled, String currency) {
         this.lender = lender;
         this.borrower = borrower;
         this.source = source;
@@ -69,32 +69,32 @@ public class Debt {
     }
 
     /**
-     * @return the person who lent the money
+     * @return the participant who lent the money
      */
-    public Person getLender() {
+    public Participant getLender() {
         return lender;
     }
 
     /**
-     * set the person who lends the money.
+     * set the participant who lends the money.
      * @param lender - the specified lender
      */
-    public void setLender(Person lender) {
+    public void setLender(Participant lender) {
         this.lender = lender;
     }
 
     /**
-     * @return - the person who owes money to the lender
+     * @return - the participant who owes money to the lender
      */
-    public Person getBorrower() {
+    public Participant getBorrower() {
         return borrower;
     }
 
     /**
      * set the borrower.
-     * @param borrower - the specified person who owes the money
+     * @param borrower - the specified participant who owes the money
      */
-    public void setBorrower(Person borrower) {
+    public void setBorrower(Participant borrower) {
         this.borrower = borrower;
     }
 
@@ -135,35 +135,33 @@ public class Debt {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Debt debt = (Debt) o;
-        return Double.compare(amount, debt.amount) == 0 && isSettled == debt.isSettled
-                && Objects.equals(lender, debt.lender) && Objects.equals(borrower, debt.borrower)
-                && Objects.equals(currency, debt.currency);
+        return id == debt.id && Double.compare(amount, debt.amount) == 0 && isSettled == debt.isSettled && Objects.equals(lender, debt.lender) && Objects.equals(borrower, debt.borrower) && Objects.equals(source, debt.source) && Objects.equals(currency, debt.currency);
     }
+
     /**
      * @return a unique number for each object
      */
     @Override
     public int hashCode() {
-        return Objects.hash(lender, borrower, amount, isSettled, currency);
+        return Objects.hash(id, lender, borrower, source, amount, isSettled, currency);
     }
+
     /**
      * @return the information an object contains in a readable format
      */
     @Override
     public String toString() {
         return "Debt{" +
-                "lender=" + lender +
+                "id=" + id +
+                ", lender=" + lender +
                 ", borrower=" + borrower +
+                ", source=" + source +
                 ", amount=" + amount +
-                ", currency=" + currency +
-                ", settled=" + isSettled +
+                ", isSettled=" + isSettled +
+                ", currency='" + currency + '\'' +
                 '}';
     }
 }
