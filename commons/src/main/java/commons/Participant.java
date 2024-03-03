@@ -42,7 +42,7 @@ public class Participant {
     public List<Debt> getDebtsLendTo() {
         return debtsLendTo;
     }
-    public void AddDebtsOwedTo(Debt debt) {
+    public void addDebtsOwedTo(Debt debt) {
         debtsOwedTo.add(debt);
     }
     public List<Debt> getDebtsOwedTo() {
