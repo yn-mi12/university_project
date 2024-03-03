@@ -3,6 +3,7 @@ package commons;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -20,6 +21,8 @@ public class Expense {
     @ManyToOne(optional = false)
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
+    @OneToMany(mappedBy = "source")
+    private List<Debt> debtList;
     @ManyToOne
     @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
