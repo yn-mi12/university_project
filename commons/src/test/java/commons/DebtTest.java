@@ -32,7 +32,7 @@ public class DebtTest {
     @Test
     public void notEqualsHashCode() {
         assertNotEquals(d1, d3);
-        assertNotEquals(d1.hashCode(), d2.hashCode());
+        assertNotEquals(d1.hashCode(), d3.hashCode());
     }
 
     @Test
