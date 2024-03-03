@@ -11,17 +11,17 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String description;
-    @ManyToOne(targetEntity = Participant.class, optional = false)
-    @JoinColumn(name = "PARTICIPANT_FK", nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "participant_id", nullable = false)
     private Participant paidBy;
     private String currency;
     private double amount;
     private Date date;
-    @ManyToOne
-    @JoinColumn(name = "event_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
     @ManyToOne
-    @JoinColumn(name = "tag_id")
+    @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
 
     /**

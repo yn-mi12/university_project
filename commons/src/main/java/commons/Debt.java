@@ -12,18 +12,19 @@ public class Debt {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "lender_id", nullable = false)
     private Participant lender;
     /**
      * borrower needs to pay to lender.
      */
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "borrower_id", nullable = false)
     private Participant borrower;
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "expense_id", nullable = false)
     private Expense source;
-    /**
-     * how much money does the borrower owe.
-     */
+
     private double amount;
     private boolean isSettled;
     private String currency;
@@ -31,9 +32,7 @@ public class Debt {
 
     @SuppressWarnings("unused")
     public Debt() {
-
     }
-
 
     /**
      * creates a new Debt object.
@@ -170,4 +169,5 @@ public class Debt {
                 ", currency='" + currency + '\'' +
                 '}';
     }
+
 }
