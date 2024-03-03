@@ -28,15 +28,15 @@ dependencies {
 	
 	implementation group: 'jakarta.activation', name: 'jakarta.activation-api', version: '2.0.1'
 	
-	implementation 'com.google.inject:guice:5.0.1'
+	implementation 'com.google.inject:guice:7.0.0'
 
 	// Configuration library
 	implementation 'org.spongepowered:configurate-yaml:4.1.2'
 
 	// NotNull & Nullable annotations
 	implementation 'org.jetbrains:annotations:24.1.0'
-	
-	implementation 'org.openjfx:javafx-controls:17.0.2'
-	implementation 'org.openjfx:javafx-fxml:17.0.2'
+
+	implementation 'org.openjfx:javafx-controls:21.0.2'
+	implementation 'org.openjfx:javafx-fxml:21.0.2'
 	
 }
