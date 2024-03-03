@@ -95,7 +95,7 @@ public class ParticipantController {
      * @param id - The id of the Participant
      * @return - The Participants email
      */
-    @GetMapping(path = { "/email/{id}" })
+    @GetMapping(path = { "/{id}/email" })
     public ResponseEntity<Object> getEmail(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id) || isNullOrEmpty(repo.findById(id).get().getEmail())) {
             return ResponseEntity.badRequest().build();
