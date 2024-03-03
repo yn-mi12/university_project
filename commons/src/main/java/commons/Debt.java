@@ -12,12 +12,12 @@ public class Debt {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @OneToOne
+    @ManyToOne
     private Participant lender;
     /**
      * borrower needs to pay to lender.
      */
-    @OneToOne
+    @ManyToOne
     private Participant borrower;
     @ManyToOne
     private Expense source;
