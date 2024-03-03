@@ -1,43 +1,56 @@
 package commons;
 
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
+
+@Entity
 public class Debt {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @ManyToOne
+    private Participant lender;
     /**
-     * who lends the money.
+     * borrower needs to pay to lender.
      */
-    private Person lender;
-    /**
-     * who owes the money.
-     */
-    private Person borrower;
+    @ManyToOne
+    private Participant borrower;
+    @ManyToOne
+    private Expense source;
     /**
      * how much money does the borrower owe.
      */
     private double amount;
-    /**
-     * is the debt settled ot not.
-     */
-    private boolean settled;
-    /**
-     * what type of currency is used.
-     */
+    private boolean isSettled;
     private String currency;
+
+
+    @SuppressWarnings("unused")
+    public Debt() {
+
+    }
+
 
     /**
      * creates a new Debt object.
      * @param lender - lends the money
      * @param borrower - owes the money
+     * @param source - the source of Debt
      * @param amount - amount of money
      * @param currency - type of currency
-     * @param settled - is the debt settled
+     * @param isSettled - is the debt settled
      */
-    public Debt(Person lender, Person borrower, double amount, String currency, boolean settled) {
+    public Debt(Participant lender, Participant borrower, Expense source, double amount, boolean isSettled, String currency) {
         this.lender = lender;
         this.borrower = borrower;
+        this.source = source;
         this.amount = amount;
+        this.isSettled = isSettled;
         this.currency = currency;
-        this.settled = settled;
     }
 
     /**
@@ -56,32 +69,32 @@ public class Debt {
     }
 
     /**
-     * @return the person who lent the money
+     * @return the participant who lent the money
      */
-    public Person getLender() {
+    public Participant getLender() {
         return lender;
     }
 
     /**
-     * set the person who lends the money.
+     * set the participant who lends the money.
      * @param lender - the specified lender
      */
-    public void setLender(Person lender) {
+    public void setLender(Participant lender) {
         this.lender = lender;
     }
 
     /**
-     * @return - the person who owes money to the lender
+     * @return - the participant who owes money to the lender
      */
-    public Person getBorrower() {
+    public Participant getBorrower() {
         return borrower;
     }
 
     /**
      * set the borrower.
-     * @param borrower - the specified person who owes the money
+     * @param borrower - the specified participant who owes the money
      */
-    public void setBorrower(Person borrower) {
+    public void setBorrower(Participant borrower) {
         this.borrower = borrower;
     }
 
@@ -104,7 +117,7 @@ public class Debt {
      * @return true if the debt is already settled
      */
     public boolean isSettled() {
-        return settled;
+        return isSettled;
     }
 
     /**
@@ -112,7 +125,7 @@ public class Debt {
      * @param settled - specified option
      */
     public void setSettled(boolean settled) {
-        this.settled = settled;
+        this.isSettled = settled;
     }
 
     /**
@@ -122,35 +135,39 @@ public class Debt {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Debt debt = (Debt) o;
-        return Double.compare(amount, debt.amount) == 0 && settled == debt.settled
-                && Objects.equals(lender, debt.lender) && Objects.equals(borrower, debt.borrower)
+        return id == debt.id && Double.compare(amount, debt.amount) == 0
+                && isSettled == debt.isSettled
+                && Objects.equals(lender, debt.lender)
+                && Objects.equals(borrower, debt.borrower)
+                && Objects.equals(source, debt.source)
                 && Objects.equals(currency, debt.currency);
     }
+
+
     /**
      * @return a unique number for each object
      */
     @Override
     public int hashCode() {
-        return Objects.hash(lender, borrower, amount, settled, currency);
+        return Objects.hash(id, lender, borrower, source, amount, isSettled, currency);
     }
+
     /**
      * @return the information an object contains in a readable format
      */
     @Override
     public String toString() {
         return "Debt{" +
-                "lender=" + lender +
+                "id=" + id +
+                ", lender=" + lender +
                 ", borrower=" + borrower +
+                ", source=" + source +
                 ", amount=" + amount +
-                ", currency=" + currency +
-                ", settled=" + settled +
+                ", isSettled=" + isSettled +
+                ", currency='" + currency + '\'' +
                 '}';
     }
 }
