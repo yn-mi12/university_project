@@ -138,7 +138,12 @@ public class Debt {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Debt debt = (Debt) o;
-        return id == debt.id && Double.compare(amount, debt.amount) == 0 && isSettled == debt.isSettled && Objects.equals(lender, debt.lender) && Objects.equals(borrower, debt.borrower) && Objects.equals(source, debt.source) && Objects.equals(currency, debt.currency);
+        return id == debt.id && Double.compare(amount, debt.amount) == 0
+                && isSettled == debt.isSettled
+                && Objects.equals(lender, debt.lender)
+                && Objects.equals(borrower, debt.borrower)
+                && Objects.equals(source, debt.source)
+                && Objects.equals(currency, debt.currency);
     }
 
 
