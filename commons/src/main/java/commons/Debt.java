@@ -1,28 +1,36 @@
 package commons;
 
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+
 import java.util.Objects;
 
 public class Debt {
-    /**
-     * who lends the money.
-     */
+
+
+    @OneToOne
     private Person lender;
     /**
-     * who owes the money.
+     * borrower needs to pay to lender.
      */
+    @OneToOne
     private Person borrower;
+    @ManyToOne
+    private Expense source;
     /**
      * how much money does the borrower owe.
      */
     private double amount;
-    /**
-     * is the debt settled ot not.
-     */
-    private boolean settled;
-    /**
-     * what type of currency is used.
-     */
+    private boolean isSettled;
     private String currency;
+
+
+    @SuppressWarnings("unused")
+    public Debt() {
+
+    }
+
+
 
     /**
      * creates a new Debt object.
@@ -30,14 +38,32 @@ public class Debt {
      * @param borrower - owes the money
      * @param amount - amount of money
      * @param currency - type of currency
-     * @param settled - is the debt settled
+     * @param isSettled - is the debt settled
      */
-    public Debt(Person lender, Person borrower, double amount, String currency, boolean settled) {
+    public Debt(Person lender, Person borrower, double amount, String currency, boolean isSettled) {
         this.lender = lender;
         this.borrower = borrower;
         this.amount = amount;
         this.currency = currency;
-        this.settled = settled;
+        this.isSettled = isSettled;
+    }
+
+    /**
+     * creates a new Debt object.
+     * @param lender - lends the money
+     * @param borrower - owes the money
+     * @param source - the source of Debt
+     * @param amount - amount of money
+     * @param currency - type of currency
+     * @param isSettled - is the debt settled
+     */
+    public Debt(Person lender, Person borrower, Expense source, double amount, boolean isSettled, String currency) {
+        this.lender = lender;
+        this.borrower = borrower;
+        this.source = source;
+        this.amount = amount;
+        this.isSettled = isSettled;
+        this.currency = currency;
     }
 
     /**
@@ -104,7 +130,7 @@ public class Debt {
      * @return true if the debt is already settled
      */
     public boolean isSettled() {
-        return settled;
+        return isSettled;
     }
 
     /**
@@ -112,7 +138,7 @@ public class Debt {
      * @param settled - specified option
      */
     public void setSettled(boolean settled) {
-        this.settled = settled;
+        this.isSettled = settled;
     }
 
     /**
@@ -129,7 +155,7 @@ public class Debt {
             return false;
         }
         Debt debt = (Debt) o;
-        return Double.compare(amount, debt.amount) == 0 && settled == debt.settled
+        return Double.compare(amount, debt.amount) == 0 && isSettled == debt.isSettled
                 && Objects.equals(lender, debt.lender) && Objects.equals(borrower, debt.borrower)
                 && Objects.equals(currency, debt.currency);
     }
@@ -138,7 +164,7 @@ public class Debt {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(lender, borrower, amount, settled, currency);
+        return Objects.hash(lender, borrower, amount, isSettled, currency);
     }
     /**
      * @return the information an object contains in a readable format
@@ -150,7 +176,7 @@ public class Debt {
                 ", borrower=" + borrower +
                 ", amount=" + amount +
                 ", currency=" + currency +
-                ", settled=" + settled +
+                ", settled=" + isSettled +
                 '}';
     }
 }
