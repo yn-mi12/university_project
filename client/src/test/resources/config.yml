@@ -1,2 +1,12 @@
 # The backend server address to connect to
 host: "http://localhost:8080/"
+
+# The current locale
+current-locale: "English"
+
+# List of supported locales
+supported-locales:
+  - name: "English"
+    code: "en"
+  - name: "Nederlands"
+    code: "nl"

@@ -1,5 +1,7 @@
 package client.scenes;
 
+import client.Config;
+import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
@@ -8,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
@@ -27,6 +30,8 @@ public class EventOverviewCtrl implements Initializable {
     private TableColumn<Event, String> colTitle;
     @FXML
     private TableColumn<Event, String> colInviteCode;
+    @FXML
+    private ChoiceBox<String> language;
 
     @Inject
     public EventOverviewCtrl(ServerUtilsEvent server, EventCtrl mainCtrl) {
@@ -38,6 +43,16 @@ public class EventOverviewCtrl implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         colTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().getTitle()));
         colInviteCode.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().getInviteCode()));
+        language.getItems().addAll(Config.get().getSupportedLocales().stream().map(Config.SupportedLocale::getName)
+                .toList());
+        language.setValue(Config.get().getCurrentLocaleName());
+        language.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                Config.get().setCurrentLocale(newVal);
+                Config.get().save();
+                Main.reloadUI();
+            }
+        }));
     }
 
     public void addEvent() {
