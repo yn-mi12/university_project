@@ -1,12 +1,16 @@
 package commons;
 
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
+
+@Entity
 public class Debt {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     @OneToOne
     private Person lender;
@@ -30,23 +34,6 @@ public class Debt {
 
     }
 
-
-
-    /**
-     * creates a new Debt object.
-     * @param lender - lends the money
-     * @param borrower - owes the money
-     * @param amount - amount of money
-     * @param currency - type of currency
-     * @param isSettled - is the debt settled
-     */
-    public Debt(Person lender, Person borrower, double amount, String currency, boolean isSettled) {
-        this.lender = lender;
-        this.borrower = borrower;
-        this.amount = amount;
-        this.currency = currency;
-        this.isSettled = isSettled;
-    }
 
     /**
      * creates a new Debt object.
