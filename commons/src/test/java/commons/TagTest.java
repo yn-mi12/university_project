@@ -86,12 +86,12 @@ public class TagTest {
         assertEquals("Blue", tag.getColor());
     }
 
-//    @Test
-//    void toStringTest() {
-//        tag.setExpenses(expenseList);
-//        String expected = "Tag{id=0, expenses=Expense: food', paid by Participant{id=3105, firstName='a', lastName='b'}" +
-//                ", currency is '$', amount is 20.0\n" +
-//                "date is2024-03-02, id=null, label='Food', color='Red'}";
-//        assertEquals(expected, tag.toString());
-//    }
+    @Test
+    void toStringTest() {
+        tag.setExpenses(expenseList);
+        String expected = "Tag{id=0, expenses=Expense: food', paid by Participant{id=3105, firstName='a', lastName='b'}" +
+                ", currency is '$', amount is 20.0\n" +
+                "date is" + Date.valueOf(LocalDate.now()).toString() + ", id=null, label='Food', color='Red'}";
+        assertEquals(expected, tag.toString());
+    }
 }
