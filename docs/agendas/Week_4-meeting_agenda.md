@@ -28,9 +28,11 @@
 	 need to be edited (2 min)
     - UI structure
         1. Decide on a structure for the user interface (what follows from where, what will 
-	 the scenes look like?) (8 min)
-        2. Decide on a design for the interface - colors, images, tables (3 min)
+	 the scenes look like?) (6 min)
+        2. Decide on a design for the interface - colors, images, tables (2 min)
+        3. How to use the language system? (3 min)
     - Clean up unnecessary classes - Person, Quote (2 min)
+    - Start thinking about the Admin part of the project (3 min) 
     - Buddycheck (3 min)
     - Next meeting: time and location (2 min)
 - Summarize action points: Who , what , when? (2 min)
