@@ -12,7 +12,7 @@
 
 ## Agenda Items:
 - Opening by chair (1 min)
-- Check -in: How is everyone doing? (3 min)
+- Check -in: How is everyone doing? (2 min)
 - Announcements by the team (2 min)
 - Approval of the agenda - Does anyone have any additions? (1 min)
 - Approval of last minutes - Did everyone read the minutes from the previous meeting? (1 min)
@@ -32,7 +32,7 @@
         2. Decide on a design for the interface - colors, images, tables (2 min)
         3. How to use the language system? (3 min)
     - Clean up unnecessary classes - Person, Quote (2 min)
-    - Start thinking about the Admin part of the project (3 min) 
+    - Start thinking about the Admin part of the project (4 min) 
     - Buddycheck (3 min)
     - Next meeting: time and location (2 min)
 - Summarize action points: Who , what , when? (2 min)
