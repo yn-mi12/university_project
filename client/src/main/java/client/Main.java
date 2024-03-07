@@ -17,7 +17,6 @@ package client;
 
 import client.scenes.AddEventCtrl;
 import client.scenes.EventCtrl;
-import client.scenes.EventOverviewCtrl;
 import client.scenes.StartScreenCtrl;
 import client.scenes.ModifyEventCtrl;
 import com.google.inject.Injector;
