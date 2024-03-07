@@ -41,13 +41,13 @@ public class EventCtrl {
     public void showOverview() {
         primaryStage.setTitle("Splitty");
         primaryStage.setScene(overview);
-//        overviewCtrl.refresh();
+        overviewCtrl.refresh();
     }
 
-    public void showAdd() {
+    public void showAdd(String title) {
         primaryStage.setTitle("Events: Adding Event");
         primaryStage.setScene(add);
-        this.addCtrl.setInviteCode(addCtrl.getEvent().getInviteCode());
+        this.addCtrl.setTitleAndCode(title, addCtrl.getEvent().getInviteCode());
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 

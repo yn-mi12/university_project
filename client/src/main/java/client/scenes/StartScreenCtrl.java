@@ -19,9 +19,9 @@ public class StartScreenCtrl implements Initializable {
     @FXML
     private ChoiceBox<String> languageBox;
     @FXML
-    private TextField createEvent;
+    private TextField titleField;
     @FXML
-    private TextField joinEvent;
+    private TextField codeField;
 
     @Inject
     public StartScreenCtrl(ServerUtilsEvent server, EventCtrl mainCtrl) {
@@ -43,8 +43,24 @@ public class StartScreenCtrl implements Initializable {
         }));
     }
 
-    public void addEvent() {
-        //TODO
+    public void createEvent() {
+        var title = this.titleField.getText();
+        clearFields();
+        evntCtrl.showAdd(title);
     }
 
+    public void viewEvent() {
+        var inviteCode = this.codeField.getText();
+        clearFields();
+        //Will be used to view a created event
+    }
+
+    public void refresh() {
+        //Will be used to fetch previously joined events
+    }
+
+    private void clearFields() {
+        titleField.clear();
+        codeField.clear();
+    }
 }

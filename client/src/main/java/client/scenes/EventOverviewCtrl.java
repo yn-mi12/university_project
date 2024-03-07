@@ -53,9 +53,9 @@ public class EventOverviewCtrl implements Initializable {
         }));
     }
 
-    public void addEvent() {
-        evntCtrl.showAdd();
-    }
+//    public void addEvent() {
+//        evntCtrl.showAdd();
+//    }
 
     public void modify(){
         Event event = table.getSelectionModel().getSelectedItem();
