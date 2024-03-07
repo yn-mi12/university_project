@@ -9,8 +9,7 @@ import javafx.util.Pair;
 public class EventCtrl {
 
     private Stage primaryStage;
-
-    private EventOverviewCtrl overviewCtrl;
+    private StartScreenCtrl overviewCtrl;
     private Scene overview;
     private ModifyEventCtrl modifyCtrl;
     private AddEventCtrl addCtrl;
@@ -21,7 +20,7 @@ public class EventCtrl {
         this.primaryStage = primaryStage;
     }
 
-    public void initShowOverview(Pair<EventOverviewCtrl, Parent> overview) {
+    public void initShowOverview(Pair<StartScreenCtrl, Parent> overview) {
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
 
@@ -40,9 +39,9 @@ public class EventCtrl {
     }
 
     public void showOverview() {
-        primaryStage.setTitle("Events: Overview");
+        primaryStage.setTitle("Splitty");
         primaryStage.setScene(overview);
-        overviewCtrl.refresh();
+//        overviewCtrl.refresh();
     }
 
     public void showAdd() {

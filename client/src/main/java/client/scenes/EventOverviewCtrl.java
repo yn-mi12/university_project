@@ -13,7 +13,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -21,7 +20,6 @@ public class EventOverviewCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
     private final EventCtrl evntCtrl;
-
     private ObservableList<Event> data;
 
     @FXML
@@ -58,6 +56,7 @@ public class EventOverviewCtrl implements Initializable {
     public void addEvent() {
         evntCtrl.showAdd();
     }
+
     public void modify(){
         Event event = table.getSelectionModel().getSelectedItem();
         evntCtrl.showModify(event);
