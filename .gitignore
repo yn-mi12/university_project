@@ -1,4 +1,5 @@
 client/config.yml
+client/src/main/java/client/utils/events.txt
 HELP.md
 .gradle
 build/
