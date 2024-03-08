@@ -17,9 +17,7 @@ package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -52,14 +50,33 @@ public class ServerUtilsEvent {
                 });
     }
 
-    public Event addEvent(Event event) {
-        System.out.println("Add event" + event);
-
+    public Event getByID(Long id) {
         return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/events/" + id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+    }
+
+    public Event addEvent(Event event) {
+        Event saved = ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/events") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(event, APPLICATION_JSON), Event.class);
+        System.out.println("Add event" + saved);
+
+        try (FileWriter fw = new FileWriter("client/src/main/java/client/utils/events.txt", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter out = new PrintWriter(bw))
+        {
+            out.println(saved.getId());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return saved;
     }
     public Event modifyEvent(Event event) {
         //System.out.println("Add event" + event);

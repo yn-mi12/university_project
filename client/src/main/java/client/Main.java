@@ -17,7 +17,7 @@ package client;
 
 import client.scenes.AddEventCtrl;
 import client.scenes.EventCtrl;
-import client.scenes.EventOverviewCtrl;
+import client.scenes.StartScreenCtrl;
 import client.scenes.ModifyEventCtrl;
 import com.google.inject.Injector;
 import javafx.application.Application;
@@ -45,7 +45,7 @@ public class Main extends Application {
      * Reloads the UI with new resource definitions, like language.
      */
     public static void reloadUI() {
-        var overview = FXML.load(EventOverviewCtrl.class, "client", "scenes", "EventOverview.fxml");
+        var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
         var add = FXML.load(AddEventCtrl.class, "client", "scenes", "AddEvent.fxml");
         var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");
 

@@ -9,6 +9,7 @@ import commons.Event;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -20,7 +21,7 @@ public class AddEventCtrl {
     private TextField title;
 
     @FXML
-    private TextField inviteCode;
+    private Label inviteCode;
 
     @Inject
     public AddEventCtrl(ServerUtilsEvent server, EventCtrl mainCtrl) {
@@ -49,11 +50,12 @@ public class AddEventCtrl {
         mainCtrl.showOverview();
     }
 
-    public TextField getInviteCode() {
+    public Label getInviteCode() {
         return inviteCode;
     }
 
-    public void setInviteCode(String inviteCode) {
+    public void setTitleAndCode(String title, String inviteCode) {
+        this.title.setText(title);
         this.inviteCode.setText(inviteCode);
     }
 
@@ -67,7 +69,6 @@ public class AddEventCtrl {
     }
     private void clearFields() {
         title.clear();
-        inviteCode.clear();
     }
 
     public void keyPressed(KeyEvent e) {
