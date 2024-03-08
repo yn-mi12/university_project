@@ -12,7 +12,7 @@ import javafx.stage.Modality;
 
 public class ModifyEventCtrl {
     private final ServerUtilsEvent server;
-    private final EventCtrl mainCtrl;
+    private final SplittyCtrl mainCtrl;
 
     @FXML
     public TextField oldTitle;
@@ -21,7 +21,7 @@ public class ModifyEventCtrl {
     @FXML
     private TextField newTitle;
     @Inject
-    public ModifyEventCtrl(ServerUtilsEvent server, EventCtrl mainCtrl) {
+    public ModifyEventCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
     }

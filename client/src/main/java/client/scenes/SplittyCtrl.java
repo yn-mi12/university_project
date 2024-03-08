@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-public class EventCtrl {
+public class SplittyCtrl {
 
     private Stage primaryStage;
     private StartScreenCtrl overviewCtrl;
@@ -15,6 +15,8 @@ public class EventCtrl {
     private AddEventCtrl addCtrl;
     private Scene modify;
     private Scene add;
+    private EventOverviewNewCtrl eventCtrl;
+    private Scene event;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -38,6 +40,11 @@ public class EventCtrl {
         this.modify = new Scene(modify.getValue());
     }
 
+    public void initEventOverview(Pair<EventOverviewNewCtrl, Parent> eventOverview) {
+        this.eventCtrl = eventOverview.getKey();
+        this.event = new Scene(eventOverview.getValue());
+    }
+
     public void showOverview() {
         primaryStage.setTitle("Splitty");
         primaryStage.setScene(overview);
@@ -58,4 +65,11 @@ public class EventCtrl {
         primaryStage.setScene(modify);
         modify.setOnKeyPressed(e -> modifyCtrl.keyPressed(e));
     }
+
+    public void showEventOverview(Event selectedEvent){
+        primaryStage.setTitle("Event: " + selectedEvent.getTitle());
+        primaryStage.setScene(event);
+        event.setOnKeyPressed(e -> eventCtrl.keyPressed(e));
+    }
+
 }

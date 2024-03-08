@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 public class EventOverviewCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
-    private final EventCtrl evntCtrl;
+    private final SplittyCtrl evntCtrl;
     private ObservableList<Event> data;
 
     @FXML
@@ -32,7 +32,7 @@ public class EventOverviewCtrl implements Initializable {
     private ChoiceBox<String> language;
 
     @Inject
-    public EventOverviewCtrl(ServerUtilsEvent server, EventCtrl mainCtrl) {
+    public EventOverviewCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
         this.server = server;
         this.evntCtrl = mainCtrl;
     }

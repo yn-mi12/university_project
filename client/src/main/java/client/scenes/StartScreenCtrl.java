@@ -23,7 +23,7 @@ import java.util.Scanner;
 public class StartScreenCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
-    private final EventCtrl evntCtrl;
+    private final SplittyCtrl evntCtrl;
     @FXML
     private ListView<String> eventList;
     @FXML
@@ -34,7 +34,7 @@ public class StartScreenCtrl implements Initializable {
     private TextField codeField;
 
     @Inject
-    public StartScreenCtrl(ServerUtilsEvent server, EventCtrl mainCtrl) {
+    public StartScreenCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
         this.server = server;
         this.evntCtrl = mainCtrl;
     }
@@ -107,5 +107,12 @@ public class StartScreenCtrl implements Initializable {
     private void clearFields() {
         titleField.clear();
         codeField.clear();
+    }
+
+    public void showEvent(){
+        String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
+        String eventId = eventIdTitle.split(":")[0];
+        Event event = server.getByID(Long.parseLong(eventId));
+        evntCtrl.showEventOverview(event);
     }
 }
