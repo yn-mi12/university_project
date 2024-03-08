@@ -25,7 +25,6 @@ public class StartScreenCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
     private final EventCtrl evntCtrl;
-    private ObservableList<String> titles;
     @FXML
     private ListView<String> eventList;
     @FXML
