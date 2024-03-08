@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class StartScreenCtrl implements Initializable {
     private TextField titleField;
     @FXML
     private TextField codeField;
+//    public static Long pickedEventId;
 
     @Inject
     public StartScreenCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
@@ -109,10 +111,21 @@ public class StartScreenCtrl implements Initializable {
         codeField.clear();
     }
 
-    public void showEvent(){
+    public void showEvent() throws IOException {
         String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
         String eventId = eventIdTitle.split(":")[0];
+//        this.pickedEventId = Long.parseLong(eventId);
         Event event = server.getByID(Long.parseLong(eventId));
         evntCtrl.showEventOverview(event);
     }
+
+    public Event getEvent(){
+        String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
+        String eventId = eventIdTitle.split(":")[0];
+//        pickedEventId = Long.parseLong(eventId);
+        Event event = server.getByID(Long.parseLong(eventId));
+
+        return event;
+    }
+
 }

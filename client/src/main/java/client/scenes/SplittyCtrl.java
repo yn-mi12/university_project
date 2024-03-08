@@ -68,6 +68,8 @@ public class SplittyCtrl {
 
     public void showEventOverview(Event selectedEvent){
         primaryStage.setTitle("Event: " + selectedEvent.getTitle());
+        this.eventCtrl.setSelectedEvent(selectedEvent);
+        this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
         primaryStage.setScene(event);
         event.setOnKeyPressed(e -> eventCtrl.keyPressed(e));
     }

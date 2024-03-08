@@ -4,10 +4,11 @@ import client.Config;
 import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-//import commons.Event;
+import commons.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 
 import java.net.URL;
@@ -20,7 +21,12 @@ public class EventOverviewNewCtrl implements Initializable {
     private final SplittyCtrl controller;
 
     @FXML
+    public Label eventTitle;
+    @FXML
     private ChoiceBox<String> languageBox;
+    public Event event;
+
+
 
     @Inject
     public EventOverviewNewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
@@ -28,6 +34,12 @@ public class EventOverviewNewCtrl implements Initializable {
         this.controller = eventCtrl;
     }
 
+    public Event getSelectedEvent(){
+        return event;
+    }
+    public void setSelectedEvent(Event selectedEvent){
+        this.event = selectedEvent;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
