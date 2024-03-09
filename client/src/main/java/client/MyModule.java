@@ -20,7 +20,7 @@ import com.google.inject.Module;
 import com.google.inject.Scopes;
 
 import client.scenes.AddEventCtrl;
-import client.scenes.EventCtrl;
+import client.scenes.SplittyCtrl;
 import client.scenes.EventOverviewCtrl;
 
 import client.scenes.AddQuoteCtrl;
@@ -31,7 +31,7 @@ public class MyModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        binder.bind(EventCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(SplittyCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AddEventCtrl.class).in(Scopes.SINGLETON);
         binder.bind(EventOverviewCtrl.class).in(Scopes.SINGLETON);
 

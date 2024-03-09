@@ -15,7 +15,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 public class AddEventCtrl {
     private final ServerUtilsEvent server;
-    private final EventCtrl mainCtrl;
+    private final SplittyCtrl mainCtrl;
 
     @FXML
     private TextField title;
@@ -24,7 +24,7 @@ public class AddEventCtrl {
     private Label inviteCode;
 
     @Inject
-    public AddEventCtrl(ServerUtilsEvent server, EventCtrl mainCtrl) {
+    public AddEventCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
     }
