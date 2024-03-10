@@ -11,9 +11,9 @@ public class SplittyCtrl {
     private Stage primaryStage;
     private StartScreenCtrl overviewCtrl;
     private Scene overview;
-    private ModifyEventCtrl modifyCtrl;
+    //private ModifyEventCtrl modifyCtrl;
     private AddEventCtrl addCtrl;
-    private Scene modify;
+    //private Scene modify;
     private Scene add;
     private EventOverviewNewCtrl eventCtrl;
     private Scene event;
@@ -35,10 +35,10 @@ public class SplittyCtrl {
         this.add = new Scene(add.getValue());
     }
 
-    public void initModify(Pair<ModifyEventCtrl, Parent> modify) {
-        this.modifyCtrl = modify.getKey();
-        this.modify = new Scene(modify.getValue());
-    }
+//    public void initModify(Pair<ModifyEventCtrl, Parent> modify) {
+//        this.modifyCtrl = modify.getKey();
+//        this.modify = new Scene(modify.getValue());
+//    }
 
     public void initEventOverview(Pair<EventOverviewNewCtrl, Parent> eventOverview) {
         this.eventCtrl = eventOverview.getKey();
@@ -58,13 +58,13 @@ public class SplittyCtrl {
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
-    public void showModify(Event selectedEvent) {
-        primaryStage.setTitle("Events: Modify event");
-        this.modifyCtrl.oldTitle.setText(selectedEvent.getTitle());
-        this.modifyCtrl.setSelectedEvent(selectedEvent);
-        primaryStage.setScene(modify);
-        modify.setOnKeyPressed(e -> modifyCtrl.keyPressed(e));
-    }
+//    public void showModify(Event selectedEvent) {
+//        primaryStage.setTitle("Events: Modify event");
+//        this.modifyCtrl.oldTitle.setText(selectedEvent.getTitle());
+//        this.modifyCtrl.setSelectedEvent(selectedEvent);
+//        primaryStage.setScene(modify);
+//        modify.setOnKeyPressed(e -> modifyCtrl.keyPressed(e));
+//    }
 
     public void showEventOverview(Event selectedEvent){
         primaryStage.setTitle("Event: " + selectedEvent.getTitle());
