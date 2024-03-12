@@ -1,10 +1,12 @@
 package client.scenes;
 
 import commons.Event;
+import commons.Participant;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
 
 public class SplittyCtrl {
 
@@ -17,6 +19,8 @@ public class SplittyCtrl {
     private Scene add;
     private EventOverviewNewCtrl eventCtrl;
     private Scene event;
+    private Scene expense;
+    private AddExpenseCtrl addExpenseCtrl;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -33,6 +37,10 @@ public class SplittyCtrl {
     public void initAdd(Pair<AddEventCtrl, Parent> add) {
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
+    }
+    public void initExp(Pair<AddExpenseCtrl, Parent> addExp) {
+        this.addExpenseCtrl = addExp.getKey();
+        this. expense= new Scene(addExp.getValue());
     }
 
 //    public void initModify(Pair<ModifyEventCtrl, Parent> modify) {
@@ -72,6 +80,21 @@ public class SplittyCtrl {
         this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
         primaryStage.setScene(event);
         event.setOnKeyPressed(e -> eventCtrl.keyPressed(e));
+    }
+
+    public void initExpShowOverview(Event event,
+                                    Participant paid) {
+        addExpenseCtrl.setEvent(paid,eventCtrl);
+
+        showExpOverview();
+        primaryStage.show();
+    }
+
+    public void showExpOverview() {
+        primaryStage.setTitle("Add/Edit expense");
+        primaryStage.setScene(expense);
+
+        expense.setOnKeyPressed(e -> addExpenseCtrl.keyPressed(e));
     }
 
 }

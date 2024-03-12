@@ -6,17 +6,15 @@ import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
 import commons.Participant;
-import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Modality;
 
-import java.awt.event.MouseEvent;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -24,6 +22,7 @@ import static jakarta.ws.rs.core.Response.ok;
 
 public class EventOverviewNewCtrl implements Initializable {
     private final ServerUtilsEvent server;
+    private Participant expensePayer;
     private final SplittyCtrl controller;
     private List<Participant> participants;
     @FXML
@@ -52,9 +51,12 @@ public class EventOverviewNewCtrl implements Initializable {
         this.participants = event.getParticipants();
         ObservableList<MenuItem> names = FXCollections.observableArrayList();
         StringBuilder namesString = new StringBuilder();
+        HashMap<MenuItem,Participant> map = new HashMap<>();
         int i = 0;
         for (Participant p : participants) {
-            names.add(new MenuItem(p.getFirstName()));
+            MenuItem item = new MenuItem(p.getFirstName());
+            names.add(item);
+            map.put(item,p);
             namesString.append(p.getFirstName());
             if (i < participants.size() - 1)
                 namesString.append(", ");
@@ -66,6 +68,7 @@ public class EventOverviewNewCtrl implements Initializable {
         for (MenuItem mi : part.getItems()) {
             mi.setOnAction(e -> {
                 part.setText(mi.getText());
+                expensePayer = map.get(mi);
             });
         }
     }
@@ -87,6 +90,9 @@ public class EventOverviewNewCtrl implements Initializable {
             }
         }));
 
+    }
+    public void addExpense() {
+        controller.initExpShowOverview(event,expensePayer);
     }
 
     public void keyPressed(KeyEvent e) {

@@ -28,7 +28,8 @@
       <SplitMenuButton fx:id="part" focusTraversable="false" layoutX="28.0" layoutY="288.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="139.0" text="%participants_menu_button2" wrapText="true">
       </SplitMenuButton>
       <Button focusTraversable="false" layoutX="356.0" layoutY="134.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="106.0" text="%add_participant_button" />
-      <Button focusTraversable="false" layoutX="357.0" layoutY="288.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="106.0" text="%add_expense_button" wrapText="true" />
+      <Button focusTraversable="false" layoutX="357.0" layoutY="288.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="106.0" text="%add_expense_button"
+              wrapText="true" onAction="#addExpense"/>
       <Button focusTraversable="false" layoutX="179.0" layoutY="288.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="%view_expense_button" />
       <ChoiceBox fx:id="languageBox" focusTraversable="false" layoutX="353.0" layoutY="414.0" prefHeight="25.0" prefWidth="114.0" />
       <Text fontSmoothingType="LCD" layoutX="356.0" layoutY="409.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%language_choice">

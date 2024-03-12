@@ -15,6 +15,7 @@
  */
 package client;
 
+import client.scenes.AddExpenseCtrl;
 import client.scenes.EventOverviewNewCtrl;
 import client.scenes.StartScreenCtrl;
 import com.google.inject.Binder;
@@ -30,5 +31,6 @@ public class MyModule implements Module {
         binder.bind(SplittyCtrl.class).in(Scopes.SINGLETON);
         binder.bind(EventOverviewNewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(StartScreenCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AddExpenseCtrl.class).in(Scopes.SINGLETON);
     }
 }
