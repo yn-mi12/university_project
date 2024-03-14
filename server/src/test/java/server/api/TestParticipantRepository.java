@@ -139,6 +139,7 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public long count() {
+        calledMethods.add("count");
         return participants.size();
     }
 

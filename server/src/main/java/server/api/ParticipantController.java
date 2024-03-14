@@ -103,4 +103,15 @@ public class ParticipantController {
         else return ResponseEntity.ok(repo.findById(id).get().getEmail());
     }
 
+    @PostMapping(path = { "", "/" })
+    public ResponseEntity<Participant> add(@RequestBody Participant participant) {
+
+        if (participant == null || isNullOrEmpty(participant.firstName) || isNullOrEmpty(participant.lastName)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Participant saved = repo.save(participant);
+        return ResponseEntity.ok(saved);
+    }
+
 }
