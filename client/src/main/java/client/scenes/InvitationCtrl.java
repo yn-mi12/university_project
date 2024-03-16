@@ -6,7 +6,6 @@ import jakarta.inject.Inject;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
-import java.text.BreakIterator;
 
 import static jakarta.ws.rs.core.Response.ok;
 
