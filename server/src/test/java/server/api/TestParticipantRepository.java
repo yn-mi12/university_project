@@ -117,7 +117,7 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public Optional<Participant> findById(Long aLong) {
-        return Optional.empty();
+        return find(aLong);
     }
 
     @Override

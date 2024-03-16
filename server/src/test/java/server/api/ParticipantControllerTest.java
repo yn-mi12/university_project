@@ -79,14 +79,13 @@ public class ParticipantControllerTest {
         partc.add(getParticipant("b","c","d"));
         partc.add(getParticipant("c","d","e"));
         partc.add(getParticipant("e","f",null));
-        var actual = partc.getById(100);
+        var actual = partc.getById(repo.count() + 1);
         assertEquals(BAD_REQUEST, actual.getStatusCode());
-        /*
-        actual = partc.getById(0);
-        assertEquals("c", actual.getBody().firstName);
-        assertEquals("d", actual.getBody().lastName);
-        assertEquals("e", actual.getBody().email);
-         */
+        var x = partc.getRandom();
+        var actual1 = partc.getById(x.getBody().id);
+        assertEquals(x.getBody().firstName, actual1.getBody().firstName);
+        assertEquals(x.getBody().lastName, actual1.getBody().lastName);
+        assertEquals(x.getBody().email, actual1.getBody().email);
     }
 
     @Test
