@@ -46,6 +46,7 @@ public class Main extends Application {
         var add = FXML.load(AddEventCtrl.class, "client", "scenes", "AddEvent.fxml");
         var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");
         var eventOverview = FXML.load(EventOverviewNewCtrl.class, "client", "scenes", "EventOverviewNew.fxml");
+        var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
 
         var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
         mainCtrl.initialize(primaryStage);
@@ -53,5 +54,6 @@ public class Main extends Application {
         mainCtrl.initAdd(add);
         mainCtrl.initModify(modify);
         mainCtrl.initEventOverview(eventOverview);
+        mainCtrl.initInvitePage(invite);
     }
 }

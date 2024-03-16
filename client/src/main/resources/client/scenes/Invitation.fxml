@@ -14,7 +14,7 @@
             <Font size="26.0" />
          </font>
       </Text>
-      <Text layoutX="68.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event">
+      <Text fx:id="eventInviteTitle" layoutX="68.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>

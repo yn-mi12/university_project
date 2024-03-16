@@ -17,6 +17,8 @@ public class SplittyCtrl {
     private Scene add;
     private EventOverviewNewCtrl eventCtrl;
     private Scene event;
+    private InvitationCtrl inviteCtrl;
+    private Scene invite;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -43,6 +45,11 @@ public class SplittyCtrl {
     public void initEventOverview(Pair<EventOverviewNewCtrl, Parent> eventOverview) {
         this.eventCtrl = eventOverview.getKey();
         this.event = new Scene(eventOverview.getValue());
+    }
+
+    public void initInvitePage(Pair<InvitationCtrl, Parent> invite) {
+        this.inviteCtrl = invite.getKey();
+        this.invite = new Scene(invite.getValue());
     }
 
     public void showOverview() {
@@ -72,6 +79,14 @@ public class SplittyCtrl {
         this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
         primaryStage.setScene(event);
         event.setOnKeyPressed(e -> eventCtrl.keyPressed(e));
+    }
+
+    public void showInvitePage(Event selectedEvent){
+        primaryStage.setTitle("Event: " + selectedEvent.getTitle());
+        this.inviteCtrl.setSelectedEvent(selectedEvent);
+        this.inviteCtrl.eventInviteTitle.setText(selectedEvent.getTitle());
+        primaryStage.setScene(invite);
+        invite.setOnKeyPressed(e -> inviteCtrl.keyPressed(e));
     }
 
 }
