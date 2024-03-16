@@ -29,7 +29,7 @@
             <Font size="18.0" />
          </font>
       </Text>
-      <Text layoutX="370.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="code">
+      <Text fx:id="inviteCode" layoutX="370.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="code">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -39,12 +39,12 @@
             <Font size="14.0" />
          </font>
       </TextArea>
-      <Button layoutX="421.0" layoutY="345.0" mnemonicParsing="false" text="Send Invites">
+      <Button layoutX="421.0" layoutY="345.0" mnemonicParsing="false" text="Send Invites" onAction="#sendInvites">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="67.0" layoutY="345.0" mnemonicParsing="false" text="Cancel">
+      <Button layoutX="67.0" layoutY="345.0" mnemonicParsing="false" text="Cancel" onAction="#back">
          <font>
             <Font size="16.0" />
          </font>

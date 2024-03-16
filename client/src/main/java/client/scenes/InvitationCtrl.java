@@ -14,6 +14,8 @@ public class InvitationCtrl {
     private final ServerUtilsEvent server;
     private final SplittyCtrl mainCtrl;
     public Text eventInviteTitle;
+    public Text inviteCode;
+    public Event event;
 
     @Inject
     public InvitationCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl)
@@ -41,5 +43,12 @@ public class InvitationCtrl {
     }
 
     private void cancel() {
+    }
+
+    public void back() {
+        mainCtrl.showEventOverview(event);
+    }
+
+    public void sendInvites() {
     }
 }

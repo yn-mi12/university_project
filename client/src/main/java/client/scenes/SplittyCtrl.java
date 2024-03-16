@@ -83,8 +83,10 @@ public class SplittyCtrl {
 
     public void showInvitePage(Event selectedEvent){
         primaryStage.setTitle("Event: " + selectedEvent.getTitle());
-        this.inviteCtrl.setSelectedEvent(selectedEvent);
+        //this.inviteCtrl.setSelectedEvent(selectedEvent);
         this.inviteCtrl.eventInviteTitle.setText(selectedEvent.getTitle());
+        this.inviteCtrl.inviteCode.setText(selectedEvent.getInviteCode());
+        this.inviteCtrl.event = selectedEvent;
         primaryStage.setScene(invite);
         invite.setOnKeyPressed(e -> inviteCtrl.keyPressed(e));
     }
