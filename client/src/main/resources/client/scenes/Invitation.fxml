@@ -7,9 +7,9 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.InvitationCtrl" >
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.InvitationCtrl" >
    <children>
-      <Text layoutX="14.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Invitation">
+      <Text layoutX="14.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%invitation">
          <font>
             <Font size="26.0" />
          </font>
@@ -19,32 +19,32 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Text>
-      <Text layoutX="68.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Give people the following invite Code:">
+      <Text layoutX="68.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%give_invite_code">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text layoutX="68.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Invite the following people by email (one address per line)">
+      <Text layoutX="68.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%invite_people">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="inviteCode" layoutX="370.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="code">
+      <Text fx:id="inviteCode" layoutX="430.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="code">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Text>
-      <TextArea layoutX="68.0" layoutY="186.0" prefHeight="138.0" prefWidth="461.0" promptText="Enter emails">
+      <TextArea layoutX="68.0" layoutY="186.0" prefHeight="138.0" prefWidth="461.0" promptText="%enter_emails">
          <font>
             <Font size="14.0" />
          </font>
       </TextArea>
-      <Button layoutX="421.0" layoutY="345.0" mnemonicParsing="false" text="Send Invites" onAction="#sendInvites">
+      <Button layoutX="421.0" layoutY="345.0" mnemonicParsing="false" text="%send_invites" onAction="#sendInvites">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="67.0" layoutY="345.0" mnemonicParsing="false" text="Cancel" onAction="#back">
+      <Button layoutX="67.0" layoutY="345.0" mnemonicParsing="false" text="%cancel" onAction="#back">
          <font>
             <Font size="16.0" />
          </font>
