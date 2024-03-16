@@ -29,10 +29,10 @@ public class ParticipantControllerTest {
 
     @Test
     public void randomSelection() {
-        partc.add(getParticipant("a","b","c"));
-        partc.add(getParticipant("b","c","d"));
-        partc.add(getParticipant("c","d","e"));
-        partc.add(getParticipant("e","f",null));
+        partc.save(getParticipant("a","b","c"));
+        partc.save(getParticipant("b","c","d"));
+        partc.save(getParticipant("c","d","e"));
+        partc.save(getParticipant("e","f",null));
         nextInt = 3;
         var actual = partc.getRandom();
         assertTrue(random.wasCalled);
@@ -49,18 +49,18 @@ public class ParticipantControllerTest {
 
     @Test
     void cannotAddNullPerson() {
-        var actual = partc.add(getParticipant(null,"a",null));
+        var actual = partc.save(getParticipant(null,"a",null));
         assertEquals(BAD_REQUEST, actual.getStatusCode());
-        actual = partc.add(getParticipant("a",null,null));
+        actual = partc.save(getParticipant("a",null,null));
         assertEquals(BAD_REQUEST, actual.getStatusCode());
     }
 
     @Test
     void getAll() {
-        partc.add(getParticipant("a","b","c"));
-        partc.add(getParticipant("b","c","d"));
-        partc.add(getParticipant("c","d","e"));
-        partc.add(getParticipant("e","f",null));
+        partc.save(getParticipant("a","b","c"));
+        partc.save(getParticipant("b","c","d"));
+        partc.save(getParticipant("c","d","e"));
+        partc.save(getParticipant("e","f",null));
         assertEquals(4,repo.count());
         assertTrue(repo.calledMethods.contains("count"));
         var actual = partc.getAll();
@@ -75,10 +75,10 @@ public class ParticipantControllerTest {
 
     @Test
     void getById() {
-        partc.add(getParticipant("a","b","c"));
-        partc.add(getParticipant("b","c","d"));
-        partc.add(getParticipant("c","d","e"));
-        partc.add(getParticipant("e","f",null));
+        partc.save(getParticipant("a","b","c"));
+        partc.save(getParticipant("b","c","d"));
+        partc.save(getParticipant("c","d","e"));
+        partc.save(getParticipant("e","f",null));
         var actual = partc.getById(repo.count() + 1);
         assertEquals(BAD_REQUEST, actual.getStatusCode());
         var x = partc.getRandom();
@@ -90,17 +90,17 @@ public class ParticipantControllerTest {
 
     @Test
     void save() {
-        var actual = partc.add(getParticipant(null,null,null));
+        var actual = partc.save(getParticipant(null,null,null));
         assertEquals(BAD_REQUEST, actual.getStatusCode());
         assertFalse(repo.calledMethods.contains("save"));
-        partc.add(getParticipant("a","b",null));
+        partc.save(getParticipant("a","b",null));
         assertTrue(repo.calledMethods.contains("save"));
     }
 
     @Test
     void getEmail() {
-        partc.add(getParticipant("a","b","c"));
-        partc.add(getParticipant("b","c","d"));
+        partc.save(getParticipant("a","b","c"));
+        partc.save(getParticipant("b","c","d"));
         assertEquals("c", repo.getById((0L)).email);
         assertEquals("d", repo.getById((1L)).email);
     }

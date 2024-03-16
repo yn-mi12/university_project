@@ -55,23 +55,6 @@ public class ParticipantController {
     }
 
     /**
-     * Adds a Participant to the repository
-     *
-     * @param participant - The Participant to be added
-     * @return - The saved Participant
-     */
-    @PostMapping(path = { "", "/" })
-    public ResponseEntity<Participant> save(@RequestBody Participant participant) {
-
-        if (isNullOrEmpty(participant.getFirstName()) || isNullOrEmpty(participant.getLastName())) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Participant saved = repo.save(participant);
-        return ResponseEntity.ok(saved);
-    }
-
-    /**
      * Checks if the provided string is null or empty
      *
      * @param s - The string to be checked
@@ -103,8 +86,14 @@ public class ParticipantController {
         else return ResponseEntity.ok(repo.findById(id).get().getEmail());
     }
 
+    /**
+     * Adds a Participant to the repository
+     *
+     * @param participant - The Participant to be added
+     * @return - The saved Participant
+     */
     @PostMapping(path = { "", "/" })
-    public ResponseEntity<Participant> add(@RequestBody Participant participant) {
+    public ResponseEntity<Participant> save(@RequestBody Participant participant) {
 
         if (participant == null || isNullOrEmpty(participant.firstName) || isNullOrEmpty(participant.lastName)) {
             return ResponseEntity.badRequest().build();
