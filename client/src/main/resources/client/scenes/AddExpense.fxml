@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import java.lang.String?>
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="589.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="client.scenes.AddExpenseCtrl">
+    <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="591.0" prefWidth="605.0">
+            <children>
+                <Button layoutX="455.0" layoutY="512.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="70.0"
+                        onAction = "#cancel" text="Cancel" />
+                <Button layoutX="335.0" layoutY="512.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="76.0"
+                        onAction = "#ok" text="Add" />
+                <Label layoutX="29.0" layoutY="22.0" prefHeight="28.0" prefWidth="239.0" text="Add/Edit Expense">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <Label layoutX="29.0" layoutY="71.0" text="Who paid?">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+                <ChoiceBox layoutX="232.0" layoutY="71.0" prefHeight="31.0" prefWidth="233.0" fx:id="whoPaid"/>
+                <Label layoutX="29.0" layoutY="119.0" text="What for?">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+                <TextField layoutX="233.0" layoutY="119.0" prefHeight="42.0" prefWidth="230.0" fx:id="whatFor" />
+                <Label layoutX="25.0" layoutY="178.0" text="How much?">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+                <TextField layoutX="233.0" layoutY="176.0" prefHeight="32.0" prefWidth="150.0" fx:id="howMuch" />
+                <ChoiceBox layoutX="406.0" layoutY="175.0" prefHeight="31.0" prefWidth="66.0" value="EUR" fx:id="currency">
+                    <String fx:value="USD"/>
+                    <String fx:value="EUR"/>
+                    <String fx:value="CHF"/>
+                </ChoiceBox>
+                <Label layoutX="29.0" layoutY="228.0" text="When?">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+                <DatePicker layoutX="233.0" layoutY="227.0" prefHeight="37.0" prefWidth="190.0" fx:id="date"/>
+                <Label layoutX="31.0" layoutY="318.0" text="How to split?">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+                <CheckBox layoutX="29.0" layoutY="353.0" mnemonicParsing="false" text=" Equally Between Everybody" fx:id="allHaveToPay"/>
+                <CheckBox layoutX="29.0" layoutY="383.0" mnemonicParsing="false" text="Only Some People" fx:id="someHaveToPay"/>
+                <TextArea layoutX="26.0" layoutY="419.0" prefHeight="134.0" prefWidth="145.0" />
+                <Label layoutX="335.0" layoutY="318.0" text="Expense Type">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+                <ComboBox layoutX="335.0" layoutY="349.0" prefHeight="44.0" prefWidth="191.0"/>
+            </children></AnchorPane>
+    </content>
+</ScrollPane>

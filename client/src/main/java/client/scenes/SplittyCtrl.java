@@ -1,22 +1,26 @@
 package client.scenes;
 
 import commons.Event;
+import commons.Participant;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
 
 public class SplittyCtrl {
 
     private Stage primaryStage;
     private StartScreenCtrl overviewCtrl;
     private Scene overview;
-    private ModifyEventCtrl modifyCtrl;
+    //private ModifyEventCtrl modifyCtrl;
     private AddEventCtrl addCtrl;
-    private Scene modify;
+    //private Scene modify;
     private Scene add;
     private EventOverviewNewCtrl eventCtrl;
     private Scene event;
+    private Scene expense;
+    private AddExpenseCtrl addExpenseCtrl;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -34,11 +38,15 @@ public class SplittyCtrl {
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
     }
-
-    public void initModify(Pair<ModifyEventCtrl, Parent> modify) {
-        this.modifyCtrl = modify.getKey();
-        this.modify = new Scene(modify.getValue());
+    public void initExp(Pair<AddExpenseCtrl, Parent> addExp) {
+        this.addExpenseCtrl = addExp.getKey();
+        this. expense= new Scene(addExp.getValue());
     }
+
+//    public void initModify(Pair<ModifyEventCtrl, Parent> modify) {
+//        this.modifyCtrl = modify.getKey();
+//        this.modify = new Scene(modify.getValue());
+//    }
 
     public void initEventOverview(Pair<EventOverviewNewCtrl, Parent> eventOverview) {
         this.eventCtrl = eventOverview.getKey();
@@ -58,13 +66,13 @@ public class SplittyCtrl {
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
-    public void showModify(Event selectedEvent) {
-        primaryStage.setTitle("Events: Modify event");
-        this.modifyCtrl.oldTitle.setText(selectedEvent.getTitle());
-        this.modifyCtrl.setSelectedEvent(selectedEvent);
-        primaryStage.setScene(modify);
-        modify.setOnKeyPressed(e -> modifyCtrl.keyPressed(e));
-    }
+//    public void showModify(Event selectedEvent) {
+//        primaryStage.setTitle("Events: Modify event");
+//        this.modifyCtrl.oldTitle.setText(selectedEvent.getTitle());
+//        this.modifyCtrl.setSelectedEvent(selectedEvent);
+//        primaryStage.setScene(modify);
+//        modify.setOnKeyPressed(e -> modifyCtrl.keyPressed(e));
+//    }
 
     public void showEventOverview(Event selectedEvent){
         primaryStage.setTitle("Event: " + selectedEvent.getTitle());
@@ -72,6 +80,21 @@ public class SplittyCtrl {
         this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
         primaryStage.setScene(event);
         event.setOnKeyPressed(e -> eventCtrl.keyPressed(e));
+    }
+
+    public void initExpShowOverview(Event event,
+                                    Participant paid) {
+        addExpenseCtrl.setEvent(paid,eventCtrl);
+
+        showExpOverview();
+        primaryStage.show();
+    }
+
+    public void showExpOverview() {
+        primaryStage.setTitle("Add/Edit expense");
+        primaryStage.setScene(expense);
+
+        expense.setOnKeyPressed(e -> addExpenseCtrl.keyPressed(e));
     }
 
 }

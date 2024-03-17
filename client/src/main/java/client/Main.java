@@ -44,14 +44,16 @@ public class Main extends Application {
     public static void reloadUI() {
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
         var add = FXML.load(AddEventCtrl.class, "client", "scenes", "AddEvent.fxml");
-        var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");
+        //var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");
         var eventOverview = FXML.load(EventOverviewNewCtrl.class, "client", "scenes", "EventOverviewNew.fxml");
+        var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
 
         var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
         mainCtrl.initialize(primaryStage);
         mainCtrl.initShowOverview(overview);
         mainCtrl.initAdd(add);
-        mainCtrl.initModify(modify);
+        mainCtrl.initExp(addExp);
+       // mainCtrl.initModify(modify);
         mainCtrl.initEventOverview(eventOverview);
     }
 }
