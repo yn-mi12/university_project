@@ -36,6 +36,7 @@ public class AuthenticationToken extends AbstractAuthenticationToken {
         this.adminToken = "None";
         this.isAdmin = false;
         this.isValid = true;
+        super.setAuthenticated(true);
     }
 
     /**

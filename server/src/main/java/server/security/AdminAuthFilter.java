@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.io.IOException;
@@ -17,13 +18,15 @@ import java.util.Optional;
 
 public class AdminAuthFilter extends AbstractAuthenticationProcessingFilter {
 
-    protected AdminAuthFilter(final AuthenticationManager authenticationManager) {
+    protected AdminAuthFilter(final AuthenticationManager authenticationManager,
+                              final AdminAuthEntryPoint authEntryPoint) {
         super(new AntPathRequestMatcher("**"), authenticationManager);
+        this.setAuthenticationFailureHandler(new AuthenticationEntryPointFailureHandler(authEntryPoint));
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException, IOException, ServletException {
+            throws AuthenticationException {
         Optional<String> header = Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION));
         if (header.isPresent()) {
             String adminToken = header.get().replaceFirst("Bearer ", "").trim();

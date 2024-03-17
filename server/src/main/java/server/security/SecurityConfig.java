@@ -26,12 +26,14 @@ import org.springframework.security.web.authentication.AnonymousAuthenticationFi
 public class SecurityConfig {
 
     private final AdminAuthProvider authenticationProvider;
+    private final AdminAuthEntryPoint authEntryPoint;
     private final AdminAuthorizationManager adminAuthorizationManager;
 
     @Autowired
-    public SecurityConfig(AdminAuthProvider authenticationProvider,
+    public SecurityConfig(AdminAuthProvider authenticationProvider, AdminAuthEntryPoint authEntryPoint,
                           AdminAuthorizationManager adminAuthorizationManager) {
         this.authenticationProvider = authenticationProvider;
+        this.authEntryPoint = authEntryPoint;
         this.adminAuthorizationManager = adminAuthorizationManager;
     }
 
@@ -50,7 +52,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
 
                 // Simple security chain which requires all requests to be authenticated
-                .addFilterBefore(new AdminAuthFilter(authenticationManager()),
+                .addFilterBefore(new AdminAuthFilter(authenticationManager(), authEntryPoint),
                         AnonymousAuthenticationFilter.class)
                 .authorizeHttpRequests((authorize) -> {
                     authorize.anyRequest().authenticated();

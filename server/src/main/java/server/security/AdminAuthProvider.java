@@ -27,6 +27,7 @@ public class AdminAuthProvider implements AuthenticationProvider {
         }
 
         authenticationToken.setValid(true);
+        authenticationToken.setAuthenticated(true);
         return authenticationToken;
     }
 

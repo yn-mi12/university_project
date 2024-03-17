@@ -18,11 +18,14 @@ import java.util.function.Supplier;
 public class AdminAuthorizationManager implements AuthorizationManager<MethodInvocation> {
 
     @Override
-    public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocation object) {
-        Authentication authentication1 = authentication.get();
-        if (authentication1 instanceof AuthenticationToken token) {
-            return new AuthorizationDecision(token.isAdmin());
+    public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocation method) {
+        if (authentication.get() instanceof AuthenticationToken token) {
+            if (method.getMethod().isAnnotationPresent(RequiresAdmin.class)) {
+                return new AuthorizationDecision(token.isAdmin());
+            } else {
+                return new AuthorizationDecision(true);
+            }
         }
-        return new AuthorizationDecision(false);
+        return null;
     }
 }
