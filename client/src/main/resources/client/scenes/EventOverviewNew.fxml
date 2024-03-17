@@ -37,7 +37,7 @@
             <Font size="13.0" />
          </font>
       </Text>
-      <Button focusTraversable="false" layoutX="332.0" layoutY="42.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="155.0" text="%invite_button" />
+      <Button focusTraversable="false" layoutX="332.0" layoutY="42.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="155.0" text="%invite_button" onAction="#sendInvites"/>
       <TextArea accessibleText="false" layoutX="21.0" layoutY="134.0" prefHeight="64.0" prefWidth="155.0" fx:id="participantText" />
    </children>
 </AnchorPane>
