@@ -48,6 +48,13 @@ public class Participant {
     public List<Debt> getDebtsOwedTo() {
         return debtsOwedTo;
     }
+    public static Participant getById(List<Participant> all, long id){
+        for(Participant part: all){
+            if(part.getId() == id)
+                return part;
+        }
+        return null;
+    }
 
     public Participant(String firstName, String lastName) {
         this.firstName = firstName;
