@@ -3,7 +3,6 @@ package server.api;
 import java.util.List;
 import java.util.Random;
 
-import commons.ExpenseTemp;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import commons.Expense;
 import server.database.ExpenseRepository;
 
 @RestController
-@RequestMapping("/api/events/{id}/expenses")
+@RequestMapping("/api/expenses")
 public class ExpenseController {
 
     private final Random random;
@@ -37,7 +36,7 @@ public class ExpenseController {
      * @return - all the expenses currently stored
      */
     @GetMapping(path = {"", "/"})
-    public List<ExpenseTemp> getAll() {
+    public List<Expense> getAll() {
         return repo.findAll();
     }
 
@@ -47,8 +46,8 @@ public class ExpenseController {
      * @param id - The id of the expense
      * @return - The Expense with the id specified
      */
-    @GetMapping("/{expense_id}")
-    public ResponseEntity<ExpenseTemp> getById(@PathVariable("id") long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Expense> getById(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
@@ -62,16 +61,16 @@ public class ExpenseController {
      * @return - The saved Expense
      */
     @PostMapping(path = {"", "/"})
-    public ResponseEntity<ExpenseTemp> save(@RequestBody ExpenseTemp expense) {
+    public ResponseEntity<Expense> save(@RequestBody Expense expense) {
 
-//        if (expense.getPaidBy() == null || isNullOrEmpty(expense.getPaidBy().getFirstName())
-//                || isNullOrEmpty(expense.getPaidBy().getLastName())
-//                || isNullOrEmpty(expense.getDescription())
-//                || expense.getAmount() == 0) {
-//            return ResponseEntity.badRequest().build();
-//        }
+        if (expense.getPaidBy() == null || isNullOrEmpty(expense.getPaidBy().getFirstName())
+                || isNullOrEmpty(expense.getPaidBy().getLastName())
+                || isNullOrEmpty(expense.getDescription())
+                || expense.getAmount() == 0) {
+            return ResponseEntity.badRequest().build();
+        }
 
-        ExpenseTemp saved = repo.save(expense);
+        Expense saved = repo.save(expense);
         return ResponseEntity.ok(saved);
     }
 
@@ -89,7 +88,7 @@ public class ExpenseController {
      * @return - a random Expense from the repository
      */
     @GetMapping("rnd")
-    public ResponseEntity<ExpenseTemp> getRandom() {
+    public ResponseEntity<Expense> getRandom() {
         var expenses = repo.findAll();
         var idx = random.nextInt((int) repo.count());
         return ResponseEntity.ok(expenses.get(idx));
