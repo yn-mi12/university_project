@@ -15,10 +15,7 @@
  */
 package client;
 
-import client.scenes.AddEventCtrl;
-import client.scenes.EventCtrl;
-import client.scenes.StartScreenCtrl;
-import client.scenes.ModifyEventCtrl;
+import client.scenes.*;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -47,12 +44,18 @@ public class Main extends Application {
     public static void reloadUI() {
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
         var add = FXML.load(AddEventCtrl.class, "client", "scenes", "AddEvent.fxml");
-        var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");
+        //var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");
+        var eventOverview = FXML.load(EventOverviewNewCtrl.class, "client", "scenes", "EventOverviewNew.fxml");
+        var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
+        var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
 
-        var mainCtrl = INJECTOR.getInstance(EventCtrl.class);
+        var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
         mainCtrl.initialize(primaryStage);
         mainCtrl.initShowOverview(overview);
         mainCtrl.initAdd(add);
-        mainCtrl.initModify(modify);
+        mainCtrl.initExp(addExp);
+       // mainCtrl.initModify(modify);
+        mainCtrl.initEventOverview(eventOverview);
+        mainCtrl.initInvitePage(invite);
     }
 }

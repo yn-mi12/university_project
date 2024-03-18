@@ -8,15 +8,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 import server.database.ParticipantRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class TestParticipantRepository implements ParticipantRepository {
-    @Override
-    public void flush() {
+    public final List<Participant> participants = new ArrayList<>();
+    public final List<String> calledMethods = new ArrayList<>();
 
-    }
+    private void call(String name){ calledMethods.add(name);}
+    @Override
+    public void flush() {}
 
     @Override
     public <S extends Participant> S saveAndFlush(S entity) {
@@ -49,13 +52,19 @@ public class TestParticipantRepository implements ParticipantRepository {
     }
 
     @Override
-    public Participant getById(Long aLong) {
-        return null;
+    public Participant getById(Long id) {
+        call("getById");
+        return find(id).get();
+    }
+
+    private Optional<Participant> find(Long id){
+        return participants.stream().filter(p -> p.id == id).findFirst();
     }
 
     @Override
-    public Participant getReferenceById(Long aLong) {
-        return null;
+    public Participant getReferenceById(Long id) {
+        call("getReferenceById");
+        return find(id).get();
     }
 
     @Override
@@ -95,7 +104,10 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public <S extends Participant> S save(S entity) {
-        return null;
+        call("save");
+        entity.id = (long) participants.size();
+        participants.add(entity);
+        return entity;
     }
 
     @Override
@@ -105,17 +117,19 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public Optional<Participant> findById(Long aLong) {
-        return Optional.empty();
+        return find(aLong);
     }
 
     @Override
-    public boolean existsById(Long aLong) {
-        return false;
+    public boolean existsById(Long id) {
+        call("existsById");
+        return find(id).isPresent();
     }
 
     @Override
     public List<Participant> findAll() {
-        return null;
+        calledMethods.add("findAll");
+        return participants;
     }
 
     @Override
@@ -125,7 +139,8 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public long count() {
-        return 0;
+        calledMethods.add("count");
+        return participants.size();
     }
 
     @Override
