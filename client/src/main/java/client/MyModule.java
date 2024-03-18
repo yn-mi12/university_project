@@ -15,28 +15,22 @@
  */
 package client;
 
+import client.scenes.AddExpenseCtrl;
+import client.scenes.EventOverviewNewCtrl;
+import client.scenes.StartScreenCtrl;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
 
-import client.scenes.AddEventCtrl;
-import client.scenes.EventCtrl;
-import client.scenes.EventOverviewCtrl;
-
-import client.scenes.AddQuoteCtrl;
-import client.scenes.MainCtrl;
-import client.scenes.QuoteOverviewCtrl;
+import client.scenes.SplittyCtrl;
 
 public class MyModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        binder.bind(EventCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(AddEventCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(EventOverviewCtrl.class).in(Scopes.SINGLETON);
-
-        binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(SplittyCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(EventOverviewNewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(StartScreenCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AddExpenseCtrl.class).in(Scopes.SINGLETON);
     }
 }
