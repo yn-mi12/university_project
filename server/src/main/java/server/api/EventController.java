@@ -5,10 +5,15 @@ import java.util.Random;
 
 import commons.Event;
 import commons.Person;
-import org.springframework.web.bind.annotation.*;
 import server.database.EventRepository;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/events")
@@ -43,9 +48,9 @@ public class EventController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Event> getById(@PathVariable("id") long id) {
-//        if (id < 0 || !repo.existsById(id)) {
-//            return ResponseEntity.badRequest().build();
-//        }
+        if (id < 0 || !repo.existsById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
@@ -57,9 +62,9 @@ public class EventController {
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Event> save(@RequestBody Event event) {
 
-//        if (isNullOrEmpty(event.getTitle())) {
-//            return ResponseEntity.badRequest().build();
-//        }
+        if (isNullOrEmpty(event.getTitle()) || isNullOrEmpty(event.getInviteCode())) {
+            return ResponseEntity.badRequest().build();
+        }
 
         Event saved = repo.save(event);
         return ResponseEntity.ok(saved);

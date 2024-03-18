@@ -1,30 +1,27 @@
 package client.scenes;
 
-
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-
 import commons.Event;
-
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
-public class AddEventCtrl {
+
+public class ModifyEventCtrl {
     private final ServerUtilsEvent server;
     private final EventCtrl mainCtrl;
 
     @FXML
-    private TextField title;
+    public TextField oldTitle;
+    private Event selectedEvent;
 
     @FXML
-    private Label inviteCode;
-
+    private TextField newTitle;
     @Inject
-    public AddEventCtrl(ServerUtilsEvent server, EventCtrl mainCtrl) {
+    public ModifyEventCtrl(ServerUtilsEvent server, EventCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
     }
@@ -33,10 +30,19 @@ public class AddEventCtrl {
         mainCtrl.showOverview();
     }
 
+    public Event getSelectedEvent() {
+        return selectedEvent;
+    }
+
+    public void setSelectedEvent(Event selectedEvent) {
+        this.selectedEvent = selectedEvent;
+    }
+
     public void ok() {
         try {
-            System.out.println("Add event");
-            server.addEvent(getEvent());
+            Event modifiedEvent = getSelectedEvent();
+            modifiedEvent.setTitle(newTitle.getText());
+            server.addEvent(modifiedEvent);
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -49,26 +55,9 @@ public class AddEventCtrl {
         clearFields();
         mainCtrl.showOverview();
     }
-
-    public Label getInviteCode() {
-        return inviteCode;
-    }
-
-    public void setTitleAndCode(String title, String inviteCode) {
-        this.title.setText(title);
-        this.inviteCode.setText(inviteCode);
-    }
-
-    public Event getEvent() {
-        System.out.println("Get event");
-        var title = this.title.getText();
-        return new Event(title);
-        //I deleted the inviteCode from the parameters of Event because
-        // it is not given as a parameter to the constructor.
-        //It is created inside the constructor
-    }
     private void clearFields() {
-        title.clear();
+        oldTitle.clear();
+        newTitle.clear();
     }
 
     public void keyPressed(KeyEvent e) {
@@ -83,5 +72,4 @@ public class AddEventCtrl {
                 break;
         }
     }
-
 }

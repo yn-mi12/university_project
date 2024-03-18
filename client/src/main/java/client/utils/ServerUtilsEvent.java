@@ -18,38 +18,37 @@ package client.utils;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
-import client.Config;
 import commons.Event;
-import commons.Expense;
-import commons.ExpenseTemp;
 import org.glassfish.jersey.client.ClientConfig;
 
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
-import org.jetbrains.annotations.NotNull;
 
 public class ServerUtilsEvent {
     private static final String SERVER = "http://localhost:8080/";
-//    public void getEventsTheHardWay() throws IOException, URISyntaxException {
-//        var url = new URI("http://localhost:8080/api/events").toURL();
-//        var is = url.openConnection().getInputStream();
-//        var br = new BufferedReader(new InputStreamReader(is));
-//        String line;
-//        while ((line = br.readLine()) != null) {
-//            System.out.println(line);
-//        }
-//    }
+    public void getEventsTheHardWay() throws IOException, URISyntaxException {
+        var url = new URI("http://localhost:8080/api/events").toURL();
+        var is = url.openConnection().getInputStream();
+        var br = new BufferedReader(new InputStreamReader(is));
+        String line;
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+    }
 
-//    public List<Event> getEvents() {
-//        return ClientBuilder.newClient(new ClientConfig()) //
-//                .target(SERVER).path("api/events") //
-//                .request(APPLICATION_JSON) //
-//                .accept(APPLICATION_JSON) //
-//                .get(new GenericType<>() {
-//                });
-//    }
+    public List<Event> getEvents() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/events") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+    }
 
     public Event getByID(Long id) {
         return ClientBuilder.newClient(new ClientConfig()) //
@@ -69,8 +68,9 @@ public class ServerUtilsEvent {
         System.out.println("Add event" + saved);
 
         try (FileWriter fw = new FileWriter("client/src/main/java/client/utils/events.txt", true);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter out = new PrintWriter(bw))
+        {
             out.println(saved.getId());
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -78,25 +78,14 @@ public class ServerUtilsEvent {
 
         return saved;
     }
+    public Event modifyEvent(Event event) {
+        //System.out.println("Add event" + event);
 
-    public Expense addExpense(ExpenseTemp expense, Event event) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(getServer()).path("/api/events/'+event.getId()+'/expenses") //
+                .target(SERVER).path("api/events") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(expense, APPLICATION_JSON), Expense.class);
+                .post(Entity.entity(event, APPLICATION_JSON), Event.class);
     }
 
-    //    public Event modifyEvent(Event event) {
-//        //System.out.println("Add event" + event);
-//
-//        return ClientBuilder.newClient(new ClientConfig()) //
-//                .target(SERVER).path("api/events") //
-//                .request(APPLICATION_JSON) //
-//                .accept(APPLICATION_JSON) //
-//                .post(Entity.entity(event, APPLICATION_JSON), Event.class);
-//    }
-    private @NotNull String getServer() {
-        return Config.get().getHost();
-    }
 }
