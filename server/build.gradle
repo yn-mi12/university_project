@@ -15,6 +15,7 @@ dependencies {
 
 	// NotNull & Nullable annotations
 	implementation 'org.jetbrains:annotations:24.1.0'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	runtimeOnly 'com.h2database:h2'
 	implementation project(":commons")
