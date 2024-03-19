@@ -5,7 +5,7 @@ import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
-import commons.ExpenseTemp;
+import commons.Expense;
 import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
@@ -114,7 +114,7 @@ public class AddExpenseCtrl implements Initializable {
 ////        });
 //    }
 
-    public ExpenseTemp getExpense() {
+    public Expense getExpense() {
         System.out.println("Get expense");
 //        var paidBy = this.whoPaid.getValue();
         var description = this.whatFor.getText();
@@ -122,7 +122,7 @@ public class AddExpenseCtrl implements Initializable {
         var currency = this.currency.getValue();
         var date = this.date.getValue();
         //var tags = this.tags.getText();
-        ExpenseTemp result = new ExpenseTemp(description, currency,
+        Expense result = new Expense(description, currency,
                 Double.parseDouble(amount), java.sql.Date.valueOf(date));
         System.out.println(result.toString());
         return result;

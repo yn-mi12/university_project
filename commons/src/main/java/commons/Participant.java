@@ -2,7 +2,6 @@ package commons;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,35 +18,7 @@ public class Participant {
      */
     public String email;
 
-    @ManyToMany(mappedBy = "participants")
-    private List<Event> events = new ArrayList<>();
-    @OneToMany(mappedBy = "paidBy")
-    private List<Expense> expenses = new ArrayList<>();
-    @OneToMany(mappedBy = "lender")
-    private List<Debt> debtsLendTo = new ArrayList<>();
-    @OneToMany(mappedBy = "borrower")
-    private List<Debt> debtsOwedTo = new ArrayList<>();
 
-    public void addExpense(Expense expense) {
-        expenses.add(expense);
-    }
-
-    public List<Expense> getExpenses() {
-        return expenses;
-    }
-
-    public void addDebtsLendTo(Debt debt) {
-        debtsLendTo.add(debt);
-    }
-    public List<Debt> getDebtsLendTo() {
-        return debtsLendTo;
-    }
-    public void addDebtsOwedTo(Debt debt) {
-        debtsOwedTo.add(debt);
-    }
-    public List<Debt> getDebtsOwedTo() {
-        return debtsOwedTo;
-    }
     public static Participant getById(List<Participant> all, long id){
         for(Participant part: all){
             if(part.getId() == id)
@@ -59,25 +30,16 @@ public class Participant {
     public Participant(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-        String x = firstName + lastName;
-        this.id = x.hashCode();
-        this.email = null;
     }
 
     public Participant(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
-        String x = firstName + lastName;
-        this.id = x.hashCode();
         this.email = email;
     }
 
-    /**
-     * Unused, it is here to get rid of the warning
-     */
-    public Participant() {
-
-    }
+    @SuppressWarnings("unused")
+    public Participant() {}
 
     public long getId() {
         return id;

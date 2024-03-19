@@ -11,8 +11,6 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @OneToMany(mappedBy = "tag")
-    private List<Expense> expenses;
     private String label;
     private String color;
 
@@ -36,32 +34,6 @@ public class Tag {
      */
     public long getId() {
         return id;
-    }
-
-    /**
-     * Getter for the Expenses this Tag is attached to
-     * @return - The list of Expenses
-     */
-    public List<Expense> getExpenses() {
-        return expenses;
-    }
-
-    /**
-     * Set the list of Expenses this Tag is attached to
-     * @param expenses - The new list of Expenses
-     */
-    public void setExpenses(List<Expense> expenses) {
-        this.expenses = expenses;
-    }
-
-    /**
-     * Add an Expense to the list of Expenses
-     * @param expense - The Expense to be added
-     */
-    public void addExpense(Expense expense) {
-        if(expense != null) {
-            this.expenses.add(expense);
-        }
     }
 
     /**
@@ -101,24 +73,20 @@ public class Tag {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tag tag = (Tag) o;
-        return id == tag.id && Objects.equals(expenses, tag.expenses) && Objects.equals(label, tag.label)
-                && Objects.equals(color, tag.color);
+        return id == tag.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, expenses, label, color);
+        return Objects.hash(id, label, color);
     }
 
     @Override
     public String toString() {
-        String result = "Tag{" + "id=" + id + ", expenses=";
-        if(expenses != null && !expenses.isEmpty()) {
-            for(int i = 0; i < expenses.size(); i++) {
-                result += expenses.get(i).toString() + ", ";
-            }
-        }
-        result += "label='" + label + '\'' + ", color='" + color + '\'' + '}';
-        return result;
+        return "Tag{" +
+                "id=" + id +
+                ", label='" + label + '\'' +
+                ", color='" + color + '\'' +
+                '}';
     }
 }

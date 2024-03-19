@@ -15,15 +15,12 @@ public class Event {
     private long id;
     private String title;
     private String inviteCode;
-    @ManyToMany
-    @JoinTable(
-            name = "event_participant",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "participant_id")
-    )
+    @OneToMany
     private List<Participant> participants = new ArrayList<>();
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany
     private List<Expense> expenses = new ArrayList<>();
+    @OneToMany
+    private List<Tag> tags = new ArrayList<>();
 
     /**
      * Creates an Event object
@@ -39,11 +36,6 @@ public class Event {
 
     }
 
-    public void addCreator(Participant creator){
-        this.participants.add(creator);
-//        creator should be automatically added as a participant when the event is created
-    }
-
     /**
      * Getter for the id
      * @return the id of the event
@@ -54,6 +46,7 @@ public class Event {
 
     /**
      * Setter for the id
+     * ONLY FOR TESTING
      * @param id new id
      */
     public void setId(long id) {
@@ -82,14 +75,6 @@ public class Event {
      */
     public String getInviteCode() {
         return inviteCode;
-    }
-
-    /**
-     * Setter for the invite code
-     * @param inviteCode new invite code
-     */
-    public void setInviteCode(String inviteCode) {
-        this.inviteCode = inviteCode;
     }
 
     /**
