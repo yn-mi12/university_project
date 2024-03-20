@@ -1,4 +1,3 @@
-
 package commons;
 
 import jakarta.persistence.*;
@@ -22,6 +21,9 @@ public class Event {
     @OneToMany
     private List<Tag> tags = new ArrayList<>();
 
+    @SuppressWarnings("unused")
+    public Event() {}
+
     /**
      * Creates an Event object
      * @param title the title of the Event
@@ -29,11 +31,6 @@ public class Event {
     public Event(String title) {
         this.title = title;
         this.inviteCode = UUID.randomUUID().toString();
-        //let me know if the generation of the invite code is fine like this when reviewing
-    }
-
-    public Event() {
-
     }
 
     /**
@@ -42,15 +39,6 @@ public class Event {
      */
     public long getId() {
         return id;
-    }
-
-    /**
-     * Setter for the id
-     * ONLY FOR TESTING
-     * @param id new id
-     */
-    public void setId(long id) {
-        this.id = id;
     }
 
     /**
@@ -85,6 +73,10 @@ public class Event {
         return participants;
     }
 
+    public void addParticipant(Participant participant) {
+        participants.add(participant);
+    }
+
     /**
      * Setter for the participants
      * @param participants ne participants
@@ -101,7 +93,6 @@ public class Event {
         return expenses;
     }
 
-    //I'm adding this method for the testing
     /**
      * Adds a new expense to the expense list
      * @param newExpense the expense to be added
@@ -118,6 +109,18 @@ public class Event {
         this.expenses = expenses;
     }
 
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void addTag (Tag tag) {
+        tags.add(tag);
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
     /**
      * Tests equality of two Events
      * @param o the object to be tested with
@@ -126,11 +129,13 @@ public class Event {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Event event)) return false;
-        return id == event.id && Objects.equals(title, event.title)
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return Objects.equals(title, event.title)
                 && Objects.equals(inviteCode, event.inviteCode)
                 && Objects.equals(participants, event.participants)
-                && Objects.equals(expenses, event.expenses);
+                && Objects.equals(expenses, event.expenses)
+                && Objects.equals(tags, event.tags);
     }
 
     /**
@@ -139,7 +144,7 @@ public class Event {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, inviteCode, participants, expenses);
+        return Objects.hash(title, inviteCode, participants, expenses, tags);
     }
 
     /**
@@ -154,6 +159,7 @@ public class Event {
                 ", inviteCode='" + inviteCode + '\'' +
                 ", participants=" + participants +
                 ", expenses=" + expenses +
+                ", tags=" + tags +
                 '}';
     }
 }
