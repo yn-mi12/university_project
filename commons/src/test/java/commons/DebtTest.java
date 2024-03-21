@@ -13,9 +13,9 @@ public class DebtTest {
 
     @BeforeEach
     void setUp() {
-        d1 = new Debt(new Participant("me",""), new Participant("you",""), new Expense(), 5, false, "EUR");
-        d2 = new Debt(new Participant("me",""), new Participant("you",""), new Expense(), 5, false, "EUR");
-        d3 = new Debt(new Participant("you",""), new Participant("me",""), new Expense(), 5, false, "EUR");
+        d1 = new Debt(new Participant("me",""), new Participant("you",""), 5, "EUR");
+        d2 = new Debt(new Participant("me",""), new Participant("you",""), 5, "EUR");
+        d3 = new Debt(new Participant("you",""), new Participant("me",""),5, "EUR");
     }
 
     @Test
@@ -33,11 +33,5 @@ public class DebtTest {
     public void notEqualsHashCode() {
         assertNotEquals(d1, d3);
         assertNotEquals(d1.hashCode(), d3.hashCode());
-    }
-
-    @Test
-    public void settleDebt() {
-        d1.setSettled(true);
-        assertTrue(d1.isSettled());
     }
 }

@@ -14,42 +14,22 @@ class EventTest {
     private Event event;
     private Event event2;
     private Event event3;
-    private Participant participant;
-    private List<Participant> participantList;
-    private Expense expense;
-    private List<Expense> expenseList;
+    private final Participant p = new Participant("a", "b");
+    private final List<Participant> participantList = List.of(p);
+    private final Expense e = new Expense("food", p,"$", 20, Date.valueOf(LocalDate.now()));
+    private final List<Expense> expenseList = List.of(e);
 
     @BeforeEach
     void setUp(){
         event = new Event("Event1");
         event2 = new Event("Event2");
         event3 = new Event("Event2");
-        participant = new Participant("a", "b");
-        participantList = new ArrayList<>();
-        participantList.add(participant);
-        expenseList = new ArrayList<>();
-        expense = new Expense("food", "$", participant, 20, Date.valueOf(LocalDate.now()));
-        expenseList.add(expense);
-
-    }
-
-
-    @Test
-    void addCreator() {
-        event.addCreator(participant);
-        assertEquals(event.getParticipants(), participantList);
     }
 
     @Test
     void getId() {
         long id = event.getId();
         assertEquals(id, event.getId());
-    }
-
-    @Test
-    void setId() {
-        event.setId(2);
-        assertEquals(2, event.getId());
     }
 
     @Test
@@ -70,26 +50,20 @@ class EventTest {
     }
 
     @Test
-    void setInviteCode() {
-        event.setInviteCode("1234");
-        assertEquals("1234", event.getInviteCode());
-    }
-
-    @Test
-    void getParticipants() {
-        event.addCreator(participant);
-        assertEquals(participantList, event.getParticipants());
-    }
-
-    @Test
     void setParticipants() {
         event.setParticipants(participantList);
         assertEquals(participantList, event.getParticipants());
     }
 
     @Test
+    void getParticipants() {
+        event.addParticipant(p);
+        assertEquals(List.of(p), event.getParticipants());
+    }
+
+    @Test
     void getExpenses() {
-        event.addExpense(expense);
+        event.addExpense(e);
         assertEquals(expenseList, event.getExpenses());
     }
 
@@ -102,7 +76,7 @@ class EventTest {
     @Test
     void testEquals() {
         assertNotEquals(event, event2);
-        assertEquals(event, event);
+        assertNotEquals(new Event("a"), new Event("a"));
         assertNotEquals(event2, event3);
     }
 
@@ -114,6 +88,6 @@ class EventTest {
     @Test
     void testToString() {
         String inviteCode = event.getInviteCode();
-        assertEquals("Event{id=0, title='Event1', inviteCode='"+ inviteCode +"', participants=[], expenses=[]}", event.toString());
+        assertEquals("Event{id=0, title='Event1', inviteCode='"+ inviteCode +"', participants=[], expenses=[], tags=[]}", event.toString());
     }
 }
