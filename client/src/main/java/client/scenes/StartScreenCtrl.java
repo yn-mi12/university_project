@@ -57,8 +57,10 @@ public class StartScreenCtrl implements Initializable {
         eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                String id = eventList.getSelectionModel().getSelectedItem().split(": ")[0];
-                viewPastEvent(Long.valueOf(id));
+                if(eventList.getSelectionModel().getSelectedItem() != null) {
+                    String id = eventList.getSelectionModel().getSelectedItem().split(": ")[0];
+                    viewPastEvent(Long.valueOf(id));
+                }
             }
         });
     }
