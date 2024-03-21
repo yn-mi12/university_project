@@ -11,6 +11,8 @@ build/
 /coverage/*
 **/*.swp
 
+config.yml
+
 ### STS ###
 .apt_generated
 .classpath
