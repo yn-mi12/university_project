@@ -13,11 +13,11 @@ public class Event {
     private long id;
     private String title;
     private String inviteCode;
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expenses = new ArrayList<>();
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags = new ArrayList<>();
 
     @SuppressWarnings("unused")
