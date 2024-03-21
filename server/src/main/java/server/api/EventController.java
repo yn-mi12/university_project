@@ -42,9 +42,9 @@ public class EventController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Event> getById(@PathVariable("id") long id) {
-//        if (id < 0 || !repo.existsById(id)) {
-//            return ResponseEntity.badRequest().build();
-//        }
+        if (id < 0 || !repo.existsById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
@@ -55,10 +55,9 @@ public class EventController {
      */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Event> save(@RequestBody Event event) {
-
-//        if (isNullOrEmpty(event.getTitle())) {
-//            return ResponseEntity.badRequest().build();
-//        }
+        if (isNullOrEmpty(event.getTitle())) {
+            return ResponseEntity.badRequest().build();
+        }
 
         Event saved = repo.save(event);
         return ResponseEntity.ok(saved);
