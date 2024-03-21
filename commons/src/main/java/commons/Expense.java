@@ -29,6 +29,14 @@ public class Expense {
         this.date = date;
     }
 
+    // TO BE DELETED, some @Dan controllers dont work otherwise
+    public Expense(String description, String currency, double amount, Date date) {
+        this.description = description;
+        this.currency = currency;
+        this.amount = amount;
+        this.date = date;
+    }
+
     public Long getId() {
         return id;
     }
