@@ -14,6 +14,9 @@ public class Tag {
     private String label;
     private String color;
 
+    @SuppressWarnings("unused")
+    public Tag() {}
+
     /**
      * The constructor for the Tag class
      * @param label - The label of the Tag
@@ -22,10 +25,6 @@ public class Tag {
     public Tag(String label, String color) {
         this.label = label;
         this.color = color;
-    }
-
-    public Tag() {
-        // For Object mapping
     }
 
     /**
@@ -68,17 +67,19 @@ public class Tag {
         this.color = color;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tag tag = (Tag) o;
-        return id == tag.id;
+        return Objects.equals(label, tag.label)
+                && Objects.equals(color, tag.color);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, label, color);
+        return Objects.hash(label, color);
     }
 
     @Override
