@@ -1,7 +1,5 @@
 package client.scenes;
 
-import client.Config;
-import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
@@ -89,16 +87,7 @@ public class AddExpenseCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        language.getItems().addAll(Config.get().getSupportedLocales().stream().map(Config.SupportedLocale::getName)
-                .toList());
-        language.setValue(Config.get().getCurrentLocaleName());
-        language.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                Config.get().setCurrentLocale(newVal);
-                Config.get().save();
-                Main.reloadUI();
-            }
-        }));
+        // Removed this because we don't need to have language switching in the Expense overview
     }
 
 //    private void retrieveCurrencies() {

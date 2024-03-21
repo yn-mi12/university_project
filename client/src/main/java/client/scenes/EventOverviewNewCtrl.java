@@ -84,9 +84,8 @@ public class EventOverviewNewCtrl implements Initializable {
             if (newVal != null) {
                 Config.get().setCurrentLocale(newVal);
                 Config.get().save();
-                Main.reloadUI();
-                //when the language is changed, it goes to the primary scene,
-                // but I don't know how to fix it, so I'm leaving it like this for now
+                Main.reloadUIEvent(event);
+                controller.showEventOverview(event);
             }
         }));
 
