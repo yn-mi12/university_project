@@ -42,7 +42,7 @@ public class SplittyCtrl {
     }
     public void initExp(Pair<AddExpenseCtrl, Parent> addExp) {
         this.addExpenseCtrl = addExp.getKey();
-        this. expense= new Scene(addExp.getValue());
+        this.expense = new Scene(addExp.getValue());
     }
 
 //    public void initModify(Pair<ModifyEventCtrl, Parent> modify) {

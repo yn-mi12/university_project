@@ -24,7 +24,7 @@ import java.util.Scanner;
 public class StartScreenCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
-    private final SplittyCtrl evntCtrl;
+    private final SplittyCtrl eventCtrl;
     @FXML
     private ListView<String> eventList;
     @FXML
@@ -38,7 +38,7 @@ public class StartScreenCtrl implements Initializable {
     @Inject
     public StartScreenCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
         this.server = server;
-        this.evntCtrl = mainCtrl;
+        this.eventCtrl = mainCtrl;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class StartScreenCtrl implements Initializable {
     public void createEvent() {
         var title = this.titleField.getText();
         clearFields();
-        evntCtrl.showAdd(title);
+        eventCtrl.showAdd(title);
     }
 
     public void viewEvent() {
@@ -116,7 +116,7 @@ public class StartScreenCtrl implements Initializable {
         String eventId = eventIdTitle.split(":")[0];
 //        this.pickedEventId = Long.parseLong(eventId);
         Event event = server.getByID(Long.parseLong(eventId));
-        evntCtrl.showEventOverview(event);
+        eventCtrl.showEventOverview(event);
     }
 
     public Event getEvent(){

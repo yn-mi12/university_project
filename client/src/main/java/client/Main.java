@@ -42,9 +42,14 @@ public class Main extends Application {
      * Reloads the UI with new resource definitions, like language.
      */
     public static void reloadUI() {
+
+//        var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
+//
+//        mainCtrl.initExp(addExp);
+
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
         var add = FXML.load(AddEventCtrl.class, "client", "scenes", "AddEvent.fxml");
-        //var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");
+//        var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");
         var eventOverview = FXML.load(EventOverviewNewCtrl.class, "client", "scenes", "EventOverview.fxml");
         var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
         var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
@@ -53,9 +58,10 @@ public class Main extends Application {
         mainCtrl.initialize(primaryStage);
         mainCtrl.initShowOverview(overview);
         mainCtrl.initAdd(add);
-        mainCtrl.initExp(addExp);
-       // mainCtrl.initModify(modify);
+//        mainCtrl.initModify(modify);
         mainCtrl.initEventOverview(eventOverview);
         mainCtrl.initInvitePage(invite);
+        mainCtrl.initExp(addExp);
+
     }
 }
