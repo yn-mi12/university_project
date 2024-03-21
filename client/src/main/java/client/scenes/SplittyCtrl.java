@@ -31,7 +31,9 @@ public class SplittyCtrl {
     public void initShowOverview(Pair<StartScreenCtrl, Parent> overview) {
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
+    }
 
+    public void display() {
         showOverview();
         primaryStage.show();
     }
@@ -42,7 +44,7 @@ public class SplittyCtrl {
     }
     public void initExp(Pair<AddExpenseCtrl, Parent> addExp) {
         this.addExpenseCtrl = addExp.getKey();
-        this. expense= new Scene(addExp.getValue());
+        this.expense = new Scene(addExp.getValue());
     }
 
 //    public void initModify(Pair<ModifyEventCtrl, Parent> modify) {
@@ -112,5 +114,4 @@ public class SplittyCtrl {
 
         expense.setOnKeyPressed(e -> addExpenseCtrl.keyPressed(e));
     }
-
 }
