@@ -42,11 +42,6 @@ public class Main extends Application {
      * Reloads the UI with new resource definitions, like language.
      */
     public static void reloadUI() {
-
-//        var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
-//
-//        mainCtrl.initExp(addExp);
-
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
         var add = FXML.load(AddEventCtrl.class, "client", "scenes", "AddEvent.fxml");
 //        var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");
