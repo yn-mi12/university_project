@@ -1,5 +1,0 @@
-host: http://localhost:8080/
-current-locale: Nederlands
-supported-locales:
-- {name: English, code: en}
-- {name: Nederlands, code: nl}

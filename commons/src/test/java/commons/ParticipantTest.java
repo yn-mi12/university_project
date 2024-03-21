@@ -14,6 +14,7 @@ class ParticipantTest {
         assertEquals("c",x.getEmail());
     }
 
+    @Test
     void checkConstructorNoEmail() {
         Participant x = new Participant("a","b");
         assertEquals("a",x.getFirstName());
@@ -26,13 +27,6 @@ class ParticipantTest {
         Participant x = new Participant("a","b");
         Participant y = new Participant("a","b");
         assertEquals(x.getId(),y.getId());
-    }
-
-    @Test
-    void setId() {
-        Participant x = new Participant("a","b");
-        x.setId(1);
-        assertEquals(1,x.getId());
     }
 
     @Test
@@ -83,10 +77,6 @@ class ParticipantTest {
     @Test
     void testToString() {
         Participant x = new Participant("a","b");
-        assertEquals("Participant{" +
-                "id=" + x.getId() +
-                ", firstName='" + x.getFirstName() + '\'' +
-                ", lastName='" + x.getLastName() + '\'' +
-                '}',x.toString());
+        assertEquals("Participant{id=0, firstName='a', lastName='b', email='null'}", x.toString());
     }
 }

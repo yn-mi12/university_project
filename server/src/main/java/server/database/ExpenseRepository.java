@@ -1,8 +1,8 @@
 package server.database;
 
-import commons.ExpenseTemp;
+import commons.Expense;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface ExpenseRepository extends JpaRepository<ExpenseTemp, Long> {
+public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 }

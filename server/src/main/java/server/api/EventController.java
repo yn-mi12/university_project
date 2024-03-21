@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 
 import commons.Event;
-import commons.Person;
 import org.springframework.web.bind.annotation.*;
 import server.database.EventRepository;
 
@@ -43,9 +42,9 @@ public class EventController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Event> getById(@PathVariable("id") long id) {
-//        if (id < 0 || !repo.existsById(id)) {
-//            return ResponseEntity.badRequest().build();
-//        }
+        if (id < 0 || !repo.existsById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
@@ -56,10 +55,9 @@ public class EventController {
      */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Event> save(@RequestBody Event event) {
-
-//        if (isNullOrEmpty(event.getTitle())) {
-//            return ResponseEntity.badRequest().build();
-//        }
+        if (isNullOrEmpty(event.getTitle())) {
+            return ResponseEntity.badRequest().build();
+        }
 
         Event saved = repo.save(event);
         return ResponseEntity.ok(saved);
@@ -71,13 +69,6 @@ public class EventController {
      * @return - True iff the string is neither null nor empty. False otherwise.
      */
     private static boolean isNullOrEmpty(String s) { return s == null || s.isEmpty(); }
-
-    /**
-     * Checks if the provided list of Persons is null or empty
-     * @param e - The list to be checked
-     * @return - True iff the list is neither null nor empty. False otherwise.
-     */
-    private static boolean isNullOrEmpty(List<Person> e) { return e == null || e.isEmpty(); }
 
     /**
      * Returns a random Event from the repository

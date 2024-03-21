@@ -22,7 +22,6 @@ import java.io.*;
 import client.Config;
 import commons.Event;
 import commons.Expense;
-import commons.ExpenseTemp;
 import org.glassfish.jersey.client.ClientConfig;
 
 import jakarta.ws.rs.client.ClientBuilder;
@@ -79,7 +78,7 @@ public class ServerUtilsEvent {
         return saved;
     }
 
-    public Expense addExpense(ExpenseTemp expense, Event event) {
+    public Expense addExpense(Expense expense, Event event) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(getServer()).path("/api/events/'+event.getId()+'/expenses") //
                 .request(APPLICATION_JSON) //

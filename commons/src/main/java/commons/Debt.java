@@ -1,7 +1,6 @@
 package commons;
 
 import jakarta.persistence.*;
-
 import java.util.Objects;
 
 
@@ -12,43 +11,30 @@ public class Debt {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "lender_id", nullable = false)
+    @ManyToOne
     private Participant lender;
     /**
      * borrower needs to pay to lender.
      */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "borrower_id", nullable = false)
+    @ManyToOne
     private Participant borrower;
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "expense_id", nullable = false)
-    private Expense source;
-
     private double amount;
-    private boolean isSettled;
     private String currency;
 
-
     @SuppressWarnings("unused")
-    public Debt() {
-    }
+    public Debt() {}
 
     /**
      * creates a new Debt object.
      * @param lender - lends the money
      * @param borrower - owes the money
-     * @param source - the source of Debt
      * @param amount - amount of money
      * @param currency - type of currency
-     * @param isSettled - is the debt settled
      */
-    public Debt(Participant lender, Participant borrower, Expense source, double amount, boolean isSettled, String currency) {
+    public Debt(Participant lender, Participant borrower, double amount, String currency) {
         this.lender = lender;
         this.borrower = borrower;
-        this.source = source;
         this.amount = amount;
-        this.isSettled = isSettled;
         this.currency = currency;
     }
 
@@ -113,21 +99,6 @@ public class Debt {
     }
 
     /**
-     * @return true if the debt is already settled
-     */
-    public boolean isSettled() {
-        return isSettled;
-    }
-
-    /**
-     * decide if the debt is settled or unsettled.
-     * @param settled - specified option
-     */
-    public void setSettled(boolean settled) {
-        this.isSettled = settled;
-    }
-
-    /**
      * checks if two objects have the same properties.
      * @param o - the object we are comparing with
      * @return true if the objects are equal
@@ -137,11 +108,9 @@ public class Debt {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Debt debt = (Debt) o;
-        return id == debt.id && Double.compare(amount, debt.amount) == 0
-                && isSettled == debt.isSettled
+        return Double.compare(amount, debt.amount) == 0
                 && Objects.equals(lender, debt.lender)
                 && Objects.equals(borrower, debt.borrower)
-                && Objects.equals(source, debt.source)
                 && Objects.equals(currency, debt.currency);
     }
 
@@ -151,7 +120,7 @@ public class Debt {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, lender, borrower, source, amount, isSettled, currency);
+        return Objects.hash(lender, borrower, amount, currency);
     }
 
     /**
@@ -163,9 +132,7 @@ public class Debt {
                 "id=" + id +
                 ", lender=" + lender +
                 ", borrower=" + borrower +
-                ", source=" + source +
                 ", amount=" + amount +
-                ", isSettled=" + isSettled +
                 ", currency='" + currency + '\'' +
                 '}';
     }

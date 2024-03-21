@@ -1,8 +1,6 @@
-
 package commons;
 
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,15 +13,15 @@ public class Event {
     private long id;
     private String title;
     private String inviteCode;
-    @ManyToMany
-    @JoinTable(
-            name = "event_participant",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "participant_id")
-    )
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expenses = new ArrayList<>();
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
+    private List<Tag> tags = new ArrayList<>();
+
+    @SuppressWarnings("unused")
+    public Event() {}
 
     /**
      * Creates an Event object
@@ -32,16 +30,6 @@ public class Event {
     public Event(String title) {
         this.title = title;
         this.inviteCode = UUID.randomUUID().toString();
-        //let me know if the generation of the invite code is fine like this when reviewing
-    }
-
-    public Event() {
-
-    }
-
-    public void addCreator(Participant creator){
-        this.participants.add(creator);
-//        creator should be automatically added as a participant when the event is created
     }
 
     /**
@@ -50,14 +38,6 @@ public class Event {
      */
     public long getId() {
         return id;
-    }
-
-    /**
-     * Setter for the id
-     * @param id new id
-     */
-    public void setId(long id) {
-        this.id = id;
     }
 
     /**
@@ -85,19 +65,15 @@ public class Event {
     }
 
     /**
-     * Setter for the invite code
-     * @param inviteCode new invite code
-     */
-    public void setInviteCode(String inviteCode) {
-        this.inviteCode = inviteCode;
-    }
-
-    /**
      * Getter for the participants
      * @return the participants
      */
     public List<Participant> getParticipants() {
         return participants;
+    }
+
+    public void addParticipant(Participant participant) {
+        participants.add(participant);
     }
 
     /**
@@ -116,7 +92,6 @@ public class Event {
         return expenses;
     }
 
-    //I'm adding this method for the testing
     /**
      * Adds a new expense to the expense list
      * @param newExpense the expense to be added
@@ -133,6 +108,18 @@ public class Event {
         this.expenses = expenses;
     }
 
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void addTag (Tag tag) {
+        tags.add(tag);
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
     /**
      * Tests equality of two Events
      * @param o the object to be tested with
@@ -141,11 +128,13 @@ public class Event {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Event event)) return false;
-        return id == event.id && Objects.equals(title, event.title)
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return Objects.equals(title, event.title)
                 && Objects.equals(inviteCode, event.inviteCode)
                 && Objects.equals(participants, event.participants)
-                && Objects.equals(expenses, event.expenses);
+                && Objects.equals(expenses, event.expenses)
+                && Objects.equals(tags, event.tags);
     }
 
     /**
@@ -154,7 +143,7 @@ public class Event {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, inviteCode, participants, expenses);
+        return Objects.hash(title, inviteCode, participants, expenses, tags);
     }
 
     /**
@@ -169,6 +158,7 @@ public class Event {
                 ", inviteCode='" + inviteCode + '\'' +
                 ", participants=" + participants +
                 ", expenses=" + expenses +
+                ", tags=" + tags +
                 '}';
     }
 }
