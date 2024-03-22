@@ -23,6 +23,8 @@ public class SplittyCtrl {
     private Scene invite;
     private Scene expense;
     private AddExpenseCtrl addExpenseCtrl;
+    private EditEventTitleCtrl editTitleCtrl;
+    private Scene editTitle;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -60,6 +62,11 @@ public class SplittyCtrl {
     public void initInvitePage(Pair<InvitationCtrl, Parent> invite) {
         this.inviteCtrl = invite.getKey();
         this.invite = new Scene(invite.getValue());
+    }
+
+    public void initEditTitle(Pair<EditEventTitleCtrl, Parent> editEventTitle) {
+        this.editTitleCtrl = editEventTitle.getKey();
+        this.editTitle = new Scene(editEventTitle.getValue());
     }
 
     public void showOverview() {
@@ -108,10 +115,18 @@ public class SplittyCtrl {
         primaryStage.show();
     }
 
+
     public void showExpOverview() {
         primaryStage.setTitle("Add/Edit expense");
         primaryStage.setScene(expense);
 
         expense.setOnKeyPressed(e -> addExpenseCtrl.keyPressed(e));
+    }
+
+
+    public void showEditTitle(Event event) {
+        primaryStage.setTitle("Edit Title");
+        primaryStage.setScene(editTitle);
+        editTitle.setOnKeyPressed(e -> editTitleCtrl.keyPressed(e));
     }
 }
