@@ -96,6 +96,18 @@ class EventControllerTest {
         assertTrue(repo.events.contains(x3));
     }
 
+    @Test
+    void updateTitle() {
+        Event x1 = new Event("Event 1");
+        Event x2 = new Event("Event 2");
+        Event x3 = new Event("Event 3");
+        eventc.save(x1);
+        eventc.save(x2);
+        eventc.save(x3);
+        var actual = eventc.updateTitle(eventc.getAll().get(0).getId(),"New Event");
+        assertEquals("New Event",eventc.getAll().get(0).getTitle());
+    }
+
     @SuppressWarnings("serial")
     public class MyRandom extends Random {
 
