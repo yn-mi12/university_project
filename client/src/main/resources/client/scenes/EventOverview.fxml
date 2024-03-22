@@ -60,5 +60,6 @@
             </Tab>
         </tabs>
       </TabPane>
+      <Button layoutX="218.0" layoutY="42.0" mnemonicParsing="false" onAction="#editTitle" prefHeight="25.0" prefWidth="106.0" text="%editTitle" focusTraversable="false"/>
    </children>
 </AnchorPane>

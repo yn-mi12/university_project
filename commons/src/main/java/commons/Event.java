@@ -161,4 +161,8 @@ public class Event {
                 ", tags=" + tags +
                 '}';
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }

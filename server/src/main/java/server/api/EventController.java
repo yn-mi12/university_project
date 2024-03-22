@@ -63,6 +63,17 @@ public class EventController {
         return ResponseEntity.ok(saved);
     }
 
+    @PutMapping("/{id}/title")
+    public ResponseEntity<Event> updateTitle(@PathVariable Long id, @RequestBody String newTitle) {
+        Event event = repo.findById(id).orElse(null);
+        if (event == null) {
+            return ResponseEntity.notFound().build();
+        }
+        event.setTitle(newTitle);
+        Event saved = repo.save(event);
+        return ResponseEntity.ok(saved);
+    }
+
     /**
      * Checks if the provided string is null or empty
      * @param s - The string to be checked
@@ -80,4 +91,20 @@ public class EventController {
         var idx = random.nextInt((int) repo.count());
         return ResponseEntity.ok(events.get(idx));
     }
+
+    /**
+     * Deletes Event by a specific id
+     * @param id - the id of the deleted event
+     * @return - the deleted event
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Event> deleteById(@PathVariable("id") long id){
+        if (id < 0 || !repo.existsById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+        Event x = repo.findById(id).get();
+        repo.deleteById(id);
+        return ResponseEntity.ok(x);
+    }
+
 }

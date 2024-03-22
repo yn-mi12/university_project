@@ -49,6 +49,7 @@ public class Main extends Application {
         var eventOverview = FXML.load(EventOverviewNewCtrl.class, "client", "scenes", "EventOverview.fxml");
         var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
         var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
+        var editTitle = FXML.load(EditEventTitleCtrl.class,"client", "scenes", "EditTitle.fxml");
 
         var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
         mainCtrl.initialize(primaryStage);
@@ -58,6 +59,7 @@ public class Main extends Application {
         mainCtrl.initEventOverview(eventOverview);
         mainCtrl.initInvitePage(invite);
         mainCtrl.initExp(addExp);
+        mainCtrl.initEditTitle(editTitle);
 
         mainCtrl.display();
     }
@@ -73,6 +75,7 @@ public class Main extends Application {
         var eventOverview = FXML.load(EventOverviewNewCtrl.class, "client", "scenes", "EventOverview.fxml");
         var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
         var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
+        var editTitle = FXML.load(EditEventTitleCtrl.class, "client", "scenes", "EditTitle.fxml");
 
         var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
         mainCtrl.initialize(primaryStage);
@@ -82,6 +85,7 @@ public class Main extends Application {
         mainCtrl.initEventOverview(eventOverview);
         mainCtrl.initInvitePage(invite);
         mainCtrl.initExp(addExp);
+        mainCtrl.initEditTitle(editTitle);
 
         mainCtrl.showEventOverview(selectedEvent);
     }
