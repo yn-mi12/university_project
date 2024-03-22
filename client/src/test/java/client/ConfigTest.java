@@ -5,6 +5,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,12 +17,34 @@ public class ConfigTest {
         Config config = Config.get();
         assertEquals(config.getHost(), "http://localhost:8080/");
         config.setHost("test");
-        assertEquals(config.getCurrentLocaleName(), "English");
+        config.setCurrentLocale("English");
+        Set<String> ids = new HashSet<>();
+        ids.add("1");
+        config.addPastID("1");
+        config.addPastID("2");
+        config.removePastID("2");
+
         config.save();
         config = Config.reload();
+
         assertEquals(config.getHost(), "test");
+        assertEquals(config.getCurrentLocaleName(), "English");
+        assertEquals(config.getPastIDs(), ids);
         config.setHost("http://localhost:8080/");
         config.save();
+    }
+
+    @Test
+    public void supportedLocaleTest() {
+        Config.SupportedLocale sl = new Config.SupportedLocale("English", "en");
+        assertEquals("English", sl.getName());
+        assertEquals("en", sl.getCode());
+
+        sl.setName("Nederlands");
+        sl.setCode("nl");
+
+        assertEquals("Nederlands", sl.getName());
+        assertEquals("nl", sl.getCode());
     }
 
     @AfterAll
