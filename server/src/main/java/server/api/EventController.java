@@ -63,6 +63,17 @@ public class EventController {
         return ResponseEntity.ok(saved);
     }
 
+    @PutMapping("/{id}/title")
+    public ResponseEntity<Event> updateTitle(@PathVariable Long id, @RequestBody String newTitle) {
+        Event event = repo.findById(id).orElse(null);
+        if (event == null) {
+            return ResponseEntity.notFound().build();
+        }
+        event.setTitle(newTitle);
+        Event saved = repo.save(event);
+        return ResponseEntity.ok(saved);
+    }
+
     /**
      * Checks if the provided string is null or empty
      * @param s - The string to be checked

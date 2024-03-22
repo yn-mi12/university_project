@@ -114,4 +114,8 @@ public class EventOverviewNewCtrl implements Initializable {
     public void sendInvites() {
         controller.showInvitePage(event);
     }
+
+    public void editTitle(){
+        controller.showEditTitle(event);
+    }
 }
