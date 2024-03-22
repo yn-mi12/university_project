@@ -80,4 +80,20 @@ public class EventController {
         var idx = random.nextInt((int) repo.count());
         return ResponseEntity.ok(events.get(idx));
     }
+
+    /**
+     * Deletes Event by a specific id
+     * @param id - the id of the deleted event
+     * @return - the deleted event
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Event> deleteById(@PathVariable("id") long id){
+        if (id < 0 || !repo.existsById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+        Event x = repo.findById(id).get();
+        repo.deleteById(id);
+        return ResponseEntity.ok(x);
+    }
+
 }

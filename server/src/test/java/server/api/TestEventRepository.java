@@ -1,6 +1,7 @@
 package server.api;
 
 import commons.Event;
+import commons.Participant;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,11 +9,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 import server.database.EventRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class TestEventRepository implements EventRepository {
+
+    public final List<Event> events = new ArrayList<>();
+    public final List<String> calledMethods = new ArrayList<>();
+
+    private void call(String name){calledMethods.add(name);}
     @Override
     public void flush() {
 
@@ -95,7 +102,10 @@ public class TestEventRepository implements EventRepository {
 
     @Override
     public <S extends Event> S save(S entity) {
-        return null;
+        call("save");
+        entity.setId(events.size());
+        events.add(entity);
+        return entity;
     }
 
     @Override
@@ -103,19 +113,26 @@ public class TestEventRepository implements EventRepository {
         return null;
     }
 
+    private Optional<Event> find(Long id){
+        return events.stream().filter(e -> e.getId() == id).findFirst();
+    }
+
     @Override
     public Optional<Event> findById(Long aLong) {
-        return Optional.empty();
+        call("findById");
+        return find(aLong);
     }
 
     @Override
     public boolean existsById(Long aLong) {
-        return false;
+        call("existsById");
+        return find(aLong).isPresent();
     }
 
     @Override
     public List<Event> findAll() {
-        return null;
+        call("findAll");
+        return events;
     }
 
     @Override
@@ -125,17 +142,18 @@ public class TestEventRepository implements EventRepository {
 
     @Override
     public long count() {
-        return 0;
+        call("count");
+        return events.size();
     }
 
     @Override
     public void deleteById(Long aLong) {
-
+        if(existsById(aLong)) events.remove(find(aLong));
     }
 
     @Override
     public void delete(Event entity) {
-
+        events.remove(entity);
     }
 
     @Override
@@ -150,7 +168,7 @@ public class TestEventRepository implements EventRepository {
 
     @Override
     public void deleteAll() {
-
+        events.clear();
     }
 
     @Override

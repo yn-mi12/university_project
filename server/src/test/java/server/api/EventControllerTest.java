@@ -37,6 +37,10 @@ class EventControllerTest {
     void getRandom() {
     }
 
+    @Test
+    void deleteById() {
+    }
+
     @SuppressWarnings("serial")
     public class MyRandom extends Random {
 
@@ -44,6 +48,7 @@ class EventControllerTest {
 
         /**
          * Method for manipulating the next instance in the Random function
+         *
          * @param bound the upper bound (exclusive).  Must be positive.
          * @return the next random position
          */
@@ -52,4 +57,5 @@ class EventControllerTest {
             wasCalled = true;
             return nextInt;
         }
+    }
 }
