@@ -116,6 +116,13 @@ public class TestEventRepository implements EventRepository {
     private Optional<Event> find(Long id){
         return events.stream().filter(e -> e.getId() == id).findFirst();
     }
+    private Event findI(Long id){
+        for(var x: events)
+        {
+            if(x.getId() == id) return x;
+        }
+        return null;
+    }
 
     @Override
     public Optional<Event> findById(Long aLong) {
@@ -148,7 +155,8 @@ public class TestEventRepository implements EventRepository {
 
     @Override
     public void deleteById(Long aLong) {
-        if(existsById(aLong)) events.remove(find(aLong));
+        call("deleteById");
+        events.remove(findI(aLong));
     }
 
     @Override
