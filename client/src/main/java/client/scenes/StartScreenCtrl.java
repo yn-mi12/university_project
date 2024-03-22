@@ -12,9 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +82,7 @@ public class StartScreenCtrl implements Initializable {
     public void refresh() {
         List<Long> ids = new ArrayList<>();
         File eventIDs = new File("client/src/main/java/client/utils/events.txt");
+
         if(eventIDs.exists()) {
             try {
                 Scanner idScanner = new Scanner(eventIDs);
@@ -96,10 +95,29 @@ public class StartScreenCtrl implements Initializable {
             }
         }
 
+        List<Long> validIDs = new ArrayList<>();
         List<Event> events = new ArrayList<>();
         for(Long id : ids) {
-            events.add(server.getByID(id));
+            Event e = server.getByID(id);
+            if(e != null) {
+                events.add(e);
+                validIDs.add(id);
+            }
         }
+
+        // Removes the ids that do not correspond to an event in the database
+        if(!validIDs.equals(ids)) {
+            try (FileWriter fw = new FileWriter("client/src/main/java/client/utils/events.txt", false);
+                 BufferedWriter bw = new BufferedWriter(fw);
+                 PrintWriter out = new PrintWriter(bw)) {
+                 for(Long l : validIDs) {
+                     out.println(l);
+                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         List<String> titles = new ArrayList<>();
         for(Event e : events) {
             titles.add(e.getId() + ": " + e.getTitle());
