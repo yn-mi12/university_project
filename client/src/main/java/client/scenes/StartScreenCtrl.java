@@ -14,10 +14,7 @@ import javafx.scene.control.*;
 
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Scanner;
+import java.util.*;
 
 public class StartScreenCtrl implements Initializable {
 
@@ -80,50 +77,33 @@ public class StartScreenCtrl implements Initializable {
     }
 
     public void refresh() {
-        List<Long> ids = new ArrayList<>();
-        File eventIDs = new File("client/src/main/java/client/utils/events.txt");
+        Set<String> ids = Config.get().getPastIDs();
 
-        if(eventIDs.exists()) {
-            try {
-                Scanner idScanner = new Scanner(eventIDs);
-                idScanner.useDelimiter("\r?\n");
-                while(idScanner.hasNext()) {
-                    ids.add(idScanner.nextLong());
+        if(!ids.isEmpty()) {
+
+            Set<String> removedIDs = new HashSet<>();
+            List<Event> events = new ArrayList<>();
+            for (String id : ids) {
+                Event e = server.getByID(Long.valueOf(id));
+                if (e != null) {
+                    events.add(e);
+                } else {
+                    removedIDs.add(id);
                 }
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
             }
-        }
 
-        List<Long> validIDs = new ArrayList<>();
-        List<Event> events = new ArrayList<>();
-        for(Long id : ids) {
-            Event e = server.getByID(id);
-            if(e != null) {
-                events.add(e);
-                validIDs.add(id);
+            // Removes the ids that do not correspond to an event in the database
+            for(String id : removedIDs)
+                Config.get().removePastID(id);
+
+            Config.get().save();
+            List<String> titles = new ArrayList<>();
+            for (Event e : events) {
+                titles.add(e.getId() + ": " + e.getTitle());
             }
-        }
 
-        // Removes the ids that do not correspond to an event in the database
-        if(!validIDs.equals(ids)) {
-            try (FileWriter fw = new FileWriter("client/src/main/java/client/utils/events.txt", false);
-                 BufferedWriter bw = new BufferedWriter(fw);
-                 PrintWriter out = new PrintWriter(bw)) {
-                 for(Long l : validIDs) {
-                     out.println(l);
-                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            eventList.setItems(FXCollections.observableList(titles));
         }
-
-        List<String> titles = new ArrayList<>();
-        for(Event e : events) {
-            titles.add(e.getId() + ": " + e.getTitle());
-        }
-
-        eventList.setItems(FXCollections.observableList(titles));
     }
 
     private void clearFields() {

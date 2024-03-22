@@ -74,13 +74,7 @@ public class ServerUtilsEvent {
                 .post(Entity.entity(event, APPLICATION_JSON), Event.class);
         System.out.println("Add event" + saved);
 
-        try (FileWriter fw = new FileWriter("client/src/main/java/client/utils/events.txt", true);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
-            out.println(saved.getId());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Config.get().addPastID(String.valueOf(saved.getId()));
 
         return saved;
     }

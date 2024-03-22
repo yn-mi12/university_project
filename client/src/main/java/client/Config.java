@@ -44,6 +44,34 @@ public final class Config {
     @Setting("supported-locales")
     private Set<SupportedLocale> supportedLocales;
 
+    @Setting("past-ids")
+    private Set<String> pastIDs;
+
+    /**
+     * Get the ids of the events the client has previously viewed
+     * @return Read only list of the ids
+     */
+    public @UnmodifiableView @NotNull Set<String> getPastIDs() {
+        return Collections.unmodifiableSet(pastIDs);
+    }
+
+    /**
+     * Add an event id to the list of previously viewed events
+     * @param pastID  The id of the event
+     */
+    public void addPastID(@NotNull String pastID) {
+        pastIDs.add(pastID);
+    }
+
+    /**
+     * Remove an event id from the list. This is used to remove ids that aren't link to a database entry,
+     * this happens when an event is deleted from the database.
+     * @param pastID The id to be removed
+     */
+    public void removePastID(@NotNull String pastID) {
+        pastIDs.remove(pastID);
+    }
+
     /**
      * Get the host url of the backend server.
      * **NOTE** This value may be changed during runtime, so do not store it separately.
