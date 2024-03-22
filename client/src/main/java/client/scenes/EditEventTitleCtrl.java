@@ -5,7 +5,9 @@ import com.google.inject.Inject;
 import commons.Event;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -15,10 +17,12 @@ public class EditEventTitleCtrl {
     private final ServerUtilsEvent server;
     private final SplittyCtrl mainCtrl;
     private Event event;
-    private EventOverviewNewCtrl eventCtrl;
 
     @FXML
     private TextField newTitle;
+
+    @FXML
+    public Label oldTitle;
 
     @Inject
     public EditEventTitleCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
@@ -28,7 +32,7 @@ public class EditEventTitleCtrl {
 
     public void cancel() {
         clearFields();
-        mainCtrl.showOverview();
+        mainCtrl.showEventOverview(event);
     }
 
     private void clearFields() {
@@ -48,9 +52,8 @@ public class EditEventTitleCtrl {
         }
     }
 
-    public void setEvent(EventOverviewNewCtrl eventCtrl){
-        this.eventCtrl = eventCtrl;
-        this.event = eventCtrl.getSelectedEvent();
+    public void setEvent(Event event){
+        this.event = event;
     }
 
     public Event getEvent(){
@@ -62,7 +65,10 @@ public class EditEventTitleCtrl {
             System.out.println("Edit Title");
             String editedTitle = newTitle.getText();
             event.setTitle(editedTitle);
-            eventCtrl.setSelectedEvent(event);
+            System.out.println("Edit Title");
+            System.out.println("Id:" + event.getId());
+            server.editEventTitle(editedTitle, event);
+//            server.addExpense(getExpense(),event);
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -73,7 +79,7 @@ public class EditEventTitleCtrl {
         }
 
         clearFields();
-        mainCtrl.showEventOverview(getEvent());
+        mainCtrl.showEventOverview(event);
     }
 
 

@@ -86,6 +86,14 @@ public class ServerUtilsEvent {
                 .post(Entity.entity(expense, APPLICATION_JSON), Expense.class);
     }
 
+    public Event editEventTitle(String editedTitle, Event event) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(getServer()).path("/api/events/" + event.getId()+ "/title")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(editedTitle, APPLICATION_JSON), Event.class);
+    }
+
     //    public Event modifyEvent(Event event) {
 //        //System.out.println("Add event" + event);
 //
@@ -98,4 +106,6 @@ public class ServerUtilsEvent {
     private @NotNull String getServer() {
         return Config.get().getHost();
     }
+
+
 }

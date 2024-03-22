@@ -127,6 +127,8 @@ public class SplittyCtrl {
     public void showEditTitle(Event event) {
         primaryStage.setTitle("Edit Title");
         primaryStage.setScene(editTitle);
+        this.editTitleCtrl.setEvent(event);
+        this.editTitleCtrl.oldTitle.setText(event.getTitle());
         editTitle.setOnKeyPressed(e -> editTitleCtrl.keyPressed(e));
     }
 }
