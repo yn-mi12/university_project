@@ -8,6 +8,7 @@ import commons.Event;
 import commons.Participant;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -117,5 +118,9 @@ public class EventOverviewNewCtrl implements Initializable {
 
     public void editTitle(){
         controller.showEditTitle(event);
+    }
+
+    public void goBack() {
+        controller.showOverview();
     }
 }
