@@ -81,27 +81,21 @@ public class StartScreenCtrl implements Initializable {
 
         if(!ids.isEmpty()) {
 
-            Set<String> removedIDs = new HashSet<>();
             List<Event> events = new ArrayList<>();
+            List<String> titles = new ArrayList<>();
+
             for (String id : ids) {
                 Event e = server.getByID(Long.valueOf(id));
                 if (e != null) {
                     events.add(e);
+                    titles.add(e.getId() + ": " + e.getTitle());
                 } else {
-                    removedIDs.add(id);
+                    Config.get().removePastID(id);
+                    // Removes the ids that do not correspond to an event in the database
                 }
             }
 
-            // Removes the ids that do not correspond to an event in the database
-            for(String id : removedIDs)
-                Config.get().removePastID(id);
-
             Config.get().save();
-            List<String> titles = new ArrayList<>();
-            for (Event e : events) {
-                titles.add(e.getId() + ": " + e.getTitle());
-            }
-
             eventList.setItems(FXCollections.observableList(titles));
         }
     }
