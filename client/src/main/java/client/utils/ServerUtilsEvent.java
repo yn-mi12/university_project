@@ -88,5 +88,14 @@ public class ServerUtilsEvent {
         return Config.get().getHost();
     }
 
+    public void deleteEvent(Event event) {
+        ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/events/" + event.getId()) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .delete();
+        System.out.println("Event deleted:" + event);
 
+        //Config.get().addPastID(String.valueOf(saved.getId()));
+    }
 }
