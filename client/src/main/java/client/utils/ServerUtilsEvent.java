@@ -88,7 +88,7 @@ public class ServerUtilsEvent {
         return Config.get().getHost();
     }
 
-    public void deleteEvent(Event event) {
+    public void deleteEvent(EventDTO event) {
         ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/events/" + event.getId()) //
                 .request(APPLICATION_JSON) //
