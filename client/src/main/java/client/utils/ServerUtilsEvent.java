@@ -22,6 +22,7 @@ import java.io.*;
 import client.Config;
 import commons.Event;
 import commons.Expense;
+import jakarta.ws.rs.BadRequestException;
 import org.glassfish.jersey.client.ClientConfig;
 
 import jakarta.ws.rs.client.ClientBuilder;
@@ -51,12 +52,18 @@ public class ServerUtilsEvent {
 //    }
 
     public Event getByID(Long id) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/events/" + id) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<>() {
-                });
+        Event event;
+        try {
+            event = ClientBuilder.newClient(new ClientConfig()) //
+                    .target(SERVER).path("api/events/" + id) //
+                    .request(APPLICATION_JSON) //
+                    .accept(APPLICATION_JSON) //
+                    .get(new GenericType<>() {
+                    });
+        } catch(BadRequestException e) {
+            event = null;
+        }
+        return event;
     }
 
     public Event addEvent(Event event) {
@@ -67,13 +74,7 @@ public class ServerUtilsEvent {
                 .post(Entity.entity(event, APPLICATION_JSON), Event.class);
         System.out.println("Add event" + saved);
 
-        try (FileWriter fw = new FileWriter("client/src/main/java/client/utils/events.txt", true);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
-            out.println(saved.getId());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Config.get().addPastID(String.valueOf(saved.getId()));
 
         return saved;
     }

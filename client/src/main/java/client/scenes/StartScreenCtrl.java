@@ -12,14 +12,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Scanner;
+import java.util.*;
 
 public class StartScreenCtrl implements Initializable {
 
@@ -82,30 +77,27 @@ public class StartScreenCtrl implements Initializable {
     }
 
     public void refresh() {
-        List<Long> ids = new ArrayList<>();
-        File eventIDs = new File("client/src/main/java/client/utils/events.txt");
-        if(eventIDs.exists()) {
-            try {
-                Scanner idScanner = new Scanner(eventIDs);
-                idScanner.useDelimiter("\r?\n");
-                while(idScanner.hasNext()) {
-                    ids.add(idScanner.nextLong());
+        Set<String> ids = Config.get().getPastIDs();
+
+        if(!ids.isEmpty()) {
+
+            List<Event> events = new ArrayList<>();
+            List<String> titles = new ArrayList<>();
+
+            for (String id : ids) {
+                Event e = server.getByID(Long.valueOf(id));
+                if (e != null) {
+                    events.add(e);
+                    titles.add(e.getId() + ": " + e.getTitle());
+                } else {
+                    Config.get().removePastID(id);
+                    // Removes the ids that do not correspond to an event in the database
                 }
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
             }
-        }
 
-        List<Event> events = new ArrayList<>();
-        for(Long id : ids) {
-            events.add(server.getByID(id));
+            Config.get().save();
+            eventList.setItems(FXCollections.observableList(titles));
         }
-        List<String> titles = new ArrayList<>();
-        for(Event e : events) {
-            titles.add(e.getId() + ": " + e.getTitle());
-        }
-
-        eventList.setItems(FXCollections.observableList(titles));
     }
 
     private void clearFields() {
