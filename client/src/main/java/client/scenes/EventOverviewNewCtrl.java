@@ -9,7 +9,6 @@ import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -128,7 +127,7 @@ public class EventOverviewNewCtrl implements Initializable {
 
     public void deleteEvent() {
         try {
-            System.out.println("Add event");
+            System.out.println("Delete Event");
             server.deleteEvent(event);
         } catch (WebApplicationException e) {
 
