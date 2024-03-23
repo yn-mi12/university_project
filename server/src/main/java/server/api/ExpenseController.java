@@ -1,20 +1,17 @@
 package server.api;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Collectors;
-
 import commons.Expense;
 import commons.dto.ExpenseDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-
 import server.database.ExpenseRepository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/expenses")
@@ -42,19 +39,22 @@ public class ExpenseController {
     @GetMapping(path = {"", "/"})
     public List<ExpenseDTO> getAll() {
         List<Expense> entities = repo.findAll();
-        List<ExpenseDTO> dtos = new ArrayList<>();
-//        modelMapper.map(entities,events);
+        List<ExpenseDTO> dtos;
         dtos = entities.stream().map(post -> modelMapper.map(post, ExpenseDTO.class))
                 .collect(Collectors.toList());
 
         return dtos;
     }
 
+    /**
+     * get the expenses of a particular event
+     * @param id - the id of the event for which we want to see the expenses
+     * @return
+     */
     @RequestMapping(value = "/event/{event_id}", method = RequestMethod.GET)
     public List<ExpenseDTO> getByEventId(@PathVariable(name = "event_id") Long id) {
         List<Expense> entities = repo.findByEventId(id);
-        List<ExpenseDTO> dtos = new ArrayList<>();
-//        modelMapper.map(entities,events);
+        List<ExpenseDTO> dtos;
         dtos = entities.stream().map(post -> modelMapper.map(post, ExpenseDTO.class))
                 .collect(Collectors.toList());
 

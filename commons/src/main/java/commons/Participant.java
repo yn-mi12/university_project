@@ -14,7 +14,7 @@ public class Participant {
     public String lastName;
     //Optional parameter. Will not be part of equals or hashcode.
     public String email;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Event event;
 
     public Event getEvent() {

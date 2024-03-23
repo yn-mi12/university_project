@@ -1,11 +1,5 @@
 package server.api;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Collectors;
-
 import commons.Participant;
 import commons.dto.ParticipantDTO;
 import org.modelmapper.ModelMapper;
@@ -13,6 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.ParticipantRepository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/participants")
@@ -40,18 +39,21 @@ public class ParticipantController {
     @GetMapping(path = { "", "/" })
     public List<ParticipantDTO> getAll() {
         List<Participant> entities = repo.findAll();
-        List<ParticipantDTO> dtos = new ArrayList<>();
-//        modelMapper.map(entities,events);
+        List<ParticipantDTO> dtos ;
         dtos= entities.stream().map(post -> modelMapper.map(post, ParticipantDTO.class))
                 .collect(Collectors.toList());
 
         return dtos;
     }
+    /**
+     * get the participants of a particular event.
+     * @param id - the id of the event for which we want to see the participants
+     * @return
+     */
     @RequestMapping(value = "/event/{event_id}", method = RequestMethod.GET)
     public List<ParticipantDTO> getByEventId(@PathVariable(name = "event_id") Long id) {
         List<Participant> entities = repo.findByEventId(id);
-        List<ParticipantDTO> dtos = new ArrayList<>();
-//        modelMapper.map(entities,events);
+        List<ParticipantDTO> dtos ;
         dtos= entities.stream().map(post -> modelMapper.map(post, ParticipantDTO.class))
                 .collect(Collectors.toList());
 
