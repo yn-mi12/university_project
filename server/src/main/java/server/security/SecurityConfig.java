@@ -16,14 +16,30 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 @EnableWebSecurity(debug = true)
 @EnableMethodSecurity(prePostEnabled = false)
 public class SecurityConfig {
+
+    /**
+     * To allow access to H2 console
+     */
+    public final static RequestMatcher H2_CONSOLE_MATCHER = new AntPathRequestMatcher("/h2-console/**");
+
+    public final static RequestMatcher API_MATCHER = new OrRequestMatcher(
+            new AntPathRequestMatcher("**"),
+            new NegatedRequestMatcher(H2_CONSOLE_MATCHER)
+    );
+
 
     private final AdminAuthProvider authenticationProvider;
     private final AdminAuthEntryPoint authEntryPoint;
@@ -51,11 +67,15 @@ public class SecurityConfig {
                 // disable csrf since the app is stateless
                 .csrf(AbstractHttpConfigurer::disable)
 
+                // Fixes the h2-console
+                .headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+
                 // Simple security chain which requires all requests to be authenticated
-                .addFilterBefore(new AdminAuthFilter(authenticationManager(), authEntryPoint),
+                .addFilterBefore(new AdminAuthFilter(API_MATCHER, authenticationManager(), authEntryPoint),
                         AnonymousAuthenticationFilter.class)
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.anyRequest().authenticated();
+                    authorize.requestMatchers(H2_CONSOLE_MATCHER).permitAll()
+                            .anyRequest().authenticated();
                 })
                 .build();
     }
