@@ -1,110 +1,97 @@
 package server.api;
 
-import java.util.List;
-import java.util.Random;
-
+import commons.Expense;
+import commons.Participant;
+import commons.dto.EventDTO;
 import commons.Event;
-import org.springframework.web.bind.annotation.*;
-import server.database.EventRepository;
-
+import commons.dto.ExpenseDTO;
+import commons.dto.ParticipantDTO;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import server.database.EventRepository;
+import server.database.ExpenseRepository;
+import server.database.ParticipantRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @RestController
-@RequestMapping("api/events")
+@RequestMapping("/api/events")
 public class EventController {
 
-    private final Random random;
+    private ModelMapper modelMapper;
     private final EventRepository repo;
 
-    /**
-     * The constructor for the EventController class
-     * @param random - The random used to get a random entry
-     * @param repo - The Event repository
-     */
-    public EventController(Random random, EventRepository repo) {
-        this.random = random;
+    private final ParticipantRepository partRepo;
+    private final ExpenseRepository expRepo;
+
+    public EventController(EventRepository repo, ParticipantRepository partRepo, ExpenseRepository expRepo) {
+        this.modelMapper = new ModelMapper();
         this.repo = repo;
+        this.partRepo = partRepo;
+        this.expRepo = expRepo;
     }
 
-    /**
-     * Returns all the Events currently stored
-     * @return - All the Events
-     */
-    @GetMapping(path = { "", "/" })
-    public List<Event> getAll() {
-        return repo.findAll();
+    @GetMapping
+    public List<EventDTO> getAllEvents() {
+
+        List<Event> entities = repo.findAll();
+        List<EventDTO> events = new ArrayList<>();
+        events = entities.stream().map(post -> modelMapper.map(post, EventDTO.class))
+                .collect(Collectors.toList());
+        //participants and expenses lists are not retrieved for performance reasons
+        return events;
     }
 
-    /**
-     * Return a specific Event from its id
-     * @param id - The id of the event
-     * @return - The Event with the id specified
-     */
     @GetMapping("/{id}")
-    public ResponseEntity<Event> getById(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(repo.findById(id).get());
+    public ResponseEntity<EventDTO> getEventById(@PathVariable(name = "id") Long id) {
+        Optional<Event> event = repo.findById(id);
+        EventDTO eventResponse = modelMapper.map(event.get(), EventDTO.class);
+        //retrieve related lists
+        List<Participant> eventParticipants = partRepo.findByEventId(id);
+        List<Expense> eventExpenses = expRepo.findByEventId(id);
+
+        // convert entity to DTO
+        eventResponse.setParticipants(eventParticipants.stream().map(post -> modelMapper.map(post, ParticipantDTO.class))
+                .collect(Collectors.toList()));
+        eventResponse.setExpenses(eventExpenses.stream().map(post -> modelMapper.map(post, ExpenseDTO.class))
+                .collect(Collectors.toList()));
+
+        return ResponseEntity.ok().body(eventResponse);
     }
+    @PostMapping
+    public ResponseEntity<EventDTO> createEvent(@RequestBody EventDTO eventDTO) {
+        Event eventRequest = modelMapper.map(eventDTO, Event.class);
 
-    /**
-     * Adds an Event to the repository
-     * @param event - The Event to be added
-     * @return - The saved Event
-     */
-    @PostMapping(path = { "", "/" })
-    public ResponseEntity<Event> save(@RequestBody Event event) {
-        if (isNullOrEmpty(event.getTitle())) {
-            return ResponseEntity.badRequest().build();
-        }
+        Event event = repo.save(eventRequest);
 
-        Event saved = repo.save(event);
-        return ResponseEntity.ok(saved);
+        // convert entity to DTO
+        EventDTO eventResponse = modelMapper.map(event,EventDTO.class);
+
+        return new ResponseEntity<EventDTO>(eventResponse, HttpStatus.CREATED);
     }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<EventDTO> updateEvent(@PathVariable long id, @RequestBody EventDTO eventDTO) {
+//        Event eventRequest = modelMapper.map(eventDTO, Event.class);
+//        // convert DTO to Entity
+//
+//        Event event = repo.(id,eventRequest);
+//        EventDTO eventResponse = modelMapper.map(event,EventDTO.class);
+//
+//
+//        return ResponseEntity.ok().body(eventResponse);
+//    }
 
-    @PutMapping("/{id}/title")
-    public ResponseEntity<Event> updateTitle(@PathVariable Long id, @RequestBody String newTitle) {
-        Event event = repo.findById(id).orElse(null);
-        if (event == null) {
-            return ResponseEntity.notFound().build();
-        }
-        event.setTitle(newTitle);
-        Event saved = repo.save(event);
-        return ResponseEntity.ok(saved);
-    }
-
-    /**
-     * Checks if the provided string is null or empty
-     * @param s - The string to be checked
-     * @return - True iff the string is neither null nor empty. False otherwise.
-     */
-    private static boolean isNullOrEmpty(String s) { return s == null || s.isEmpty(); }
-
-    /**
-     * Returns a random Event from the repository
-     * @return - A randomly selected Event
-     */
-    @GetMapping("rnd")
-    public ResponseEntity<Event> getRandom() {
-        var events = repo.findAll();
-        var idx = random.nextInt((int) repo.count());
-        return ResponseEntity.ok(events.get(idx));
-    }
-
-    /**
-     * Deletes Event by a specific id
-     * @param id - the id of the deleted event
-     * @return - the deleted event
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Event> deleteById(@PathVariable("id") long id){
-        if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
-        }
-        Event x = repo.findById(id).get();
-        repo.deleteById(id);
-        return ResponseEntity.ok(x);
-    }
-
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<ResponseEntity> deleteEvent(@PathVariable(name = "id") Long id) {
+//        eventService.deleteEvent(id);
+//        ResponseEntity apiResponse = new ResponseEntity<>("Post deleted successfully", HttpStatusCode.valueOf("OK"));
+//        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+//    }
 }

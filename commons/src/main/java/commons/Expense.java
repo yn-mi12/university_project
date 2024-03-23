@@ -21,6 +21,10 @@ public class Expense {
     @SuppressWarnings("unused")
     public Expense() {}
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public Expense(String description, Participant paidBy, String currency, double amount, Date date) {
         this.description = description;
         this.paidBy = paidBy;

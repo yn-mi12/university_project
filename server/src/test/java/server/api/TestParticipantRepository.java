@@ -177,4 +177,9 @@ public class TestParticipantRepository implements ParticipantRepository {
     public Page<Participant> findAll(Pageable pageable) {
         return null;
     }
+
+    @Override
+    public List<Participant> findByEventId(long eventId) {
+        return null;
+    }
 }

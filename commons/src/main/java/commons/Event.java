@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
+
 
 @Entity
 public class Event {
@@ -13,7 +13,12 @@ public class Event {
     private long id;
     private String title;
     private String inviteCode;
-    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
+
+    public void setInviteCode(String inviteCode) {
+        this.inviteCode = inviteCode;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER,cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expenses = new ArrayList<>();
@@ -29,7 +34,6 @@ public class Event {
      */
     public Event(String title) {
         this.title = title;
-        this.inviteCode = UUID.randomUUID().toString();
     }
 
     /**

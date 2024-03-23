@@ -1,10 +1,17 @@
 package server.api;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
+
 
 import commons.Participant;
 
+import commons.dto.ParticipantDTO;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +26,7 @@ import server.database.ParticipantRepository;
 public class ParticipantController {
 
     private final Random random;
+    private ModelMapper modelMapper;
     private final ParticipantRepository repo;
 
     /**
@@ -28,6 +36,7 @@ public class ParticipantController {
      * @param repo   - The Participant repository
      */
     public ParticipantController(Random random, ParticipantRepository repo) {
+        this.modelMapper = new ModelMapper();
         this.random = random;
         this.repo = repo;
     }
@@ -36,8 +45,14 @@ public class ParticipantController {
      * @return - all the participants currently stored
      */
     @GetMapping(path = { "", "/" })
-    public List<Participant> getAll() {
-        return repo.findAll();
+    public List<ParticipantDTO> getAll() {
+        List<Participant> entities = repo.findAll();
+        List<ParticipantDTO> dtos = new ArrayList<>();
+//        modelMapper.map(entities,events);
+        dtos= entities.stream().map(post -> modelMapper.map(post, ParticipantDTO.class))
+                .collect(Collectors.toList());
+
+        return dtos;
     }
 
     /**
@@ -47,11 +62,13 @@ public class ParticipantController {
      * @return - The Participant with the id specified
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Participant> getById(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(repo.findById(id).get());
+    public ResponseEntity<ParticipantDTO> getById(@PathVariable("id") long id) {
+        Optional<Participant> participant = repo.findById(id);
+
+        // convert entity to DTO
+        ParticipantDTO response = modelMapper.map(participant.get(), ParticipantDTO.class);
+
+        return ResponseEntity.ok().body(response);
     }
 
     /**
@@ -93,14 +110,17 @@ public class ParticipantController {
      * @return - The saved Participant
      */
     @PostMapping(path = { "", "/" })
-    public ResponseEntity<Participant> save(@RequestBody Participant participant) {
+    public ResponseEntity<ParticipantDTO> createParticipant(@RequestBody ParticipantDTO participant) {
+        Participant request = modelMapper.map(participant, Participant.class);
 
-        if (participant == null || isNullOrEmpty(participant.firstName) || isNullOrEmpty(participant.lastName)) {
+        if (participant == null || isNullOrEmpty(participant.getFirstName()) || isNullOrEmpty(participant.getLastName())) {
             return ResponseEntity.badRequest().build();
         }
 
-        Participant saved = repo.save(participant);
-        return ResponseEntity.ok(saved);
+        Participant saved = repo.save(request);
+        ParticipantDTO response = modelMapper.map(saved,ParticipantDTO.class);
+
+        return new ResponseEntity<ParticipantDTO>(response, HttpStatus.CREATED);
     }
 
 }
