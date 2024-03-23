@@ -6,6 +6,7 @@ import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
 import commons.Participant;
+import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Modality;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -121,6 +123,23 @@ public class EventOverviewNewCtrl implements Initializable {
     }
 
     public void goBack() {
+        controller.showOverview();
+    }
+
+    public void deleteEvent() {
+        try {
+            System.out.println("Add event");
+            server.deleteEvent(event);
+        } catch (WebApplicationException e) {
+
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+            return;
+        }
+
+        //clearFields();
         controller.showOverview();
     }
 }
