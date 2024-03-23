@@ -1,23 +1,18 @@
 package commons.dto;
 
-import commons.Debt;
-import commons.Event;
-import commons.Participant;
 import commons.Tag;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 public class ExpenseDTO {
     private Long id;
     private String description;
-    private Participant paidBy;
+    private ParticipantDTO paidBy;
     private String currency;
     private double amount;
     private Date date;
-    private Event event;
-    private List<Debt> debtList;
+    private EventDTO event;
     private Tag tag;
 
     /**
@@ -29,7 +24,7 @@ public class ExpenseDTO {
      * @param amount      - cost of the expense
      * @param date        - date of the expense
      */
-    public ExpenseDTO(String description, String currency, Participant paidBy,
+    public ExpenseDTO(String description, String currency, ParticipantDTO paidBy,
                       double amount, Date date) {
         this.description = description;
         this.currency = currency;
@@ -116,7 +111,7 @@ public class ExpenseDTO {
     /**
      * @return the person who paid
      */
-    public Participant getPaidBy() {
+    public ParticipantDTO getPaidBy() {
         return paidBy;
     }
 
@@ -125,7 +120,7 @@ public class ExpenseDTO {
      *
      * @param paidBy - the specified person
      */
-    public void setPaidBy(Participant paidBy) {
+    public void setPaidBy(ParticipantDTO paidBy) {
         this.paidBy = paidBy;
     }
 

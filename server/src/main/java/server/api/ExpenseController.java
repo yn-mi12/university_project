@@ -11,12 +11,7 @@ import commons.dto.ExpenseDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import server.database.ExpenseRepository;
@@ -49,7 +44,18 @@ public class ExpenseController {
         List<Expense> entities = repo.findAll();
         List<ExpenseDTO> dtos = new ArrayList<>();
 //        modelMapper.map(entities,events);
-        dtos= entities.stream().map(post -> modelMapper.map(post, ExpenseDTO.class))
+        dtos = entities.stream().map(post -> modelMapper.map(post, ExpenseDTO.class))
+                .collect(Collectors.toList());
+
+        return dtos;
+    }
+
+    @RequestMapping(value = "/event/{event_id}", method = RequestMethod.GET)
+    public List<ExpenseDTO> getByEventId(@PathVariable(name = "event_id") Long id) {
+        List<Expense> entities = repo.findByEventId(id);
+        List<ExpenseDTO> dtos = new ArrayList<>();
+//        modelMapper.map(entities,events);
+        dtos = entities.stream().map(post -> modelMapper.map(post, ExpenseDTO.class))
                 .collect(Collectors.toList());
 
         return dtos;
@@ -79,14 +85,11 @@ public class ExpenseController {
      */
     @PostMapping(path = {"", "/"})
     public ResponseEntity<ExpenseDTO> createExpense(@RequestBody ExpenseDTO expense) {
+        System.out.println(expense.toString());
         Expense request = modelMapper.map(expense, Expense.class);
 
-//        if (expense == null || isNullOrEmpty(.getFirstName()) || isNullOrEmpty(participant.getLastName())) {
-//            return ResponseEntity.badRequest().build();
-//        }
-
         Expense saved = repo.save(request);
-        ExpenseDTO response = modelMapper.map(saved,ExpenseDTO.class);
+        ExpenseDTO response = modelMapper.map(saved, ExpenseDTO.class);
 
         return new ResponseEntity<ExpenseDTO>(response, HttpStatus.CREATED);
     }

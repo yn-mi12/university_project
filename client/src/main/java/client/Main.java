@@ -17,7 +17,7 @@ package client;
 
 import client.scenes.*;
 import com.google.inject.Injector;
-import commons.Event;
+import commons.dto.EventDTO;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -68,7 +68,7 @@ public class Main extends Application {
      * Called when the language is switched in the event overview
      * @param selectedEvent - The event that is currently being viewed
      */
-    public static void reloadUIEvent(Event selectedEvent) {
+    public static void reloadUIEvent(EventDTO selectedEvent) {
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
         var add = FXML.load(AddEventCtrl.class, "client", "scenes", "AddEvent.fxml");
 //        var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");

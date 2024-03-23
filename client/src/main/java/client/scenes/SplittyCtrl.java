@@ -1,7 +1,7 @@
 package client.scenes;
 
-import commons.Event;
-import commons.Participant;
+import commons.dto.EventDTO;
+import commons.dto.ParticipantDTO;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -90,7 +90,7 @@ public class SplittyCtrl {
 //        modify.setOnKeyPressed(e -> modifyCtrl.keyPressed(e));
 //    }
 
-    public void showEventOverview(Event selectedEvent){
+    public void showEventOverview(EventDTO selectedEvent){
         primaryStage.setTitle("Event: " + selectedEvent.getTitle());
         this.eventCtrl.setSelectedEvent(selectedEvent);
         this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
@@ -98,7 +98,7 @@ public class SplittyCtrl {
         event.setOnKeyPressed(e -> eventCtrl.keyPressed(e));
     }
 
-    public void showInvitePage(Event selectedEvent) {
+    public void showInvitePage(EventDTO selectedEvent) {
         primaryStage.setTitle("Event: " + selectedEvent.getTitle());
         //this.inviteCtrl.setSelectedEvent(selectedEvent);
         this.inviteCtrl.eventInviteTitle.setText(selectedEvent.getTitle());
@@ -107,8 +107,8 @@ public class SplittyCtrl {
         primaryStage.setScene(invite);
         invite.setOnKeyPressed(e -> inviteCtrl.keyPressed(e));
     }
-    public void initExpShowOverview(Event event,
-                                    Participant paid) {
+    public void initExpShowOverview(EventDTO event,
+                                    ParticipantDTO paid) {
         addExpenseCtrl.setEvent(paid,eventCtrl);
 
         showExpOverview();
@@ -124,7 +124,7 @@ public class SplittyCtrl {
     }
 
 
-    public void showEditTitle(Event event) {
+    public void showEditTitle(EventDTO event) {
         primaryStage.setTitle("Edit Title");
         primaryStage.setScene(editTitle);
         this.editTitleCtrl.setEvent(event);
