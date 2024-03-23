@@ -11,16 +11,16 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.io.IOException;
 import java.util.Optional;
 
 public class AdminAuthFilter extends AbstractAuthenticationProcessingFilter {
 
-    protected AdminAuthFilter(final AuthenticationManager authenticationManager,
+    protected AdminAuthFilter(final RequestMatcher requestMatcher, final AuthenticationManager authenticationManager,
                               final AdminAuthEntryPoint authEntryPoint) {
-        super(new AntPathRequestMatcher("**"), authenticationManager);
+        super(requestMatcher, authenticationManager);
         this.setAuthenticationFailureHandler(new AuthenticationEntryPointFailureHandler(authEntryPoint));
     }
 
