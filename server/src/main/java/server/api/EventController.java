@@ -51,6 +51,9 @@ public class EventController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EventDTO> getEventById(@PathVariable(name = "id") Long id) {
+        if (id < 0 || !repo.existsById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
         Optional<Event> event = repo.findById(id);
         EventDTO eventResponse = modelMapper.map(event.get(), EventDTO.class);
         //retrieve related lists

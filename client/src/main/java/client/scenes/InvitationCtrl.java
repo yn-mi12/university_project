@@ -1,7 +1,7 @@
 package client.scenes;
 
 import client.utils.ServerUtilsEvent;
-import commons.Event;
+import commons.dto.EventDTO;
 import jakarta.inject.Inject;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
@@ -15,7 +15,7 @@ public class InvitationCtrl {
     private final SplittyCtrl mainCtrl;
     public Text eventInviteTitle;
     public Text inviteCode;
-    public Event event;
+    public EventDTO event;
 
     @Inject
     public InvitationCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl)
@@ -24,7 +24,7 @@ public class InvitationCtrl {
         this.mainCtrl = mainCtrl;
     }
 
-    public void setSelectedEvent(Event selectedEvent) {
+    public void setSelectedEvent(EventDTO selectedEvent) {
         //TO DO
     }
 

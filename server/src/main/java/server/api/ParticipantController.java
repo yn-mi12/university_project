@@ -6,19 +6,12 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-
 import commons.Participant;
-
 import commons.dto.ParticipantDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import server.database.ParticipantRepository;
 
 @RestController
@@ -47,6 +40,16 @@ public class ParticipantController {
     @GetMapping(path = { "", "/" })
     public List<ParticipantDTO> getAll() {
         List<Participant> entities = repo.findAll();
+        List<ParticipantDTO> dtos = new ArrayList<>();
+//        modelMapper.map(entities,events);
+        dtos= entities.stream().map(post -> modelMapper.map(post, ParticipantDTO.class))
+                .collect(Collectors.toList());
+
+        return dtos;
+    }
+    @RequestMapping(value = "/event/{event_id}", method = RequestMethod.GET)
+    public List<ParticipantDTO> getByEventId(@PathVariable(name = "event_id") Long id) {
+        List<Participant> entities = repo.findByEventId(id);
         List<ParticipantDTO> dtos = new ArrayList<>();
 //        modelMapper.map(entities,events);
         dtos= entities.stream().map(post -> modelMapper.map(post, ParticipantDTO.class))
