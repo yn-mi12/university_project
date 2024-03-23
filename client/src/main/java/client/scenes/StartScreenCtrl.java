@@ -57,7 +57,7 @@ public class StartScreenCtrl implements Initializable {
         eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if(eventList.getSelectionModel().getSelectedItem() != null) {
+                if (eventList.getSelectionModel().getSelectedItem() != null) {
                     String id = eventList.getSelectionModel().getSelectedItem().split(": ")[0];
                     viewPastEvent(Long.valueOf(id));
                 }
@@ -84,10 +84,11 @@ public class StartScreenCtrl implements Initializable {
     public void refresh() {
         Set<String> ids = Config.get().getPastIDs();
 
-        if(!ids.isEmpty()) {
+        if (!ids.isEmpty()) {
 
             List<EventDTO> events = new ArrayList<>();
             List<String> titles = new ArrayList<>();
+            List<String> removedIDs = new ArrayList<>();
 
             for (String id : ids) {
                 EventDTO e = server.getByID(Long.valueOf(id));
@@ -95,9 +96,13 @@ public class StartScreenCtrl implements Initializable {
                     events.add(e);
                     titles.add(e.getId() + ": " + e.getTitle());
                 } else {
-                    Config.get().removePastID(id);
-                    // Removes the ids that do not correspond to an event in the database
+                    removedIDs.add(id);
                 }
+            }
+
+            // Removes the ids that do not correspond to an event in the database
+            for (String removed : removedIDs) {
+                Config.get().removePastID(removed);
             }
 
             Config.get().save();
@@ -118,7 +123,7 @@ public class StartScreenCtrl implements Initializable {
         eventCtrl.showEventOverview(event);
     }
 
-    public EventDTO getEvent(){
+    public EventDTO getEvent() {
         String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
         String eventId = eventIdTitle.split(":")[0];
 //        pickedEventId = Long.parseLong(eventId);
