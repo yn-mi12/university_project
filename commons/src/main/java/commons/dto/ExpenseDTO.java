@@ -125,34 +125,6 @@ public class ExpenseDTO {
     }
 
     /**
-     * compares two objects to see if they have the same attributes.
-     *
-     * @param o - the object we are comparing the current object with
-     * @return true if the objects have the same properties
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ExpenseDTO expense = (ExpenseDTO) o;
-        return Double.compare(amount, expense.amount) == 0
-                && Objects.equals(description, expense.description)
-                && Objects.equals(paidBy, expense.paidBy)
-                && Objects.equals(currency, expense.currency)
-                && Objects.equals(date, expense.date)
-                && Objects.equals(id, expense.id);
-    }
-
-    /**
-     * @return a unique number corresponding to the attributes of the object
-     * equals objects have the same hashcode.
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(description, paidBy, currency, amount, date, id);
-    }
-
-    /**
      * @return the information the object contains in a human-readable format
      */
     @Override
@@ -164,5 +136,20 @@ public class ExpenseDTO {
                 ", amount is " + amount +
                 "\ndate is" + date +
                 ", id=" + id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExpenseDTO that = (ExpenseDTO) o;
+        return Double.compare(amount, that.amount) == 0 && Objects.equals(id, that.id) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(currency, that.currency) && Objects.equals(date, that.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, description, currency, amount, date);
     }
 }

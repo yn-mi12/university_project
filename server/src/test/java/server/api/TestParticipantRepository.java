@@ -180,6 +180,7 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public List<Participant> findByEventId(long eventId) {
-        return null;
+        calledMethods.add("findAll");
+        return participants;
     }
 }

@@ -1,5 +1,7 @@
 package commons.dto;
 
+import java.util.Objects;
+
 public class ParticipantDTO {
     private long id;
 
@@ -58,5 +60,19 @@ public class ParticipantDTO {
     }
     public ParticipantDTO(){
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ParticipantDTO that = (ParticipantDTO) o;
+        return id == that.id && Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) && Objects.equals(email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, email);
     }
 }

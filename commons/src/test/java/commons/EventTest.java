@@ -73,12 +73,13 @@ class EventTest {
         assertEquals(expenseList, event.getExpenses());
     }
 
-    @Test
-    void testEquals() {
-        //assertNotEquals(event, event2);
-        //assertNotEquals(new Event("a"), new Event("a"));
-        //assertNotEquals(event2, event3);
-    }
+    //fails because invite code is set up in EventDTO
+//    @Test
+//    void testEquals() {
+//        assertNotEquals(event, event2);
+//        assertNotEquals(new Event("a"), new Event("a"));
+//        assertNotEquals(event2, event3);
+//    }
 
     @Test
     void testHashCode() {
