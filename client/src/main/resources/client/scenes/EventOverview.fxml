@@ -61,5 +61,11 @@
         </tabs>
       </TabPane>
       <Button layoutX="218.0" layoutY="42.0" mnemonicParsing="false" onAction="#editTitle" prefHeight="25.0" prefWidth="106.0" text="%editTitle" focusTraversable="false"/>
+       <Button layoutX="15.0" layoutY="8.0" mnemonicParsing="false" text="⬅" onAction="#goBack"/>
+       <Button layoutX="15.0" layoutY="451.0" mnemonicParsing="false" text="%deleteEvent" textFill="#da0404" onAction="#deleteEvent">
+           <font>
+               <Font size="14.0" />
+           </font>
+       </Button>
    </children>
 </AnchorPane>

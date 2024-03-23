@@ -24,11 +24,6 @@ public class InvitationCtrl {
         this.mainCtrl = mainCtrl;
     }
 
-    public void setSelectedEvent(Event selectedEvent) {
-        //TO DO
-    }
-
-
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
             case ENTER:
