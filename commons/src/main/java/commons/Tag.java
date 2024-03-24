@@ -15,7 +15,7 @@ public class Tag {
     private String color;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(mappedBy = "tags")
     private Set<Expense> expenses;
 
     @JsonIgnore
