@@ -15,9 +15,9 @@ public class Event {
     private String inviteCode;
     @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
-    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expenses = new ArrayList<>();
-    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags = new ArrayList<>();
 
     @SuppressWarnings("unused")
