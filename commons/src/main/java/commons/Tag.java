@@ -1,7 +1,9 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Tag {
@@ -11,6 +13,15 @@ public class Tag {
     private long id;
     private String label;
     private String color;
+
+    @JsonIgnore
+    @ManyToMany
+    private Set<Expense> expenses;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
 
     @SuppressWarnings("unused")
     public Tag() {}
