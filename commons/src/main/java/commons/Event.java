@@ -13,7 +13,7 @@ public class Event {
     private long id;
     private String title;
     private String inviteCode;
-    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expenses = new ArrayList<>();

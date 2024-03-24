@@ -54,6 +54,11 @@ public class ParticipantController {
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
+    @GetMapping("/events/{id}")
+    public ResponseEntity<List<Participant> > getByEventId(@PathVariable("id") long id) {
+        return ResponseEntity.ok(repo.findByEventId(id));
+    }
+
     /**
      * Checks if the provided string is null or empty
      *

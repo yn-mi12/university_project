@@ -1,5 +1,6 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -14,6 +15,11 @@ public class Participant {
     public String lastName;
     //Optional parameter. Will not be part of equals or hashcode.
     public String email;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
 
     @SuppressWarnings("unused")
     public Participant() {}
