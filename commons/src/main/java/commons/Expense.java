@@ -14,14 +14,8 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String description;
-    @ManyToOne
-    private Participant paidBy;
-
-    @ElementCollection
-    @CollectionTable(name = "expense_debtors", joinColumns = @JoinColumn(name = "expense_id")) // Define the join column for the collection
-    @MapKeyJoinColumn(name = "participant_id") // Specifies the join column for the map key
-    @Column(name = "percentage")
-    private Map<Participant, Integer> debtors;
+    @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL)
+    private Set<ExpenseParticipant> debtors;
     private String currency;
     private double amount;
     private Date date;
@@ -35,15 +29,6 @@ public class Expense {
     @SuppressWarnings("unused")
     public Expense() {}
 
-    public Expense(String description, Participant paidBy, String currency, double amount, Date date) {
-        this.description = description;
-        this.paidBy = paidBy;
-        this.currency = currency;
-        this.amount = amount;
-        this.date = date;
-    }
-
-    // TO BE DELETED, some @Dan controllers dont work otherwise
     public Expense(String description, String currency, double amount, Date date) {
         this.description = description;
         this.currency = currency;
@@ -87,14 +72,6 @@ public class Expense {
         this.date = date;
     }
 
-    public Participant getPaidBy() {
-        return paidBy;
-    }
-
-    public void setPaidBy(Participant paidBy) {
-        this.paidBy = paidBy;
-    }
-
     public Set<Tag> getTags() {
         return tags;
     }
@@ -110,7 +87,6 @@ public class Expense {
         Expense expense = (Expense) o;
         return Double.compare(amount, expense.amount) == 0 &&
                 Objects.equals(description, expense.description) &&
-                Objects.equals(paidBy, expense.paidBy) &&
                 Objects.equals(currency, expense.currency) &&
                 Objects.equals(date, expense.date) &&
                 Objects.equals(tags, expense.tags);
@@ -118,7 +94,7 @@ public class Expense {
 
     @Override
     public int hashCode() {
-        return Objects.hash(description, paidBy, currency, amount, date, tags);
+        return Objects.hash(description, currency, amount, date, tags);
     }
 
     @Override
@@ -126,7 +102,6 @@ public class Expense {
         return "Expense{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
-                ", paidBy=" + paidBy +
                 ", currency='" + currency + '\'' +
                 ", amount=" + amount +
                 ", date=" + date +

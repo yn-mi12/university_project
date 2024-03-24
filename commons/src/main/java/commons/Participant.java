@@ -21,12 +21,8 @@ public class Participant {
     private Event event;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "paidBy")
-    private Set<Expense> expenseWhereOwner;
-
-    @JsonIgnore
-    @ManyToMany(mappedBy = "debtors")
-    private Set<Expense> expenseWhereDebtor;
+    @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
+    private Set<ExpenseParticipant> expenseWhereDebtor;
 
 
     @SuppressWarnings("unused")
