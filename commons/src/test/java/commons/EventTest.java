@@ -16,7 +16,7 @@ class EventTest {
     private Event event3;
     private final Participant p = new Participant("a", "b");
     private final List<Participant> participantList = List.of(p);
-    private final Expense e = new Expense("food", p,"$", 20, Date.valueOf(LocalDate.now()));
+    private final Expense e = new Expense("food", "$", 20, Date.valueOf(LocalDate.now()));
     private final List<Expense> expenseList = List.of(e);
 
     @BeforeEach
