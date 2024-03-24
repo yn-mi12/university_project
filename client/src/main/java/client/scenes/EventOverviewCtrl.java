@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 
 import static jakarta.ws.rs.core.Response.ok;
 
-public class EventOverviewNewCtrl implements Initializable {
+public class EventOverviewCtrl implements Initializable {
     private final ServerUtilsEvent server;
     private ParticipantDTO expensePayer;
     private final SplittyCtrl controller;
@@ -41,7 +41,7 @@ public class EventOverviewNewCtrl implements Initializable {
 
 
     @Inject
-    public EventOverviewNewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
+    public EventOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
         this.server = server;
         this.controller = eventCtrl;
     }
@@ -125,6 +125,10 @@ public class EventOverviewNewCtrl implements Initializable {
 
     public void goBack() {
         controller.showOverview();
+    }
+
+    public void addParticipant(){
+        controller.showAddParticipant(event);
     }
 
     public void deleteEvent() {

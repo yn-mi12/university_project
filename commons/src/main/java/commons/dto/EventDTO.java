@@ -3,7 +3,6 @@ package commons.dto;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-
 public class EventDTO {
     private long id;
     private String title;

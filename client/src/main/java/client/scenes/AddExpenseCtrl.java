@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class AddExpenseCtrl implements Initializable {
-    private EventOverviewNewCtrl ctrl;
+    private EventOverviewCtrl ctrl;
     private EventDTO event;
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
@@ -51,7 +51,7 @@ public class AddExpenseCtrl implements Initializable {
         this.server = server;
     }
 
-    public void setEvent(ParticipantDTO paid, EventOverviewNewCtrl ctrl) {
+    public void setEvent(ParticipantDTO paid, EventOverviewCtrl ctrl) {
         expensePayer = paid;
         this.ctrl = ctrl;
         this.event = ctrl.getSelectedEvent();

@@ -17,7 +17,7 @@ public class SplittyCtrl {
     private AddEventCtrl addCtrl;
     //private Scene modify;
     private Scene add;
-    private EventOverviewNewCtrl eventCtrl;
+    private EventOverviewCtrl eventCtrl;
     private Scene event;
     private InvitationCtrl inviteCtrl;
     private Scene invite;
@@ -25,6 +25,8 @@ public class SplittyCtrl {
     private AddExpenseCtrl addExpenseCtrl;
     private EditEventTitleCtrl editTitleCtrl;
     private Scene editTitle;
+    private AddParticipantCtrl addParticipantCtrl;
+    private Scene addParticipant;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -54,7 +56,7 @@ public class SplittyCtrl {
 //        this.modify = new Scene(modify.getValue());
 //    }
 
-    public void initEventOverview(Pair<EventOverviewNewCtrl, Parent> eventOverview) {
+    public void initEventOverview(Pair<EventOverviewCtrl, Parent> eventOverview) {
         this.eventCtrl = eventOverview.getKey();
         this.event = new Scene(eventOverview.getValue());
     }
@@ -67,6 +69,11 @@ public class SplittyCtrl {
     public void initEditTitle(Pair<EditEventTitleCtrl, Parent> editEventTitle) {
         this.editTitleCtrl = editEventTitle.getKey();
         this.editTitle = new Scene(editEventTitle.getValue());
+    }
+
+    public void initAddParticipant(Pair<AddParticipantCtrl, Parent> addParticipant) {
+        this.addParticipantCtrl = addParticipant.getKey();
+        this.addParticipant = new Scene(addParticipant.getValue());
     }
 
     public void showOverview() {
@@ -130,5 +137,13 @@ public class SplittyCtrl {
         this.editTitleCtrl.setEvent(event);
         this.editTitleCtrl.oldTitle.setText(event.getTitle());
         editTitle.setOnKeyPressed(e -> editTitleCtrl.keyPressed(e));
+    }
+
+
+    public void showAddParticipant(EventDTO event) {
+        primaryStage.setTitle("Add participant");
+        primaryStage.setScene(addParticipant);
+        this.addParticipantCtrl.setEvent(event);
+        addParticipant.setOnKeyPressed(e -> addParticipantCtrl.keyPressed(e));
     }
 }

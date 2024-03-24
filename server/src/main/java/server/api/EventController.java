@@ -128,6 +128,20 @@ public class EventController {
         return ResponseEntity.ok(dto);
     }
 
+    //This needs to be fixed
+
+//    @PostMapping
+//    public ResponseEntity<ParticipantDTO> addParticipant(@PathVariable Long id, @RequestBody ParticipantDTO newParticipant){
+//        if (isNullOrEmpty(newParticipant.getFirstName()) || isNullOrEmpty(newParticipant.getLastName()) ||
+//                isNullOrEmpty(newParticipant.getEmail())){
+//            return ResponseEntity.badRequest().build();
+//        }
+//        Participant request = modelMapper.map(newParticipant, Participant.class);
+//        Participant saved = partRepo.save(request);
+//        ParticipantDTO response = modelMapper.map(saved, ParticipantDTO.class);
+//        return new ResponseEntity<ParticipantDTO>(response, HttpStatus.CREATED);
+//    }
+
     /**
      * Checks if the provided string is null or empty
      *
