@@ -17,14 +17,8 @@ public class Expense {
     @ManyToOne
     private Participant paidBy;
 
-//    @ElementCollection
-//    @CollectionTable(
-//            name = "expense_shares",
-//            joinColumns = @JoinColumn(name = "expense_id")
-//    )
-//    @MapKeyJoinColumn(name = "person_id")
-//    @Column(name = "percentage")
-//    private Map<Participant, Integer> debtors;
+    @ManyToMany
+    private Set<Participant> debtors;
     private String currency;
     private double amount;
     private Date date;

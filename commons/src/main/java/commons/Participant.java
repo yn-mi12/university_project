@@ -24,9 +24,9 @@ public class Participant {
     @OneToMany(mappedBy = "paidBy")
     private Set<Expense> ExpenseWhereOwner;
 
-//    @JsonIgnore
-//    @ManyToMany(mappedBy = "debtors")
-//    private Set<Expense> expenseWhereDebtor;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "debtors")
+    private Set<Expense> expenseWhereDebtor;
 
 
     @SuppressWarnings("unused")
