@@ -15,7 +15,6 @@ public class Expense {
     private long id;
     private String description;
     @ManyToOne
-    @JoinColumn(name = "paid_by")
     private Participant paidBy;
 
 //    @ElementCollection
@@ -34,7 +33,6 @@ public class Expense {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "event_id")
     private Event event;
 
     @SuppressWarnings("unused")

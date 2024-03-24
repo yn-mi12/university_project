@@ -18,7 +18,6 @@ public class Participant {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "event_id")
     private Event event;
 
     @JsonIgnore
