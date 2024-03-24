@@ -21,6 +21,7 @@ import client.Config;
 import commons.Participant;
 import commons.dto.EventDTO;
 import commons.dto.ExpenseDTO;
+import commons.dto.ParticipantDTO;
 import jakarta.ws.rs.BadRequestException;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -76,8 +77,9 @@ public class ServerUtilsEvent {
                 .put(Entity.entity(editedTitle, APPLICATION_JSON), EventDTO.class);
     }
 
-    public void addParticipant(Participant participant, EventDTO event) {
+    public Participant addParticipant(ParticipantDTO participant, EventDTO event) {
         //TODO
+        return null;
     }
 
     //    public Event modifyEvent(Event event) {

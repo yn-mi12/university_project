@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-import commons.Participant;
 import commons.dto.EventDTO;
 import commons.dto.ParticipantDTO;
 import jakarta.ws.rs.WebApplicationException;
@@ -22,7 +21,7 @@ public class AddParticipantCtrl {
     private TextField lastName;
     @FXML
     private TextField email;
-    private Participant participant;
+    private ParticipantDTO participant;
 
     @Inject
     public AddParticipantCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
@@ -57,8 +56,9 @@ public class AddParticipantCtrl {
             String partFirstName = firstName.getText();
             String partLastName = lastName.getText();
             String partEmail = email.getText();
-            participant = new Participant(partFirstName, partLastName, partEmail);
+            participant = new ParticipantDTO(partFirstName, partLastName, partEmail);
             server.addParticipant(participant, event);
+            participant.setEvent(event);
             System.out.println("Add Participant");
             System.out.println("Id:" + event.getId());
         } catch (WebApplicationException e) {

@@ -6,7 +6,9 @@ import commons.dto.EventDTO;
 import commons.Event;
 import commons.dto.ExpenseDTO;
 import commons.dto.ParticipantDTO;
+import jakarta.servlet.http.Part;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -127,6 +129,20 @@ public class EventController {
         EventDTO dto = modelMapper.map(event.get(),EventDTO.class);
         return ResponseEntity.ok(dto);
     }
+
+    //This needs to be fixed
+
+//    @PostMapping
+//    public ResponseEntity<ParticipantDTO> addParticipant(@PathVariable Long id, @RequestBody ParticipantDTO newParticipant){
+//        if (isNullOrEmpty(newParticipant.getFirstName()) || isNullOrEmpty(newParticipant.getLastName()) ||
+//                isNullOrEmpty(newParticipant.getEmail())){
+//            return ResponseEntity.badRequest().build();
+//        }
+//        Participant request = modelMapper.map(newParticipant, Participant.class);
+//        Participant saved = partRepo.save(request);
+//        ParticipantDTO response = modelMapper.map(saved, ParticipantDTO.class);
+//        return new ResponseEntity<ParticipantDTO>(response, HttpStatus.CREATED);
+//    }
 
     /**
      * Checks if the provided string is null or empty
