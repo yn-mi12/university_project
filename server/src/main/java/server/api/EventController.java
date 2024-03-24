@@ -6,9 +6,7 @@ import commons.dto.EventDTO;
 import commons.Event;
 import commons.dto.ExpenseDTO;
 import commons.dto.ParticipantDTO;
-import jakarta.servlet.http.Part;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
