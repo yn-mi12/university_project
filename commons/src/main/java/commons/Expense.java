@@ -1,8 +1,12 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Expense {
@@ -11,12 +15,27 @@ public class Expense {
     private long id;
     private String description;
     @ManyToOne
+    @JoinColumn(name = "paid_by")
     private Participant paidBy;
+
+//    @ElementCollection
+//    @CollectionTable(
+//            name = "expense_shares",
+//            joinColumns = @JoinColumn(name = "expense_id")
+//    )
+//    @MapKeyJoinColumn(name = "person_id")
+//    @Column(name = "percentage")
+//    private Map<Participant, Integer> debtors;
     private String currency;
     private double amount;
     private Date date;
+    @ManyToMany
+    private Set<Tag> tags;
+
+    @JsonIgnore
     @ManyToOne
-    private Tag tag;
+    @JoinColumn(name = "event_id")
+    private Event event;
 
     @SuppressWarnings("unused")
     public Expense() {}
@@ -81,12 +100,12 @@ public class Expense {
         this.paidBy = paidBy;
     }
 
-    public Tag getTag() {
-        return tag;
+    public Set<Tag> getTags() {
+        return tags;
     }
 
-    public void setTag(Tag tag) {
-        this.tag = tag;
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 
     @Override
@@ -99,12 +118,12 @@ public class Expense {
                 Objects.equals(paidBy, expense.paidBy) &&
                 Objects.equals(currency, expense.currency) &&
                 Objects.equals(date, expense.date) &&
-                Objects.equals(tag, expense.tag);
+                Objects.equals(tags, expense.tags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(description, paidBy, currency, amount, date, tag);
+        return Objects.hash(description, paidBy, currency, amount, date, tags);
     }
 
     @Override
@@ -116,7 +135,7 @@ public class Expense {
                 ", currency='" + currency + '\'' +
                 ", amount=" + amount +
                 ", date=" + date +
-                ", tag=" + tag +
+                ", tags=" + tags +
                 '}';
     }
 }

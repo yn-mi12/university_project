@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Participant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
-
     public String firstName;
     public String lastName;
     //Optional parameter. Will not be part of equals or hashcode.
@@ -20,6 +20,15 @@ public class Participant {
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "paidBy")
+    private Set<Expense> ExpenseWhereOwner;
+
+//    @JsonIgnore
+//    @ManyToMany(mappedBy = "debtors")
+//    private Set<Expense> expenseWhereDebtor;
+
 
     @SuppressWarnings("unused")
     public Participant() {}
