@@ -23,7 +23,7 @@ class EventTest {
     void setUp(){
         event = new Event("Event1");
         event2 = new Event("Event2");
-        event3 = new Event("Event2");
+        event3 = new Event("Event3");
     }
 
     @Test
@@ -41,6 +41,12 @@ class EventTest {
     void setTitle() {
         event.setTitle("abc");
         assertEquals("abc", event.getTitle());
+    }
+
+    @Test
+    void setInviteCode() {
+        event.setInviteCode("578873a1-2e0c-4063-995d-3862379cf325");
+        assertEquals("578873a1-2e0c-4063-995d-3862379cf325", event.getInviteCode());
     }
 
     @Test
@@ -73,13 +79,11 @@ class EventTest {
         assertEquals(expenseList, event.getExpenses());
     }
 
-    //fails because invite code is set up in EventDTO
-//    @Test
-//    void testEquals() {
-//        assertNotEquals(event, event2);
-//        assertNotEquals(new Event("a"), new Event("a"));
-//        assertNotEquals(event2, event3);
-//    }
+    @Test
+    void testEquals() {
+        assertNotEquals(event2, event3);
+        assertEquals(new Event("a"), new Event("a"));
+    }
 
     @Test
     void testHashCode() {
@@ -89,6 +93,19 @@ class EventTest {
     @Test
     void testToString() {
         String inviteCode = event.getInviteCode();
-        assertEquals("Event{id=0, title='Event1', inviteCode='"+ inviteCode +"', participants=[], expenses=[], tags=[]}", event.toString());
+        assertEquals("Event{id=0, title='Event1', inviteCode='"+ inviteCode +"', " +
+                "participants=[], expenses=[], tags=[]}", event.toString());
+    }
+
+    @Test
+    void tagsTest() {
+        Tag t1 = new Tag("Food", "Red");
+        Tag t2 = new Tag("Drinks", "Blue");
+
+        event.addTag(t1);
+        assertEquals(List.of(t1), event.getTags());
+
+        event.setTags(List.of(t1, t2));
+        assertEquals(List.of(t1, t2), event.getTags());
     }
 }
