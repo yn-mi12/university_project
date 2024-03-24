@@ -22,7 +22,7 @@ public class Participant {
 
     @JsonIgnore
     @OneToMany(mappedBy = "paidBy")
-    private Set<Expense> ExpenseWhereOwner;
+    private Set<Expense> expenseWhereOwner;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "debtors")
