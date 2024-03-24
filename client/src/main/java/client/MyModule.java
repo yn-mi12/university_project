@@ -16,7 +16,7 @@
 package client;
 
 import client.scenes.AddExpenseCtrl;
-import client.scenes.EventOverviewNewCtrl;
+import client.scenes.EventOverviewCtrl;
 import client.scenes.StartScreenCtrl;
 import com.google.inject.Binder;
 import com.google.inject.Module;
@@ -29,7 +29,7 @@ public class MyModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(SplittyCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(EventOverviewNewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(EventOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(StartScreenCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AddExpenseCtrl.class).in(Scopes.SINGLETON);
     }

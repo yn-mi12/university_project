@@ -17,7 +17,7 @@ public class SplittyCtrl {
     private AddEventCtrl addCtrl;
     //private Scene modify;
     private Scene add;
-    private EventOverviewNewCtrl eventCtrl;
+    private EventOverviewCtrl eventCtrl;
     private Scene event;
     private InvitationCtrl inviteCtrl;
     private Scene invite;
@@ -56,7 +56,7 @@ public class SplittyCtrl {
 //        this.modify = new Scene(modify.getValue());
 //    }
 
-    public void initEventOverview(Pair<EventOverviewNewCtrl, Parent> eventOverview) {
+    public void initEventOverview(Pair<EventOverviewCtrl, Parent> eventOverview) {
         this.eventCtrl = eventOverview.getKey();
         this.event = new Scene(eventOverview.getValue());
     }
@@ -140,4 +140,10 @@ public class SplittyCtrl {
     }
 
 
+    public void showAddParticipant(EventDTO event) {
+        primaryStage.setTitle("Add participant");
+        primaryStage.setScene(addParticipant);
+        this.addParticipantCtrl.setEvent(event);
+        addParticipant.setOnKeyPressed(e -> addParticipantCtrl.keyPressed(e));
+    }
 }

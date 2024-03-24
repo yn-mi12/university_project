@@ -18,6 +18,7 @@ package client.utils;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import client.Config;
+import commons.Participant;
 import commons.dto.EventDTO;
 import commons.dto.ExpenseDTO;
 import jakarta.ws.rs.BadRequestException;
@@ -75,6 +76,10 @@ public class ServerUtilsEvent {
                 .put(Entity.entity(editedTitle, APPLICATION_JSON), EventDTO.class);
     }
 
+    public void addParticipant(Participant participant, EventDTO event) {
+        //TODO
+    }
+
     //    public Event modifyEvent(Event event) {
 //        //System.out.println("Add event" + event);
 //
@@ -98,4 +103,5 @@ public class ServerUtilsEvent {
 
         //Config.get().addPastID(String.valueOf(saved.getId()));
     }
+
 }

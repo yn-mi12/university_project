@@ -67,7 +67,6 @@ public class EditEventTitleCtrl {
             System.out.println("Edit Title");
             System.out.println("Id:" + event.getId());
             server.editEventTitle(editedTitle, event);
-//            server.addExpense(getExpense(),event);
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
