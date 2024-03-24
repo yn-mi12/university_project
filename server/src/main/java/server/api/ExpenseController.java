@@ -1,25 +1,24 @@
 package server.api;
 
-import java.util.List;
-import java.util.Random;
-
 import commons.Expense;
+import commons.dto.ExpenseDTO;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-
+import org.springframework.web.bind.annotation.*;
 import server.database.ExpenseRepository;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
+
 @RestController
-@RequestMapping("/api/events/{id}/expenses")
+@RequestMapping("/api/expenses")
 public class ExpenseController {
 
     private final Random random;
+    private ModelMapper modelMapper;
     private final ExpenseRepository repo;
 
     /**
@@ -29,6 +28,7 @@ public class ExpenseController {
      * @param repo   - The Expense repository
      */
     public ExpenseController(Random random, ExpenseRepository repo) {
+        this.modelMapper = new ModelMapper();
         this.random = random;
         this.repo = repo;
     }
@@ -37,8 +37,28 @@ public class ExpenseController {
      * @return - all the expenses currently stored
      */
     @GetMapping(path = {"", "/"})
-    public List<Expense> getAll() {
-        return repo.findAll();
+    public List<ExpenseDTO> getAll() {
+        List<Expense> entities = repo.findAll();
+        List<ExpenseDTO> dtos;
+        dtos = entities.stream().map(post -> modelMapper.map(post, ExpenseDTO.class))
+                .collect(Collectors.toList());
+
+        return dtos;
+    }
+
+    /**
+     * get the expenses of a particular event
+     * @param id - the id of the event for which we want to see the expenses
+     * @return
+     */
+    @RequestMapping(value = "/event/{event_id}", method = RequestMethod.GET)
+    public List<ExpenseDTO> getByEventId(@PathVariable(name = "event_id") Long id) {
+        List<Expense> entities = repo.findByEventId(id);
+        List<ExpenseDTO> dtos;
+        dtos = entities.stream().map(post -> modelMapper.map(post, ExpenseDTO.class))
+                .collect(Collectors.toList());
+
+        return dtos;
     }
 
     /**
@@ -47,12 +67,14 @@ public class ExpenseController {
      * @param id - The id of the expense
      * @return - The Expense with the id specified
      */
-    @GetMapping("/{expense_id}")
-    public ResponseEntity<Expense> getById(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(repo.findById(id).get());
+    @GetMapping("/{id}")
+    public ResponseEntity<ExpenseDTO> getById(@PathVariable("id") long id) {
+        Optional<Expense> exp = repo.findById(id);
+
+        // convert entity to DTO
+        ExpenseDTO response = modelMapper.map(exp.get(), ExpenseDTO.class);
+
+        return ResponseEntity.ok().body(response);
     }
 
     /**
@@ -62,17 +84,14 @@ public class ExpenseController {
      * @return - The saved Expense
      */
     @PostMapping(path = {"", "/"})
-    public ResponseEntity<Expense> save(@RequestBody Expense expense) {
+    public ResponseEntity<ExpenseDTO> createExpense(@RequestBody ExpenseDTO expense) {
+        System.out.println(expense.toString());
+        Expense request = modelMapper.map(expense, Expense.class);
 
-//        if (expense.getPaidBy() == null || isNullOrEmpty(expense.getPaidBy().getFirstName())
-//                || isNullOrEmpty(expense.getPaidBy().getLastName())
-//                || isNullOrEmpty(expense.getDescription())
-//                || expense.getAmount() == 0) {
-//            return ResponseEntity.badRequest().build();
-//        }
+        Expense saved = repo.save(request);
+        ExpenseDTO response = modelMapper.map(saved, ExpenseDTO.class);
 
-        Expense saved = repo.save(expense);
-        return ResponseEntity.ok(saved);
+        return new ResponseEntity<ExpenseDTO>(response, HttpStatus.CREATED);
     }
 
     /**

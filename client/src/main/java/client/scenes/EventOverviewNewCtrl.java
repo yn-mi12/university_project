@@ -4,9 +4,11 @@ import client.Config;
 import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-import commons.Event;
-import commons.Participant;
+
+import commons.dto.EventDTO;
+import commons.dto.ParticipantDTO;
 import jakarta.ws.rs.WebApplicationException;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -24,9 +26,9 @@ import static jakarta.ws.rs.core.Response.ok;
 
 public class EventOverviewNewCtrl implements Initializable {
     private final ServerUtilsEvent server;
-    private Participant expensePayer;
+    private ParticipantDTO expensePayer;
     private final SplittyCtrl controller;
-    private List<Participant> participants;
+    private List<ParticipantDTO> participants;
     @FXML
     private TextArea participantText = new TextArea();
     @FXML
@@ -35,7 +37,7 @@ public class EventOverviewNewCtrl implements Initializable {
     public Label eventTitle;
     @FXML
     private ChoiceBox<String> languageBox;
-    public Event event;
+    public EventDTO event;
 
 
     @Inject
@@ -44,18 +46,18 @@ public class EventOverviewNewCtrl implements Initializable {
         this.controller = eventCtrl;
     }
 
-    public Event getSelectedEvent() {
+    public EventDTO getSelectedEvent() {
         return event;
     }
 
-    public void setSelectedEvent(Event selectedEvent) {
+    public void setSelectedEvent(EventDTO selectedEvent) {
         this.event = selectedEvent;
         this.participants = event.getParticipants();
         ObservableList<MenuItem> names = FXCollections.observableArrayList();
         StringBuilder namesString = new StringBuilder();
-        HashMap<MenuItem,Participant> map = new HashMap<>();
+        HashMap<MenuItem,ParticipantDTO> map = new HashMap<>();
         int i = 0;
-        for (Participant p : participants) {
+        for (ParticipantDTO p : participants) {
             MenuItem item = new MenuItem(p.getFirstName());
             names.add(item);
             map.put(item,p);

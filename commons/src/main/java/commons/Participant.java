@@ -14,6 +14,16 @@ public class Participant {
     public String lastName;
     //Optional parameter. Will not be part of equals or hashcode.
     public String email;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Event event;
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
 
     @SuppressWarnings("unused")
     public Participant() {}
@@ -27,6 +37,10 @@ public class Participant {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getId() {

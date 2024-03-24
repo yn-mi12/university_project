@@ -25,7 +25,7 @@
                         <Font size="16.0" />
                     </font>
                 </Label>
-                <ChoiceBox layoutX="232.0" layoutY="71.0" prefHeight="31.0" prefWidth="233.0" fx:id="whoPaid"/>
+                <SplitMenuButton layoutX="232.0" layoutY="71.0" prefHeight="31.0" prefWidth="233.0" fx:id="whoPaid"/>
                 <Label layoutX="29.0" layoutY="119.0" text="What for?">
                     <font>
                         <Font size="16.0" />

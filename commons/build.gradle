@@ -6,4 +6,5 @@ java {
 
 dependencies {
 	implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '3.1.0'
+	implementation group: 'org.modelmapper', name:'modelmapper', version: '2.3.5'
 }
