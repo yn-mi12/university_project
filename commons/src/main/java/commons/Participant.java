@@ -9,7 +9,6 @@ public class Participant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
-
     public String firstName;
     public String lastName;
     //Optional parameter. Will not be part of equals or hashcode.

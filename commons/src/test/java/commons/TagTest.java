@@ -17,7 +17,8 @@ public class TagTest {
 
     @Test
     void constructorTest() {
-        assertNotNull(tag);}
+        assertNotNull(tag);
+    }
 
     @Test
     void testEquals() {
@@ -29,6 +30,12 @@ public class TagTest {
     void testHashcode() {
         int expected = Objects.hash(tag.getLabel(), tag.getColor());
         assertEquals(expected, tag.hashCode());
+    }
+
+    @Test
+    void testSetAndGetId() {
+        tag.setId(1);
+        assertEquals(1, tag.getId());
     }
 
     @Test
