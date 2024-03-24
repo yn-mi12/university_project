@@ -2,6 +2,9 @@ package commons;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ParticipantTest {
@@ -23,9 +26,11 @@ class ParticipantTest {
     }
 
     @Test
-    void getId() {
+    void setId() {
         Participant x = new Participant("a","b");
         Participant y = new Participant("a","b");
+        x.setId(1);
+        y.setId(1);
         assertEquals(x.getId(),y.getId());
     }
 
@@ -56,6 +61,13 @@ class ParticipantTest {
     }
 
     @Test
+    void setEmail() {
+        Participant x = new Participant("a","b");
+        x.setEmail("test");
+        assertEquals("test", x.getEmail());
+    }
+
+    @Test
     void testEquals() {
         Participant x = new Participant("a","b");
         Participant y = new Participant("a","b");
@@ -78,5 +90,17 @@ class ParticipantTest {
     void testToString() {
         Participant x = new Participant("a","b");
         assertEquals("Participant{id=0, firstName='a', lastName='b', email='null'}", x.toString());
+    }
+
+    @Test
+    void getByIdTest() {
+        List<Participant> ps = new ArrayList<>();
+        Participant x = new Participant("a","b");
+        Participant y = new Participant("a","b");
+        x.setId(1);
+        y.setId(2);
+        ps.add(x);
+        ps.add(y);
+        assertEquals(x, Participant.getById(ps, 1));
     }
 }
