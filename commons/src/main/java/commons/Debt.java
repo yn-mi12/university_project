@@ -10,15 +10,6 @@ public class Debt {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     @ManyToOne
     private Participant lender;
     /**
@@ -44,6 +35,20 @@ public class Debt {
         this.borrower = borrower;
         this.amount = amount;
         this.currency = currency;
+    }
+
+    /**
+     * @return the id of the Debt object
+     */
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * @param id - The new id of the Debt object
+     */
+    public void setId(long id) {
+        this.id = id;
     }
 
     /**

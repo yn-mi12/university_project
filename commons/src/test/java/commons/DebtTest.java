@@ -20,7 +20,6 @@ public class DebtTest {
 
     @Test
     public void checkConstructor() {
-
         assertEquals("me", d1.getLender().firstName);
         assertEquals("you", d1.getBorrower().firstName);
     }
@@ -33,5 +32,34 @@ public class DebtTest {
     public void notEqualsHashCode() {
         assertNotEquals(d1, d3);
         assertNotEquals(d1.hashCode(), d3.hashCode());
+    }
+
+    @Test
+    public void toStringTest() {
+        Debt d = new Debt(new Participant("John", "Doe"), new Participant("Jane", "Doe"), 10.0, "EUR");
+        d.setId(1);
+        assertEquals("Debt{id=1, lender=Participant{id=0, firstName='John', lastName='Doe', email='null'}," +
+                " borrower=Participant{id=0, firstName='Jane', lastName='Doe', email='null'}, amount=10.0, currency='EUR'}",
+                d.toString());
+    }
+
+    @Test
+    public void testGettersAndSetters() {
+        d1.setId(1);
+        assertEquals(1, d1.getId());
+
+        d1.setCurrency("USD");
+        assertEquals("USD", d1.getCurrency());
+
+        Participant lender = new Participant("John", "Doe");
+        d1.setLender(lender);
+        assertEquals(lender, d1.getLender());
+
+        Participant borrower = new Participant("Jane", "Doe");
+        d1.setBorrower(borrower);
+        assertEquals(borrower, d1.getBorrower());
+
+        d1.setAmount(10.0);
+        assertEquals(10.0, d1.getAmount());
     }
 }
