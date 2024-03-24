@@ -25,12 +25,12 @@ public class DebtTest {
     }
     @Test
     public void equalsHashCode() {
-        assertTrue(d1.equals(d2));
+        assertEquals(d1, d2);
         assertEquals(d1.hashCode(), d2.hashCode());
     }
     @Test
     public void notEqualsHashCode() {
-        assertFalse(d1.equals(d3));
+        assertNotEquals(d1, d3);
         assertNotEquals(d1.hashCode(), d3.hashCode());
     }
 
