@@ -1,7 +1,6 @@
 package server.api;
 
 import java.util.List;
-import java.util.Random;
 
 import commons.Event;
 import org.springframework.web.bind.annotation.*;
@@ -13,16 +12,13 @@ import org.springframework.http.ResponseEntity;
 @RequestMapping("api/events")
 public class EventController {
 
-    private final Random random;
     private final EventRepository repo;
 
     /**
      * The constructor for the EventController class
-     * @param random - The random used to get a random entry
      * @param repo - The Event repository
      */
-    public EventController(Random random, EventRepository repo) {
-        this.random = random;
+    public EventController(EventRepository repo) {
         this.repo = repo;
     }
 
@@ -63,6 +59,12 @@ public class EventController {
         return ResponseEntity.ok(saved);
     }
 
+    /**
+     * Updates an Event
+     * @param id - ID of an Event to be updated
+     * @param newTitle - new title of an Event
+     * @return - The updated Event
+     */
     @PutMapping("/{id}/title")
     public ResponseEntity<Event> updateTitle(@PathVariable Long id, @RequestBody String newTitle) {
         Event event = repo.findById(id).orElse(null);
@@ -75,24 +77,6 @@ public class EventController {
     }
 
     /**
-     * Checks if the provided string is null or empty
-     * @param s - The string to be checked
-     * @return - True iff the string is neither null nor empty. False otherwise.
-     */
-    private static boolean isNullOrEmpty(String s) { return s == null || s.isEmpty(); }
-
-    /**
-     * Returns a random Event from the repository
-     * @return - A randomly selected Event
-     */
-    @GetMapping("rnd")
-    public ResponseEntity<Event> getRandom() {
-        var events = repo.findAll();
-        var idx = random.nextInt((int) repo.count());
-        return ResponseEntity.ok(events.get(idx));
-    }
-
-    /**
      * Deletes Event by a specific id
      * @param id - the id of the deleted event
      * @return - the deleted event
@@ -100,11 +84,18 @@ public class EventController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Event> deleteById(@PathVariable("id") long id){
         if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
+            ;return ResponseEntity.badRequest().build();
         }
-        Event x = repo.findById(id).get();
+        Event x = repo.findById(id).orElse(null);
         repo.deleteById(id);
         return ResponseEntity.ok(x);
     }
+
+    /**
+     * Checks if the provided string is null or empty
+     * @param s - The string to be checked
+     * @return - True iff the string is neither null nor empty. False otherwise.
+     */
+    private static boolean isNullOrEmpty(String s) { return s == null || s.isEmpty(); }
 
 }
