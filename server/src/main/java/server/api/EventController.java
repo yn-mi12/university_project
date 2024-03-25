@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import server.database.EventRepository;
 
 import org.springframework.http.ResponseEntity;
+import server.security.RequiresAdmin;
 
 @RestController
 @RequestMapping("api/events")
@@ -26,6 +27,7 @@ public class EventController {
      * Returns all the Events currently stored
      * @return - All the Events
      */
+    @RequiresAdmin
     @GetMapping(path = { "", "/" })
     public List<Event> getAll() {
         return repo.findAll();
@@ -81,6 +83,7 @@ public class EventController {
      * @param id - the id of the deleted event
      * @return - the deleted event
      */
+    @RequiresAdmin
     @DeleteMapping("/{id}")
     public ResponseEntity<Event> deleteById(@PathVariable("id") long id){
         if (id < 0 || !repo.existsById(id)) {
