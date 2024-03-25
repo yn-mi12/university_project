@@ -18,6 +18,7 @@ public class Participant {
 
     @JsonIgnore
     @ManyToOne
+    @PrimaryKeyJoinColumn
     private Event event;
 
     @JsonIgnore

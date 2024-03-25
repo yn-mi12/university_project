@@ -23,6 +23,7 @@ public class Expense {
 
     @JsonIgnore
     @ManyToOne
+    @PrimaryKeyJoinColumn
     private Event event;
 
     @SuppressWarnings("unused")

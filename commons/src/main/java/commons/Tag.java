@@ -20,6 +20,7 @@ public class Tag {
 
     @JsonIgnore
     @ManyToOne
+    @PrimaryKeyJoinColumn
     private Event event;
 
     @SuppressWarnings("unused")
