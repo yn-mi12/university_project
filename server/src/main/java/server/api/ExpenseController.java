@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import server.database.ExpenseRepository;
 
 @RestController
-@RequestMapping("/api/events/{id}/expenses")
+@RequestMapping("/api/events/{e_id}/expenses")
 public class ExpenseController {
 
     private final Random random;
@@ -24,7 +24,6 @@ public class ExpenseController {
 
     /**
      * The constructor for the ExpenseController class
-     *
      * @param random - The random used to get a random entry
      * @param repo   - The Expense repository
      */
@@ -37,8 +36,8 @@ public class ExpenseController {
      * @return - all the expenses currently stored
      */
     @GetMapping(path = {"", "/"})
-    public List<Expense> getAll() {
-        return repo.findAll();
+    public List<Expense> findAddByEventID(@PathVariable("e_id") long id) {
+        return repo.findAllByEventId(id);
     }
 
     /**
@@ -48,7 +47,7 @@ public class ExpenseController {
      * @return - The Expense with the id specified
      */
     @GetMapping("/{expense_id}")
-    public ResponseEntity<Expense> getById(@PathVariable("id") long id) {
+    public ResponseEntity<Expense> getById(@PathVariable("expense_id") long id) {
         if (id < 0 || !repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
