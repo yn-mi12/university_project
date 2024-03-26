@@ -19,7 +19,7 @@ public class Expense {
     private double amount;
     private Date date;
     @ManyToOne
-    private Tag tags;
+    private Tag tag;
     @JsonIgnore
     @ManyToOne
     private Event event;
@@ -82,12 +82,12 @@ public class Expense {
         this.date = date;
     }
 
-    public Tag getTags() {
-        return tags;
+    public Tag getTag() {
+        return tag;
     }
 
-    public void setTags(Tag tags) {
-        this.tags = tags;
+    public void setTag(Tag tag) {
+        this.tag = tag;
     }
 
     public Event getEvent() {
@@ -107,12 +107,12 @@ public class Expense {
                 Objects.equals(description, expense.description) &&
                 Objects.equals(currency, expense.currency) &&
                 Objects.equals(date, expense.date) &&
-                Objects.equals(tags, expense.tags);
+                Objects.equals(tag, expense.tag);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(description, currency, amount, date, tags);
+        return Objects.hash(description, currency, amount, date, tag);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class Expense {
                 ", currency='" + currency + '\'' +
                 ", amount=" + amount +
                 ", date=" + date +
-                ", tags=" + tags +
+                ", tags=" + tag +
                 '}';
     }
 }
