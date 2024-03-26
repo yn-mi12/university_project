@@ -35,8 +35,12 @@ public class Expense {
         this.date = date;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getDescription() {
@@ -45,6 +49,14 @@ public class Expense {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<ExpenseParticipant> getDebtors() {
+        return debtors;
+    }
+
+    public void setDebtors(Set<ExpenseParticipant> debtors) {
+        this.debtors = debtors;
     }
 
     public String getCurrency() {
@@ -77,14 +89,6 @@ public class Expense {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
-    }
-
-    public Set<ExpenseParticipant> getDebtors() {
-        return debtors;
-    }
-
-    public void setDebtors(Set<ExpenseParticipant> debtors) {
-        this.debtors = debtors;
     }
 
     public Event getEvent() {

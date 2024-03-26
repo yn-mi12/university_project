@@ -43,6 +43,10 @@ public class Tag {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     /**
      * Getter for the label of the Tag
      * @return - The label of the Tag
@@ -75,6 +79,23 @@ public class Tag {
         this.color = color;
     }
 
+
+
+    public Set<Expense> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(Set<Expense> expenses) {
+        this.expenses = expenses;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
 
     @Override
     public boolean equals(Object o) {

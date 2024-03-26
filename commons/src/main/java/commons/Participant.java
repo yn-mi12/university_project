@@ -15,15 +15,12 @@ public class Participant {
     public String lastName;
     //Optional parameter. Will not be part of equals or hashcode.
     public String email;
-
-    @JsonIgnore
-    @ManyToOne
-    private Event event;
-
     @JsonIgnore
     @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
     private Set<ExpenseParticipant> expenseWhereDebtor;
-
+    @JsonIgnore
+    @ManyToOne
+    private Event event;
 
     @SuppressWarnings("unused")
     public Participant() {}
@@ -41,6 +38,10 @@ public class Participant {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -65,6 +66,22 @@ public class Participant {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Set<ExpenseParticipant> getExpenseWhereDebtor() {
+        return expenseWhereDebtor;
+    }
+
+    public void setExpenseWhereDebtor(Set<ExpenseParticipant> expenseWhereDebtor) {
+        this.expenseWhereDebtor = expenseWhereDebtor;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     @Override

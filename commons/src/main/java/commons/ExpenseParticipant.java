@@ -28,6 +28,7 @@ public class ExpenseParticipant {
         this.owner = owner;
     }
 
+
     public UUID getId() {
         return id;
     }
