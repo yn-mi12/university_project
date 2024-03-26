@@ -23,7 +23,6 @@ public class Expense {
 
     @JsonIgnore
     @ManyToOne
-    @PrimaryKeyJoinColumn
     private Event event;
 
     @SuppressWarnings("unused")
@@ -78,6 +77,22 @@ public class Expense {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public Set<ExpenseParticipant> getDebtors() {
+        return debtors;
+    }
+
+    public void setDebtors(Set<ExpenseParticipant> debtors) {
+        this.debtors = debtors;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     @Override
