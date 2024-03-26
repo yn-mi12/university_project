@@ -1,7 +1,6 @@
 package server.api;
 
 import java.util.List;
-import java.util.Random;
 
 import commons.Expense;
 import org.springframework.http.ResponseEntity;
@@ -12,31 +11,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import server.database.ExpenseRepository;
 
 @RestController
-@RequestMapping("/api/events/{e_id}/expenses")
+@RequestMapping("/api/expenses")
 public class ExpenseController {
 
-    private final Random random;
     private final ExpenseRepository repo;
 
     /**
      * The constructor for the ExpenseController class
-     * @param random - The random used to get a random entry
      * @param repo   - The Expense repository
      */
-    public ExpenseController(Random random, ExpenseRepository repo) {
-        this.random = random;
+    public ExpenseController(ExpenseRepository repo) {
         this.repo = repo;
     }
 
     /**
      * @return - all the expenses currently stored
      */
-    @GetMapping(path = {"", "/"})
-    public List<Expense> findAddByEventID(@PathVariable("e_id") long id) {
+    @GetMapping("/event/{ev_id}")
+    public List<Expense> findAddByEventID(@PathVariable("ev_id") long id) {
         return repo.findAllByEventId(id);
     }
 
@@ -46,8 +41,8 @@ public class ExpenseController {
      * @param id - The id of the expense
      * @return - The Expense with the id specified
      */
-    @GetMapping("/{expense_id}")
-    public ResponseEntity<Expense> getById(@PathVariable("expense_id") long id) {
+    @GetMapping("/{ex_id}")
+    public ResponseEntity<Expense> getById(@PathVariable("ex_id") long id) {
         if (id < 0 || !repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
@@ -55,24 +50,51 @@ public class ExpenseController {
     }
 
     /**
-     * Adds an Expense to the repository
-     *
-     * @param expense - The expense to be added
-     * @return - The saved Expense
+     * @param pid - The id of participant
+     * @return - all Expenses associated with specified participant
      */
-    @PostMapping(path = {"", "/"})
-    public ResponseEntity<Expense> save(@RequestBody Expense expense) {
+    @GetMapping("/participant/{p_id}")
+    public ResponseEntity<List<Expense>> findAllByParticipantId(@PathVariable("p_id") long pid) {
+        return ResponseEntity.ok(repo.findAllByParticipantId(pid));
+    }
 
+    /**
+     * @param pid - The id of participant
+     * @return - all Expenses where specified participant
+     */
+    @GetMapping("/participant/{p_id}/owner")
+    public ResponseEntity<List<Expense>> findAllByParticipantIdWhereOwner(@PathVariable("p_id") long pid) {
+        return ResponseEntity.ok(repo.findAllByParticipantIdWhereOwner(pid));
+    }
+
+    /**
+     * @param pid - The id of participant
+     * @return - all Expenses associated with specified participant
+     */
+    @GetMapping("/participant/{p_id}/debts")
+    public ResponseEntity<List<Expense>> findAllByParticipantIdWhereDebt(@PathVariable("p_id") long pid) {
+        return ResponseEntity.ok(repo.findAllByParticipantIdWhereDebt(pid));
+    }
+
+//    /**
+//     * Adds an Expense to the repository
+//     *
+//     * @param expense - The expense to be added
+//     * @return - The saved Expense
+//     */
+//    @PostMapping(path = {"", "/"})
+//    public ResponseEntity<Expense> save(@RequestBody Expense expense) {
+//
 //        if (expense.getPaidBy() == null || isNullOrEmpty(expense.getPaidBy().getFirstName())
 //                || isNullOrEmpty(expense.getPaidBy().getLastName())
 //                || isNullOrEmpty(expense.getDescription())
 //                || expense.getAmount() == 0) {
 //            return ResponseEntity.badRequest().build();
 //        }
-
-        Expense saved = repo.save(expense);
-        return ResponseEntity.ok(saved);
-    }
+//
+//        Expense saved = repo.save(expense);
+//        return ResponseEntity.ok(saved);
+//    }
 
     /**
      * Checks if the provided string is null or empty
@@ -84,13 +106,4 @@ public class ExpenseController {
         return s == null || s.isEmpty();
     }
 
-    /**
-     * @return - a random Expense from the repository
-     */
-    @GetMapping("rnd")
-    public ResponseEntity<Expense> getRandom() {
-        var expenses = repo.findAll();
-        var idx = random.nextInt((int) repo.count());
-        return ResponseEntity.ok(expenses.get(idx));
-    }
 }
