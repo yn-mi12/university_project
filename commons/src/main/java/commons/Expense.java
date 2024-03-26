@@ -18,9 +18,8 @@ public class Expense {
     private String currency;
     private double amount;
     private Date date;
-    @ManyToMany
-    private Set<Tag> tags;
-
+    @ManyToOne
+    private Tag tags;
     @JsonIgnore
     @ManyToOne
     private Event event;
@@ -83,11 +82,11 @@ public class Expense {
         this.date = date;
     }
 
-    public Set<Tag> getTags() {
+    public Tag getTags() {
         return tags;
     }
 
-    public void setTags(Set<Tag> tags) {
+    public void setTags(Tag tags) {
         this.tags = tags;
     }
 

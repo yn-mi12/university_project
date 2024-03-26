@@ -15,7 +15,7 @@ public class Tag {
     private String color;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "tags")
+    @OneToMany(mappedBy = "tag")
     private Set<Expense> expenses;
 
     @JsonIgnore
@@ -78,8 +78,6 @@ public class Tag {
     public void setColor(String color) {
         this.color = color;
     }
-
-
 
     public Set<Expense> getExpenses() {
         return expenses;
