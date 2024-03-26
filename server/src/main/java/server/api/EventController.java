@@ -87,7 +87,7 @@ public class EventController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Event> deleteById(@PathVariable("id") long id){
         if (id < 0 || !repo.existsById(id)) {
-            ;return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build();
         }
         Event x = repo.findById(id).orElse(null);
         repo.deleteById(id);
