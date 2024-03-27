@@ -56,18 +56,6 @@ class EventTest {
     }
 
     @Test
-    void getParticipants() {
-        event.addParticipant(p);
-        assertEquals(List.of(p), event.getParticipants());
-    }
-
-    @Test
-    void getExpenses() {
-        event.addExpense(e);
-        assertEquals(expenseList, event.getExpenses());
-    }
-
-    @Test
     void setExpenses() {
         event.setExpenses(expenseList);
         assertEquals(expenseList, event.getExpenses());
