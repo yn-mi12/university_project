@@ -4,9 +4,8 @@ import client.Config;
 import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-
-import commons.dto.EventDTO;
-import commons.dto.ParticipantDTO;
+import commons.Event;
+import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 
 import javafx.collections.FXCollections;
@@ -26,9 +25,9 @@ import static jakarta.ws.rs.core.Response.ok;
 
 public class EventOverviewCtrl implements Initializable {
     private final ServerUtilsEvent server;
-    private ParticipantDTO expensePayer;
+    private Participant expensePayer;
     private final SplittyCtrl controller;
-    private List<ParticipantDTO> participants;
+    private List<Participant> participants;
     @FXML
     private TextArea participantText = new TextArea();
     @FXML
@@ -37,7 +36,7 @@ public class EventOverviewCtrl implements Initializable {
     public Label eventTitle;
     @FXML
     private ChoiceBox<String> languageBox;
-    public EventDTO event;
+    public Event event;
 
 
     @Inject
@@ -46,18 +45,18 @@ public class EventOverviewCtrl implements Initializable {
         this.controller = eventCtrl;
     }
 
-    public EventDTO getSelectedEvent() {
+    public Event getSelectedEvent() {
         return event;
     }
 
-    public void setSelectedEvent(EventDTO selectedEvent) {
+    public void setSelectedEvent(Event selectedEvent) {
         this.event = selectedEvent;
         this.participants = event.getParticipants();
         ObservableList<MenuItem> names = FXCollections.observableArrayList();
         StringBuilder namesString = new StringBuilder();
-        HashMap<MenuItem,ParticipantDTO> map = new HashMap<>();
+        HashMap<MenuItem,Participant> map = new HashMap<>();
         int i = 0;
-        for (ParticipantDTO p : participants) {
+        for (Participant p : participants) {
             MenuItem item = new MenuItem(p.getFirstName());
             names.add(item);
             map.put(item,p);

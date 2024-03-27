@@ -4,7 +4,8 @@ package client.scenes;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 
-import commons.dto.EventDTO;
+import commons.Event;
+
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -58,10 +59,10 @@ public class AddEventCtrl {
         this.inviteCode.setText(inviteCode);
     }
 
-    public EventDTO getEvent() {
+    public Event getEvent() {
         System.out.println("Get event");
         var title = this.title.getText();
-        return new EventDTO(title);
+        return new Event(title);
         //I deleted the inviteCode from the parameters of Event because
         // it is not given as a parameter to the constructor.
         //It is created inside the constructor

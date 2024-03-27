@@ -2,8 +2,9 @@ package client.scenes;
 
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-import commons.dto.EventDTO;
-import commons.dto.ParticipantDTO;
+
+import commons.Event;
+import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -14,14 +15,14 @@ import javafx.stage.Modality;
 public class AddParticipantCtrl {
     private final ServerUtilsEvent server;
     private final SplittyCtrl mainCtrl;
-    private EventDTO event;
+    private Event event;
     @FXML
     private TextField firstName;
     @FXML
     private TextField lastName;
     @FXML
     private TextField email;
-    private ParticipantDTO participant;
+    private Participant participant;
 
     @Inject
     public AddParticipantCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
@@ -29,7 +30,7 @@ public class AddParticipantCtrl {
         this.mainCtrl = mainCtrl;
     }
 
-    public void setEvent(EventDTO event) {
+    public void setEvent(Event event) {
         this.event = event;
     }
 
@@ -56,7 +57,7 @@ public class AddParticipantCtrl {
             String partFirstName = firstName.getText();
             String partLastName = lastName.getText();
             String partEmail = email.getText();
-            participant = new ParticipantDTO(partFirstName, partLastName, partEmail);
+            participant = new Participant(partFirstName, partLastName, partEmail);
             server.addParticipant(participant, event);
             participant.setEvent(event);
             System.out.println("Add Participant");
