@@ -18,6 +18,7 @@ public class TestParticipantRepository implements ParticipantRepository {
     public final List<String> calledMethods = new ArrayList<>();
 
     private void call(String name){ calledMethods.add(name);}
+
     @Override
     public void flush() {}
 
@@ -117,6 +118,7 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public Optional<Participant> findById(Long aLong) {
+        call("findById");
         return find(aLong);
     }
 
@@ -181,6 +183,13 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public List<Participant> findByEventId(Long eventId) {
-        return null;
+        call("getByEventId");
+        List<Participant> result = new ArrayList<>();
+        for(Participant p : participants) {
+            if(p.getEvent().getId() == eventId) {
+                result.add(p);
+            }
+        }
+        return result;
     }
 }

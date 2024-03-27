@@ -30,7 +30,7 @@ public class ExpenseController {
     }
 
     /**
-     * @return - all the expenses currently stored
+     * @return - all the expenses currently stored for a specific event
      */
     @GetMapping("/event/{ev_id}")
     public ResponseEntity<List<Expense>> findAddByEventID(@PathVariable("ev_id") long id) {
