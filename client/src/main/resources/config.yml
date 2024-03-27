@@ -14,4 +14,4 @@ supported-locales:
     code: "ro"
 
 # The ids of the past events
-past-ids: ['1']
+past-ids: []
