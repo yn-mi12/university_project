@@ -92,12 +92,12 @@ public class StartScreenCtrl implements Initializable {
 
             for (String id : ids) {
                 try {
-                Event e = server.getByID(Long.valueOf(id));
-                if (e != null) {
-                    events.add(e);
-                    titles.add(e.getId() + ": " + e.getTitle());
-                }
-                } catch (Exception e){
+                    Event e = server.getByID(Long.valueOf(id));
+                    if (e != null) {
+                        events.add(e);
+                        titles.add(e.getId() + ": " + e.getTitle());
+                    }
+                } catch (Exception e) {
                     removedIDs.add(id);
                 }
             }
