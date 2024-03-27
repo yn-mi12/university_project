@@ -17,7 +17,7 @@ package client;
 
 import client.scenes.*;
 import com.google.inject.Injector;
-import commons.Event;
+import commons.dto.EventDTO;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -46,10 +46,11 @@ public class Main extends Application {
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
         var add = FXML.load(AddEventCtrl.class, "client", "scenes", "AddEvent.fxml");
 //        var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");
-        var eventOverview = FXML.load(EventOverviewNewCtrl.class, "client", "scenes", "EventOverview.fxml");
+        var eventOverview = FXML.load(EventOverviewCtrl.class, "client", "scenes", "EventOverview.fxml");
         var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
         var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
         var editTitle = FXML.load(EditEventTitleCtrl.class,"client", "scenes", "EditTitle.fxml");
+        var addParticipant = FXML.load(AddParticipantCtrl.class, "client", "scenes", "AddParticipant.fxml");
 
         var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
         mainCtrl.initialize(primaryStage);
@@ -60,6 +61,7 @@ public class Main extends Application {
         mainCtrl.initInvitePage(invite);
         mainCtrl.initExp(addExp);
         mainCtrl.initEditTitle(editTitle);
+        mainCtrl.initAddParticipant(addParticipant);
 
         mainCtrl.display();
     }
@@ -68,14 +70,15 @@ public class Main extends Application {
      * Called when the language is switched in the event overview
      * @param selectedEvent - The event that is currently being viewed
      */
-    public static void reloadUIEvent(Event selectedEvent) {
+    public static void reloadUIEvent(EventDTO selectedEvent) {
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
         var add = FXML.load(AddEventCtrl.class, "client", "scenes", "AddEvent.fxml");
 //        var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");
-        var eventOverview = FXML.load(EventOverviewNewCtrl.class, "client", "scenes", "EventOverview.fxml");
+        var eventOverview = FXML.load(EventOverviewCtrl.class, "client", "scenes", "EventOverview.fxml");
         var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
         var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
         var editTitle = FXML.load(EditEventTitleCtrl.class, "client", "scenes", "EditTitle.fxml");
+        var addParticipant = FXML.load(AddParticipantCtrl.class, "client", "scenes", "AddParticipant.fxml");
 
         var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
         mainCtrl.initialize(primaryStage);
@@ -86,6 +89,7 @@ public class Main extends Application {
         mainCtrl.initInvitePage(invite);
         mainCtrl.initExp(addExp);
         mainCtrl.initEditTitle(editTitle);
+        mainCtrl.initAddParticipant(addParticipant);
 
         mainCtrl.showEventOverview(selectedEvent);
     }

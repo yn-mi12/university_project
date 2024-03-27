@@ -89,7 +89,7 @@ public class EventController {
         if (id < 0 || !repo.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-        Event x = repo.findById(id).orElse(null);
+        Event x = repo.findById(id).get();
         repo.deleteById(id);
         return ResponseEntity.ok(x);
     }

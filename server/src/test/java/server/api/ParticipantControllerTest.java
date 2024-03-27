@@ -1,32 +1,32 @@
-//package server.api;
-//
-//import java.util.Random;
-//
-//import commons.Participant;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.springframework.http.HttpStatus.BAD_REQUEST;
-//
-//public class ParticipantControllerTest {
-//
-//    public int nextInt;
-//    private MyRandom random;
-//    private TestParticipantRepository repo;
-//    private ParticipantController partc;
-//
-//    private static Participant getParticipant(String a,String b,String c){
-//        return new Participant(a,b,c);
-//    }
-//
-//    @BeforeEach
-//    void setUp() {
-//        random = new MyRandom();
-//        repo = new TestParticipantRepository();
-//        partc = new ParticipantController(random, repo);
-//    }
-//
+package server.api;
+
+import java.util.Random;
+
+import commons.Participant;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
+public class ParticipantControllerTest {
+
+    public int nextInt;
+    private MyRandom random;
+    private TestParticipantRepository repo;
+    private ParticipantController partc;
+
+    private static Participant getParticipant(String a,String b,String c){
+        return new Participant(a,b,c);
+    }
+
+    @BeforeEach
+    void setUp() {
+        random = new MyRandom();
+        repo = new TestParticipantRepository();
+        partc = new ParticipantController(random, repo);
+    }
+
 //    @Test
 //    public void randomSelection() {
 //        partc.save(getParticipant("a","b","c"));
@@ -104,21 +104,21 @@
 //        assertEquals("c", repo.getById((0L)).email);
 //        assertEquals("d", repo.getById((1L)).email);
 //    }
-//
-//    @SuppressWarnings("serial")
-//    public class MyRandom extends Random {
-//
-//        public boolean wasCalled = false;
-//
-//        /**
-//         * Method for manipulating the next instance in the Random function
-//         * @param bound the upper bound (exclusive).  Must be positive.
-//         * @return the next random position
-//         */
-//        @Override
-//        public int nextInt(int bound) {
-//            wasCalled = true;
-//            return nextInt;
-//        }
-//    }
-//}
+
+    @SuppressWarnings("serial")
+    public class MyRandom extends Random {
+
+        public boolean wasCalled = false;
+
+        /**
+         * Method for manipulating the next instance in the Random function
+         * @param bound the upper bound (exclusive).  Must be positive.
+         * @return the next random position
+         */
+        @Override
+        public int nextInt(int bound) {
+            wasCalled = true;
+            return nextInt;
+        }
+    }
+}

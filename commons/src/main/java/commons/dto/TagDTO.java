@@ -1,36 +1,22 @@
-package commons;
+package commons.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
-@Entity
-public class Tag {
+public class TagDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String label;
     private String color;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "tag")
-    private Set<Expense> expenses;
-
-    @JsonIgnore
-    @ManyToOne
-    private Event event;
-
     @SuppressWarnings("unused")
-    public Tag() {}
+    public TagDTO() {}
 
     /**
      * The constructor for the Tag class
      * @param label - The label of the Tag
      * @param color - The color of the Tag
      */
-    public Tag(String label, String color) {
+    public TagDTO(String label, String color) {
         this.label = label;
         this.color = color;
     }
@@ -41,18 +27,6 @@ public class Tag {
      */
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    /**
-     * Setter for the id of the Tag
-     * @param id - The new id of the Tag
-     */
-    public void setId(long id) {
-        this.id = id;
     }
 
     /**
@@ -87,27 +61,12 @@ public class Tag {
         this.color = color;
     }
 
-    public Set<Expense> getExpenses() {
-        return expenses;
-    }
-
-    public void setExpenses(Set<Expense> expenses) {
-        this.expenses = expenses;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Tag tag = (Tag) o;
+        TagDTO tag = (TagDTO) o;
         return Objects.equals(label, tag.label)
                 && Objects.equals(color, tag.color);
     }

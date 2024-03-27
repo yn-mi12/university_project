@@ -2,9 +2,9 @@ package client.scenes;
 
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-import commons.Event;
-import commons.Expense;
-import commons.Participant;
+import commons.dto.EventDTO;
+import commons.dto.ExpenseDTO;
+import commons.dto.ParticipantDTO;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,18 +15,19 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class AddExpenseCtrl implements Initializable {
-    private EventOverviewNewCtrl ctrl;
-    private Event event;
+    private EventOverviewCtrl ctrl;
+    private EventDTO event;
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
-    private List<Participant> participants;
+    private List<ParticipantDTO> participants;
+    private ParticipantDTO expensePayer;
     @FXML
-    private ChoiceBox<String> whoPaid;
+    private SplitMenuButton whoPaid;
     @FXML
     private TextField whatFor = new TextField();
     @FXML
@@ -50,18 +51,27 @@ public class AddExpenseCtrl implements Initializable {
         this.server = server;
     }
 
-    public void setEvent(Participant paid, EventOverviewNewCtrl ctrl) {
+    public void setEvent(ParticipantDTO paid, EventOverviewCtrl ctrl) {
+        expensePayer = paid;
         this.ctrl = ctrl;
         this.event = ctrl.getSelectedEvent();
         this.participants = event.getParticipants();
-        ObservableList<String> names = FXCollections.observableArrayList();
-        for (Participant p : participants) {
-            names.add(p.getFirstName());
+        ObservableList<MenuItem> names = FXCollections.observableArrayList();
+        HashMap<MenuItem,ParticipantDTO> map = new HashMap<>();
+
+        for (ParticipantDTO p : participants) {
+            MenuItem item = new MenuItem(p.getFirstName());
+            names.add(item);
+            map.put(item,p);
         }
         whoPaid.getItems().setAll(names);
-        whoPaid.setValue(Objects.requireNonNull(Participant.getById(participants,
-                paid.getId())).getFirstName());
-        allHaveToPay.setSelected(true);
+        whoPaid.setText(paid.getFirstName());
+        for (MenuItem mi : whoPaid.getItems()) {
+            mi.setOnAction(e -> {
+                whoPaid.setText(mi.getText());
+                expensePayer = map.get(mi);
+            });
+        }
     }
 
     public void cancel() {
@@ -72,7 +82,7 @@ public class AddExpenseCtrl implements Initializable {
         try {
             System.out.println("Add expense");
             System.out.println("Id:" + event.getId());
-            server.addExpense(getExpense(),event);
+            server.addExpense(getExpense());
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -103,15 +113,14 @@ public class AddExpenseCtrl implements Initializable {
 ////        });
 //    }
 
-    public Expense getExpense() {
+    public ExpenseDTO getExpense() {
         System.out.println("Get expense");
-//        var paidBy = this.whoPaid.getValue();
         var description = this.whatFor.getText();
         var amount = howMuch.getText();
         var currency = this.currency.getValue();
         var date = this.date.getValue();
         //var tags = this.tags.getText();
-        Expense result = new Expense(description, currency,
+        ExpenseDTO result = new ExpenseDTO(description, currency, expensePayer,
                 Double.parseDouble(amount), java.sql.Date.valueOf(date));
         System.out.println(result.toString());
         return result;

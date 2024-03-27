@@ -17,11 +17,11 @@ package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import java.io.*;
-
 import client.Config;
-import commons.Event;
-import commons.Expense;
+import commons.Participant;
+import commons.dto.EventDTO;
+import commons.dto.ExpenseDTO;
+import commons.dto.ParticipantDTO;
 import jakarta.ws.rs.BadRequestException;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -32,27 +32,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class ServerUtilsEvent {
     private static final String SERVER = "http://localhost:8080/";
-//    public void getEventsTheHardWay() throws IOException, URISyntaxException {
-//        var url = new URI("http://localhost:8080/api/events").toURL();
-//        var is = url.openConnection().getInputStream();
-//        var br = new BufferedReader(new InputStreamReader(is));
-//        String line;
-//        while ((line = br.readLine()) != null) {
-//            System.out.println(line);
-//        }
-//    }
 
-//    public List<Event> getEvents() {
-//        return ClientBuilder.newClient(new ClientConfig()) //
-//                .target(SERVER).path("api/events") //
-//                .request(APPLICATION_JSON) //
-//                .accept(APPLICATION_JSON) //
-//                .get(new GenericType<>() {
-//                });
-//    }
-
-    public Event getByID(Long id) {
-        Event event;
+    public EventDTO getByID(Long id) {
+        EventDTO event;
         try {
             event = ClientBuilder.newClient(new ClientConfig()) //
                     .target(SERVER).path("api/events/" + id) //
@@ -66,12 +48,12 @@ public class ServerUtilsEvent {
         return event;
     }
 
-    public Event addEvent(Event event) {
-        Event saved = ClientBuilder.newClient(new ClientConfig()) //
+    public EventDTO addEvent(EventDTO event) {
+        EventDTO saved = ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/events") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(event, APPLICATION_JSON), Event.class);
+                .post(Entity.entity(event, APPLICATION_JSON), EventDTO.class);
         System.out.println("Add event" + saved);
 
         Config.get().addPastID(String.valueOf(saved.getId()));
@@ -79,20 +61,25 @@ public class ServerUtilsEvent {
         return saved;
     }
 
-    public Expense addExpense(Expense expense, Event event) {
+    public ExpenseDTO addExpense(ExpenseDTO expense) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(getServer()).path("/api/events/'+event.getId()+'/expenses") //
+                .target(getServer()).path("/api/expenses") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(expense, APPLICATION_JSON), Expense.class);
+                .post(Entity.entity(expense, APPLICATION_JSON), ExpenseDTO.class);
     }
 
-    public Event editEventTitle(String editedTitle, Event event) {
+    public EventDTO editEventTitle(String editedTitle, EventDTO event) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(getServer()).path("/api/events/" + event.getId()+ "/title")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .put(Entity.entity(editedTitle, APPLICATION_JSON), Event.class);
+                .put(Entity.entity(editedTitle, APPLICATION_JSON), EventDTO.class);
+    }
+
+    public Participant addParticipant(ParticipantDTO participant, EventDTO event) {
+        //TODO
+        return null;
     }
 
     //    public Event modifyEvent(Event event) {
@@ -108,7 +95,7 @@ public class ServerUtilsEvent {
         return Config.get().getHost();
     }
 
-    public void deleteEvent(Event event) {
+    public void deleteEvent(EventDTO event) {
         ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/events/" + event.getId()) //
                 .request(APPLICATION_JSON) //
@@ -118,4 +105,5 @@ public class ServerUtilsEvent {
 
         //Config.get().addPastID(String.valueOf(saved.getId()));
     }
+
 }

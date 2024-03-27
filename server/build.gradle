@@ -12,6 +12,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation group:'org.modelmapper',name:'modelmapper',version:'2.1.1'
 
 	// NotNull & Nullable annotations
 	implementation 'org.jetbrains:annotations:24.1.0'
