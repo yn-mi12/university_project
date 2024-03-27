@@ -2,7 +2,6 @@ package server.api;
 
 import java.util.List;
 
-import commons.Event;
 import commons.Expense;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
