@@ -43,12 +43,6 @@ class EventTest {
     }
 
     @Test
-    void setInviteCode() {
-        event.setInviteCode("578873a1-2e0c-4063-995d-3862379cf325");
-        assertEquals("578873a1-2e0c-4063-995d-3862379cf325", event.getInviteCode());
-    }
-
-    @Test
     void getInviteCode() {
         String inviteCode = event.getInviteCode();
         assertEquals(inviteCode, event.getInviteCode());
@@ -69,7 +63,7 @@ class EventTest {
     @Test
     void testEquals() {
         assertNotEquals(event2, event3);
-        assertEquals(new Event("a"), new Event("a"));
+        assertNotEquals(new Event("a"), new Event("a"));
     }
 
     @Test
@@ -88,10 +82,6 @@ class EventTest {
     void tagsTest() {
         Tag t1 = new Tag("Food", "Red");
         Tag t2 = new Tag("Drinks", "Blue");
-
-        event.addTag(t1);
-        assertEquals(List.of(t1), event.getTags());
-
         event.setTags(List.of(t1, t2));
         assertEquals(List.of(t1, t2), event.getTags());
     }

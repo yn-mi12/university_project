@@ -123,7 +123,7 @@ public class Expense {
                 ", currency='" + currency + '\'' +
                 ", amount=" + amount +
                 ", date=" + date +
-                ", tags=" + tag +
+                ", tag=" + tag +
                 '}';
     }
 }

@@ -178,9 +178,9 @@ public class TestParticipantRepository implements ParticipantRepository {
         return null;
     }
 
+
     @Override
-    public List<Participant> findByEventId(long eventId) {
-        calledMethods.add("findAll");
-        return participants;
+    public List<Participant> findByEventId(Long eventId) {
+        return null;
     }
 }
