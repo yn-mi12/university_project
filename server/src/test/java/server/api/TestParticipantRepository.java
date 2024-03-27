@@ -58,7 +58,7 @@ public class TestParticipantRepository implements ParticipantRepository {
     }
 
     private Optional<Participant> find(Long id){
-        return participants.stream().filter(p -> p.id == id).findFirst();
+        return participants.stream().filter(p -> p.getId() == id).findFirst();
     }
 
     @Override
@@ -105,7 +105,7 @@ public class TestParticipantRepository implements ParticipantRepository {
     @Override
     public <S extends Participant> S save(S entity) {
         call("save");
-        entity.id = (long) participants.size();
+        entity.setId(participants.size());
         participants.add(entity);
         return entity;
     }
