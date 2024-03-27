@@ -1,25 +1,34 @@
 package commons;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpenseTest {
 
     private Expense e1;
     private Expense e2;
+    private Event event;
 
     @BeforeEach
     public void setUp() {
+        event = new Event("test");
         e1 = new Expense("item", "EUR", 20,
                 Date.valueOf(LocalDate.now()));
         e2 = new Expense("item", "EUR", 20,
                 Date.valueOf(LocalDate.now()));
+    }
+
+    @Test
+    public void testConstructor() {
+        assertNotNull(e1);
+        assertNotNull(e2);
     }
 
     @Test
@@ -75,8 +84,23 @@ public class ExpenseTest {
     }
 
     @Test
+    public void eventTest() {
+        e1.setEvent(event);
+        assertEquals(event, e1.getEvent());
+    }
+
+    @Test
+    public void debtorsTest() {
+        Set<ExpenseParticipant> debtors = new HashSet<>();
+        debtors.add(new ExpenseParticipant(e1, new Participant("Jane", "Doe"), 50, false));
+        debtors.add(new ExpenseParticipant(e1, new Participant("John", "Doe"), 50, true));
+        e1.setDebtors(debtors);
+        assertEquals(debtors, e1.getDebtors());
+    }
+
+    @Test
     public void toStringTest() {
-        assertEquals("Expense{id=0, description='item', currency='EUR', amount=20.0, date=" + Date.valueOf(LocalDate.now()) + ", tag=null}"
-                , e1.toString());
+        assertEquals("Expense{id=0, description='item', currency='EUR', amount=20.0, date=" +
+                        Date.valueOf(LocalDate.now()) + ", tag=null}", e1.toString());
     }
 }

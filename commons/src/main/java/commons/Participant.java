@@ -86,16 +86,31 @@ public class Participant {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Participant that = (Participant) o;
-        return Objects.equals(firstName, that.firstName)
-                && Objects.equals(lastName, that.lastName);
+        if(email == null) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Participant that = (Participant) o;
+            return Objects.equals(firstName, that.firstName)
+                    && Objects.equals(lastName, that.lastName);
+        } else {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Participant that = (Participant) o;
+            return Objects.equals(firstName, that.firstName)
+                    && Objects.equals(lastName, that.lastName)
+                    && Objects.equals(email, that.email);
+        }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName);
+        int hashcode;
+        if(email == null) {
+            hashcode = Objects.hash(firstName, lastName);
+        } else {
+            hashcode = Objects.hash(firstName, lastName, email);
+        }
+        return hashcode;
     }
 
     @Override

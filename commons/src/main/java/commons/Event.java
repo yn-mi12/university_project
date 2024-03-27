@@ -57,9 +57,12 @@ public class Event {
         return participants;
     }
 
+    public void addParticipant(Participant participant) { participants.add(participant); }
+
     public void setParticipants(List<Participant> participants) {
         this.participants = participants;
     }
+    public void addExpense(Expense newExpense){ expenses.add(newExpense); }
 
     public List<Expense> getExpenses() {
         return expenses;
@@ -72,6 +75,8 @@ public class Event {
     public List<Tag> getTags() {
         return tags;
     }
+
+    public void addTag (Tag tag) { tags.add(tag); }
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;

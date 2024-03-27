@@ -55,6 +55,18 @@ class EventTest {
     }
 
     @Test
+    void getParticipants() {
+        event.addParticipant(p);
+        assertEquals(List.of(p), event.getParticipants());
+    }
+
+    @Test
+    void getExpenses() {
+        event.addExpense(e);
+        assertEquals(expenseList, event.getExpenses());
+    }
+
+    @Test
     void setExpenses() {
         event.setExpenses(expenseList);
         assertEquals(expenseList, event.getExpenses());
@@ -82,6 +94,10 @@ class EventTest {
     void tagsTest() {
         Tag t1 = new Tag("Food", "Red");
         Tag t2 = new Tag("Drinks", "Blue");
+
+        event.addTag(t1);
+        assertEquals(List.of(t1), event.getTags());
+
         event.setTags(List.of(t1, t2));
         assertEquals(List.of(t1, t2), event.getTags());
     }

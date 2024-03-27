@@ -7,10 +7,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "expense_participant")
 public class ExpenseParticipant {
     @Id
-    private final UUID id = UUID.randomUUID();
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long id;
     @JsonIgnore
     @ManyToOne
     private Expense expense;
@@ -29,9 +29,11 @@ public class ExpenseParticipant {
     }
 
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
+
+    public void setId(long id) { this.id = id; }
 
     public Expense getExpense() {
         return expense;
@@ -70,12 +72,13 @@ public class ExpenseParticipant {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ExpenseParticipant that = (ExpenseParticipant) o;
-        return Objects.equals(id, that.id);
+        return share == that.share && owner == that.owner && Objects.equals(expense, that.expense)
+                && Objects.equals(participant, that.participant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(expense, participant, share, owner);
     }
 
     @Override
