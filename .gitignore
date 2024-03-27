@@ -1,4 +1,6 @@
 client/config.yml
+client/src/main/java/client/utils/events.txt
+h2-database.trace.db
 HELP.md
 .gradle
 build/
