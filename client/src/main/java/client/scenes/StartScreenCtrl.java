@@ -84,24 +84,26 @@ public class StartScreenCtrl implements Initializable {
     public void refresh() {
         Set<String> ids = Config.get().getPastIDs();
 
-        if (!ids.isEmpty()) {
+        if(!ids.isEmpty()) {
 
             List<Event> events = new ArrayList<>();
             List<String> titles = new ArrayList<>();
             List<String> removedIDs = new ArrayList<>();
 
             for (String id : ids) {
+                try {
                 Event e = server.getByID(Long.valueOf(id));
                 if (e != null) {
                     events.add(e);
                     titles.add(e.getId() + ": " + e.getTitle());
-                } else {
+                }
+                } catch (Exception e){
                     removedIDs.add(id);
                 }
             }
 
             // Removes the ids that do not correspond to an event in the database
-            for (String removed : removedIDs) {
+            for(String removed : removedIDs) {
                 Config.get().removePastID(removed);
             }
 
