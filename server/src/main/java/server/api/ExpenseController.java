@@ -2,14 +2,10 @@ package server.api;
 
 import java.util.List;
 
+import commons.Event;
 import commons.Expense;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import server.database.EventRepository;
 import server.database.ExpenseRepository;
@@ -122,11 +118,26 @@ public class ExpenseController {
             if (zz != eid)
                 return ResponseEntity.badRequest().build();
         }
-        if (shareSum != 100 || ownerCount == 1 || isNullOrEmpty(expense.getDescription()) || expense.getAmount() <= 0 ) {
+        if (shareSum != 100 || ownerCount != 1 || isNullOrEmpty(expense.getDescription()) || expense.getAmount() <= 0 ) {
             return ResponseEntity.badRequest().build();
         } //TODO: Add checks for Date
         Expense saved = repo.save(expense);
         return ResponseEntity.ok(saved);
+    }
+
+    /**
+     * Deletes the Expense from repository
+     * @param id - The ID of Expense to be deleted
+     * @return - Deleted Expense
+     */
+    @DeleteMapping("/{ex_id}")
+    public ResponseEntity<Expense> deleteById(@PathVariable("ex_id") long id){
+        if (id < 0 || !repo.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        Expense x = repo.findById(id).orElse(null);
+        repo.deleteById(id);
+        return ResponseEntity.ok(x);
     }
 
     /**
