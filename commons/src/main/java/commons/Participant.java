@@ -10,11 +10,11 @@ import java.util.Set;
 public class Participant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public long id;
-    public String firstName;
-    public String lastName;
+    private long id;
+    private String firstName;
+    private String lastName;
     //Optional parameter. Will not be part of equals or hashcode.
-    public String email;
+    private String email;
     @JsonIgnore
     @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
     private Set<ExpenseParticipant> expenseWhereDebtor;

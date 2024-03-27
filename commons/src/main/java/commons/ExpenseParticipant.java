@@ -9,7 +9,7 @@ import java.util.Objects;
 public class ExpenseParticipant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public long id;
+    private long id;
     @JsonIgnore
     @ManyToOne
     private Expense expense;

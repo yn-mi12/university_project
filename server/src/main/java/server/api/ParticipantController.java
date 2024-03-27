@@ -100,7 +100,7 @@ public class ParticipantController {
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Participant> save(@RequestBody Participant participant) {
 
-        if (participant == null || isNullOrEmpty(participant.firstName) || isNullOrEmpty(participant.lastName)) {
+        if (participant == null || isNullOrEmpty(participant.getFirstName()) || isNullOrEmpty(participant.getLastName())) {
             return ResponseEntity.badRequest().build();
         }
 
