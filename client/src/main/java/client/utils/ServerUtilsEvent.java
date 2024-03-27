@@ -54,7 +54,7 @@ public class ServerUtilsEvent {
                 .target(SERVER).path("api/events") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(event, APPLICATION_JSON), EventDTO.class);
+                .post(Entity.entity(event, APPLICATION_JSON), Event.class);
         System.out.println("Add event" + saved);
 
         Config.get().addPastID(String.valueOf(saved.getId()));
