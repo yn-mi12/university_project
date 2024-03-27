@@ -10,6 +10,8 @@ supported-locales:
     code: "en"
   - name: "Nederlands"
     code: "nl"
+  - name: "Romanian"
+    code: "ro"
 
 # The ids of the past events
 past-ids: ['1']
