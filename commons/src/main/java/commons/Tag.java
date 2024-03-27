@@ -48,14 +48,6 @@ public class Tag {
     }
 
     /**
-     * Setter for the id of the Tag
-     * @param id - The new id of the Tag
-     */
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    /**
      * Getter for the label of the Tag
      * @return - The label of the Tag
      */
