@@ -12,4 +12,4 @@ supported-locales:
     code: "nl"
 
 # The ids of the past events
-past-ids: []
+past-ids: ['1']

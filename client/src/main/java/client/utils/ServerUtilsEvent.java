@@ -43,7 +43,7 @@ public class ServerUtilsEvent {
                     .accept(APPLICATION_JSON) //
                     .get(new GenericType<>() {
                     });
-        } catch(BadRequestException e) {
+        } catch(jakarta.ws.rs.NotFoundException e) {
             event = null;
         }
         return event;
