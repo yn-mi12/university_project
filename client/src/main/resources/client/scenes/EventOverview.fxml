@@ -30,7 +30,7 @@
       <Button focusTraversable="false" layoutX="356.0" layoutY="116.0" mnemonicParsing="false" onAction="#addParticipant" prefHeight="25.0" prefWidth="106.0" text="%add_participant_button" />
       <Button focusTraversable="false" layoutX="363.0" layoutY="211.0" mnemonicParsing="false" onAction="#addExpense" prefHeight="25.0" prefWidth="106.0" text="%add_expense_button" wrapText="true" />
       <Button focusTraversable="false" layoutX="203.0" layoutY="211.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="%view_expense_button" />
-      <ChoiceBox fx:id="languageBox" focusTraversable="false" layoutX="369.0" layoutY="456.0" prefHeight="25.0" prefWidth="114.0" />
+      <ComboBox fx:id="languageBox" focusTraversable="false" layoutX="369.0" layoutY="456.0" prefHeight="25.0" prefWidth="114.0" />
       <Text fontSmoothingType="LCD" layoutX="373.0" layoutY="451.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%language_choice">
          <font>
             <Font size="13.0" />
