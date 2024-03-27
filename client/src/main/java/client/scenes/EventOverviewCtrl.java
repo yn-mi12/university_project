@@ -15,6 +15,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -30,6 +32,7 @@ import static jakarta.ws.rs.core.Response.ok;
 
 public class EventOverviewCtrl implements Initializable {
     private final ServerUtilsEvent server;
+    public Label inviteCode;
     private Participant expensePayer;
     private final SplittyCtrl controller;
     private List<Participant> participants;
@@ -79,6 +82,7 @@ public class EventOverviewCtrl implements Initializable {
                 expensePayer = map.get(mi);
             });
         }
+        inviteCode.setText(event.getInviteCode());
     }
 
     @SuppressWarnings("java.lang.ClassCastException")
@@ -176,5 +180,11 @@ public class EventOverviewCtrl implements Initializable {
 
         //clearFields();
         controller.showOverview();
+    }
+
+    public void copyCode() {
+        ClipboardContent content = new ClipboardContent();
+        content.putString(inviteCode.getText());
+        Clipboard.getSystemClipboard().setContent(content);
     }
 }

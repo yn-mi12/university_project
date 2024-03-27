@@ -14,13 +14,13 @@
       <TextField fx:id="titleField" layoutX="96.0" layoutY="51.0" prefHeight="26.0" prefWidth="227.0" promptText="%title_field" />
       <Text layoutX="96.0" layoutY="115.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%event_join" />
       <TextField fx:id="codeField" layoutX="96.0" layoutY="133.0" prefHeight="26.0" prefWidth="227.0" promptText="%code_field" />
-      <Button layoutX="379.0" layoutY="133.0" mnemonicParsing="false" onAction="#viewEvent" prefHeight="26.0" prefWidth="99.0" text="%join_button" />
-      <ComboBox fx:id="languageBox" layoutX="422.0" layoutY="352.0" prefWidth="150.0"/>
-      <Text layoutX="422.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%language_choice" />
-      <Button layoutX="379.0" layoutY="51.0" mnemonicParsing="false" onAction="#createEvent" prefHeight="26.0" prefWidth="99.0" text="%create_button" />
+      <Button layoutX="380.0" layoutY="133.0" mnemonicParsing="false" onAction="#viewEvent" minWidth="100" text="%join_button" />
+      <ComboBox fx:id="languageBox" layoutX="380.0" layoutY="352.0" prefWidth="150.0"/>
+      <Text layoutX="380.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%language_choice" />
+      <Button layoutX="380.0" layoutY="51.0" mnemonicParsing="false" onAction="#createEvent" minWidth="100" text="%create_button" />
       <Accordion layoutX="59.0" layoutY="218.0" />
       <Text layoutX="96.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%recent_events" />
       <ListView fx:id="eventList" layoutX="96.0" layoutY="218.0" prefHeight="141.0" prefWidth="227.0" />
-      <Button layoutX="379.0" layoutY="218.0" mnemonicParsing="false" onAction="#showEvent" prefHeight="26.0" prefWidth="99.0" text="%show_event_button" />
+      <Button layoutX="380.0" layoutY="218.0" mnemonicParsing="false" onAction="#showEvent" minWidth="100" text="%show_event_button" />
    </children>
 </AnchorPane>
