@@ -11,28 +11,38 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import server.database.EventRepository;
 import server.database.ExpenseRepository;
+import server.database.ParticipantRepository;
 
 @RestController
 @RequestMapping("/api/expenses")
 public class ExpenseController {
 
     private final ExpenseRepository repo;
+    private final EventRepository eventRepo;
+    private final ParticipantRepository partRepo;
 
     /**
      * The constructor for the ExpenseController class
      * @param repo   - The Expense repository
+     * @param eventRepo - The Event repository
      */
-    public ExpenseController(ExpenseRepository repo) {
+    public ExpenseController(ExpenseRepository repo, EventRepository eventRepo, ParticipantRepository partRepo) {
         this.repo = repo;
+        this.eventRepo = eventRepo;
+        this.partRepo = partRepo;
     }
 
     /**
      * @return - all the expenses currently stored
      */
     @GetMapping("/event/{ev_id}")
-    public List<Expense> findAddByEventID(@PathVariable("ev_id") long id) {
-        return repo.findAllByEventId(id);
+    public ResponseEntity<List<Expense>> findAddByEventID(@PathVariable("ev_id") long id) {
+        if (id < 0 || !eventRepo.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(repo.findAllByEventId(id));
     }
 
     /**
@@ -55,6 +65,9 @@ public class ExpenseController {
      */
     @GetMapping("/participant/{p_id}")
     public ResponseEntity<List<Expense>> findAllByParticipantId(@PathVariable("p_id") long pid) {
+        if (pid < 0 || !partRepo.existsById(pid)) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(repo.findAllByParticipantId(pid));
     }
 
@@ -64,6 +77,9 @@ public class ExpenseController {
      */
     @GetMapping("/participant/{p_id}/owner")
     public ResponseEntity<List<Expense>> findAllByParticipantIdWhereOwner(@PathVariable("p_id") long pid) {
+        if (pid < 0 || !partRepo.existsById(pid)) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(repo.findAllByParticipantIdWhereOwner(pid));
     }
 
@@ -73,28 +89,45 @@ public class ExpenseController {
      */
     @GetMapping("/participant/{p_id}/debts")
     public ResponseEntity<List<Expense>> findAllByParticipantIdWhereDebt(@PathVariable("p_id") long pid) {
+        if (pid < 0 || !partRepo.existsById(pid)) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(repo.findAllByParticipantIdWhereDebt(pid));
     }
 
-//    /**
-//     * Adds an Expense to the repository
-//     *
-//     * @param expense - The expense to be added
-//     * @return - The saved Expense
-//     */
-//    @PostMapping(path = {"", "/"})
-//    public ResponseEntity<Expense> save(@RequestBody Expense expense) {
-//
-//        if (expense.getPaidBy() == null || isNullOrEmpty(expense.getPaidBy().getFirstName())
-//                || isNullOrEmpty(expense.getPaidBy().getLastName())
-//                || isNullOrEmpty(expense.getDescription())
-//                || expense.getAmount() == 0) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        Expense saved = repo.save(expense);
-//        return ResponseEntity.ok(saved);
-//    }
+    /**
+     * Adds an Expense to the repository
+     * @param eid - The Event to which the expense should be added
+     * @param expense - The expense to be added
+     * @return - The saved Expense
+     */
+    @PostMapping("/event/{ev_id}")
+    public ResponseEntity<Expense> save(@RequestBody Expense expense, @PathVariable("ev_id") long eid) {
+        if (eid < 0 || !eventRepo.existsById(eid)) {
+            return ResponseEntity.notFound().build();
+        } else {
+            expense.setEvent(eventRepo.getReferenceById(eid));
+        }
+        //Check if all Participants exist and are in the same event
+        //Check that there is 1 owner
+        //Check that shares add up to 100%
+        int shareSum = 0;
+        int ownerCount = 0;
+        for(var i: expense.getDebtors()) {
+            i.setExpense(expense);
+            shareSum += i.getShare();
+            if (i.isOwner()) ownerCount++;
+            if (partRepo.findById(i.getParticipant().getId()).isEmpty()) return ResponseEntity.badRequest().build();
+            var zz = partRepo.findById(i.getParticipant().getId()).get().getEvent().getId();
+            if (zz != eid)
+                return ResponseEntity.badRequest().build();
+        }
+        if (shareSum != 100 || ownerCount == 1 || isNullOrEmpty(expense.getDescription()) || expense.getAmount() <= 0 ) {
+            return ResponseEntity.badRequest().build();
+        } //TODO: Add checks for Date
+        Expense saved = repo.save(expense);
+        return ResponseEntity.ok(saved);
+    }
 
     /**
      * Checks if the provided string is null or empty
