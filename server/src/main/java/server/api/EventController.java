@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import server.database.EventRepository;
 
 import org.springframework.http.ResponseEntity;
-import server.security.RequiresAdmin;
 
 @RestController
 @RequestMapping("api/events")
