@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+import java.util.UUID;
 
 @Entity
 public class Event {
@@ -13,16 +13,11 @@ public class Event {
     private long id;
     private String title;
     private String inviteCode;
-
-    public void setInviteCode(String inviteCode) {
-        this.inviteCode = inviteCode;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
-    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expenses = new ArrayList<>();
-    @OneToMany(cascade=CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags = new ArrayList<>();
 
     @SuppressWarnings("unused")
@@ -34,90 +29,48 @@ public class Event {
      */
     public Event(String title) {
         this.title = title;
+        this.inviteCode = UUID.randomUUID().toString();
     }
 
-    /**
-     * Getter for the id
-     * @return the id of the event
-     */
     public long getId() {
         return id;
     }
 
-    /**
-     * Getter for the title
-     * @return the title of the event
-     */
+    //TESTING ONLY
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
 
-    /**
-     * Setter for the title
-     * @param title new title
-     */
     public void setTitle(String title) {
         this.title = title;
     }
 
-    /**
-     * Getter for the invite code
-     * @return the invite code
-     */
     public String getInviteCode() {
         return inviteCode;
     }
 
-    /**
-     * Getter for the participants
-     * @return the participants
-     */
     public List<Participant> getParticipants() {
         return participants;
     }
 
-    public void addParticipant(Participant participant) {
-        participants.add(participant);
-    }
-
-    /**
-     * Setter for the participants
-     * @param participants ne participants
-     */
     public void setParticipants(List<Participant> participants) {
         this.participants = participants;
     }
 
-    /**
-     * Getter for the expenses
-     * @return the expenses
-     */
     public List<Expense> getExpenses() {
         return expenses;
     }
 
-    /**
-     * Adds a new expense to the expense list
-     * @param newExpense the expense to be added
-     */
-    public void addExpense(Expense newExpense){
-        expenses.add(newExpense);
-    }
-
-    /**
-     * Setter for the expenses
-     * @param expenses the new expenses
-     */
     public void setExpenses(List<Expense> expenses) {
         this.expenses = expenses;
     }
 
     public List<Tag> getTags() {
         return tags;
-    }
-
-    public void addTag (Tag tag) {
-        tags.add(tag);
     }
 
     public void setTags(List<Tag> tags) {
@@ -166,7 +119,4 @@ public class Event {
                 '}';
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
 }

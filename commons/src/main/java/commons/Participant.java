@@ -1,8 +1,11 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+
 @Entity
 public class Participant {
     @Id
@@ -12,16 +15,12 @@ public class Participant {
     public String lastName;
     //Optional parameter. Will not be part of equals or hashcode.
     public String email;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
+    private Set<ExpenseParticipant> expenseWhereDebtor;
+    @JsonIgnore
+    @ManyToOne
     private Event event;
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
 
     @SuppressWarnings("unused")
     public Participant() {}
@@ -37,12 +36,12 @@ public class Participant {
         this.email = email;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -67,6 +66,22 @@ public class Participant {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Set<ExpenseParticipant> getExpenseWhereDebtor() {
+        return expenseWhereDebtor;
+    }
+
+    public void setExpenseWhereDebtor(Set<ExpenseParticipant> expenseWhereDebtor) {
+        this.expenseWhereDebtor = expenseWhereDebtor;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     @Override

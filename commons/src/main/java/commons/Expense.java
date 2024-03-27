@@ -1,8 +1,11 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Expense {
@@ -10,26 +13,20 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String description;
-    @ManyToOne
-    private Participant paidBy;
+    @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL)
+    private Set<ExpenseParticipant> debtors;
     private String currency;
     private double amount;
     private Date date;
     @ManyToOne
     private Tag tag;
+    @JsonIgnore
+    @ManyToOne
+    private Event event;
 
     @SuppressWarnings("unused")
     public Expense() {}
 
-    public Expense(String description, Participant paidBy, String currency, double amount, Date date) {
-        this.description = description;
-        this.paidBy = paidBy;
-        this.currency = currency;
-        this.amount = amount;
-        this.date = date;
-    }
-
-    // TO BE DELETED, some @Dan controllers dont work otherwise
     public Expense(String description, String currency, double amount, Date date) {
         this.description = description;
         this.currency = currency;
@@ -37,7 +34,7 @@ public class Expense {
         this.date = date;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -51,6 +48,14 @@ public class Expense {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<ExpenseParticipant> getDebtors() {
+        return debtors;
+    }
+
+    public void setDebtors(Set<ExpenseParticipant> debtors) {
+        this.debtors = debtors;
     }
 
     public String getCurrency() {
@@ -77,20 +82,20 @@ public class Expense {
         this.date = date;
     }
 
-    public Participant getPaidBy() {
-        return paidBy;
-    }
-
-    public void setPaidBy(Participant paidBy) {
-        this.paidBy = paidBy;
-    }
-
     public Tag getTag() {
         return tag;
     }
 
     public void setTag(Tag tag) {
         this.tag = tag;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     @Override
@@ -100,7 +105,6 @@ public class Expense {
         Expense expense = (Expense) o;
         return Double.compare(amount, expense.amount) == 0 &&
                 Objects.equals(description, expense.description) &&
-                Objects.equals(paidBy, expense.paidBy) &&
                 Objects.equals(currency, expense.currency) &&
                 Objects.equals(date, expense.date) &&
                 Objects.equals(tag, expense.tag);
@@ -108,7 +112,7 @@ public class Expense {
 
     @Override
     public int hashCode() {
-        return Objects.hash(description, paidBy, currency, amount, date, tag);
+        return Objects.hash(description, currency, amount, date, tag);
     }
 
     @Override
@@ -116,7 +120,6 @@ public class Expense {
         return "Expense{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
-                ", paidBy=" + paidBy +
                 ", currency='" + currency + '\'' +
                 ", amount=" + amount +
                 ", date=" + date +

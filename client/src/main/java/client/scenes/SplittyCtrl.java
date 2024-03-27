@@ -1,7 +1,7 @@
 package client.scenes;
 
-import commons.dto.EventDTO;
-import commons.dto.ParticipantDTO;
+import commons.Event;
+import commons.Participant;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -97,7 +97,7 @@ public class SplittyCtrl {
 //        modify.setOnKeyPressed(e -> modifyCtrl.keyPressed(e));
 //    }
 
-    public void showEventOverview(EventDTO selectedEvent){
+    public void showEventOverview(Event selectedEvent){
         primaryStage.setTitle("Event: " + selectedEvent.getTitle());
         this.eventCtrl.setSelectedEvent(selectedEvent);
         this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
@@ -105,7 +105,7 @@ public class SplittyCtrl {
         event.setOnKeyPressed(e -> eventCtrl.keyPressed(e));
     }
 
-    public void showInvitePage(EventDTO selectedEvent) {
+    public void showInvitePage(Event selectedEvent) {
         primaryStage.setTitle("Event: " + selectedEvent.getTitle());
         //this.inviteCtrl.setSelectedEvent(selectedEvent);
         this.inviteCtrl.eventInviteTitle.setText(selectedEvent.getTitle());
@@ -114,8 +114,8 @@ public class SplittyCtrl {
         primaryStage.setScene(invite);
         invite.setOnKeyPressed(e -> inviteCtrl.keyPressed(e));
     }
-    public void initExpShowOverview(EventDTO event,
-                                    ParticipantDTO paid) {
+    public void initExpShowOverview(Event event,
+                                    Participant paid) {
         addExpenseCtrl.setEvent(paid,eventCtrl);
 
         showExpOverview();
@@ -131,7 +131,7 @@ public class SplittyCtrl {
     }
 
 
-    public void showEditTitle(EventDTO event) {
+    public void showEditTitle(Event event) {
         primaryStage.setTitle("Edit Title");
         primaryStage.setScene(editTitle);
         this.editTitleCtrl.setEvent(event);
@@ -140,7 +140,7 @@ public class SplittyCtrl {
     }
 
 
-    public void showAddParticipant(EventDTO event) {
+    public void showAddParticipant(Event event) {
         primaryStage.setTitle("Add participant");
         primaryStage.setScene(addParticipant);
         this.addParticipantCtrl.setEvent(event);

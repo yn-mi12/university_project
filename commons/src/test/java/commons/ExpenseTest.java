@@ -11,21 +11,15 @@ import java.time.LocalDate;
 
 public class ExpenseTest {
 
-    Expense e1;
-    Expense e2;
+    private Expense e1;
+    private Expense e2;
 
     @BeforeEach
     public void setUp() {
-        e1 = new Expense("item", new Participant("me", ""), "EUR", 20,
+        e1 = new Expense("item", "EUR", 20,
                 Date.valueOf(LocalDate.now()));
-        e2 = new Expense("item", new Participant("me", ""), "EUR", 20,
+        e2 = new Expense("item", "EUR", 20,
                 Date.valueOf(LocalDate.now()));
-    }
-
-    @Test
-    public void checkConstructor() {
-        assertEquals("me", e1.getPaidBy().firstName);
-        assertEquals(20, e1.getAmount());
     }
 
     @Test
@@ -36,7 +30,7 @@ public class ExpenseTest {
 
     @Test
     public void notEqualsHashCode() {
-        Expense e3 = new Expense("drinks", new Participant("me", ""), "USD", 10,
+        Expense e3 = new Expense("drinks", "USD", 10,
                 Date.valueOf(LocalDate.now()));
         assertNotEquals(e1, e3);
         assertNotEquals(e1.hashCode(), e3.hashCode());
@@ -74,13 +68,6 @@ public class ExpenseTest {
     }
 
     @Test
-    public void paidByTest() {
-        Participant payer = new Participant("John", "Doe");
-        e1.setPaidBy(payer);
-        assertEquals(payer, e1.getPaidBy());
-    }
-
-    @Test
     public void tagTest() {
         Tag t = new Tag("Food", "Red");
         e1.setTag(t);
@@ -89,8 +76,7 @@ public class ExpenseTest {
 
     @Test
     public void toStringTest() {
-        assertEquals("Expense{id=0, description='item', paidBy=Participant{id=0, firstName='me', " + "lastName='', "
-                        + "email='null'}, currency='EUR', amount=20.0, date=" + Date.valueOf(LocalDate.now()) + ", tag=null}"
+        assertEquals("Expense{id=0, description='item', currency='EUR', amount=20.0, date=" + Date.valueOf(LocalDate.now()) + ", tag=null}"
                 , e1.toString());
     }
 }

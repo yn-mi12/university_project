@@ -16,16 +16,6 @@ import java.util.function.Function;
 public class TestExpenseRepository implements ExpenseRepository {
     public final List<Expense> expenses = new ArrayList<>();
     public final List<String> calledMethods = new ArrayList<>();
-    @Override
-    public List<Expense> findByEventId(long eventId) {
-        calledMethods.add("findAll");
-        return expenses;
-    }
-
-    @Override
-    public List<Expense> findByParticipantId(long paidById) {
-        return null;
-    }
 
     @Override
     public void flush() {
@@ -178,6 +168,26 @@ public class TestExpenseRepository implements ExpenseRepository {
 
     @Override
     public Page<Expense> findAll(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<Expense> findAllByEventId(Long eventId) {
+        return null;
+    }
+
+    @Override
+    public List<Expense> findAllByParticipantId(Long participantId) {
+        return null;
+    }
+
+    @Override
+    public List<Expense> findAllByParticipantIdWhereOwner(Long participantId) {
+        return null;
+    }
+
+    @Override
+    public List<Expense> findAllByParticipantIdWhereDebt(Long participantId) {
         return null;
     }
 }

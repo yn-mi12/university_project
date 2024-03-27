@@ -4,7 +4,7 @@ import client.Config;
 import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-import commons.dto.EventDTO;
+import commons.Event;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -84,24 +84,26 @@ public class StartScreenCtrl implements Initializable {
     public void refresh() {
         Set<String> ids = Config.get().getPastIDs();
 
-        if (!ids.isEmpty()) {
+        if(!ids.isEmpty()) {
 
-            List<EventDTO> events = new ArrayList<>();
+            List<Event> events = new ArrayList<>();
             List<String> titles = new ArrayList<>();
             List<String> removedIDs = new ArrayList<>();
 
             for (String id : ids) {
-                EventDTO e = server.getByID(Long.valueOf(id));
-                if (e != null) {
-                    events.add(e);
-                    titles.add(e.getId() + ": " + e.getTitle());
-                } else {
+                try {
+                    Event e = server.getByID(Long.valueOf(id));
+                    if (e != null) {
+                        events.add(e);
+                        titles.add(e.getId() + ": " + e.getTitle());
+                    }
+                } catch (Exception e) {
                     removedIDs.add(id);
                 }
             }
 
             // Removes the ids that do not correspond to an event in the database
-            for (String removed : removedIDs) {
+            for(String removed : removedIDs) {
                 Config.get().removePastID(removed);
             }
 
@@ -119,15 +121,15 @@ public class StartScreenCtrl implements Initializable {
         String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
         String eventId = eventIdTitle.split(":")[0];
 //        this.pickedEventId = Long.parseLong(eventId);
-        EventDTO event = server.getByID(Long.parseLong(eventId));
+        Event event = server.getByID(Long.parseLong(eventId));
         eventCtrl.showEventOverview(event);
     }
 
-    public EventDTO getEvent() {
+    public Event getEvent() {
         String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
         String eventId = eventIdTitle.split(":")[0];
 //        pickedEventId = Long.parseLong(eventId);
-        EventDTO event = server.getByID(Long.parseLong(eventId));
+        Event event = server.getByID(Long.parseLong(eventId));
 
         return event;
     }

@@ -1,7 +1,9 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Tag {
@@ -11,6 +13,14 @@ public class Tag {
     private long id;
     private String label;
     private String color;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "tag")
+    private Set<Expense> expenses;
+
+    @JsonIgnore
+    @ManyToOne
+    private Event event;
 
     @SuppressWarnings("unused")
     public Tag() {}
@@ -33,10 +43,6 @@ public class Tag {
         return id;
     }
 
-    /**
-     * Setter for the id of the Tag
-     * @param id - The new id of the Tag
-     */
     public void setId(long id) {
         this.id = id;
     }
@@ -73,6 +79,21 @@ public class Tag {
         this.color = color;
     }
 
+    public Set<Expense> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(Set<Expense> expenses) {
+        this.expenses = expenses;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
 
     @Override
     public boolean equals(Object o) {

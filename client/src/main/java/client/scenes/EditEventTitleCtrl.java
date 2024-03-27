@@ -2,7 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-import commons.dto.EventDTO;
+import commons.Event;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -15,7 +15,7 @@ import javafx.stage.Modality;
 public class EditEventTitleCtrl {
     private final ServerUtilsEvent server;
     private final SplittyCtrl mainCtrl;
-    private EventDTO event;
+    private Event event;
 
     @FXML
     private TextField newTitle;
@@ -51,11 +51,11 @@ public class EditEventTitleCtrl {
         }
     }
 
-    public void setEvent(EventDTO event){
+    public void setEvent(Event event){
         this.event = event;
     }
 
-    public EventDTO getEvent(){
+    public Event getEvent(){
         return event;
     }
 

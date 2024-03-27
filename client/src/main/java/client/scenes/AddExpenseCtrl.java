@@ -2,9 +2,9 @@ package client.scenes;
 
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-import commons.dto.EventDTO;
-import commons.dto.ExpenseDTO;
-import commons.dto.ParticipantDTO;
+import commons.Event;
+import commons.Expense;
+import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,11 +21,11 @@ import java.util.ResourceBundle;
 
 public class AddExpenseCtrl implements Initializable {
     private EventOverviewCtrl ctrl;
-    private EventDTO event;
+    private Event event;
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
-    private List<ParticipantDTO> participants;
-    private ParticipantDTO expensePayer;
+    private List<Participant> participants;
+    private Participant expensePayer;
     @FXML
     private SplitMenuButton whoPaid;
     @FXML
@@ -51,15 +51,15 @@ public class AddExpenseCtrl implements Initializable {
         this.server = server;
     }
 
-    public void setEvent(ParticipantDTO paid, EventOverviewCtrl ctrl) {
+    public void setEvent(Participant paid, EventOverviewCtrl ctrl) {
         expensePayer = paid;
         this.ctrl = ctrl;
         this.event = ctrl.getSelectedEvent();
         this.participants = event.getParticipants();
         ObservableList<MenuItem> names = FXCollections.observableArrayList();
-        HashMap<MenuItem,ParticipantDTO> map = new HashMap<>();
+        HashMap<MenuItem,Participant> map = new HashMap<>();
 
-        for (ParticipantDTO p : participants) {
+        for (Participant p : participants) {
             MenuItem item = new MenuItem(p.getFirstName());
             names.add(item);
             map.put(item,p);
@@ -113,17 +113,17 @@ public class AddExpenseCtrl implements Initializable {
 ////        });
 //    }
 
-    public ExpenseDTO getExpense() {
-        System.out.println("Get expense");
-        var description = this.whatFor.getText();
-        var amount = howMuch.getText();
-        var currency = this.currency.getValue();
-        var date = this.date.getValue();
-        //var tags = this.tags.getText();
-        ExpenseDTO result = new ExpenseDTO(description, currency, expensePayer,
-                Double.parseDouble(amount), java.sql.Date.valueOf(date));
-        System.out.println(result.toString());
-        return result;
+    public Expense getExpense() {
+//        System.out.println("Get expense");
+//        var description = this.whatFor.getText();
+//        var amount = howMuch.getText();
+//        var currency = this.currency.getValue();
+//        var date = this.date.getValue();
+//        //var tags = this.tags.getText();
+//        Expense result = new Expense(description, currency, expensePayer,
+//                Double.parseDouble(amount), java.sql.Date.valueOf(date));
+//        System.out.println(result.toString());
+        return new Expense();
     }
 
 
