@@ -60,8 +60,9 @@ public class AddParticipantCtrl {
             participant = new Participant(partFirstName, partLastName, partEmail);
             server.addParticipant(participant, event);
             participant.setEvent(event);
-            System.out.println("Add Participant");
-            System.out.println("Id:" + event.getId());
+            event.addParticipant(participant);
+//            System.out.println("Add Participant");
+//            System.out.println("Id:" + event.getId());
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
@@ -70,8 +71,8 @@ public class AddParticipantCtrl {
             return;
         }
 
-        clearFields();
-        mainCtrl.showEventOverview(event);
+       // clearFields();
+        cancel();
     }
 
     private void clearFields() {
