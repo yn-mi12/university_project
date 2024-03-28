@@ -91,8 +91,11 @@ public class ServerUtilsEvent {
     }
 
     public Participant addParticipant(Participant participant, Event event) {
-        //TODO
-        return null;
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(getServer()).path("/api/events/" + event.getId() + "/participants") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(participant, APPLICATION_JSON), Participant.class);
     }
 
     //    public Event modifyEvent(Event event) {

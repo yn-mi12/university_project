@@ -3,23 +3,26 @@ package server.api;
 import java.util.List;
 
 import commons.Event;
+import commons.Participant;
 import org.springframework.web.bind.annotation.*;
 import server.database.EventRepository;
 
 import org.springframework.http.ResponseEntity;
+import server.database.ParticipantRepository;
 
 @RestController
 @RequestMapping("api/events")
 public class EventController {
 
     private final EventRepository repo;
-
+    private final ParticipantRepository partRepo;
     /**
      * The constructor for the EventController class
      * @param repo - The Event repository
      */
-    public EventController(EventRepository repo) {
+    public EventController(EventRepository repo, ParticipantRepository partRepo){
         this.repo = repo;
+        this.partRepo = partRepo;
     }
 
     /**
@@ -69,6 +72,19 @@ public class EventController {
 
         Event saved = repo.save(event);
         return ResponseEntity.ok(saved);
+    }
+    @RequestMapping(value = "/{id}/participants", method = RequestMethod.POST)
+    public ResponseEntity<Participant> saveParticipantToEvent(@RequestBody Participant participant,
+                                                              @PathVariable("id") long id) {
+
+        if (participant == null || isNullOrEmpty(participant.getFirstName()) || isNullOrEmpty(participant.getLastName())
+                || id < 0 || !repo.existsById(id)){
+            return ResponseEntity.badRequest().build();
+        }
+        Event event = repo.findById(id).get();
+        participant.setEvent(event);
+        partRepo.save(participant);
+        return ResponseEntity.ok(participant);
     }
 
     /**

@@ -15,7 +15,8 @@ class EventControllerTest {
     @BeforeEach
     void setUp() {
         repo = new TestEventRepository();
-        eventc = new EventController(repo);
+        TestParticipantRepository partRepo = new TestParticipantRepository();
+        eventc = new EventController(repo,partRepo);
     }
 
     @Test
