@@ -40,6 +40,8 @@ public class StartScreenCtrl implements Initializable {
     private TextField codeField;
     @FXML
     private Button showButton;
+    @FXML
+    private Label invalidCode;
 //    public static Long pickedEventId;
 
     @Inject
@@ -135,12 +137,14 @@ public class StartScreenCtrl implements Initializable {
             }
             eventCtrl.showEventOverview(event);
         } else {
-
+            invalidCode.setText("Invalid invite code!");
         }
 
     }
 
     public void refresh() {
+        invalidCode.setText("");
+        showButton.setDisable(true);
         Set<String> ids = Config.get().getPastIDs();
 
         if (!ids.isEmpty()) {
