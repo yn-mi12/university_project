@@ -102,6 +102,7 @@ public class SplittyCtrl {
         primaryStage.setScene(invite);
         invite.setOnKeyPressed(e -> inviteCtrl.keyPressed(e));
     }
+
     public void initExpShowOverview(Event event,
                                     Participant paid) {
         addExpenseCtrl.setEvent(paid,eventCtrl);
@@ -110,14 +111,12 @@ public class SplittyCtrl {
         primaryStage.show();
     }
 
-
     public void showExpOverview() {
         primaryStage.setTitle("Add/Edit expense");
         primaryStage.setScene(expense);
 
         expense.setOnKeyPressed(e -> addExpenseCtrl.keyPressed(e));
     }
-
 
     public void showEditTitle(Event event) {
         primaryStage.setTitle("Edit Title");
@@ -127,11 +126,14 @@ public class SplittyCtrl {
         editTitle.setOnKeyPressed(e -> editTitleCtrl.keyPressed(e));
     }
 
-
     public void showAddParticipant(Event event) {
         primaryStage.setTitle("Add participant");
         primaryStage.setScene(addParticipant);
         this.addParticipantCtrl.setEvent(event);
         addParticipant.setOnKeyPressed(e -> addParticipantCtrl.keyPressed(e));
+    }
+
+    public Stage getPrimaryStage() {
+        return primaryStage;
     }
 }
