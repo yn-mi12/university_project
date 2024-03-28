@@ -15,14 +15,10 @@
  */
 package client;
 
-import client.scenes.AddExpenseCtrl;
-import client.scenes.EventOverviewCtrl;
-import client.scenes.StartScreenCtrl;
+import client.scenes.*;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
-
-import client.scenes.SplittyCtrl;
 
 public class MyModule implements Module {
 
@@ -32,5 +28,8 @@ public class MyModule implements Module {
         binder.bind(EventOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(StartScreenCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AddExpenseCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AddParticipantCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(EditEventTitleCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(InvitationCtrl.class).in(Scopes.SINGLETON);
     }
 }
