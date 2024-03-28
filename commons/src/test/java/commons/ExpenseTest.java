@@ -29,6 +29,7 @@ public class ExpenseTest {
     public void testConstructor() {
         assertNotNull(e1);
         assertNotNull(e2);
+        assertNotNull(new Expense());
     }
 
     @Test

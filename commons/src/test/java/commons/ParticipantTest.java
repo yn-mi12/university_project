@@ -27,6 +27,7 @@ class ParticipantTest {
         assertEquals("a",withEmail.getFirstName());
         assertEquals("b",withEmail.getLastName());
         assertEquals("c",withEmail.getEmail());
+        assertNotNull(new Participant());
     }
 
     @Test
@@ -132,5 +133,6 @@ class ParticipantTest {
         ps.add(x);
         ps.add(y);
         assertEquals(x, Participant.getById(ps, 1));
+        assertNull(Participant.getById(ps, 3));
     }
 }

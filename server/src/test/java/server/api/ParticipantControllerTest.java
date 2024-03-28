@@ -76,8 +76,10 @@ public class ParticipantControllerTest {
         participants.add(saved);
         participants.add(saved2);
         List<Participant> find = partc.getByEventId(event.getId()).getBody();
+        var bad_req = partc.getByEventId(-1);
         assertTrue(repo.calledMethods.contains("getByEventId"));
         assertEquals(participants, find);
+        assertEquals(BAD_REQUEST, bad_req.getStatusCode());
     }
 
     @Test
@@ -93,8 +95,10 @@ public class ParticipantControllerTest {
     void getEmail() {
         Participant p = partc.save(getParticipant("a","b","c")).getBody();
         String email = partc.getEmail(p.getId()).getBody();
+        var bad_req = partc.getEmail(-1);
         assertTrue(repo.calledMethods.contains("save"));
         assertEquals("c", email);
+        assertEquals(BAD_REQUEST, bad_req.getStatusCode());
     }
 
 }

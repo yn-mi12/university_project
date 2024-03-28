@@ -23,6 +23,11 @@ class ExpenseParticipantTest {
     }
 
     @Test
+    void constructorTest() {
+        assertNotNull(ep1);
+        assertNotNull(new ExpenseParticipant());
+    }
+    @Test
     void getId() {
         ep1.setId(1);
         ep2.setId(2);

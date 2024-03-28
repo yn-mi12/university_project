@@ -20,12 +20,15 @@ public class TagTest {
     @Test
     void constructorTest() {
         assertNotNull(tag);
+        assertNotNull(new Tag());
     }
 
     @Test
     void testEquals() {
         Tag t2 = new Tag("Food", "Black");
         assertNotEquals(tag, t2);
+        Tag t3 = new Tag("Food", "Red");
+        assertEquals(tag, t3);
     }
 
     @Test

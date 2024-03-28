@@ -17,6 +17,8 @@ class EventTest {
     private final List<Participant> participantList = List.of(p);
     private final Expense e = new Expense("food", "$", 20, Date.valueOf(LocalDate.now()));
     private final List<Expense> expenseList = List.of(e);
+    private final Tag t = new Tag("Food", "Red");
+    private final List<Tag> tagList = List.of(t);
 
     @BeforeEach
     void setUp(){
@@ -26,11 +28,21 @@ class EventTest {
     }
 
     @Test
+    void constructorTest() {
+        assertNotNull(event);
+        assertNotNull(new Event());
+    }
+    @Test
     void getId() {
         long id = event.getId();
         assertEquals(id, event.getId());
     }
 
+    @Test
+    void setId() {
+        event.setId(1);
+        assertEquals(1, event.getId());
+    }
     @Test
     void getTitle() {
         assertEquals("Event1", event.getTitle() );
@@ -73,8 +85,24 @@ class EventTest {
     }
 
     @Test
+    void setInviteCode() {
+        event.setInviteCode("1234");
+        assertEquals("1234", event.getInviteCode());
+    }
+
+    @Test
     void testEquals() {
-        assertNotEquals(event2, event3);
+        event2.setTitle("Test");
+        event2.setInviteCode("1234");
+        event2.setParticipants(participantList);
+        event2.setExpenses(expenseList);
+        event2.setTags(tagList);
+        event3.setTitle("Test");
+        event3.setInviteCode("1234");
+        event3.setParticipants(participantList);
+        event3.setExpenses(expenseList);
+        event3.setTags(tagList);
+        assertEquals(event2, event3);
         assertNotEquals(new Event("a"), new Event("a"));
     }
 

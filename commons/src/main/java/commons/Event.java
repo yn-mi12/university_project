@@ -53,6 +53,8 @@ public class Event {
         return inviteCode;
     }
 
+    public void setInviteCode(String inviteCode) { this.inviteCode = inviteCode; }
+
     public List<Participant> getParticipants() {
         return participants;
     }
