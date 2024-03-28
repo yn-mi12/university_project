@@ -38,6 +38,8 @@ public class StartScreenCtrl implements Initializable {
     private TextField titleField;
     @FXML
     private TextField codeField;
+    @FXML
+    private Button showButton;
 //    public static Long pickedEventId;
 
     @Inject
@@ -93,8 +95,7 @@ public class StartScreenCtrl implements Initializable {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
                 if (eventList.getSelectionModel().getSelectedItem() != null) {
-                    String id = eventList.getSelectionModel().getSelectedItem().split(": ")[0];
-//                    viewPastEvent(Long.valueOf(id));
+                    showButton.setDisable(false);
                 }
             }
         });
@@ -102,6 +103,8 @@ public class StartScreenCtrl implements Initializable {
 
     public void createEvent() {
         var title = this.titleField.getText();
+        if(title.isEmpty())
+            return;
         clearFields();
         Event event;
         try {
