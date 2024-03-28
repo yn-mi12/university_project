@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import static org.mockito.Mockito.*;
@@ -48,6 +49,15 @@ public class SplittyCtrlTest {
         splittyCtrl.initAddParticipant(new Pair<>(addParticipantCtrl, new StackPane()));
     }
 
+    @BeforeAll
+    public static void setupSpec() throws Exception {
+        System.setProperty("testfx.robot", "glass");
+        System.setProperty("testfx.headless", "true");
+        System.setProperty("prism.order", "sw");
+        System.setProperty("prism.text", "t2k");
+        System.setProperty("java.awt.headless", "true");
+    }
+    
     @BeforeEach
     public void setUp() {
         reset(startScreenCtrl, eventOverviewCtrl, invitationCtrl, addExpenseCtrl,
