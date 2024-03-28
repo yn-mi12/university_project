@@ -39,7 +39,7 @@ public class EventController {
     @GetMapping("/{id}")
     public ResponseEntity<Event> getById(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(repo.findById(id).get());
     }
@@ -69,7 +69,7 @@ public class EventController {
     public ResponseEntity<Event> updateTitle(@PathVariable Long id, @RequestBody String newTitle) {
         Event event = repo.findById(id).orElse(null);
         if (event == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         event.setTitle(newTitle);
         Event saved = repo.save(event);
@@ -84,7 +84,7 @@ public class EventController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Event> deleteById(@PathVariable("id") long id){
         if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         Event x = repo.findById(id).get();
         repo.deleteById(id);

@@ -23,8 +23,16 @@ class ExpenseParticipantTest {
     }
 
     @Test
+    void constructorTest() {
+        assertNotNull(ep1);
+        assertNotNull(new ExpenseParticipant());
+    }
+    @Test
     void getId() {
-        assertNotNull(ep1.getId());
+        ep1.setId(1);
+        ep2.setId(2);
+        ep3.setId(3);
+        assertEquals(1, ep1.getId());
         assertNotEquals(ep1.getId(), ep2.getId());
         assertNotEquals(ep1.getId(), ep3.getId());
         assertNotEquals(ep2.getId(), ep3.getId());
@@ -87,8 +95,8 @@ class ExpenseParticipantTest {
         assertNotEquals(ep1, ep2);
         assertNotEquals(ep1, ep3);
         assertNotEquals(ep2, ep3);
-        ExpenseParticipant ep4 = ep3;
-        assertEquals(ep3, ep4);
+        ExpenseParticipant ep4 = new ExpenseParticipant(e1, p1, 100, false);
+        assertEquals(ep1, ep4);
     }
 
     @Test
@@ -96,8 +104,8 @@ class ExpenseParticipantTest {
         assertNotEquals(ep1.hashCode(), ep2.hashCode());
         assertNotEquals(ep1.hashCode(), ep3.hashCode());
         assertNotEquals(ep2.hashCode(), ep3.hashCode());
-        ExpenseParticipant ep4 = ep3;
-        assertEquals(ep3.hashCode(), ep4.hashCode());
+        ExpenseParticipant ep4 = new ExpenseParticipant(e1, p1, 100, false);
+        assertEquals(ep1.hashCode(), ep4.hashCode());
     }
 
     @Test

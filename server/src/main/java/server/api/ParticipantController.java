@@ -1,7 +1,6 @@
 package server.api;
 
 import java.util.List;
-import java.util.Random;
 
 import commons.Participant;
 
@@ -18,17 +17,14 @@ import server.database.ParticipantRepository;
 @RequestMapping("api/participants")
 public class ParticipantController {
 
-    private final Random random;
     private final ParticipantRepository repo;
 
     /**
      * The constructor for the ParticipantController class
      *
-     * @param random - The random used to get a random entry
      * @param repo   - The Participant repository
      */
-    public ParticipantController(Random random, ParticipantRepository repo) {
-        this.random = random;
+    public ParticipantController(ParticipantRepository repo) {
         this.repo = repo;
     }
 
@@ -56,6 +52,8 @@ public class ParticipantController {
 
     @GetMapping("/events/{id}")
     public ResponseEntity<List<Participant> > getByEventId(@PathVariable("id") long id) {
+        if(id < 0)
+            return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(repo.findByEventId(id));
     }
 
@@ -67,24 +65,13 @@ public class ParticipantController {
      */
     private static boolean isNullOrEmpty(String s) { return s == null || s.isEmpty(); }
 
-    /**
-     * Return a random Participant from the repo
-     * @return - a random Participant from the repository
-     */
-    @GetMapping("rnd")
-    public ResponseEntity<Participant> getRandom() {
-        var events = repo.findAll();
-        var idx = random.nextInt((int) repo.count());
-        return ResponseEntity.ok(events.get(idx));
-    }
-
     /***
      * Returns the email of a Participant by id, if it exists
      * @param id - The id of the Participant
      * @return - The Participants email
      */
     @GetMapping(path = { "/{id}/email" })
-    public ResponseEntity<Object> getEmail(@PathVariable("id") long id) {
+    public ResponseEntity<String> getEmail(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id) || isNullOrEmpty(repo.findById(id).get().getEmail())) {
             return ResponseEntity.badRequest().build();
         }
@@ -100,7 +87,7 @@ public class ParticipantController {
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Participant> save(@RequestBody Participant participant) {
 
-        if (participant == null || isNullOrEmpty(participant.firstName) || isNullOrEmpty(participant.lastName)) {
+        if (participant == null || isNullOrEmpty(participant.getFirstName()) || isNullOrEmpty(participant.getLastName())) {
             return ResponseEntity.badRequest().build();
         }
 

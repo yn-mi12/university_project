@@ -16,13 +16,11 @@
 package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-
-import java.io.*;
-
 import client.Config;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
+import jakarta.ws.rs.BadRequestException;
 import org.glassfish.jersey.client.ClientConfig;
 
 import jakarta.ws.rs.client.ClientBuilder;
@@ -42,7 +40,7 @@ public class ServerUtilsEvent {
                     .accept(APPLICATION_JSON) //
                     .get(new GenericType<>() {
                     });
-        } catch(jakarta.ws.rs.NotFoundException e) {
+        } catch(BadRequestException e) {
             event = null;
         }
         return event;
