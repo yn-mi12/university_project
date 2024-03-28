@@ -187,4 +187,18 @@ public class TestEventRepository implements EventRepository {
     public Page<Event> findAll(Pageable pageable) {
         return null;
     }
+
+    @Override
+    public List<Event> findByInviteCode(String inviteCode) {
+        Event event = events.stream().filter(e -> e.getInviteCode().equals(inviteCode)).findFirst().orElse(null);
+        if(event != null)
+            return List.of(event);
+        return null;
+    }
+
+    @Override
+    public boolean existsByInviteCode(String inviteCode) {
+        Event event = events.stream().filter(e -> e.getInviteCode().equals(inviteCode)).findFirst().orElse(null);
+        return event != null;
+    }
 }

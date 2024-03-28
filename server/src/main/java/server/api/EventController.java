@@ -44,6 +44,13 @@ public class EventController {
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
+    @GetMapping("/code={invite-code}")
+    public ResponseEntity<Event> getByInviteCode(@PathVariable("invite-code") String inviteCode) {
+        if(inviteCode == null || !repo.existsByInviteCode(inviteCode))
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(repo.findByInviteCode(inviteCode).get(0));
+    }
+
     /**
      * Adds an Event to the repository
      * @param event - The Event to be added

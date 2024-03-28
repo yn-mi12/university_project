@@ -14,7 +14,6 @@ public class SplittyCtrl {
     private StartScreenCtrl overviewCtrl;
     private Scene overview;
     //private ModifyEventCtrl modifyCtrl;
-    private AddEventCtrl addCtrl;
     //private Scene modify;
     private Scene add;
     private EventOverviewCtrl eventCtrl;
@@ -42,10 +41,6 @@ public class SplittyCtrl {
         primaryStage.show();
     }
 
-    public void initAdd(Pair<AddEventCtrl, Parent> add) {
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
-    }
     public void initExp(Pair<AddExpenseCtrl, Parent> addExp) {
         this.addExpenseCtrl = addExp.getKey();
         this.expense = new Scene(addExp.getValue());
@@ -80,13 +75,6 @@ public class SplittyCtrl {
         primaryStage.setTitle("Splitty");
         primaryStage.setScene(overview);
         overviewCtrl.refresh();
-    }
-
-    public void showAdd(String title) {
-        primaryStage.setTitle("Events: Adding Event");
-        primaryStage.setScene(add);
-        this.addCtrl.setTitleAndCode(title, addCtrl.getEvent().getInviteCode());
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
 //    public void showModify(Event selectedEvent) {

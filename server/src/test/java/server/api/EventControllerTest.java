@@ -55,6 +55,15 @@ class EventControllerTest {
     }
 
     @Test
+    void getByInviteCode() {
+        Event x = new Event("Test");
+        Event event = eventc.save(x).getBody();
+        String inviteCode = event.getInviteCode();
+        assertEquals(event, eventc.getByInviteCode(inviteCode).getBody());
+        assertEquals(BAD_REQUEST, eventc.getByInviteCode(null).getStatusCode());
+    }
+
+    @Test
     void deleteById() {
         Event x1 = new Event("Event 1");
         Event x2 = new Event("Event 2");
