@@ -5,6 +5,7 @@ import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
+import jakarta.ws.rs.WebApplicationException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -17,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.util.Callback;
 
 import java.io.IOException;
@@ -36,7 +38,14 @@ public class StartScreenCtrl implements Initializable {
     private TextField titleField;
     @FXML
     private TextField codeField;
-//    public static Long pickedEventId;
+    @FXML
+    private Button showButton;
+    @FXML
+    private Label invalidCode;
+    @FXML
+    private Label emptyCode;
+    @FXML
+    private Label emptyTitle;
 
     @Inject
     public StartScreenCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
@@ -91,8 +100,7 @@ public class StartScreenCtrl implements Initializable {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
                 if (eventList.getSelectionModel().getSelectedItem() != null) {
-                    String id = eventList.getSelectionModel().getSelectedItem().split(": ")[0];
-                    viewPastEvent(Long.valueOf(id));
+                    showButton.setDisable(false);
                 }
             }
         });
@@ -100,21 +108,58 @@ public class StartScreenCtrl implements Initializable {
 
     public void createEvent() {
         var title = this.titleField.getText();
+        if(title.isEmpty()) {
+            emptyTitle.setVisible(true);
+            return;
+        }
+
         clearFields();
-        eventCtrl.showAdd(title);
+        Event event;
+        try {
+            System.out.println("Add event");
+            event = server.addEvent(new Event(title));
+            Config.get().addPastID(String.valueOf(event.getId()));
+            Config.get().save();
+        } catch (WebApplicationException e) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+            return;
+        }
+        eventCtrl.showEventOverview(event);
     }
 
     public void viewEvent() {
         var inviteCode = this.codeField.getText();
-        clearFields();
-        //Will be used to view an event joined using the invite code field
-    }
+        if(inviteCode.isEmpty()) {
+            invalidCode.setVisible(false);
+            emptyCode.setVisible(true);
+            return;
+        }
 
-    public void viewPastEvent(Long id) {
-        //Will be used to view a selected event in the recent events section
+        Event event = server.getByInviteCode(inviteCode);
+
+        if(event != null) {
+            clearFields();
+            Set<String> ids = Config.get().getPastIDs();
+            if(!ids.contains(event.getId())) {
+                Config.get().addPastID(String.valueOf(event.getId()));
+                Config.get().save();
+            }
+            eventCtrl.showEventOverview(event);
+        } else {
+            emptyCode.setVisible(false);
+            invalidCode.setVisible(true);
+        }
+
     }
 
     public void refresh() {
+        emptyTitle.setVisible(false);
+        emptyCode.setVisible(false);
+        invalidCode.setVisible(false);
+        showButton.setDisable(true);
         Set<String> ids = Config.get().getPastIDs();
 
         if (!ids.isEmpty()) {
@@ -152,7 +197,6 @@ public class StartScreenCtrl implements Initializable {
     public void showEvent() throws IOException {
         String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
         String eventId = eventIdTitle.split(":")[0];
-//        this.pickedEventId = Long.parseLong(eventId);
         Event event = server.getByID(Long.parseLong(eventId));
         eventCtrl.showEventOverview(event);
     }
@@ -160,7 +204,6 @@ public class StartScreenCtrl implements Initializable {
     public Event getEvent() {
         String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
         String eventId = eventIdTitle.split(":")[0];
-//        pickedEventId = Long.parseLong(eventId);
         Event event = server.getByID(Long.parseLong(eventId));
 
         return event;

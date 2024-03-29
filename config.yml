@@ -1,7 +1,0 @@
-host: http://localhost:8080/
-current-locale: English
-supported-locales:
-- {name: English, code: en}
-- {name: Nederlands, code: nl}
-- {name: Romanian, code: ro}
-past-ids: []

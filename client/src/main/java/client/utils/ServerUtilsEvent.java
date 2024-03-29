@@ -29,7 +29,22 @@ import jakarta.ws.rs.core.GenericType;
 import org.jetbrains.annotations.NotNull;
 
 public class ServerUtilsEvent {
-    private static final String SERVER = "http://localhost:8080/";
+    private static final String SERVER = Config.get().getHost();
+
+    public Event getByInviteCode(String inviteCode) {
+        Event event;
+        try {
+            event = ClientBuilder.newClient(new ClientConfig())
+                    .target(SERVER).path("api/events/code=" + inviteCode)
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get(new GenericType<>() {
+                    });
+        } catch(BadRequestException e) {
+            event = null;
+        }
+        return event;
+    }
 
     public Event getByID(Long id) {
         Event event;

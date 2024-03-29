@@ -36,7 +36,7 @@ public class EventController {
 
     /**
      * Return a specific Event from its id
-     * @param id - The id of the event
+     * @param id - The id of the Event
      * @return - The Event with the id specified
      */
     @GetMapping("/{id}")
@@ -45,6 +45,18 @@ public class EventController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(repo.findById(id).get());
+    }
+
+    /**
+     * Return a specific Event from its invite code
+     * @param inviteCode - The invite code of the Event
+     * @return - The Event with the invite code specified
+     */
+    @GetMapping("/code={invite-code}")
+    public ResponseEntity<Event> getByInviteCode(@PathVariable("invite-code") String inviteCode) {
+        if(inviteCode == null || !repo.existsByInviteCode(inviteCode))
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(repo.findByInviteCode(inviteCode).get(0));
     }
 
     /**
