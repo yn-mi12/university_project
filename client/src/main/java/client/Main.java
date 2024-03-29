@@ -59,6 +59,7 @@ public class Main extends Application {
         mainCtrl.initExp(addExp);
         mainCtrl.initEditTitle(editTitle);
         mainCtrl.initAddParticipant(addParticipant);
+        
         mainCtrl.display();
     }
 

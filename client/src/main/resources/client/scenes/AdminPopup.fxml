@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminPopupCtrl">
    <children>
       <Text layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%EnterAdminToken">
          <font>
@@ -21,12 +21,12 @@
             <Font size="14.0" />
          </font>
       </Button>
-      <Button layoutX="14.0" layoutY="113.0" mnemonicParsing="false" text="%cancel">
+      <Button layoutX="14.0" layoutY="113.0" mnemonicParsing="false" text="%cancel" onAction="#cancel">
          <font>
             <Font size="14.0" />
          </font>
       </Button>
-      <Label layoutX="14.0" layoutY="80.0" text="%IncorrectToken!" textFill="RED">
+      <Label layoutX="14.0" layoutY="80.0" text="%IncorrectToken!" textFill="RED" visible="false">
          <font>
             <Font size="14.0" />
          </font>
