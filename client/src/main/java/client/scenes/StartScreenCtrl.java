@@ -138,10 +138,10 @@ public class StartScreenCtrl implements Initializable {
             return;
         }
 
-        clearFields();
         Event event = server.getByInviteCode(inviteCode);
 
         if(event != null) {
+            clearFields();
             Set<String> ids = Config.get().getPastIDs();
             if(!ids.contains(event.getId())) {
                 Config.get().addPastID(String.valueOf(event.getId()));
