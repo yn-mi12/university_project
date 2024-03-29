@@ -28,6 +28,7 @@ public class SplittyCtrl {
     private Scene adminPopup;
     private AdminOverviewCtrl adminOverviewCtrl;
     private Scene adminOverview;
+    private boolean isAdmin;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -79,7 +80,6 @@ public class SplittyCtrl {
         this.eventCtrl.setSelectedEvent(selectedEvent);
         this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
         primaryStage.setScene(event);
-        event.setOnKeyPressed(e -> eventCtrl.keyPressed(e));
     }
 
     public void showInvitePage(Event selectedEvent) {
@@ -146,5 +146,14 @@ public class SplittyCtrl {
         primaryStage.setTitle("Splitty");
         primaryStage.setScene(adminOverview);
         adminOverview.getWindow().centerOnScreen();
+    }
+
+    public void setAdmin(boolean isAdmin){
+        this.isAdmin = isAdmin;
+    }
+
+    public boolean getAdmin()
+    {
+        return isAdmin;
     }
 }

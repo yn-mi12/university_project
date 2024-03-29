@@ -206,9 +206,7 @@ public class StartScreenCtrl implements Initializable {
     public Event getEvent() {
         String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
         String eventId = eventIdTitle.split(":")[0];
-        Event event = server.getByID(Long.parseLong(eventId));
-
-        return event;
+        return server.getByID(Long.parseLong(eventId));
     }
 
     public void showAdminLogin() {

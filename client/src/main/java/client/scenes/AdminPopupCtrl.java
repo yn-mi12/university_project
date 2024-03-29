@@ -26,8 +26,12 @@ public class AdminPopupCtrl {
 
     public void login() {
         try {
-            if(server.checkToken(insertedToken.getText())) controller.showAdminOverview();
+            if(server.checkToken(insertedToken.getText())) {
+                controller.setAdmin(true);
+                controller.showAdminOverview();
+            }
             else System.out.println("NO!");
+            insertedToken.clear();
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);

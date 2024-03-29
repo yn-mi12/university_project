@@ -88,4 +88,12 @@ public class Main extends Application {
         mainCtrl.showEventOverview(selectedEvent);
     }
 
+    public static void refreshAdminOverview()
+    {
+        var adminOverview =FXML.load(AdminOverviewCtrl.class, "client", "scenes", "AdminOverview.fxml");
+        var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
+        mainCtrl.initializeAdminOverview(adminOverview);
+        mainCtrl.showAdminOverview();
+    }
+
 }
