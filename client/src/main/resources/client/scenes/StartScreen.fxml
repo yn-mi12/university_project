@@ -24,9 +24,9 @@
       <Text layoutX="96.0" layoutY="231.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%recent_events" />
       <ListView fx:id="eventList" layoutX="96.0" layoutY="236.0" prefHeight="141.0" prefWidth="227.0" />
       <Button fx:id="showButton" disable="true" layoutX="380.0" layoutY="236.0" minWidth="100" mnemonicParsing="false" onAction="#showEvent" text="%show_event_button" />
-      <Label fx:id="invalidCode" layoutX="96.0" layoutY="167.0" text="%invalid_code" textFill="#da0404" />
-      <Label fx:id="emptyCode" layoutX="96.0" layoutY="167.0" text="%empty_code" textFill="#da0404" />
-      <Label fx:id="emptyTitle" layoutX="96.0" layoutY="85.0" text="%empty_title" textFill="#da0404" />
+      <Label fx:id="invalidCode" layoutX="96.0" layoutY="167.0" text="%invalid_code" textFill="#da0404" visible="false"/>
+      <Label fx:id="emptyCode" layoutX="96.0" layoutY="167.0" text="%empty_code" textFill="#da0404" visible="false" />
+      <Label fx:id="emptyTitle" layoutX="96.0" layoutY="85.0" text="%empty_title" textFill="#da0404" visible="false"/>
       <Label layoutX="96" layoutY="450" text="%admin">
          <font>
          <Font size="13"/>
