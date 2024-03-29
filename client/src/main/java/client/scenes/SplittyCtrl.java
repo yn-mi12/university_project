@@ -13,8 +13,6 @@ public class SplittyCtrl {
     private Stage primaryStage;
     private StartScreenCtrl overviewCtrl;
     private Scene overview;
-    //private ModifyEventCtrl modifyCtrl;
-    //private Scene modify;
     private Scene add;
     private EventOverviewCtrl eventCtrl;
     private Scene event;
@@ -26,6 +24,11 @@ public class SplittyCtrl {
     private Scene editTitle;
     private AddParticipantCtrl addParticipantCtrl;
     private Scene addParticipant;
+    private AdminPopupCtrl adminPopupCtrl;
+    private Scene adminPopup;
+    private AdminOverviewCtrl adminOverviewCtrl;
+    private Scene adminOverview;
+    private boolean isAdmin;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -45,11 +48,6 @@ public class SplittyCtrl {
         this.addExpenseCtrl = addExp.getKey();
         this.expense = new Scene(addExp.getValue());
     }
-
-//    public void initModify(Pair<ModifyEventCtrl, Parent> modify) {
-//        this.modifyCtrl = modify.getKey();
-//        this.modify = new Scene(modify.getValue());
-//    }
 
     public void initEventOverview(Pair<EventOverviewCtrl, Parent> eventOverview) {
         this.eventCtrl = eventOverview.getKey();
@@ -77,25 +75,15 @@ public class SplittyCtrl {
         overviewCtrl.refresh();
     }
 
-//    public void showModify(Event selectedEvent) {
-//        primaryStage.setTitle("Events: Modify event");
-//        this.modifyCtrl.oldTitle.setText(selectedEvent.getTitle());
-//        this.modifyCtrl.setSelectedEvent(selectedEvent);
-//        primaryStage.setScene(modify);
-//        modify.setOnKeyPressed(e -> modifyCtrl.keyPressed(e));
-//    }
-
     public void showEventOverview(Event selectedEvent){
         primaryStage.setTitle("Event: " + selectedEvent.getTitle());
         this.eventCtrl.setSelectedEvent(selectedEvent);
         this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
         primaryStage.setScene(event);
-        event.setOnKeyPressed(e -> eventCtrl.keyPressed(e));
     }
 
     public void showInvitePage(Event selectedEvent) {
         primaryStage.setTitle("Event: " + selectedEvent.getTitle());
-        //this.inviteCtrl.setSelectedEvent(selectedEvent);
         this.inviteCtrl.eventInviteTitle.setText(selectedEvent.getTitle());
         this.inviteCtrl.inviteCode.setText(selectedEvent.getInviteCode());
         this.inviteCtrl.event = selectedEvent;
@@ -135,5 +123,37 @@ public class SplittyCtrl {
 
     public Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    public void initAdminPopup(Pair<AdminPopupCtrl, Parent> admin) {
+        this.adminPopupCtrl = admin.getKey();
+        this.adminPopup = new Scene(admin.getValue());
+    }
+
+    public void showAdminLogin() {
+        primaryStage.setTitle("Admin Login");
+        primaryStage.setScene(adminPopup);
+        adminPopup.getWindow().centerOnScreen();
+        //adminPopup.setOnKeyPressed(e -> adminPopupCtrl.keyPressed(e));
+    }
+
+    public void initializeAdminOverview(Pair<AdminOverviewCtrl, Parent> adminOverview) {
+        this.adminOverviewCtrl = adminOverview.getKey();
+        this.adminOverview = new Scene(adminOverview.getValue());
+    }
+
+    public void showAdminOverview() {
+        primaryStage.setTitle("Splitty");
+        primaryStage.setScene(adminOverview);
+        adminOverview.getWindow().centerOnScreen();
+    }
+
+    public void setAdmin(boolean isAdmin){
+        this.isAdmin = isAdmin;
+    }
+
+    public boolean getAdmin()
+    {
+        return isAdmin;
     }
 }

@@ -44,23 +44,23 @@ public class Main extends Application {
      */
     public static void reloadUI() {
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
-//        var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");
         var eventOverview = FXML.load(EventOverviewCtrl.class, "client", "scenes", "EventOverview.fxml");
         var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
         var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
         var editTitle = FXML.load(EditEventTitleCtrl.class,"client", "scenes", "EditTitle.fxml");
         var addParticipant = FXML.load(AddParticipantCtrl.class, "client", "scenes", "AddParticipant.fxml");
-
         var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
+        var adminPopup = FXML.load(AdminPopupCtrl.class,"client", "scenes", "AdminPopup.fxml");
+        var adminOverview =FXML.load(AdminOverviewCtrl.class, "client", "scenes", "AdminOverview.fxml");
         mainCtrl.initialize(primaryStage);
+        mainCtrl.initAdminPopup(adminPopup);
         mainCtrl.initShowOverview(overview);
-//        mainCtrl.initModify(modify);
         mainCtrl.initEventOverview(eventOverview);
         mainCtrl.initInvitePage(invite);
         mainCtrl.initExp(addExp);
         mainCtrl.initEditTitle(editTitle);
         mainCtrl.initAddParticipant(addParticipant);
-
+        mainCtrl.initializeAdminOverview(adminOverview);
         mainCtrl.display();
     }
 
@@ -70,24 +70,30 @@ public class Main extends Application {
      */
     public static void reloadUIEvent(Event selectedEvent) {
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
-//        var modify = FXML.load(ModifyEventCtrl.class, "client","scenes", "ModifyEvent.fxml");
         var eventOverview = FXML.load(EventOverviewCtrl.class, "client", "scenes", "EventOverview.fxml");
         var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
         var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
         var editTitle = FXML.load(EditEventTitleCtrl.class, "client", "scenes", "EditTitle.fxml");
         var addParticipant = FXML.load(AddParticipantCtrl.class, "client", "scenes", "AddParticipant.fxml");
-
         var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
+        var adminPopup = FXML.load(AdminPopupCtrl.class,"client", "scenes", "AdminPopup.fxml");
         mainCtrl.initialize(primaryStage);
+        mainCtrl.initAdminPopup(adminPopup);
         mainCtrl.initShowOverview(overview);
-//        mainCtrl.initModify(modify);
         mainCtrl.initEventOverview(eventOverview);
         mainCtrl.initInvitePage(invite);
         mainCtrl.initExp(addExp);
         mainCtrl.initEditTitle(editTitle);
         mainCtrl.initAddParticipant(addParticipant);
-
         mainCtrl.showEventOverview(selectedEvent);
+    }
+
+    public static void refreshAdminOverview()
+    {
+        var adminOverview =FXML.load(AdminOverviewCtrl.class, "client", "scenes", "AdminOverview.fxml");
+        var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
+        mainCtrl.initializeAdminOverview(adminOverview);
+        mainCtrl.showAdminOverview();
     }
 
 }

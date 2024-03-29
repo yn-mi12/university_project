@@ -20,7 +20,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.util.Callback;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -204,9 +203,10 @@ public class StartScreenCtrl implements Initializable {
     public Event getEvent() {
         String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
         String eventId = eventIdTitle.split(":")[0];
-        Event event = server.getByID(Long.parseLong(eventId));
-
-        return event;
+        return server.getByID(Long.parseLong(eventId));
     }
 
+    public void showAdminLogin() {
+        eventCtrl.showAdminLogin();
+    }
 }

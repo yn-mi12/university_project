@@ -28,6 +28,8 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class ServerUtilsEvent {
     private static final String SERVER = Config.get().getHost();
 
@@ -98,15 +100,6 @@ public class ServerUtilsEvent {
                 .post(Entity.entity(participant, APPLICATION_JSON), Participant.class);
     }
 
-    //    public Event modifyEvent(Event event) {
-//        //System.out.println("Add event" + event);
-//
-//        return ClientBuilder.newClient(new ClientConfig()) //
-//                .target(SERVER).path("api/events") //
-//                .request(APPLICATION_JSON) //
-//                .accept(APPLICATION_JSON) //
-//                .post(Entity.entity(event, APPLICATION_JSON), Event.class);
-//    }
     private @NotNull String getServer() {
         return Config.get().getHost();
     }
@@ -118,8 +111,25 @@ public class ServerUtilsEvent {
                 .accept(APPLICATION_JSON) //
                 .delete();
         System.out.println("Event deleted:" + event);
-
-        //Config.get().addPastID(String.valueOf(saved.getId()));
     }
 
+    public boolean checkToken(String token) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(getServer()).path("api/admin/verify/" + token) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(token, APPLICATION_JSON), Boolean.class);
+    }
+
+    public List<Event> getAllEvents()
+    {
+        List<Event> events;
+        events = ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/events/") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                    .get(new GenericType<>() {
+                    });
+        return events;
+    }
 }

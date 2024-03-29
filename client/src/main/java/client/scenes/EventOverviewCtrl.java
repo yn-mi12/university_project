@@ -17,7 +17,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.util.Callback;
@@ -27,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
-
-import static jakarta.ws.rs.core.Response.ok;
 
 public class EventOverviewCtrl implements Initializable {
     private final ServerUtilsEvent server;
@@ -45,6 +42,7 @@ public class EventOverviewCtrl implements Initializable {
     @FXML
     private ComboBox<Label> languageBox;
     public Event event;
+    public boolean isAdmin = false;
 
 
     @Inject
@@ -132,33 +130,12 @@ public class EventOverviewCtrl implements Initializable {
         controller.initExpShowOverview(event,expensePayer);
     }
 
-    public void keyPressed(KeyEvent e) {
-        switch (e.getCode()) {
-            case ENTER:
-                ok();
-                break;
-            case ESCAPE:
-                cancel();
-                break;
-            default:
-                break;
-        }
-    }
-
-    public void cancel() {
-        controller.showOverview();
-    }
-
     public void sendInvites() {
         controller.showInvitePage(event);
     }
 
     public void editTitle(){
         controller.showEditTitle(event);
-    }
-
-    public void goBack() {
-        controller.showOverview();
     }
 
     public void addParticipant(){
@@ -177,14 +154,17 @@ public class EventOverviewCtrl implements Initializable {
             alert.showAndWait();
             return;
         }
-
-        //clearFields();
-        controller.showOverview();
+        goBack();
     }
 
     public void copyCode() {
         ClipboardContent content = new ClipboardContent();
         content.putString(inviteCode.getText());
         Clipboard.getSystemClipboard().setContent(content);
+    }
+
+    public void goBack() {
+        if(controller.getAdmin()) controller.showAdminOverview();
+        else controller.showOverview();
     }
 }
