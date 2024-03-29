@@ -177,8 +177,6 @@ public class EventOverviewCtrl implements Initializable {
             alert.showAndWait();
             return;
         }
-
-        //clearFields();
         controller.showOverview();
     }
 

@@ -26,6 +26,8 @@ public class SplittyCtrl {
     private Scene addParticipant;
     private AdminPopupCtrl adminPopupCtrl;
     private Scene adminPopup;
+    private AdminOverviewCtrl adminOverviewCtrl;
+    private Scene adminOverview;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -133,5 +135,16 @@ public class SplittyCtrl {
         primaryStage.setScene(adminPopup);
         adminPopup.getWindow().centerOnScreen();
         //adminPopup.setOnKeyPressed(e -> adminPopupCtrl.keyPressed(e));
+    }
+
+    public void initializeAdminOverview(Pair<AdminOverviewCtrl, Parent> adminOverview) {
+        this.adminOverviewCtrl = adminOverview.getKey();
+        this.adminOverview = new Scene(adminOverview.getValue());
+    }
+
+    public void showAdminOverview() {
+        primaryStage.setTitle("Splitty");
+        primaryStage.setScene(adminOverview);
+        adminOverview.getWindow().centerOnScreen();
     }
 }

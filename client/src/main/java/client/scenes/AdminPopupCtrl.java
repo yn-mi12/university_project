@@ -26,7 +26,7 @@ public class AdminPopupCtrl {
 
     public void login() {
         try {
-            if(server.checkToken(insertedToken.getText())) System.out.println("YES!");
+            if(server.checkToken(insertedToken.getText())) controller.showAdminOverview();
             else System.out.println("NO!");
         } catch (WebApplicationException e) {
 
