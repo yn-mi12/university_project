@@ -28,6 +28,8 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class ServerUtilsEvent {
     private static final String SERVER = Config.get().getHost();
 
@@ -117,5 +119,17 @@ public class ServerUtilsEvent {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(token, APPLICATION_JSON), Boolean.class);
+    }
+
+    public List<Event> getAllEvents()
+    {
+        List<Event> events;
+        events = ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/events/") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                    .get(new GenericType<>() {
+                    });
+        return events;
     }
 }
