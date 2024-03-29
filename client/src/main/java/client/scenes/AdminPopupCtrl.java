@@ -3,12 +3,17 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 
 public class AdminPopupCtrl {
 
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
+    public TextField insertedToken;
 
     @Inject
     public AdminPopupCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
@@ -17,5 +22,18 @@ public class AdminPopupCtrl {
     }
     public void cancel() {
         controller.showOverview();
+    }
+
+    public void login() {
+        try {
+            if(server.checkToken(insertedToken.getText())) System.out.println("YES!");
+            else System.out.println("NO!");
+        } catch (WebApplicationException e) {
+
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
     }
 }

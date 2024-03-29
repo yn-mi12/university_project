@@ -111,4 +111,11 @@ public class ServerUtilsEvent {
         System.out.println("Event deleted:" + event);
     }
 
+    public boolean checkToken(String token) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(getServer()).path("api/admin/verify/" + token) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(token, APPLICATION_JSON), Boolean.class);
+    }
 }

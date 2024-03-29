@@ -15,8 +15,8 @@
             <Font size="14.0" />
          </font>
       </Text>
-      <TextField layoutX="14.0" layoutY="50.0" prefHeight="25.0" prefWidth="244.0" />
-      <Button layoutX="205.0" layoutY="113.0" mnemonicParsing="false" text="%login">
+      <TextField fx:id="insertedToken" layoutX="14.0" layoutY="50.0" prefHeight="25.0" prefWidth="244.0" />
+      <Button layoutX="205.0" layoutY="113.0" mnemonicParsing="false" text="%login" onAction="#login">
          <font>
             <Font size="14.0" />
          </font>
