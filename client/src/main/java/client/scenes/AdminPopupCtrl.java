@@ -1,10 +1,8 @@
 package client.scenes;
 
-import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
