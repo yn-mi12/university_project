@@ -98,15 +98,6 @@ public class ServerUtilsEvent {
                 .post(Entity.entity(participant, APPLICATION_JSON), Participant.class);
     }
 
-    //    public Event modifyEvent(Event event) {
-//        //System.out.println("Add event" + event);
-//
-//        return ClientBuilder.newClient(new ClientConfig()) //
-//                .target(SERVER).path("api/events") //
-//                .request(APPLICATION_JSON) //
-//                .accept(APPLICATION_JSON) //
-//                .post(Entity.entity(event, APPLICATION_JSON), Event.class);
-//    }
     private @NotNull String getServer() {
         return Config.get().getHost();
     }
@@ -118,8 +109,6 @@ public class ServerUtilsEvent {
                 .accept(APPLICATION_JSON) //
                 .delete();
         System.out.println("Event deleted:" + event);
-
-        //Config.get().addPastID(String.valueOf(saved.getId()));
     }
 
 }

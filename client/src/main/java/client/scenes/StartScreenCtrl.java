@@ -19,6 +19,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
+import javafx.stage.Popup;
+import javafx.stage.PopupWindow;
 import javafx.util.Callback;
 
 import java.io.IOException;
@@ -209,4 +211,7 @@ public class StartScreenCtrl implements Initializable {
         return event;
     }
 
+    public void showAdminLogin() {
+        eventCtrl.showAdminLogin();
+    }
 }
