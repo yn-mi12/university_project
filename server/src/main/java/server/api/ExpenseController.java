@@ -106,7 +106,7 @@ public class ExpenseController {
         //Check if all Participants exist and are in the same event
         //Check that there is 1 owner
         //Check that shares add up to 100%
-        int shareSum = 0;
+        double shareSum = 0;
         int ownerCount = 0;
         for(var i: expense.getDebtors()) {
             i.setExpense(expense);
@@ -117,7 +117,8 @@ public class ExpenseController {
             if (zz != eid)
                 return ResponseEntity.badRequest().build();
         }
-        if (shareSum != 100 || ownerCount != 1 || isNullOrEmpty(expense.getDescription()) || expense.getAmount() <= 0 ) {
+        //TODO: this needs to be changed!!
+        if (!((shareSum > 98) && (shareSum < 102)) || ownerCount != 1 || isNullOrEmpty(expense.getDescription()) || expense.getAmount() <= 0 ) {
             return ResponseEntity.badRequest().build();
         } //TODO: Add checks for Date
         Expense saved = repo.save(expense);
