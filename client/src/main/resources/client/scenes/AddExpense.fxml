@@ -9,26 +9,26 @@
     <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="591.0" prefWidth="605.0">
             <children>
-                <Button layoutX="455.0" layoutY="512.0" mnemonicParsing="false" onAction="#cancel" prefHeight="28.0" prefWidth="70.0" text="Cancel" />
-                <Button layoutX="335.0" layoutY="512.0" mnemonicParsing="false" onAction="#ok" prefHeight="27.0" prefWidth="76.0" text="Add" />
-                <Label layoutX="29.0" layoutY="22.0" prefHeight="28.0" prefWidth="239.0" text="Add/Edit Expense">
+                <Button layoutX="455.0" layoutY="512.0" mnemonicParsing="false" onAction="#cancel" prefHeight="28.0" prefWidth="70.0" text="%cancel" />
+                <Button layoutX="335.0" layoutY="512.0" mnemonicParsing="false" onAction="#ok" prefHeight="27.0" prefWidth="76.0" text="%add" />
+                <Label layoutX="29.0" layoutY="22.0" prefHeight="28.0" prefWidth="239.0" text="%add/editExpense">
                     <font>
                         <Font size="18.0" />
                     </font>
                 </Label>
-                <Label layoutX="29.0" layoutY="71.0" text="Who paid?">
+                <Label layoutX="29.0" layoutY="71.0" text="%whoPaid">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Label>
                 <SplitMenuButton fx:id="whoPaid" layoutX="232.0" layoutY="71.0" prefHeight="31.0" prefWidth="233.0" />
-                <Label layoutX="29.0" layoutY="119.0" text="What for?">
+                <Label layoutX="29.0" layoutY="119.0" text="%whatFor">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Label>
                 <TextField fx:id="whatFor" layoutX="233.0" layoutY="119.0" prefHeight="42.0" prefWidth="230.0" />
-                <Label layoutX="25.0" layoutY="178.0" text="How much?">
+                <Label layoutX="25.0" layoutY="178.0" text="%howMuch">
                     <font>
                         <Font size="16.0" />
                     </font>
@@ -39,21 +39,21 @@
                     <String fx:value="EUR" />
                     <String fx:value="CHF" />
                 </ChoiceBox>
-                <Label layoutX="29.0" layoutY="228.0" text="When?">
+                <Label layoutX="29.0" layoutY="228.0" text="%when">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Label>
                 <DatePicker fx:id="date" layoutX="233.0" layoutY="227.0" prefHeight="37.0" prefWidth="190.0" />
-                <Label layoutX="31.0" layoutY="318.0" text="How to split?">
+                <Label layoutX="31.0" layoutY="318.0" text="%howToSplit">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Label>
-                <CheckBox fx:id="allHaveToPay" layoutX="29.0" layoutY="353.0" mnemonicParsing="false" text=" Equally Between Everybody" />
-                <CheckBox fx:id="someHaveToPay" layoutX="29.0" layoutY="383.0" mnemonicParsing="false" text="Only Some People" />
+                <CheckBox fx:id="allHaveToPay" layoutX="29.0" layoutY="353.0" mnemonicParsing="false" text="%equallyEverybody" />
+                <CheckBox fx:id="someHaveToPay" layoutX="29.0" layoutY="383.0" mnemonicParsing="false" text="%onlySomePeople" />
                 <TextArea fx:id="whoPays" layoutX="26.0" layoutY="419.0" prefHeight="134.0" prefWidth="145.0" />
-                <Label layoutX="335.0" layoutY="318.0" text="Expense Type">
+                <Label layoutX="335.0" layoutY="318.0" text="%expenseType">
                     <font>
                         <Font size="16.0" />
                     </font>

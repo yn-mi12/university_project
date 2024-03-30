@@ -25,6 +25,7 @@ public class AddExpenseCtrl implements Initializable {
     private final SplittyCtrl controller;
     private List<Participant> participants;
     private Participant expensePayer;
+    private Expense expense;
     @FXML
     private SplitMenuButton whoPaid;
     @FXML
@@ -41,9 +42,7 @@ public class AddExpenseCtrl implements Initializable {
     private CheckBox someHaveToPay = new CheckBox();
     @FXML
     private TextArea whoPays;
-    @FXML
-    private ChoiceBox<String> language = new ChoiceBox<>();
-    private Expense expense;
+
 
     @Inject
     public AddExpenseCtrl(ServerUtilsEvent server, SplittyCtrl ctrl) {
@@ -104,9 +103,11 @@ public class AddExpenseCtrl implements Initializable {
             alert.showAndWait();
             return;
         }
-
+        clearFields();
         controller.showEventOverview(ctrl.getSelectedEvent());
     }
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -149,6 +150,16 @@ public class AddExpenseCtrl implements Initializable {
             default:
                 break;
         }
+    }
+
+    private void clearFields() {
+        howMuch.clear();
+        whatFor.clear();
+        date.setValue(null);
+        currency.setValue(null);
+        allHaveToPay.setSelected(false);
+        someHaveToPay.setSelected(false);
+        whoPays.clear();
     }
 
 }
