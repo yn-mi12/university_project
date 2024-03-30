@@ -54,7 +54,7 @@ public class ExpenseParticipant {
         return share;
     }
 
-    public void setShare(int share) {
+    public void setShare(double share) {
         this.share = share;
     }
 

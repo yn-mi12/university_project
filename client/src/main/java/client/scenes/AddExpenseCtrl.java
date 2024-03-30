@@ -139,12 +139,12 @@ public class AddExpenseCtrl implements Initializable {
             }
             return debtors;
         }
-        //TODO: fxml force only one checkbox and force check at least one
         String delimiterPattern = "[\\s,]+";
         String[] givenParticipants = whoPays.getText().split(delimiterPattern);
         for (int i = 0; i < givenParticipants.length; i++){
+            double share = 100.0/givenParticipants.length;
             boolean isOwner = this.event.getParticipants().get(i).getFirstName().equals(whoPaid.getText());
-            ExpenseParticipant expenseParticipant = new ExpenseParticipant(expense, event.getParticipantByName(givenParticipants[i]), 100, isOwner);
+            ExpenseParticipant expenseParticipant = new ExpenseParticipant(expense, event.getParticipantByName(givenParticipants[i]), share, isOwner);
             debtors.add(expenseParticipant);
         }
         return debtors;
