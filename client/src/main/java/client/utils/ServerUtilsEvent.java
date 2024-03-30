@@ -15,20 +15,20 @@
  */
 package client.utils;
 
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import client.Config;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
 import jakarta.ws.rs.BadRequestException;
-import org.glassfish.jersey.client.ClientConfig;
-
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import org.glassfish.jersey.client.ClientConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtilsEvent {
     private static final String SERVER = Config.get().getHost();
@@ -61,6 +61,20 @@ public class ServerUtilsEvent {
             event = null;
         }
         return event;
+    }
+    public Participant getParticipantByID(Long id) {
+        Participant participant;
+        try {
+            participant = ClientBuilder.newClient(new ClientConfig()) //
+                    .target(SERVER).path("api/participants/" + id) //
+                    .request(APPLICATION_JSON) //
+                    .accept(APPLICATION_JSON) //
+                    .get(new GenericType<>() {
+                    });
+        } catch(BadRequestException e) {
+            participant = null;
+        }
+        return participant;
     }
 
     public Event addEvent(Event event) {
@@ -131,5 +145,16 @@ public class ServerUtilsEvent {
                     .get(new GenericType<>() {
                     });
         return events;
+    }
+    public List<Participant> getEventParticipants(Event event)
+    {
+        List<Participant> participants;
+        participants = ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/participants/events/" + event.getId()) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+        return participants;
     }
 }

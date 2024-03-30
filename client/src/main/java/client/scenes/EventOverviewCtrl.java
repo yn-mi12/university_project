@@ -137,6 +137,9 @@ public class EventOverviewCtrl implements Initializable {
     public void editTitle(){
         controller.showEditTitle(event);
     }
+    public void updateParticipant(){
+        controller.initEditParticipantOverview(event);
+    }
 
     public void addParticipant(){
         controller.showAddParticipant(event);

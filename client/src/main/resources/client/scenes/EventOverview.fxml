@@ -4,14 +4,17 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="535.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EventOverviewCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="520.0" prefWidth="535.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EventOverviewCtrl">
    <children>
       <Label fx:id="eventTitle" layoutX="50.0" layoutY="10.0" text="Event's title" textAlignment="JUSTIFY">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <Button focusTraversable="false" layoutX="250.0" layoutY="126.0" mnemonicParsing="false" minWidth="100" text="%edit_button" />
+      <Button focusTraversable="false" layoutX="250.0" layoutY="126.0" mnemonicParsing="false" minWidth="100" text="%edit_button"
+      onAction="#updateParticipant"/>
 <!--      <SplitMenuButton focusTraversable="false" layoutX="25.0" layoutY="121.0" mnemonicParsing="false"-->
 <!--                       prefHeight="25.0" prefWidth="139.0" text="%participants_menu_button1">-->
 <!--      </SplitMenuButton>-->

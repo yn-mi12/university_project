@@ -14,12 +14,15 @@ public class SplittyCtrl {
     private StartScreenCtrl overviewCtrl;
     private Scene overview;
     private Scene add;
+    private Scene editParticipant;
     private EventOverviewCtrl eventCtrl;
     private Scene event;
     private InvitationCtrl inviteCtrl;
     private Scene invite;
     private Scene expense;
     private AddExpenseCtrl addExpenseCtrl;
+    private EditParticipantOverviewCtrl editParticipantOverviewCtrl;
+    private Scene partOverview;
     private EditEventTitleCtrl editTitleCtrl;
     private Scene editTitle;
     private AddParticipantCtrl addParticipantCtrl;
@@ -47,6 +50,10 @@ public class SplittyCtrl {
     public void initExp(Pair<AddExpenseCtrl, Parent> addExp) {
         this.addExpenseCtrl = addExp.getKey();
         this.expense = new Scene(addExp.getValue());
+    }
+    public void initPartUpdate(Pair<EditParticipantOverviewCtrl, Parent> updatePart) {
+        this.editParticipantOverviewCtrl = updatePart.getKey();
+        this.editParticipant = new Scene(updatePart.getValue());
     }
 
     public void initEventOverview(Pair<EventOverviewCtrl, Parent> eventOverview) {
@@ -104,6 +111,18 @@ public class SplittyCtrl {
         primaryStage.setScene(expense);
 
         expense.setOnKeyPressed(e -> addExpenseCtrl.keyPressed(e));
+    }
+    public void initEditParticipantOverview(Event event) {
+        editParticipantOverviewCtrl.setEvent(event);
+
+        showEditParticipantOverview();
+        primaryStage.show();
+    }
+    public void showEditParticipantOverview() {
+        primaryStage.setTitle("Edit participant");
+
+        primaryStage.setScene(editParticipant);
+        editParticipant.setOnKeyPressed(e -> editParticipantOverviewCtrl.keyPressed(e));
     }
 
     public void showEditTitle(Event event) {
