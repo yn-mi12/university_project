@@ -15,12 +15,12 @@ public class ExpenseParticipant {
     private Expense expense;
     @ManyToOne
     private Participant participant;
-    private int share;
+    private double share;
     private boolean owner = false;
 
     public ExpenseParticipant () {}
 
-    public ExpenseParticipant(Expense expense, Participant participant, int share, boolean owner) {
+    public ExpenseParticipant(Expense expense, Participant participant, double share, boolean owner) {
         this.expense = expense;
         this.participant = participant;
         this.share = share;
@@ -50,7 +50,7 @@ public class ExpenseParticipant {
         this.participant = participant;
     }
 
-    public int getShare() {
+    public double getShare() {
         return share;
     }
 

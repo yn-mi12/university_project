@@ -106,7 +106,7 @@ public class ExpenseController {
         //Check if all Participants exist and are in the same event
         //Check that there is 1 owner
         //Check that shares add up to 100%
-        int shareSum = 0;
+        double shareSum = 0;
         int ownerCount = 0;
         for(var i: expense.getDebtors()) {
             i.setExpense(expense);

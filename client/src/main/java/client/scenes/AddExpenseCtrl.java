@@ -4,6 +4,7 @@ import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
 import commons.Expense;
+import commons.ExpenseParticipant;
 import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
@@ -15,9 +16,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AddExpenseCtrl implements Initializable {
     private EventOverviewCtrl ctrl;
@@ -41,9 +40,10 @@ public class AddExpenseCtrl implements Initializable {
     @FXML
     private CheckBox someHaveToPay = new CheckBox();
     @FXML
-    private TextArea tags;
+    private TextArea whoPays;
     @FXML
     private ChoiceBox<String> language = new ChoiceBox<>();
+    private Expense expense;
 
     @Inject
     public AddExpenseCtrl(ServerUtilsEvent server, SplittyCtrl ctrl) {
@@ -75,6 +75,7 @@ public class AddExpenseCtrl implements Initializable {
     }
 
     public void cancel() {
+
         controller.showEventOverview(ctrl.getSelectedEvent());
     }
 
@@ -82,7 +83,19 @@ public class AddExpenseCtrl implements Initializable {
         try {
             System.out.println("Add expense");
             System.out.println("Id:" + event.getId());
-            server.addExpense(getExpense());
+            System.out.println("Get expense");
+            var description = this.whatFor.getText();
+            var amount = howMuch.getText();
+            var currency = this.currency.getValue();
+            var date = this.date.getValue();
+            //var tags = this.tags.getText();
+            this.expense = new Expense(description, currency,
+                    Double.parseDouble(amount), java.sql.Date.valueOf(date));
+            System.out.println(expense);
+            expense.setDebtors(getDebtors());
+            server.addExpense(expense, event);
+            expense.setEvent(event);
+            event.addExpense(expense);
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -100,30 +113,28 @@ public class AddExpenseCtrl implements Initializable {
         // Removed this because we don't need to have language switching in the Expense overview
     }
 
-//    private void retrieveCurrencies() {
-//        //List<String> values = List.of("USD", "EUR", "CHF");
-//        //Label label = new Label();
-//        currency = new ChoiceBox<>();
-//        currency.getSelectionModel().selectFirst();
-//        //currency.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-////            @Override
-////            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-////                label.setText(values.get(0));
-////            }
-////        });
-//    }
 
-    public Expense getExpense() {
-//        System.out.println("Get expense");
-//        var description = this.whatFor.getText();
-//        var amount = howMuch.getText();
-//        var currency = this.currency.getValue();
-//        var date = this.date.getValue();
-//        //var tags = this.tags.getText();
-//        Expense result = new Expense(description, currency, expensePayer,
-//                Double.parseDouble(amount), java.sql.Date.valueOf(date));
-//        System.out.println(result.toString());
-        return new Expense();
+    public HashSet<ExpenseParticipant> getDebtors(){
+        HashSet<ExpenseParticipant> debtors = new HashSet<>();
+        if (allHaveToPay.isSelected()){
+            double share = 100.0/event.getParticipants().size();
+            for (int i = 0; i < event.getParticipants().size(); i++){
+                boolean isOwner = this.event.getParticipants().get(i).getFirstName().equals(whoPaid.getText());
+                ExpenseParticipant expenseParticipant =
+                        new ExpenseParticipant(expense, event.getParticipants().get(i),share, isOwner);
+                debtors.add(expenseParticipant);
+            }
+            return debtors;
+        }
+        //TODO: fxml force only one checkbox and force check at least one
+        String delimiterPattern = "[\\s,]+";
+        String[] givenParticipants = whoPays.getText().split(delimiterPattern);
+        for (int i = 0; i < givenParticipants.length; i++){
+            boolean isOwner = this.event.getParticipants().get(i).getFirstName().equals(whoPaid.getText());
+            ExpenseParticipant expenseParticipant = new ExpenseParticipant(expense, event.getParticipantByName(givenParticipants[i]), 100, isOwner);
+            debtors.add(expenseParticipant);
+        }
+        return debtors;
     }
 
 
