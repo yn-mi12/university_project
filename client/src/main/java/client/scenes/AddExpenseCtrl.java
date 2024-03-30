@@ -74,7 +74,7 @@ public class AddExpenseCtrl implements Initializable {
     }
 
     public void cancel() {
-
+        clearFields();
         controller.showEventOverview(ctrl.getSelectedEvent());
     }
 
@@ -112,6 +112,18 @@ public class AddExpenseCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Removed this because we don't need to have language switching in the Expense overview
+    }
+
+    @FXML
+    private void handleCheckBoxAction() {
+        if (allHaveToPay.isSelected() && someHaveToPay.isSelected()){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText(null);
+            alert.setContentText("Only one check box can be selected!");
+            alert.showAndWait();
+            someHaveToPay.setSelected(false);
+        }
     }
 
 
