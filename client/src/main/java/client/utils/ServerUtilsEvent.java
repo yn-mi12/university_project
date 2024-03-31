@@ -62,6 +62,32 @@ public class ServerUtilsEvent {
         }
         return event;
     }
+
+    public Expense getExpenseById(Long id) {
+        Expense expense;
+        try{
+            expense = ClientBuilder.newClient(new ClientConfig())
+                    .target(SERVER).path("api/expenses/" + id)
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get(new GenericType<>(){});
+        }catch (BadRequestException e){
+            expense = null;
+        }
+        return expense;
+    }
+
+    public List<Expense> getExpensesByEventId(Event event){
+       List<Expense> expenses;
+       expenses = ClientBuilder.newClient(new ClientConfig())
+               .target(SERVER).path("api/expenses/event/" + event.getId())
+               .request(APPLICATION_JSON)
+               .accept(APPLICATION_JSON)
+               .get(new GenericType<>(){
+               });
+       return expenses;
+
+    }
     public Participant getParticipantByID(Long id) {
         Participant participant;
         try {
@@ -172,4 +198,6 @@ public class ServerUtilsEvent {
                 .accept(APPLICATION_JSON) //
                 .put(Entity.entity(participant, APPLICATION_JSON), Participant.class);
     }
+
+
 }

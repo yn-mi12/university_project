@@ -4,17 +4,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="520.0" prefWidth="535.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EventOverviewCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="535.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EventOverviewCtrl">
    <children>
       <Label fx:id="eventTitle" layoutX="50.0" layoutY="10.0" text="Event's title" textAlignment="JUSTIFY">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <Button focusTraversable="false" layoutX="250.0" layoutY="126.0" mnemonicParsing="false" minWidth="100" text="%edit_button"
-      onAction="#updateParticipant"/>
+      <Button focusTraversable="false" layoutX="250.0" layoutY="126.0" minWidth="100" mnemonicParsing="false" onAction="#updateParticipant" text="%edit_button" />
 <!--      <SplitMenuButton focusTraversable="false" layoutX="25.0" layoutY="121.0" mnemonicParsing="false"-->
 <!--                       prefHeight="25.0" prefWidth="139.0" text="%participants_menu_button1">-->
 <!--      </SplitMenuButton>-->
@@ -30,16 +27,16 @@
       </Label>
       <SplitMenuButton fx:id="part" focusTraversable="false" layoutX="20.0" layoutY="221.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="139.0" text="%participants_menu_button2" wrapText="true">
       </SplitMenuButton>
-      <Button focusTraversable="false" layoutX="380.0" layoutY="126.0" mnemonicParsing="false" onAction="#addParticipant" minWidth="100" text="%add_participant_button" />
-      <Button focusTraversable="false" layoutX="380.0" layoutY="221.0" mnemonicParsing="false" onAction="#addExpense" minWidth="100" text="%add_expense_button" wrapText="true" />
-      <Button focusTraversable="false" layoutX="250.0" layoutY="221.0" mnemonicParsing="false" minWidth="100" text="%view_expense_button" />
-      <ComboBox fx:id="languageBox" focusTraversable="false" layoutX="369.0" layoutY="466.0" prefWidth="150"/>
+      <Button focusTraversable="false" layoutX="380.0" layoutY="126.0" minWidth="100" mnemonicParsing="false" onAction="#addParticipant" text="%add_participant_button" />
+      <Button focusTraversable="false" layoutX="380.0" layoutY="221.0" minWidth="100" mnemonicParsing="false" onAction="#addExpense" text="%add_expense_button" wrapText="true" />
+      <Button focusTraversable="false" layoutX="250.0" layoutY="221.0" minWidth="100" mnemonicParsing="false" text="%view_expense_button" />
+      <ComboBox fx:id="languageBox" focusTraversable="false" layoutX="369.0" layoutY="466.0" prefWidth="150" />
       <Text fontSmoothingType="LCD" layoutX="373.0" layoutY="461.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%language_choice">
          <font>
             <Font size="13.0" />
          </font>
       </Text>
-      <Button focusTraversable="false" layoutX="380.0" layoutY="52.0" mnemonicParsing="false" onAction="#sendInvites" minWidth="100" text="%invite_button" />
+      <Button focusTraversable="false" layoutX="380.0" layoutY="52.0" minWidth="100" mnemonicParsing="false" onAction="#sendInvites" text="%invite_button" />
       <TextArea fx:id="participantText" accessibleText="false" layoutX="20.0" layoutY="107.0" prefHeight="64.0" prefWidth="155.0" />
       <TabPane layoutX="12.0" layoutY="258.0" prefHeight="191.0" prefWidth="480.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -47,7 +44,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
             </content>
-              <ListView layoutX="96.0" layoutY="218.0" prefHeight="141.0" prefWidth="227.0" />
+              <ListView fx:id="allExpenses" layoutX="96.0" layoutY="218.0" prefHeight="141.0" prefWidth="227.0" />
           </Tab>
           <Tab text="%from">
             <content>
@@ -63,9 +60,9 @@
             </Tab>
         </tabs>
       </TabPane>
-      <Button focusTraversable="false" layoutX="380.0" layoutY="85.0" mnemonicParsing="false" onAction="#editTitle" minWidth="100" text="%editTitle" />
+      <Button focusTraversable="false" layoutX="380.0" layoutY="85.0" minWidth="100" mnemonicParsing="false" onAction="#editTitle" text="%editTitle" />
        <Button layoutX="15.0" layoutY="8.0" mnemonicParsing="false" onAction="#goBack" text="⬅" />
-       <Button layoutX="15.0" layoutY="466.0" mnemonicParsing="false" onAction="#deleteEvent" text="%deleteEvent" textFill="#da0404" minWidth="100">
+       <Button layoutX="15.0" layoutY="466.0" minWidth="100" mnemonicParsing="false" onAction="#deleteEvent" text="%deleteEvent" textFill="#da0404">
            <font>
                <Font size="14.0" />
            </font>
@@ -75,12 +72,12 @@
                <Font name="System Bold" size="13.0" />
            </font>
        </Label>
-       <Label fx:id="inviteCode" layoutX="170" layoutY="55" >
+       <Label fx:id="inviteCode" layoutX="170" layoutY="55">
            <font>
                <Font size="13.0" />
            </font>
        </Label>
-       <Button minWidth="100" text="%copyCode" layoutY="52" layoutX="250" onAction="#copyCode">
+       <Button layoutX="250" layoutY="52" minWidth="100" onAction="#copyCode" text="%copyCode">
            <font>
                <Font size="13.0" />
            </font>

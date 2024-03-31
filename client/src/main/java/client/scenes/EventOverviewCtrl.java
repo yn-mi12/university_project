@@ -5,6 +5,8 @@ import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
+import commons.Expense;
+import commons.ExpenseParticipant;
 import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 
@@ -22,10 +24,7 @@ import javafx.stage.Modality;
 import javafx.util.Callback;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class EventOverviewCtrl implements Initializable {
     private final ServerUtilsEvent server;
@@ -43,6 +42,9 @@ public class EventOverviewCtrl implements Initializable {
     private ComboBox<Label> languageBox;
     public Event event;
     public boolean isAdmin = false;
+
+    @FXML
+    private ListView<String> allExpenses;
 
 
     @Inject
@@ -169,5 +171,22 @@ public class EventOverviewCtrl implements Initializable {
     public void goBack() {
         if(controller.getAdmin()) controller.showAdminOverview();
         else controller.showOverview();
+    }
+
+    public void refresh(){
+        List<Expense> expenses = server.getExpensesByEventId(event);
+        List<String> titles = new ArrayList<>();
+        for (Expense expense : expenses){
+            Participant owner = new Participant();
+            Set<ExpenseParticipant> expenseParticipants = expense.getDebtors();
+            for (ExpenseParticipant expenseParticipant : expenseParticipants){
+                if (expenseParticipant.isOwner()){
+                    owner = expenseParticipant.getParticipant();
+                }
+            }
+            String expenseString = owner.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
+            titles.add(expenseString);
+        }
+        allExpenses.setItems(FXCollections.observableList(titles));
     }
 }
