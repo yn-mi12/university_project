@@ -80,7 +80,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
                 };
             }
         });
-        String current = String.valueOf(Config.get().getCurrentLocaleName());
+        String current = Config.get().getCurrentLocaleName();
         languageBox.setValue(languageBox.getItems().stream()
                 .filter(l -> String.valueOf(l.getText()).equals(current)).findFirst().orElse(null));
         languageBox.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
@@ -90,11 +90,6 @@ public class EditParticipantOverviewCtrl implements Initializable {
                 Main.refreshAdminOverview();
             }
         }));
-    }
-
-    public void goBack() {
-        clearFields();
-        controller.showOverview();
     }
 
     public void clearFields() {
@@ -125,13 +120,16 @@ public class EditParticipantOverviewCtrl implements Initializable {
 
     public void cancel() {
         clearFields();
-        controller.showEditParticipantOverview();
+        Main.reloadUIEvent(event);
+        controller.showEventOverview(event);
     }
 
     public void deleteParticipant() {
+        setParticipant();
         try {
             System.out.println("Delete Participant");
             server.deleteParticipant(server.getParticipantByID(selectedParticipant.getId()));
+            event.deleteParticipant(selectedParticipant);
             cancel();
         } catch (WebApplicationException e) {
 

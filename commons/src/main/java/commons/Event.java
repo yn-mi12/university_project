@@ -74,6 +74,9 @@ public class Event {
             }
         }
     }
+    public void deleteParticipant(Participant participant) {
+        participants.remove(participant);
+    }
 
     public void setParticipants(List<Participant> participants) {
         this.participants = participants;
