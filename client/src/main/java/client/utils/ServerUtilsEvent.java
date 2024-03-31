@@ -126,6 +126,14 @@ public class ServerUtilsEvent {
                 .delete();
         System.out.println("Event deleted:" + event);
     }
+    public void deleteParticipant(Participant participant) {
+        ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/participants/" + participant.getId()) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .delete();
+        System.out.println("Participant deleted:" + participant);
+    }
 
     public boolean checkToken(String token) {
         return ClientBuilder.newClient(new ClientConfig()) //

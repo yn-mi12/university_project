@@ -108,5 +108,13 @@ public class ParticipantController {
         repo.save(participantOld);
         return ResponseEntity.ok(participantOld);
     }
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Participant> deleteById(@PathVariable("id") long id){
+        if (id < 0 || !repo.existsById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+        Participant participant = repo.findById(id).get();
+        repo.deleteById(id);
+        return ResponseEntity.ok(participant);
+    }
 }

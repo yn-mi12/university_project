@@ -106,6 +106,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
         String partId = partIdName.split(":")[0];
         this.selectedParticipant = server.getParticipantByID(Long.parseLong(partId));
     }
+
     public void editParticipant() {
         setParticipant();
         try {
@@ -121,18 +122,24 @@ public class EditParticipantOverviewCtrl implements Initializable {
             alert.showAndWait();
         }
     }
-    //    public void deleteParticipant() {
-//        try {
-//            System.out.println("Delete Event");
-//            server.deleteParticipant(getParticipant());
-//            Main.reloadUIEvent();
-//        } catch (WebApplicationException e) {
-//
-//            var alert = new Alert(Alert.AlertType.ERROR);
-//            alert.initModality(Modality.APPLICATION_MODAL);
-//            alert.setContentText(e.getMessage());
-//            alert.showAndWait();
-//        }
-//    }
+
+    public void cancel() {
+        clearFields();
+        controller.showEditParticipantOverview();
+    }
+
+    public void deleteParticipant() {
+        try {
+            System.out.println("Delete Participant");
+            server.deleteParticipant(server.getParticipantByID(selectedParticipant.getId()));
+            cancel();
+        } catch (WebApplicationException e) {
+
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+    }
 }
 
