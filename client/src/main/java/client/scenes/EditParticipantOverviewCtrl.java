@@ -6,16 +6,15 @@ import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
 import commons.Participant;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -26,15 +25,13 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class EditParticipantOverviewCtrl implements Initializable {
+    private Participant selectedParticipant;
 
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
     private Event event;
     public ListView<String> participantList;
-    public Button showButton;
     public ComboBox<Label> languageBox;
-    public Button showButtonD;
-    public Button showButtonE;
     private Stage primaryStage;
 
     @Inject
@@ -51,16 +48,6 @@ public class EditParticipantOverviewCtrl implements Initializable {
             names.add(x.getId() + ": " + x.getFirstName());
         }
         participantList.setItems(FXCollections.observableList(names));
-        participantList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (participantList.getSelectionModel().getSelectedItem() != null) {
-                    showButton.setDisable(false);
-                    showButtonD.setDisable(false);
-                    showButtonE.setDisable(false);
-                }
-            }
-        });
     }
 
     @Override
@@ -106,23 +93,34 @@ public class EditParticipantOverviewCtrl implements Initializable {
     }
 
     public void goBack() {
-        //clearFields();
+        clearFields();
         controller.showOverview();
     }
 
-    public Participant getParticipant() {
-        String partIdName = participantList.getSelectionModel().getSelectedItem();
-        String partId = partIdName.split(":")[0];
-        return server.getParticipantByID(Long.parseLong(partId));
+    public void clearFields() {
+        participantList.getSelectionModel().clearSelection();
     }
 
-//    public void showEvent() throws IOException {
-//        String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
-//        String eventId = eventIdTitle.split(":")[0];
-//        Event event = server.getByID(Long.parseLong(eventId));
-//        controller.showEventOverview(event);
-//    }
+    public void setParticipant() {
+        String partIdName = participantList.getSelectionModel().getSelectedItem();
+        String partId = partIdName.split(":")[0];
+        this.selectedParticipant = server.getParticipantByID(Long.parseLong(partId));
+    }
+    public void editParticipant() {
+        setParticipant();
+        try {
+            controller.showAddParticipant(event);
+            AddParticipantCtrl addCtrl = controller.getAddParticipantCtrl();
+            addCtrl.setParticipant(selectedParticipant);
+            addCtrl.ok();
 
+        } catch (WebApplicationException e) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+    }
     //    public void deleteParticipant() {
 //        try {
 //            System.out.println("Delete Event");
@@ -136,17 +134,5 @@ public class EditParticipantOverviewCtrl implements Initializable {
 //            alert.showAndWait();
 //        }
 //    }
-    public void keyPressed(KeyEvent e) {
-        switch (e.getCode()) {
-            case ENTER:
-                //update();
-                break;
-            case ESCAPE:
-                //cancel();
-                break;
-            default:
-                break;
-        }
-    }
 }
 

@@ -122,7 +122,7 @@ public class SplittyCtrl {
         primaryStage.setTitle("Edit participant");
 
         primaryStage.setScene(editParticipant);
-        editParticipant.setOnKeyPressed(e -> editParticipantOverviewCtrl.keyPressed(e));
+        //editParticipant.setOnKeyPressed(e -> editParticipantOverviewCtrl.keyPressed(e));
     }
 
     public void showEditTitle(Event event) {
@@ -138,6 +138,10 @@ public class SplittyCtrl {
         primaryStage.setScene(addParticipant);
         this.addParticipantCtrl.setEvent(event);
         addParticipant.setOnKeyPressed(e -> addParticipantCtrl.keyPressed(e));
+    }
+
+    public AddParticipantCtrl getAddParticipantCtrl() {
+        return addParticipantCtrl;
     }
 
     public Stage getPrimaryStage() {
