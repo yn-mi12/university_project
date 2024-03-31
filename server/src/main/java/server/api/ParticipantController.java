@@ -1,17 +1,11 @@
 package server.api;
 
-import java.util.List;
-
 import commons.Participant;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import server.database.ParticipantRepository;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/participants")
@@ -22,7 +16,7 @@ public class ParticipantController {
     /**
      * The constructor for the ParticipantController class
      *
-     * @param repo   - The Participant repository
+     * @param repo - The Participant repository
      */
     public ParticipantController(ParticipantRepository repo) {
         this.repo = repo;
@@ -31,7 +25,7 @@ public class ParticipantController {
     /**
      * @return - all the participants currently stored
      */
-    @GetMapping(path = { "", "/" })
+    @GetMapping(path = {"", "/"})
     public List<Participant> getAll() {
         return repo.findAll();
     }
@@ -51,8 +45,8 @@ public class ParticipantController {
     }
 
     @GetMapping("/events/{id}")
-    public ResponseEntity<List<Participant> > getByEventId(@PathVariable("id") long id) {
-        if(id < 0)
+    public ResponseEntity<List<Participant>> getByEventId(@PathVariable("id") long id) {
+        if (id < 0)
             return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(repo.findByEventId(id));
     }
@@ -63,19 +57,20 @@ public class ParticipantController {
      * @param s - The string to be checked
      * @return - True iff the string is neither null nor empty. False otherwise.
      */
-    private static boolean isNullOrEmpty(String s) { return s == null || s.isEmpty(); }
+    private static boolean isNullOrEmpty(String s) {
+        return s == null || s.isEmpty();
+    }
 
     /***
      * Returns the email of a Participant by id, if it exists
      * @param id - The id of the Participant
      * @return - The Participants email
      */
-    @GetMapping(path = { "/{id}/email" })
+    @GetMapping(path = {"/{id}/email"})
     public ResponseEntity<String> getEmail(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id) || isNullOrEmpty(repo.findById(id).get().getEmail())) {
             return ResponseEntity.badRequest().build();
-        }
-        else return ResponseEntity.ok(repo.findById(id).get().getEmail());
+        } else return ResponseEntity.ok(repo.findById(id).get().getEmail());
     }
 
     /**
@@ -84,7 +79,7 @@ public class ParticipantController {
      * @param participant - The Participant to be added
      * @return - The saved Participant
      */
-    @PostMapping(path = { "", "/" })
+    @PostMapping(path = {"", "/"})
     public ResponseEntity<Participant> save(@RequestBody Participant participant) {
 
         if (participant == null || isNullOrEmpty(participant.getFirstName()) || isNullOrEmpty(participant.getLastName())) {
@@ -95,4 +90,31 @@ public class ParticipantController {
         return ResponseEntity.ok(saved);
     }
 
+    /**
+     * Updates a Participant in the repository.
+     * @param id - The id of the Participant to be updated
+     * @param participant - The new Participant
+     * @return - The updated Participant
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Participant> updateParticipant(@PathVariable Long id, @RequestBody Participant participant) {
+        Participant participantOld = repo.findById(id).orElse(null);
+        if (participantOld == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        participantOld.setFirstName(participant.getFirstName());
+        participantOld.setLastName(participant.getLastName());
+        participantOld.setEmail(participant.getEmail());
+        repo.save(participantOld);
+        return ResponseEntity.ok(participantOld);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Participant> deleteById(@PathVariable("id") long id){
+        if (id < 0 || !repo.existsById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+        Participant participant = repo.findById(id).get();
+        repo.deleteById(id);
+        return ResponseEntity.ok(participant);
+    }
 }

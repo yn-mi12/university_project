@@ -46,6 +46,7 @@ public class Main extends Application {
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
         var eventOverview = FXML.load(EventOverviewCtrl.class, "client", "scenes", "EventOverview.fxml");
         var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
+        var partOverview = FXML.load(EditParticipantOverviewCtrl.class, "client", "scenes", "EditParticipantOverview.fxml");
         var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
         var editTitle = FXML.load(EditEventTitleCtrl.class,"client", "scenes", "EditTitle.fxml");
         var addParticipant = FXML.load(AddParticipantCtrl.class, "client", "scenes", "AddParticipant.fxml");
@@ -55,6 +56,7 @@ public class Main extends Application {
         mainCtrl.initialize(primaryStage);
         mainCtrl.initAdminPopup(adminPopup);
         mainCtrl.initShowOverview(overview);
+        mainCtrl.initPartUpdate(partOverview);
         mainCtrl.initEventOverview(eventOverview);
         mainCtrl.initInvitePage(invite);
         mainCtrl.initExp(addExp);
@@ -71,6 +73,7 @@ public class Main extends Application {
     public static void reloadUIEvent(Event selectedEvent) {
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
         var eventOverview = FXML.load(EventOverviewCtrl.class, "client", "scenes", "EventOverview.fxml");
+        var partOverview = FXML.load(EditParticipantOverviewCtrl.class, "client", "scenes", "EditParticipantOverview.fxml");
         var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
         var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
         var editTitle = FXML.load(EditEventTitleCtrl.class, "client", "scenes", "EditTitle.fxml");
@@ -78,6 +81,7 @@ public class Main extends Application {
         var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
         var adminPopup = FXML.load(AdminPopupCtrl.class,"client", "scenes", "AdminPopup.fxml");
         mainCtrl.initialize(primaryStage);
+        mainCtrl.initPartUpdate(partOverview);
         mainCtrl.initAdminPopup(adminPopup);
         mainCtrl.initShowOverview(overview);
         mainCtrl.initEventOverview(eventOverview);

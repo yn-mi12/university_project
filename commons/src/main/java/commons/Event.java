@@ -59,6 +59,23 @@ public class Event {
 
     public void addParticipant(Participant participant) { participants.add(participant); }
 
+    /**
+     * Updates a participant in the list of participants
+     * @param participant - the participant to be updated
+     */
+    public void updateParticipant(Participant participant) {
+        for (Participant p : participants) {
+            if (p.getId() == participant.getId()) {
+                p.setFirstName(participant.getFirstName());
+                p.setLastName(participant.getLastName());
+                p.setEmail(participant.getEmail());
+            }
+        }
+    }
+    public void deleteParticipant(Participant participant) {
+        participants.remove(participant);
+    }
+
     public void setParticipants(List<Participant> participants) {
         this.participants = participants;
     }

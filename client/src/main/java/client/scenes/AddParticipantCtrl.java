@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-
 import commons.Event;
 import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
@@ -30,6 +29,12 @@ public class AddParticipantCtrl {
         this.mainCtrl = mainCtrl;
     }
 
+    public void setParticipant(Participant participant) {
+        this.participant = participant;
+        this.participant.setId(participant.getId());
+    }
+
+
     public void setEvent(Event event) {
         this.event = event;
     }
@@ -38,7 +43,6 @@ public class AddParticipantCtrl {
         switch (e.getCode()) {
             case ENTER:
                 ok();
-                break;
             case ESCAPE:
                 cancel();
                 break;
@@ -49,30 +53,49 @@ public class AddParticipantCtrl {
 
     public void cancel() {
         clearFields();
+        participant = null;
         mainCtrl.showEventOverview(event);
+    }
+
+    public Participant getParticipant() {
+        String partFirstName = firstName.getText();
+        String partLastName = lastName.getText();
+        String partEmail = email.getText();
+
+        if (participant != null) {
+            participant.setFirstName(partFirstName);
+            participant.setLastName(partLastName);
+            participant.setEmail(partEmail);
+            return participant;
+        } else
+            return new Participant(partFirstName, partLastName, partEmail);
     }
 
     public void ok() {
         try {
-            String partFirstName = firstName.getText();
-            String partLastName = lastName.getText();
-            String partEmail = email.getText();
-            participant = new Participant(partFirstName, partLastName, partEmail);
-            server.addParticipant(participant, event);
-            participant.setEvent(event);
-            event.addParticipant(participant);
-//            System.out.println("Add Participant");
-//            System.out.println("Id:" + event.getId());
+//            if (participant != null && participant.getId() != 0) {
+//                setFirstName(participant.getFirstName());
+//                setLastName(participant.getLastName());
+//                setEmail(participant.getEmail());
+//            }
+            //TODO looks better if the fields show the old data
+
+            participant = getParticipant();
+
+            if (participant != null && participant.getId() != 0) {
+                server.updateParticipant(participant);
+                event.updateParticipant(participant);
+            } else {
+                server.addParticipant(participant, event);
+                participant.setEvent(event);
+                event.addParticipant(participant);
+            }
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
-            return;
         }
-
-       // clearFields();
-        cancel();
     }
 
     private void clearFields() {
