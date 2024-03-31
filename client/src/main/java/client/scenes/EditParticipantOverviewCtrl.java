@@ -120,6 +120,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
 
     public void cancel() {
         clearFields();
+        selectedParticipant = null;
         Main.reloadUIEvent(event);
         controller.showEventOverview(event);
     }

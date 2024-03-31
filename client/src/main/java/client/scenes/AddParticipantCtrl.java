@@ -17,8 +17,6 @@ public class AddParticipantCtrl {
     private final SplittyCtrl mainCtrl;
     private Event event;
     @FXML
-    private Button ok = new Button();
-    @FXML
     private TextField firstName;
     @FXML
     private TextField lastName;
@@ -32,21 +30,9 @@ public class AddParticipantCtrl {
         this.mainCtrl = mainCtrl;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName.setText(firstName);
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName.setText(lastName);
-    }
-
     public void setParticipant(Participant participant) {
         this.participant = participant;
         this.participant.setId(participant.getId());
-    }
-
-    public void setEmail(String email) {
-        this.email.setText(email);
     }
 
 
@@ -68,6 +54,7 @@ public class AddParticipantCtrl {
 
     public void cancel() {
         clearFields();
+        participant = null;
         mainCtrl.showEventOverview(event);
     }
 
