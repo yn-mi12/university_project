@@ -112,11 +112,11 @@ class ExpenseParticipantTest {
     void testToString() {
         assertEquals("ExpenseParticipant{id=" + ep1.getId()
                 + ", participant=" + ep1.getParticipant().toString()
-                + ", share=100, owner=false}", ep1.toString());
+                + ", share=100.0, owner=false}", ep1.toString());
         assertEquals("ExpenseParticipant{id=" + ep2.getId()
                 + ", participant=" + ep2.getParticipant().toString()
-                + ", share=0, owner=true}", ep2.toString());
+                + ", share=0.0, owner=true}", ep2.toString());
         assertEquals("ExpenseParticipant{id=" + ep3.getId()
-                + ", participant=null, share=0, owner=false}",ep3.toString());
+                + ", participant=null, share=0.0, owner=false}",ep3.toString());
     }
 }

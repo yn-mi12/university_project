@@ -1,10 +1,8 @@
 package commons;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+
+import java.util.*;
 
 @Entity
 public class Event {
@@ -99,6 +97,21 @@ public class Event {
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    /**
+     * Returns the participant with the specified name
+     * @param name the specified name
+     * @return the participant with the specified name
+     */
+
+    public Participant getParticipantByName(String name){
+        for(int i = 0; i <= participants.size(); i++){
+            if (participants.get(i).getFirstName().equals(name)){
+                return participants.get(i);
+            }
+        }
+        throw new NoSuchElementException("There is no participant with name: " + name);
     }
 
     /**

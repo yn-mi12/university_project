@@ -90,9 +90,9 @@ public class ServerUtilsEvent {
         return saved;
     }
 
-    public Expense addExpense(Expense expense) {
+    public Expense addExpense(Expense expense, Event event) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(getServer()).path("/api/expenses") //
+                .target(getServer()).path("/api/expenses/event/" + event.getId()) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(expense, APPLICATION_JSON), Expense.class);
