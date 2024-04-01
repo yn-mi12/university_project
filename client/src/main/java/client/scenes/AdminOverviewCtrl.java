@@ -5,6 +5,7 @@ import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,13 +13,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -133,6 +139,31 @@ public class AdminOverviewCtrl implements Initializable {
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
+        }
+    }
+
+    public void exportEvent() {
+        var om = new ObjectMapper();
+        String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
+        String eventId = eventIdTitle.split(":")[0];
+        Event event = server.getByID(Long.parseLong(eventId));
+
+        try {
+            var jsonEvent = om.writeValueAsString(event);
+            System.out.println(jsonEvent);
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Event as JSON");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+            File file = fileChooser.showSaveDialog(primaryStage);
+
+            if(file != null) {
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write(jsonEvent);
+                fileWriter.close();
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
