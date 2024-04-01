@@ -3,6 +3,7 @@ package client.scenes;
 import client.Config;
 import client.Main;
 import client.utils.ServerUtilsEvent;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import commons.Event;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,13 +25,11 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AdminOverviewCtrl implements Initializable {
 
@@ -50,13 +49,7 @@ public class AdminOverviewCtrl implements Initializable {
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        List<Event> events = server.getAllEvents();
-        List<String> titles = new ArrayList<>();
-        for(Event x : events)
-        {
-            titles.add(x.getId() + ": " +  x.getTitle());
-        }
-        eventList.setItems(FXCollections.observableList(titles));
+        refresh();
         eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
@@ -108,6 +101,16 @@ public class AdminOverviewCtrl implements Initializable {
                 Main.refreshAdminOverview();
             }
         }));
+    }
+
+    public void refresh() {
+        List<Event> events = server.getAllEvents();
+        List<String> titles = new ArrayList<>();
+        for(Event x : events)
+        {
+            titles.add(x.getId() + ": " +  x.getTitle());
+        }
+        eventList.setItems(FXCollections.observableList(titles));
     }
 
     public void goBack() {
