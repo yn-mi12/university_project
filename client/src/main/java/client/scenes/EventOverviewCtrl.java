@@ -12,6 +12,7 @@ import jakarta.ws.rs.WebApplicationException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -45,6 +46,10 @@ public class EventOverviewCtrl implements Initializable {
 
     @FXML
     private ListView<String> allExpenses;
+    @FXML
+    private ListView<String> fromExpenses;
+    @FXML
+    private ListView<String> includingExpenses;
 
 
     @Inject
@@ -173,7 +178,7 @@ public class EventOverviewCtrl implements Initializable {
         else controller.showOverview();
     }
 
-    public void refresh(){
+    public void expensesNotSelectedPart(){
         List<Expense> expenses = server.getExpensesByEventId(event);
         List<String> titles = new ArrayList<>();
         for (Expense expense : expenses){
@@ -189,4 +194,36 @@ public class EventOverviewCtrl implements Initializable {
         }
         allExpenses.setItems(FXCollections.observableList(titles));
     }
+
+    public void expensesFromParticipant(){
+        String participantsName = part.getText();
+        Participant participant = event.getParticipantByName(participantsName);
+
+        List<Expense> expenses = server.getExpensesByEventId(event);
+        List<Expense> expensesFromParticipant = new ArrayList<>();
+        List<String> titles = new ArrayList<>();
+        for(Expense expense : expenses){
+            List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
+            for(int i = 0; i < debtors.size(); i++){
+                if (debtors.get(i).isOwner() && debtors.get(i).getParticipant().equals(participant)){
+                    expensesFromParticipant.add(expense);
+                }
+            }
+        }
+        for (Expense expense: expensesFromParticipant){
+            String expenseString = participant.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
+            titles.add(expenseString);
+        }
+        fromExpenses.setItems(FXCollections.observableList(titles));
+    }
+
+    public void expensesIncludingParticipant(){
+        //TODO
+    }
+
+    public void allExpensesWithParticipant(){
+        //TODO
+    }
+
+
 }
