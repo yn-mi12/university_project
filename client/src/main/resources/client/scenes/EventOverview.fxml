@@ -39,7 +39,7 @@
       <TextArea fx:id="participantText" accessibleText="false" layoutX="20.0" layoutY="107.0" prefHeight="64.0" prefWidth="155.0" />
       <TabPane layoutX="12.0" layoutY="258.0" prefHeight="191.0" prefWidth="480.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab onSelectionChanged="#allExpensesWithParticipant" text="%all">
+          <Tab text="%all">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
             </content>

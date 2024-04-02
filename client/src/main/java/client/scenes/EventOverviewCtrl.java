@@ -218,11 +218,33 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void expensesIncludingParticipant(){
-        //TODO
-    }
+        String participantsName = part.getText();
+        Participant participant = event.getParticipantByName(participantsName);
 
-    public void allExpensesWithParticipant(){
-        //TODO
+        List<Expense> expenses = server.getExpensesByEventId(event);
+        List<Expense> expensesIncludingParticipant = new ArrayList<>();
+        List<String> titles = new ArrayList<>();
+        for(Expense expense : expenses){
+            List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
+            for(int i = 0; i < debtors.size(); i++){
+                if (debtors.get(i).getParticipant().equals(participant)){
+                    expensesIncludingParticipant.add(expense);
+                }
+            }
+        }
+
+        Participant owner = new Participant();
+        for (Expense expense: expensesIncludingParticipant){
+            List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
+            for(ExpenseParticipant expenseParticipant : debtors){
+                if (expenseParticipant.isOwner()){
+                    owner = expenseParticipant.getParticipant();
+                }
+            }
+            String expenseString = owner.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
+            titles.add(expenseString);
+        }
+        includingExpenses.setItems(FXCollections.observableList(titles));
     }
 
 
