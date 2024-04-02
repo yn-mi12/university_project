@@ -20,7 +20,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.util.Callback;
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
