@@ -29,7 +29,6 @@
       </SplitMenuButton>
       <Button focusTraversable="false" layoutX="380.0" layoutY="126.0" minWidth="100" mnemonicParsing="false" onAction="#addParticipant" text="%add_participant_button" />
       <Button focusTraversable="false" layoutX="380.0" layoutY="221.0" minWidth="100" mnemonicParsing="false" onAction="#addExpense" text="%add_expense_button" wrapText="true" />
-      <Button focusTraversable="false" layoutX="250.0" layoutY="221.0" minWidth="100" mnemonicParsing="false" text="%view_expense_button" />
       <ComboBox fx:id="languageBox" focusTraversable="false" layoutX="369.0" layoutY="466.0" prefWidth="150" />
       <Text fontSmoothingType="LCD" layoutX="373.0" layoutY="461.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%language_choice">
          <font>
@@ -46,17 +45,17 @@
             </content>
               <ListView fx:id="allExpenses" layoutX="96.0" layoutY="218.0" prefHeight="141.0" prefWidth="227.0" />
           </Tab>
-          <Tab text="%from">
+          <Tab onSelectionChanged="#expensesFromParticipant" text="%from">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
             </content>
-              <ListView layoutX="96.0" layoutY="218.0" prefHeight="141.0" prefWidth="227.0" />
+              <ListView fx:id="fromExpenses" layoutX="96.0" layoutY="218.0" prefHeight="141.0" prefWidth="227.0" />
           </Tab>
-            <Tab text="%including">
+            <Tab onSelectionChanged="#expensesIncludingParticipant" text="%including">
                 <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                 </content>
-                <ListView layoutX="96.0" layoutY="218.0" prefHeight="141.0" prefWidth="227.0" />
+                <ListView fx:id="includingExpenses" layoutX="96.0" layoutY="218.0" prefHeight="141.0" prefWidth="227.0" />
             </Tab>
         </tabs>
       </TabPane>
