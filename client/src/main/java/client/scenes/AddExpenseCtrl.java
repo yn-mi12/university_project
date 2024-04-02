@@ -92,9 +92,8 @@ public class AddExpenseCtrl implements Initializable {
                     Double.parseDouble(amount), java.sql.Date.valueOf(date));
             System.out.println(expense);
             expense.setDebtors(getDebtors());
-            server.addExpense(expense, event);
             expense.setEvent(event);
-            event.addExpense(expense);
+            server.addExpense(expense, event);
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -104,7 +103,8 @@ public class AddExpenseCtrl implements Initializable {
             return;
         }
         clearFields();
-        controller.showEventOverview(ctrl.getSelectedEvent());
+        Event updated = server.getByInviteCode(ctrl.getSelectedEvent().getInviteCode());
+        controller.showEventOverview(updated);
     }
 
 

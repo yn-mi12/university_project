@@ -77,7 +77,8 @@ public class EditEventTitleCtrl {
         }
 
         clearFields();
-        mainCtrl.showEventOverview(event);
+        Event updated = server.getByInviteCode(event.getInviteCode());
+        mainCtrl.showEventOverview(updated);
     }
 
 

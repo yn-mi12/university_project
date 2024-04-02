@@ -44,7 +44,7 @@ public class ParticipantController {
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
-    @GetMapping("/events/{id}")
+    @GetMapping("/event/{id}")
     public ResponseEntity<List<Participant>> getByEventId(@PathVariable("id") long id) {
         if (id < 0)
             return ResponseEntity.badRequest().build();

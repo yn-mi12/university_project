@@ -197,7 +197,7 @@ public class ServerUtilsEvent {
     {
         List<Participant> participants;
         participants = ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/participants/events/" + event.getId()) //
+                .target(SERVER).path("api/participants/event/" + event.getId()) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<>() {
