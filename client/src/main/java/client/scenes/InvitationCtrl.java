@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtilsEvent;
 import commons.Event;
 import jakarta.inject.Inject;
+import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
@@ -13,7 +14,9 @@ public class InvitationCtrl {
 
     private final ServerUtilsEvent server;
     private final SplittyCtrl mainCtrl;
+    @FXML
     public Text eventInviteTitle;
+    @FXML
     public Text inviteCode;
     public Event event;
 

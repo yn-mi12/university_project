@@ -27,7 +27,7 @@ public class Event {
      */
     public Event(String title) {
         this.title = title;
-        this.inviteCode = UUID.randomUUID().toString().substring(0,8);
+        this.inviteCode = UUID.randomUUID().toString().substring(0,11).replace("-", "");
     }
 
     public long getId() {

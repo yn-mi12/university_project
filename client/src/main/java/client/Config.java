@@ -44,32 +44,32 @@ public final class Config {
     @Setting("supported-locales")
     private Set<SupportedLocale> supportedLocales;
 
-    @Setting("past-ids")
-    private Set<String> pastIDs;
+    @Setting("past-codes")
+    private Set<String> pastCodes;
 
     /**
      * Get the ids of the events the client has previously viewed
      * @return Read only list of the ids
      */
-    public @UnmodifiableView @NotNull Set<String> getPastIDs() {
-        return Collections.unmodifiableSet(pastIDs);
+    public @UnmodifiableView @NotNull Set<String> getPastCodes() {
+        return Collections.unmodifiableSet(pastCodes);
     }
 
     /**
-     * Add an event id to the list of previously viewed events
-     * @param pastID  The id of the event
+     * Add an event invite code to the list of previously viewed events
+     * @param pastCode  The invite code of the event
      */
-    public void addPastID(@NotNull String pastID) {
-        pastIDs.add(pastID);
+    public void addPastCode(@NotNull String pastCode) {
+        pastCodes.add(pastCode);
     }
 
     /**
-     * Remove an event id from the list. This is used to remove ids that aren't link to a database entry,
+     * Remove an event invite code from the list. This is used to remove invite codes that aren't link to a database entry,
      * this happens when an event is deleted from the database.
-     * @param pastID The id to be removed
+     * @param pastCode The invite code to be removed
      */
-    public void removePastID(@NotNull String pastID) {
-        pastIDs.remove(pastID);
+    public void removePastCode(@NotNull String pastCode) {
+        pastCodes.remove(pastCode);
     }
 
     /**

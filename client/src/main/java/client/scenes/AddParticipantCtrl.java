@@ -90,6 +90,7 @@ public class AddParticipantCtrl {
                 participant.setEvent(event);
                 event.addParticipant(participant);
             }
+            mainCtrl.showEventOverview(event);
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);

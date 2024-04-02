@@ -111,7 +111,7 @@ public class ServerUtilsEvent {
                 .post(Entity.entity(event, APPLICATION_JSON), Event.class);
         System.out.println("Add event" + saved);
 
-        Config.get().addPastID(String.valueOf(saved.getId()));
+        Config.get().addPastCode(String.valueOf(saved.getInviteCode()));
 
         return saved;
     }
@@ -152,6 +152,15 @@ public class ServerUtilsEvent {
                 .delete();
         System.out.println("Event deleted:" + event);
     }
+
+    public Event updateEvent(Event updated) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(getServer()).path("/api/events/" + updated.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(updated, APPLICATION_JSON), Event.class);
+    }
+
     public void deleteParticipant(Participant participant) {
         ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/participants/" + participant.getId()) //

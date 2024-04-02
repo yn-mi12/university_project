@@ -3,6 +3,7 @@ package client.scenes;
 import client.Config;
 import client.Main;
 import client.utils.ServerUtilsEvent;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import commons.Event;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +12,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -24,6 +26,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
@@ -33,10 +36,16 @@ public class AdminOverviewCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
+    private Map<String, String> titleToCode;
+    @FXML
     public ListView<String> eventList;
+    @FXML
     public Button showButton;
+    @FXML
     public ComboBox<Label> languageBox;
+    @FXML
     public Button showButtonD;
+    @FXML
     public Button showButtonE;
     private Stage primaryStage;
 
@@ -44,6 +53,7 @@ public class AdminOverviewCtrl implements Initializable {
     public AdminOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
         this.server = server;
         this.controller = eventCtrl;
+        this.titleToCode = new HashMap<>();
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -106,7 +116,8 @@ public class AdminOverviewCtrl implements Initializable {
         List<String> titles = new ArrayList<>();
         for(Event x : events)
         {
-            titles.add(x.getId() + ": " +  x.getTitle());
+            titles.add(x.getTitle());
+            titleToCode.put(x.getTitle(), x.getInviteCode());
         }
         eventList.setItems(FXCollections.observableList(titles));
     }
@@ -116,19 +127,16 @@ public class AdminOverviewCtrl implements Initializable {
         controller.showOverview();
     }
 
-    public Event getEvent(){
-        String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
-        String eventId = eventIdTitle.split(":")[0];
-        return server.getByID(Long.parseLong(eventId));
+    public Event getEvent() {
+        String eventTitle = eventList.getSelectionModel().getSelectedItem();
+        return server.getByInviteCode(titleToCode.get(eventTitle));
     }
 
-    public void showEvent() throws IOException {
-        String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
-        String eventId = eventIdTitle.split(":")[0];
-        Event event = server.getByID(Long.parseLong(eventId));
+    public void showEvent() {
+        String eventTitle = eventList.getSelectionModel().getSelectedItem();
+        Event event = server.getByInviteCode(titleToCode.get(eventTitle));
         controller.showEventOverview(event);
     }
-
     public void deleteEvent() {
         try {
             System.out.println("Delete Event");
@@ -145,9 +153,8 @@ public class AdminOverviewCtrl implements Initializable {
 
     public void exportEvent() {
         var om = new ObjectMapper();
-        String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
-        String eventId = eventIdTitle.split(":")[0];
-        Event event = server.getByID(Long.parseLong(eventId));
+        String eventTitle = eventList.getSelectionModel().getSelectedItem();
+        Event event = server.getByInviteCode(titleToCode.get(eventTitle));
 
         try {
             var jsonEvent = om.writeValueAsString(event);
@@ -166,5 +173,34 @@ public class AdminOverviewCtrl implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void importEvent() {
+        var om = new ObjectMapper();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select JSON File to Import");
+
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+        File file = fileChooser.showOpenDialog(primaryStage);
+
+        if(file != null) {
+            try {
+                Scanner jsonScanner = new Scanner(file);
+                String json = jsonScanner.next();
+                var event = om.readValue(json, Event.class);
+                System.out.println("Imported event: " + event);
+                Event find = server.getByInviteCode(event.getInviteCode());
+                if(find == null) {
+                    server.addEvent(event);
+                } else {
+                    server.deleteEvent(find);
+                    server.addEvent(event);
+                }
+                refresh();
+            } catch (FileNotFoundException | JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     }
 }

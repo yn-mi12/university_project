@@ -18,18 +18,18 @@ public class ConfigTest {
         assertEquals(config.getHost(), "http://localhost:8080/");
         config.setHost("test");
         config.setCurrentLocale("English");
-        Set<String> ids = new HashSet<>();
-        ids.add("1");
-        config.addPastID("1");
-        config.addPastID("2");
-        config.removePastID("2");
+        Set<String> codes = new HashSet<>();
+        codes.add("b18291d8");
+        config.addPastCode("b18291d8");
+        config.addPastCode("f23491h3");
+        config.removePastCode("f23491h3");
 
         config.save();
         config = Config.reload();
 
         assertEquals(config.getHost(), "test");
         assertEquals(config.getCurrentLocaleName(), "English");
-        assertEquals(config.getPastIDs(), ids);
+        assertEquals(config.getPastCodes(), codes);
         config.setHost("http://localhost:8080/");
         config.save();
     }
