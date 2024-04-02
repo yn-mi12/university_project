@@ -127,7 +127,6 @@ public class StartScreenCtrl implements Initializable {
                 }
             }
 
-            // Removes the ids that do not correspond to an event in the database
             for (String removed : removedCodes) {
                 Config.get().removePastCode(removed);
             }

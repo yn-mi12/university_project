@@ -84,13 +84,12 @@ public class AddParticipantCtrl {
 
             if (participant != null && participant.getId() != 0) {
                 server.updateParticipant(participant);
-                event.updateParticipant(participant);
             } else {
-                server.addParticipant(participant, event);
                 participant.setEvent(event);
-                event.addParticipant(participant);
+                server.addParticipant(participant, event);
             }
-            mainCtrl.showEventOverview(event);
+            Event updated = server.getByInviteCode(event.getInviteCode());
+            mainCtrl.showEventOverview(updated);
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
