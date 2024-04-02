@@ -9,6 +9,7 @@ import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -26,11 +27,12 @@ import java.util.ResourceBundle;
 
 public class EditParticipantOverviewCtrl implements Initializable {
     private Participant selectedParticipant;
-
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
     private Event event;
+    @FXML
     public ListView<String> participantList;
+    @FXML
     public ComboBox<Label> languageBox;
     private Stage primaryStage;
 

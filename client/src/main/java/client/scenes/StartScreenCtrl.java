@@ -20,7 +20,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.util.Callback;
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -105,6 +104,44 @@ public class StartScreenCtrl implements Initializable {
         });
     }
 
+    public void refresh() {
+        emptyTitle.setVisible(false);
+        emptyCode.setVisible(false);
+        invalidCode.setVisible(false);
+        showButton.setDisable(true);
+        Set<String> codes = Config.get().getPastCodes();
+
+        if (!codes.isEmpty()) {
+
+            List<Event> events = new ArrayList<>();
+            List<String> titles = new ArrayList<>();
+            List<String> removedCodes = new ArrayList<>();
+
+            for (String code : codes) {
+                Event e = server.getByInviteCode(code);
+                if (e != null) {
+                    events.add(e);
+                    titles.add(e.getTitle() + " : " + e.getInviteCode());
+                } else {
+                    removedCodes.add(code);
+                }
+            }
+
+            // Removes the ids that do not correspond to an event in the database
+            for (String removed : removedCodes) {
+                Config.get().removePastCode(removed);
+            }
+
+            Config.get().save();
+            eventList.setItems(FXCollections.observableList(titles));
+        }
+    }
+
+    private void clearFields() {
+        titleField.clear();
+        codeField.clear();
+    }
+
     public void createEvent() {
         var title = this.titleField.getText();
         if(title.isEmpty()) {
@@ -117,7 +154,7 @@ public class StartScreenCtrl implements Initializable {
         try {
             System.out.println("Add event");
             event = server.addEvent(new Event(title));
-            Config.get().addPastID(String.valueOf(event.getId()));
+            Config.get().addPastCode(String.valueOf(event.getInviteCode()));
             Config.get().save();
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -141,9 +178,9 @@ public class StartScreenCtrl implements Initializable {
 
         if(event != null) {
             clearFields();
-            Set<String> ids = Config.get().getPastIDs();
-            if(!ids.contains(event.getId())) {
-                Config.get().addPastID(String.valueOf(event.getId()));
+            Set<String> codes = Config.get().getPastCodes();
+            if(!codes.contains(event.getInviteCode())) {
+                Config.get().addPastCode(String.valueOf(event.getInviteCode()));
                 Config.get().save();
             }
             eventCtrl.showEventOverview(event);
@@ -154,56 +191,17 @@ public class StartScreenCtrl implements Initializable {
 
     }
 
-    public void refresh() {
-        emptyTitle.setVisible(false);
-        emptyCode.setVisible(false);
-        invalidCode.setVisible(false);
-        showButton.setDisable(true);
-        Set<String> ids = Config.get().getPastIDs();
-
-        if (!ids.isEmpty()) {
-
-            List<Event> events = new ArrayList<>();
-            List<String> titles = new ArrayList<>();
-            List<String> removedIDs = new ArrayList<>();
-
-            for (String id : ids) {
-                Event e = server.getByID(Long.valueOf(id));
-                if (e != null) {
-                    events.add(e);
-                    titles.add(e.getId() + ": " + e.getTitle());
-                } else {
-                    removedIDs.add(id);
-                }
-            }
-
-            // Removes the ids that do not correspond to an event in the database
-            for (String removed : removedIDs) {
-                Config.get().removePastID(removed);
-            }
-
-            Config.get().save();
-            eventList.setItems(FXCollections.observableList(titles));
-        }
-    }
-
-
-    private void clearFields() {
-        titleField.clear();
-        codeField.clear();
-    }
-
-    public void showEvent() throws IOException {
-        String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
-        String eventId = eventIdTitle.split(":")[0];
-        Event event = server.getByID(Long.parseLong(eventId));
+    public void showEvent() {
+        String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
+        String inviteCode = eventTitleAndCode.split(": ")[1];
+        Event event = server.getByInviteCode(inviteCode);
         eventCtrl.showEventOverview(event);
     }
 
     public Event getEvent() {
-        String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
-        String eventId = eventIdTitle.split(":")[0];
-        return server.getByID(Long.parseLong(eventId));
+        String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
+        String inviteCode = eventTitleAndCode.split(": ")[1];
+        return server.getByInviteCode(inviteCode);
     }
 
     public void showAdminLogin() {

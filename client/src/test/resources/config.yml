@@ -11,5 +11,5 @@ supported-locales:
   - name: "Nederlands"
     code: "nl"
 
-# The ids of the past events
-past-ids: ['1']
+# The invite codes of the past events
+past-codes: ["b18291d8"]

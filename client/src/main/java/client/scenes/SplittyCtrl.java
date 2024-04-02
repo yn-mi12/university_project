@@ -169,6 +169,7 @@ public class SplittyCtrl {
     public void showAdminOverview() {
         primaryStage.setTitle("Splitty");
         primaryStage.setScene(adminOverview);
+        adminOverviewCtrl.refresh();
         adminOverview.getWindow().centerOnScreen();
     }
 

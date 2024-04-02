@@ -3,37 +3,48 @@ package client.scenes;
 import client.Config;
 import client.Main;
 import client.utils.ServerUtilsEvent;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import commons.Event;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AdminOverviewCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
+    @FXML
     public ListView<String> eventList;
+    @FXML
     public Button showButton;
+    @FXML
     public ComboBox<Label> languageBox;
+    @FXML
     public Button showButtonD;
+    @FXML
     public Button showButtonE;
     private Stage primaryStage;
 
@@ -44,13 +55,7 @@ public class AdminOverviewCtrl implements Initializable {
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        List<Event> events = server.getAllEvents();
-        List<String> titles = new ArrayList<>();
-        for(Event x : events)
-        {
-            titles.add(x.getId() + ": " +  x.getTitle());
-        }
-        eventList.setItems(FXCollections.observableList(titles));
+        refresh();
         eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
@@ -104,24 +109,33 @@ public class AdminOverviewCtrl implements Initializable {
         }));
     }
 
+    public void refresh() {
+        List<Event> events = server.getAllEvents();
+        List<String> titles = new ArrayList<>();
+        for(Event x : events)
+        {
+            titles.add(x.getTitle() + " : " + x.getInviteCode());
+        }
+        eventList.setItems(FXCollections.observableList(titles));
+    }
+
     public void goBack() {
         controller.setAdmin(false);
         controller.showOverview();
     }
 
-    public Event getEvent(){
-        String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
-        String eventId = eventIdTitle.split(":")[0];
-        return server.getByID(Long.parseLong(eventId));
+    public Event getEvent() {
+        String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
+        String inviteCode = eventTitleAndCode.split(": ")[1];
+        return server.getByInviteCode(inviteCode);
     }
 
-    public void showEvent() throws IOException {
-        String eventIdTitle = eventList.getSelectionModel().getSelectedItem();
-        String eventId = eventIdTitle.split(":")[0];
-        Event event = server.getByID(Long.parseLong(eventId));
+    public void showEvent() {
+        String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
+        String inviteCode = eventTitleAndCode.split(": ")[1];
+        Event event = server.getByInviteCode(inviteCode);
         controller.showEventOverview(event);
     }
-
     public void deleteEvent() {
         try {
             System.out.println("Delete Event");
@@ -134,5 +148,59 @@ public class AdminOverviewCtrl implements Initializable {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
+    }
+
+    public void exportEvent() {
+        var om = new ObjectMapper();
+        String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
+        String inviteCode = eventTitleAndCode.split(": ")[1];
+        Event event = server.getByInviteCode(inviteCode);
+
+        try {
+            var jsonEvent = om.writeValueAsString(event);
+            System.out.println(jsonEvent);
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Event as JSON");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+            File file = fileChooser.showSaveDialog(primaryStage);
+
+            if(file != null) {
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write(jsonEvent);
+                fileWriter.close();
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void importEvent() {
+        var om = new ObjectMapper();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select JSON File to Import");
+
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+        File file = fileChooser.showOpenDialog(primaryStage);
+
+        if(file != null) {
+            try {
+                Scanner jsonScanner = new Scanner(file);
+                String json = jsonScanner.next();
+                var event = om.readValue(json, Event.class);
+                System.out.println("Imported event: " + event);
+                Event find = server.getByInviteCode(event.getInviteCode());
+                if(find == null) {
+                    server.addEvent(event);
+                } else {
+                    server.deleteEvent(find);
+                    server.addEvent(event);
+                }
+                refresh();
+            } catch (FileNotFoundException | JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     }
 }

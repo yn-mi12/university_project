@@ -4,6 +4,7 @@ import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
+import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -13,7 +14,9 @@ public class AdminPopupCtrl {
 
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
+    @FXML
     public TextField insertedToken;
+    @FXML
     public Label incorrectToken;
 
     @Inject
