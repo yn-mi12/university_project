@@ -79,12 +79,16 @@ public class ServerUtilsEvent {
 
     public List<Expense> getExpensesByEventId(Event event){
        List<Expense> expenses;
-       expenses = ClientBuilder.newClient(new ClientConfig())
-               .target(SERVER).path("api/expenses/event/" + event.getId())
-               .request(APPLICATION_JSON)
-               .accept(APPLICATION_JSON)
-               .get(new GenericType<>(){
-               });
+       try{
+           expenses = ClientBuilder.newClient(new ClientConfig())
+                   .target(SERVER).path("api/expenses/event/" + event.getId())
+                   .request(APPLICATION_JSON)
+                   .accept(APPLICATION_JSON)
+                   .get(new GenericType<>(){
+                   });
+       }catch(BadRequestException e){
+           expenses = null;
+       }
        return expenses;
 
     }
