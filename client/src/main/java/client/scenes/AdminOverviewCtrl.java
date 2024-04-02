@@ -36,7 +36,6 @@ public class AdminOverviewCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
-    private Map<String, String> titleToCode;
     @FXML
     public ListView<String> eventList;
     @FXML
@@ -53,7 +52,6 @@ public class AdminOverviewCtrl implements Initializable {
     public AdminOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
         this.server = server;
         this.controller = eventCtrl;
-        this.titleToCode = new HashMap<>();
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -116,8 +114,7 @@ public class AdminOverviewCtrl implements Initializable {
         List<String> titles = new ArrayList<>();
         for(Event x : events)
         {
-            titles.add(x.getTitle());
-            titleToCode.put(x.getTitle(), x.getInviteCode());
+            titles.add(x.getTitle() + " : " + x.getInviteCode());
         }
         eventList.setItems(FXCollections.observableList(titles));
     }
@@ -128,13 +125,15 @@ public class AdminOverviewCtrl implements Initializable {
     }
 
     public Event getEvent() {
-        String eventTitle = eventList.getSelectionModel().getSelectedItem();
-        return server.getByInviteCode(titleToCode.get(eventTitle));
+        String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
+        String inviteCode = eventTitleAndCode.split(": ")[1];
+        return server.getByInviteCode(inviteCode);
     }
 
     public void showEvent() {
-        String eventTitle = eventList.getSelectionModel().getSelectedItem();
-        Event event = server.getByInviteCode(titleToCode.get(eventTitle));
+        String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
+        String inviteCode = eventTitleAndCode.split(": ")[1];
+        Event event = server.getByInviteCode(inviteCode);
         controller.showEventOverview(event);
     }
     public void deleteEvent() {
@@ -153,8 +152,9 @@ public class AdminOverviewCtrl implements Initializable {
 
     public void exportEvent() {
         var om = new ObjectMapper();
-        String eventTitle = eventList.getSelectionModel().getSelectedItem();
-        Event event = server.getByInviteCode(titleToCode.get(eventTitle));
+        String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
+        String inviteCode = eventTitleAndCode.split(": ")[1];
+        Event event = server.getByInviteCode(inviteCode);
 
         try {
             var jsonEvent = om.writeValueAsString(event);

@@ -28,7 +28,6 @@ public class StartScreenCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
     private final SplittyCtrl eventCtrl;
-    private Map<String, String> titleToCode;
     @FXML
     private ListView<String> eventList;
     @FXML
@@ -50,7 +49,6 @@ public class StartScreenCtrl implements Initializable {
     public StartScreenCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
         this.server = server;
         this.eventCtrl = mainCtrl;
-        this.titleToCode = new HashMap<>();
     }
 
     @Override
@@ -123,8 +121,7 @@ public class StartScreenCtrl implements Initializable {
                 Event e = server.getByInviteCode(code);
                 if (e != null) {
                     events.add(e);
-                    titles.add(e.getTitle());
-                    titleToCode.put(e.getTitle(), e.getInviteCode());
+                    titles.add(e.getTitle() + " : " + e.getInviteCode());
                 } else {
                     removedCodes.add(code);
                 }
@@ -195,14 +192,16 @@ public class StartScreenCtrl implements Initializable {
     }
 
     public void showEvent() {
-        String eventTitle = eventList.getSelectionModel().getSelectedItem();
-        Event event = server.getByInviteCode(titleToCode.get(eventTitle));
+        String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
+        String inviteCode = eventTitleAndCode.split(": ")[1];
+        Event event = server.getByInviteCode(inviteCode);
         eventCtrl.showEventOverview(event);
     }
 
     public Event getEvent() {
-        String eventTitle = eventList.getSelectionModel().getSelectedItem();
-        return server.getByInviteCode(titleToCode.get(eventTitle));
+        String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
+        String inviteCode = eventTitleAndCode.split(": ")[1];
+        return server.getByInviteCode(inviteCode);
     }
 
     public void showAdminLogin() {
