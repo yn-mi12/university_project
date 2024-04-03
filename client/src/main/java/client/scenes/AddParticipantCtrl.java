@@ -89,6 +89,7 @@ public class AddParticipantCtrl {
                 server.addParticipant(participant, event);
             }
             Event updated = server.getByInviteCode(event.getInviteCode());
+            clearFields();
             mainCtrl.showEventOverview(updated);
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
