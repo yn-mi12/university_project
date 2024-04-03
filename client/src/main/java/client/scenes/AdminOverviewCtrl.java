@@ -5,7 +5,7 @@ import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
-import commons.Event;
+import commons.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.beans.value.ChangeListener;
@@ -139,7 +139,9 @@ public class AdminOverviewCtrl implements Initializable {
     public void deleteEvent() {
         try {
             System.out.println("Delete Event");
-            server.deleteEvent(getEvent());
+            Event deleted = getEvent();
+            System.out.println(deleted);
+            server.deleteEvent(deleted);
             Main.refreshAdminOverview();
         } catch (WebApplicationException e) {
 
@@ -186,21 +188,55 @@ public class AdminOverviewCtrl implements Initializable {
         if(file != null) {
             try {
                 Scanner jsonScanner = new Scanner(file);
+                jsonScanner.useDelimiter("\r?\n");
                 String json = jsonScanner.next();
                 var event = om.readValue(json, Event.class);
                 System.out.println("Imported event: " + event);
+
+                List<Participant> participants = event.getParticipants();;
+                List<Expense> expenses = event.getExpenses();
+                List<Tag> tags = event.getTags();
+                event.setParticipants(null);
+                event.setExpenses(null);
+                event.setTags(null);
                 Event find = server.getByInviteCode(event.getInviteCode());
+
                 if(find == null) {
-                    server.addEvent(event);
+                    addJsonToServer(event, participants, expenses);
                 } else {
                     server.deleteEvent(find);
-                    server.addEvent(event);
+                    addJsonToServer(event, participants, expenses);
                 }
-                refresh();
+                // TODO tags when we have a proper system for those
+                Main.refreshAdminOverview();
             } catch (FileNotFoundException | JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
 
+    private void addJsonToServer(Event event, List<Participant> participants, List<Expense> expenses) {
+        Event saved = server.addJsonEvent(event);
+        for(Participant p : participants) {
+            server.addParticipant(p, saved);
+        }
+
+        saved = server.getByInviteCode(saved.getInviteCode());
+        List<Participant> newParts = saved.getParticipants();
+        Set<ExpenseParticipant> debtors = new HashSet<>();
+        int count = 0;
+        for(Expense e : expenses) {
+            Expense newExpense = new Expense(e.getDescription(), e.getCurrency(), e.getAmount(), e.getDate());
+            for(ExpenseParticipant ep : e.getDebtors()) {
+                ExpenseParticipant newExpensePart = new
+                        ExpenseParticipant(newExpense, newParts.get(count), ep.getShare(), ep.isOwner());
+                debtors.add(newExpensePart);
+            }
+            e.setDebtors(debtors);
+            e.setEvent(saved);
+            server.addExpense(e, saved);
+            saved = server.getByInviteCode(saved.getInviteCode());
+            count++;
+        }
     }
 }

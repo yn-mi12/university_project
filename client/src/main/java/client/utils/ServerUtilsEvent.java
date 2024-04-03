@@ -120,6 +120,14 @@ public class ServerUtilsEvent {
         return saved;
     }
 
+    public Event addJsonEvent(Event event) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/events") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(event, APPLICATION_JSON), Event.class);
+    }
+
     public Expense addExpense(Expense expense, Event event) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(getServer()).path("/api/expenses/event/" + event.getId()) //
