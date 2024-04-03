@@ -16,7 +16,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -170,7 +169,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
         return false;
     }
 
-    public void HideLabel() {
+    public void hideLabel() {
         noDeleteParticipant.visibleProperty().setValue(false);
     }
 }

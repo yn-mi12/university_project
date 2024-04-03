@@ -149,7 +149,8 @@ public class AddExpenseCtrl implements Initializable {
         for (int i = 0; i < selectedParticipants.size(); i++){
             double share = 100.0/selectedParticipants.size();
             boolean isOwner = selectedParticipants.get(i).equals(whoPaid.getText());
-            ExpenseParticipant expenseParticipant = new ExpenseParticipant(expense, event.getParticipantByName(selectedParticipants.get(i)), share, isOwner);
+            ExpenseParticipant expenseParticipant = new
+                    ExpenseParticipant(expense, event.getParticipantByName(selectedParticipants.get(i)), share, isOwner);
             debtors.add(expenseParticipant);
         }
         return debtors;
