@@ -42,7 +42,6 @@ public class AddExpenseCtrl implements Initializable {
     private CheckBox someHaveToPay = new CheckBox();
     @FXML
     private ListView<String> whoPays;
-    private List<String> listOfParticipants;
 
 
     @Inject
@@ -72,7 +71,7 @@ public class AddExpenseCtrl implements Initializable {
                 expensePayer = map.get(mi);
             });
         }
-        this.listOfParticipants = new ArrayList<>();
+        List<String> listOfParticipants = new ArrayList<>();
         for(Participant participant : event.getParticipants()){
             listOfParticipants.add(participant.getFirstName());
         }

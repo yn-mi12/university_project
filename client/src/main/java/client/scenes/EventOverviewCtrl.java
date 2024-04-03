@@ -84,6 +84,8 @@ public class EventOverviewCtrl implements Initializable {
             mi.setOnAction(e -> {
                 part.setText(mi.getText());
                 expensePayer = map.get(mi);
+                expensesFromParticipant();
+                expensesIncludingParticipant();
             });
         }
         inviteCode.setText(event.getInviteCode());
