@@ -5,6 +5,8 @@ import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
+import commons.Expense;
+import commons.ExpenseParticipant;
 import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
@@ -14,16 +16,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class EditParticipantOverviewCtrl implements Initializable {
     private Participant selectedParticipant;
@@ -35,6 +35,9 @@ public class EditParticipantOverviewCtrl implements Initializable {
     @FXML
     public ComboBox<Label> languageBox;
     private Stage primaryStage;
+
+    @FXML
+    private Label noDeleteParticipant;
 
     @Inject
     public EditParticipantOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
@@ -125,15 +128,22 @@ public class EditParticipantOverviewCtrl implements Initializable {
         selectedParticipant = null;
         Main.reloadUIEvent(event);
         controller.showEventOverview(event);
+        noDeleteParticipant.visibleProperty().setValue(false);
     }
 
     public void deleteParticipant() {
         setParticipant();
         try {
             System.out.println("Delete Participant");
-            server.deleteParticipant(server.getParticipantByID(selectedParticipant.getId()));
-            event.deleteParticipant(selectedParticipant);
-            cancel();
+            if (!checkParticipantInExpenses()){
+                server.deleteParticipant(server.getParticipantByID(selectedParticipant.getId()));
+                event.deleteParticipant(selectedParticipant);
+                noDeleteParticipant.visibleProperty().setValue(false);
+                cancel();
+            }else{
+                noDeleteParticipant.visibleProperty().setValue(true);
+            }
+
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -141,6 +151,27 @@ public class EditParticipantOverviewCtrl implements Initializable {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
+    }
+
+    public boolean checkParticipantInExpenses(){
+        List<Participant> participantsInExpenses = new ArrayList<>();
+        for (Expense expense : event.getExpenses()){
+            Set<ExpenseParticipant> debtors = expense.getDebtors();
+            List<ExpenseParticipant> debtorsList = new ArrayList<>(debtors);
+            for (ExpenseParticipant expenseParticipant : debtorsList) {
+                participantsInExpenses.add(expenseParticipant.getParticipant());
+            }
+        }
+        for (Participant participant: participantsInExpenses){
+            if (selectedParticipant.getFirstName().equals(participant.getFirstName())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void HideLabel() {
+        noDeleteParticipant.visibleProperty().setValue(false);
     }
 }
 
