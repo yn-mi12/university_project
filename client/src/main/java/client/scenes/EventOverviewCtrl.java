@@ -9,7 +9,6 @@ import commons.Expense;
 import commons.ExpenseParticipant;
 import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -77,6 +76,7 @@ public class EventOverviewCtrl implements Initializable {
                 namesString.append(", ");
             i++;
         }
+        part.setText("Participants");
         part.getItems().setAll(names);
         participantText.setEditable(false);
         participantText.setText(namesString.toString());
