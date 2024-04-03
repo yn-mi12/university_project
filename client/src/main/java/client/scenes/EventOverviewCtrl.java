@@ -11,6 +11,7 @@ import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -49,6 +50,14 @@ public class EventOverviewCtrl implements Initializable {
     @FXML
     private ListView<String> includingExpenses;
 
+    @FXML
+    private TabPane tabPane;
+    @FXML
+    private Tab fromTab;
+    @FXML
+    private Tab includingTab;
+
+
 
     @Inject
     public EventOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
@@ -61,6 +70,7 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void setSelectedEvent(Event selectedEvent) {
+        hideTabPanes();
         this.event = selectedEvent;
         this.participants = event.getParticipants();
         ObservableList<MenuItem> names = FXCollections.observableArrayList();
@@ -84,6 +94,7 @@ public class EventOverviewCtrl implements Initializable {
             mi.setOnAction(e -> {
                 part.setText(mi.getText());
                 expensePayer = map.get(mi);
+                showTabPanes();
                 expensesFromParticipant();
                 expensesIncludingParticipant();
             });
@@ -249,4 +260,13 @@ public class EventOverviewCtrl implements Initializable {
     }
 
 
+    public void hideTabPanes() {
+        tabPane.getTabs().remove(fromTab);
+        tabPane.getTabs().remove(includingTab);
+    }
+
+    public void showTabPanes() {
+        tabPane.getTabs().add(fromTab);
+        tabPane.getTabs().add(includingTab);
+    }
 }
