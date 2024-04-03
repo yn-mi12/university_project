@@ -88,6 +88,8 @@ public class SplittyCtrl {
         this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
         primaryStage.setScene(event);
         eventCtrl.expensesNotSelectedPart();
+        eventCtrl.expensesIncludingParticipant();
+        eventCtrl.expensesFromParticipant();
     }
 
     public void showInvitePage(Event selectedEvent) {
