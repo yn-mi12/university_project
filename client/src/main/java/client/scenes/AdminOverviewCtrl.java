@@ -139,9 +139,7 @@ public class AdminOverviewCtrl implements Initializable {
     public void deleteEvent() {
         try {
             System.out.println("Delete Event");
-            Event deleted = getEvent();
-            System.out.println(deleted);
-            server.deleteEvent(deleted);
+            server.deleteEvent(getEvent());
             Main.refreshAdminOverview();
         } catch (WebApplicationException e) {
 
