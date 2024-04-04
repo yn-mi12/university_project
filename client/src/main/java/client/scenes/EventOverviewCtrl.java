@@ -9,7 +9,6 @@ import commons.Expense;
 import commons.ExpenseParticipant;
 import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -50,6 +49,14 @@ public class EventOverviewCtrl implements Initializable {
     @FXML
     private ListView<String> includingExpenses;
 
+    @FXML
+    private TabPane tabPane;
+    @FXML
+    private Tab fromTab;
+    @FXML
+    private Tab includingTab;
+
+
 
     @Inject
     public EventOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
@@ -62,6 +69,7 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void setSelectedEvent(Event selectedEvent) {
+        hideTabPanes();
         this.event = selectedEvent;
         this.participants = event.getParticipants();
         ObservableList<MenuItem> names = FXCollections.observableArrayList();
@@ -77,6 +85,7 @@ public class EventOverviewCtrl implements Initializable {
                 namesString.append(", ");
             i++;
         }
+        part.setText("Participants");
         part.getItems().setAll(names);
         participantText.setEditable(false);
         participantText.setText(namesString.toString());
@@ -84,6 +93,9 @@ public class EventOverviewCtrl implements Initializable {
             mi.setOnAction(e -> {
                 part.setText(mi.getText());
                 expensePayer = map.get(mi);
+                showTabPanes();
+                expensesFromParticipant();
+                expensesIncludingParticipant();
             });
         }
         inviteCode.setText(event.getInviteCode());
@@ -247,4 +259,13 @@ public class EventOverviewCtrl implements Initializable {
     }
 
 
+    public void hideTabPanes() {
+        tabPane.getTabs().remove(fromTab);
+        tabPane.getTabs().remove(includingTab);
+    }
+
+    public void showTabPanes() {
+        tabPane.getTabs().add(fromTab);
+        tabPane.getTabs().add(includingTab);
+    }
 }

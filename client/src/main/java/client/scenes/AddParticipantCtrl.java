@@ -7,6 +7,7 @@ import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -22,6 +23,9 @@ public class AddParticipantCtrl {
     @FXML
     private TextField email;
     private Participant participant;
+    @FXML
+    private Label participantExists;
+
 
     @Inject
     public AddParticipantCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
@@ -37,6 +41,7 @@ public class AddParticipantCtrl {
 
     public void setEvent(Event event) {
         this.event = event;
+        participantExists.visibleProperty().setValue(false);
     }
 
     public void keyPressed(KeyEvent e) {
@@ -81,21 +86,33 @@ public class AddParticipantCtrl {
             //TODO looks better if the fields show the old data
 
             participant = getParticipant();
-
-            if (participant != null && participant.getId() != 0) {
+            participantExists.visibleProperty().setValue(false);
+            if (participant != null && participant.getId() != 0 && !participantAlreadyExists()) {
                 server.updateParticipant(participant);
-            } else {
+            } else if(!participantAlreadyExists()){
                 participant.setEvent(event);
                 server.addParticipant(participant, event);
+                Event updated = server.getByInviteCode(event.getInviteCode());
+                clearFields();
+                mainCtrl.showEventOverview(updated);
+            }else{
+                participantExists.visibleProperty().setValue(true);
             }
-            Event updated = server.getByInviteCode(event.getInviteCode());
-            mainCtrl.showEventOverview(updated);
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
+    }
+
+    private boolean participantAlreadyExists() {
+        for (int i = 0; i < event.getParticipants().size(); i++){
+            if (firstName.getText().equals(event.getParticipants().get(i).getFirstName())){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void clearFields() {
