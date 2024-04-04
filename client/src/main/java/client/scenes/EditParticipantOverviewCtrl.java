@@ -162,7 +162,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
             }
         }
         for (Participant participant: participantsInExpenses){
-            if (selectedParticipant.getFirstName().equals(participant.getFirstName())){
+            if (selectedParticipant.getId()==participant.getId()){
                 return true;
             }
         }
