@@ -21,12 +21,20 @@ public class DebtTest {
         debtor.setEvent(event);
         creditor = new Participant("Jane", "Doe");
         creditor.setEvent(event);
-        debt = new Debt(debtor, creditor, 100, false);
+        debt = new Debt(debtor, creditor, 100);
+        debt.setEvent(event);
     }
 
     @Test
     void constructorTest() {
         assertNotNull(debt);
+        assertNotNull(new Debt());
+    }
+
+    @Test
+    void setAndGetId() {
+        debt.setId(42);
+        assertEquals(42, debt.getId());
     }
 
     @Test
@@ -71,35 +79,38 @@ public class DebtTest {
     }
 
     @Test
-    void isPaid() {
-        assertEquals(false, debt.isPaid());
+    void getEvent() {
+        assertEquals(event, debt.getEvent());
     }
 
     @Test
-    void setPaid() {
-        debt.setPaid(true);
-        assertEquals(true, debt.isPaid());
+    void setEvent() {
+        Event test = new Event("temp");
+        debt.setEvent(test);
+        assertEquals(test, debt.getEvent());
     }
 
     @Test
     void testEquals() {
         assertEquals(debt, debt);
-        Debt d2 = new Debt(debtor, creditor, 20, true);
+        Debt d2 = new Debt(debtor, creditor, 20);
         assertNotEquals(d2, debt);
-        Debt d3 = new Debt(new Participant("a", "b"), new Participant("c", "d"), 100, false);
+        Debt d3 = new Debt(new Participant("a", "b"), new Participant("c", "d"), 100);
         assertNotEquals(d3, debt);
+        Debt d4 = new Debt(debtor, new Participant("c", "d"), 100);
+        assertNotEquals(d4, debt);
     }
 
     @Test
     void testHashCode() {
-        int hash = Objects.hash(debtor, creditor, debt.getAmount(), debt.isPaid());
+        int hash = Objects.hash(debtor, creditor, debt.getAmount());
         assertEquals(hash, debt.hashCode());
     }
 
     @Test
     void testToString() {
-        assertEquals("Debt{debtor=Participant{id=0, firstName='John', lastName='Doe', email='null'}, " +
-                "creditor=Participant{id=0, firstName='Jane', lastName='Doe', email='null'}, amount=100.0, " +
-                "isPaid=false}", debt.toString());
+        assertEquals("Debt{id=0, debtor=Participant{id=0, firstName='John', " +
+                "lastName='Doe', email='null'}, " + "creditor=Participant{id=0, firstName='Jane', " +
+                "lastName='Doe', email='null'}, amount=100.0}", debt.toString());
     }
 }

@@ -2,6 +2,8 @@ package commons;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -21,6 +23,12 @@ public class Participant {
     @JsonIgnore
     @ManyToOne
     private Event event;
+    @JsonIgnore
+    @OneToMany(mappedBy = "debtor", cascade = CascadeType.ALL)
+    private List<Debt> debtsWhereDebtor = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "creditor", cascade = CascadeType.ALL)
+    private List<Debt> debtsWhereCreditor = new ArrayList<>();
 
     @SuppressWarnings("unused")
     public Participant() {}
@@ -82,6 +90,22 @@ public class Participant {
 
     public void setEvent(Event event) {
         this.event = event;
+    }
+
+    public List<Debt> getDebtsWhereDebtor() {
+        return debtsWhereDebtor;
+    }
+
+    public void setDebtsWhereDebtor(List<Debt> debtsWhereDebtor) {
+        this.debtsWhereDebtor = debtsWhereDebtor;
+    }
+
+    public List<Debt> getDebtsWhereCreditor() {
+        return debtsWhereCreditor;
+    }
+
+    public void setDebtsWhereCreditor(List<Debt> debtsWhereCreditor) {
+        this.debtsWhereCreditor = debtsWhereCreditor;
     }
 
     @Override

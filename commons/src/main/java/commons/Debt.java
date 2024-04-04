@@ -1,19 +1,50 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
+@Entity
 public class Debt {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+    @ManyToOne
+    @JoinColumn(name = "debtor_id")
     private Participant debtor;
+    @ManyToOne
+    @JoinColumn(name = "creditor_id")
     private Participant creditor;
     private double amount;
-    private boolean isPaid;
+    @JsonIgnore
+    @ManyToOne
+    private Event event;
 
-    public Debt(Participant debtor, Participant creditor, double amount, boolean isPaid) {
+    @SuppressWarnings("unused")
+    public Debt() {}
+
+    public Debt(Participant debtor, Participant creditor, double amount) {
         this.debtor = debtor;
         this.creditor = creditor;
         this.amount = amount;
-        this.isPaid = isPaid;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public Participant getDebtor() {
@@ -40,35 +71,27 @@ public class Debt {
         this.amount = amount;
     }
 
-    public boolean isPaid() {
-        return isPaid;
-    }
-
-    public void setPaid(boolean paid) {
-        isPaid = paid;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Debt debt = (Debt) o;
-        return Double.compare(amount, debt.amount) == 0 && isPaid == debt.isPaid
-                && Objects.equals(debtor, debt.debtor) && Objects.equals(creditor, debt.creditor);
+        return Double.compare(amount, debt.amount) == 0 && Objects.equals(debtor, debt.debtor)
+                && Objects.equals(creditor, debt.creditor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(debtor, creditor, amount, isPaid);
+        return Objects.hash(debtor, creditor, amount);
     }
 
     @Override
     public String toString() {
         return "Debt{" +
-                "debtor=" + debtor +
+                "id=" + id +
+                ", debtor=" + debtor +
                 ", creditor=" + creditor +
                 ", amount=" + amount +
-                ", isPaid=" + isPaid +
                 '}';
     }
 }

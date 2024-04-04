@@ -16,6 +16,7 @@
 package client.utils;
 
 import client.Config;
+import commons.Debt;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
@@ -26,6 +27,7 @@ import jakarta.ws.rs.core.GenericType;
 import org.glassfish.jersey.client.ClientConfig;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -46,35 +48,6 @@ public class ServerUtilsEvent {
             event = null;
         }
         return event;
-    }
-
-    public Event getByID(Long id) {
-        Event event;
-        try {
-            event = ClientBuilder.newClient(new ClientConfig()) //
-                    .target(SERVER).path("api/events/" + id) //
-                    .request(APPLICATION_JSON) //
-                    .accept(APPLICATION_JSON) //
-                    .get(new GenericType<>() {
-                    });
-        } catch(BadRequestException e) {
-            event = null;
-        }
-        return event;
-    }
-
-    public Expense getExpenseById(Long id) {
-        Expense expense;
-        try{
-            expense = ClientBuilder.newClient(new ClientConfig())
-                    .target(SERVER).path("api/expenses/" + id)
-                    .request(APPLICATION_JSON)
-                    .accept(APPLICATION_JSON)
-                    .get(new GenericType<>(){});
-        }catch (BadRequestException e){
-            expense = null;
-        }
-        return expense;
     }
 
     public List<Expense> getExpensesByEventId(Event event){
@@ -152,10 +125,6 @@ public class ServerUtilsEvent {
                 .post(Entity.entity(participant, APPLICATION_JSON), Participant.class);
     }
 
-    private @NotNull String getServer() {
-        return Config.get().getHost();
-    }
-
     public void deleteEvent(Event event) {
         ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/events/" + event.getId()) //
@@ -163,14 +132,6 @@ public class ServerUtilsEvent {
                 .accept(APPLICATION_JSON) //
                 .delete();
         System.out.println("Event deleted:" + event);
-    }
-
-    public Event updateEvent(Event updated) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(getServer()).path("/api/events/" + updated.getId())
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .put(Entity.entity(updated, APPLICATION_JSON), Event.class);
     }
 
     public void deleteParticipant(Participant participant) {
@@ -220,5 +181,30 @@ public class ServerUtilsEvent {
                 .put(Entity.entity(participant, APPLICATION_JSON), Participant.class);
     }
 
+    public Debt addDebt(Debt debt, Event event) {
+        Debt saved = ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/debts/event/" + event.getId()) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(debt, APPLICATION_JSON), Debt.class);
+        System.out.println("Add debt " + saved);
+        return saved;
+    }
 
+    public List<Debt> getDebtsByCreditor(Participant creditor) {
+        List<Debt> debts = new ArrayList<>();
+
+        debts.addAll(ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/creditor=" + creditor.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                }));
+
+        return debts;
+    }
+
+    private @NotNull String getServer() {
+        return Config.get().getHost();
+    }
 }

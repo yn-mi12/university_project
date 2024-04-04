@@ -103,9 +103,6 @@ public class ExpenseController {
         } else {
             expense.setEvent(eventRepo.getReferenceById(eid));
         }
-        //Check if all Participants exist and are in the same event
-        //Check that there is 1 owner
-        //Check that shares add up to 100%
         for(var i: expense.getDebtors()) {
             i.setExpense(expense);
         }

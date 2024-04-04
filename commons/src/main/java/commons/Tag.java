@@ -13,11 +13,9 @@ public class Tag {
     private long id;
     private String label;
     private String color;
-
     @JsonIgnore
     @OneToMany(mappedBy = "tag")
     private Set<Expense> expenses;
-
     @JsonIgnore
     @ManyToOne
     private Event event;

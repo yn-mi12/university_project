@@ -140,7 +140,7 @@ public class AdminOverviewCtrl implements Initializable {
         try {
             System.out.println("Delete Event");
             server.deleteEvent(getEvent());
-            Main.refreshAdminOverview();
+            refresh();
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -206,7 +206,7 @@ public class AdminOverviewCtrl implements Initializable {
                     addJsonToServer(event, participants, expenses);
                 }
                 // TODO tags when we have a proper system for those
-                Main.refreshAdminOverview();
+                refresh();
             } catch (FileNotFoundException | JsonProcessingException e) {
                 throw new RuntimeException(e);
             }

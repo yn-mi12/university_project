@@ -135,4 +135,20 @@ class ParticipantTest {
         assertEquals(x, Participant.getById(ps, 1));
         assertNull(Participant.getById(ps, 3));
     }
+
+    @Test
+    void debtsWhereDebtorTest() {
+        Debt test = new Debt(new Participant("a", "b"), new Participant("c", "d"), 100);
+        Participant x = new Participant("John","Doe");
+        x.setDebtsWhereDebtor(List.of(test));
+        assertEquals(List.of(test), x.getDebtsWhereDebtor());
+    }
+
+    @Test
+    void debtsWhereCreditorTest() {
+        Debt test = new Debt(new Participant("a", "b"), new Participant("c", "d"), 100);
+        Participant x = new Participant("John","Doe");
+        x.setDebtsWhereCreditor(List.of(test));
+        assertEquals(List.of(test), x.getDebtsWhereCreditor());
+    }
 }

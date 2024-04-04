@@ -16,7 +16,7 @@ public class ExpenseParticipant {
     @ManyToOne
     private Participant participant;
     private double share;
-    private boolean owner = false;
+    private boolean owner;
 
     public ExpenseParticipant () {}
 

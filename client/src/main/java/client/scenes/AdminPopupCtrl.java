@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
@@ -33,7 +32,6 @@ public class AdminPopupCtrl {
             if(server.checkToken(insertedToken.getText())) {
                 controller.setAdmin(true);
                 controller.showAdminOverview();
-                Main.refreshAdminOverview();
                 insertedToken.clear();
                 incorrectToken.visibleProperty().setValue(false);
             }

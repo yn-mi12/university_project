@@ -50,9 +50,10 @@ public class Main extends Application {
         var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
         var editTitle = FXML.load(EditEventTitleCtrl.class,"client", "scenes", "EditTitle.fxml");
         var addParticipant = FXML.load(AddParticipantCtrl.class, "client", "scenes", "AddParticipant.fxml");
-        var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
         var adminPopup = FXML.load(AdminPopupCtrl.class,"client", "scenes", "AdminPopup.fxml");
-        var adminOverview =FXML.load(AdminOverviewCtrl.class, "client", "scenes", "AdminOverview.fxml");
+        var adminOverview = FXML.load(AdminOverviewCtrl.class, "client", "scenes", "AdminOverview.fxml");
+        var debts = FXML.load(SettleDebtsCtrl.class, "client", "scenes", "SettleDebts.fxml");
+        var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
         mainCtrl.initialize(primaryStage);
         mainCtrl.initAdminPopup(adminPopup);
         mainCtrl.initShowOverview(overview);
@@ -62,7 +63,8 @@ public class Main extends Application {
         mainCtrl.initExp(addExp);
         mainCtrl.initEditTitle(editTitle);
         mainCtrl.initAddParticipant(addParticipant);
-        mainCtrl.initializeAdminOverview(adminOverview);
+        mainCtrl.initAdminOverview(adminOverview);
+        mainCtrl.initSettleDebts(debts);
         mainCtrl.display();
     }
 
@@ -78,8 +80,10 @@ public class Main extends Application {
         var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
         var editTitle = FXML.load(EditEventTitleCtrl.class, "client", "scenes", "EditTitle.fxml");
         var addParticipant = FXML.load(AddParticipantCtrl.class, "client", "scenes", "AddParticipant.fxml");
-        var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
         var adminPopup = FXML.load(AdminPopupCtrl.class,"client", "scenes", "AdminPopup.fxml");
+        var adminOverview = FXML.load(AdminOverviewCtrl.class, "client", "scenes", "AdminOverview.fxml");
+        var debts = FXML.load(SettleDebtsCtrl.class, "client", "scenes", "SettleDebts.fxml");
+        var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
         mainCtrl.initialize(primaryStage);
         mainCtrl.initPartUpdate(partOverview);
         mainCtrl.initAdminPopup(adminPopup);
@@ -89,14 +93,16 @@ public class Main extends Application {
         mainCtrl.initExp(addExp);
         mainCtrl.initEditTitle(editTitle);
         mainCtrl.initAddParticipant(addParticipant);
+        mainCtrl.initAdminOverview(adminOverview);
+        mainCtrl.initSettleDebts(debts);
         mainCtrl.showEventOverview(selectedEvent);
     }
 
     public static void refreshAdminOverview()
     {
-        var adminOverview =FXML.load(AdminOverviewCtrl.class, "client", "scenes", "AdminOverview.fxml");
+        var adminOverview = FXML.load(AdminOverviewCtrl.class, "client", "scenes", "AdminOverview.fxml");
         var mainCtrl = INJECTOR.getInstance(SplittyCtrl.class);
-        mainCtrl.initializeAdminOverview(adminOverview);
+        mainCtrl.initAdminOverview(adminOverview);
         mainCtrl.showAdminOverview();
     }
 

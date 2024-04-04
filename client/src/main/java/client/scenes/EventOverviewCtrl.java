@@ -4,10 +4,7 @@ import client.Config;
 import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-import commons.Event;
-import commons.Expense;
-import commons.ExpenseParticipant;
-import commons.Participant;
+import commons.*;
 import jakarta.ws.rs.WebApplicationException;
 
 import javafx.collections.FXCollections;
@@ -49,7 +46,6 @@ public class EventOverviewCtrl implements Initializable {
     private ListView<String> fromExpenses;
     @FXML
     private ListView<String> includingExpenses;
-
 
     @Inject
     public EventOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
@@ -134,6 +130,11 @@ public class EventOverviewCtrl implements Initializable {
     }
     public void addExpense() {
         controller.initExpShowOverview(event,expensePayer);
+    }
+
+    public void settleDebts() {
+        List<Debt> debts = server.getDebtsByCreditor(expensePayer);
+        System.out.println(debts);
     }
 
     public void sendInvites() {
@@ -245,6 +246,5 @@ public class EventOverviewCtrl implements Initializable {
         }
         includingExpenses.setItems(FXCollections.observableList(titles));
     }
-
 
 }
