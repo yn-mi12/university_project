@@ -108,8 +108,7 @@ public class AddParticipantCtrl {
 
     private boolean participantAlreadyExists() {
         for (int i = 0; i < event.getParticipants().size(); i++){
-            if (firstName.getText().equals(event.getParticipants().get(i).getFirstName()) ||
-                    lastName.getText().equals(event.getParticipants().get(i).getLastName())){
+            if (firstName.getText().equals(event.getParticipants().get(i).getFirstName())){
                 return true;
             }
         }
