@@ -36,11 +36,17 @@ public class EventController {
         return repo.findAll();
     }
 
-    @MessageMapping("/admin")
-    @SendTo("/topic/admin")
+    @MessageMapping("/events")
+    @SendTo("/topic/events")
     public Event addEvent(Event e){
         save(e);
         return e;
+    }
+
+    @MessageMapping("/titles")
+    @SendTo("/topic/titles")
+    public Event editTitleEvent(Event e){
+        return updateTitle(e.getId(),e.getTitle()).getBody();
     }
 
     /**
@@ -82,9 +88,9 @@ public class EventController {
         Event saved = repo.save(event);
         return ResponseEntity.ok(saved);
     }
-    @RequestMapping(value = "/{id}/participants", method = RequestMethod.POST)
+    @RequestMapping(value = "/{invite_code}/participants", method = RequestMethod.POST)
     public ResponseEntity<Participant> saveParticipantToEvent(@RequestBody Participant participant,
-                                                              @PathVariable("id") String id) {
+                                                              @PathVariable("invite_code") String id) {
 
         if (participant == null || isNullOrEmpty(participant.getFirstName()) || isNullOrEmpty(participant.getLastName())
                 ||!repo.existsByInviteCode(id)){

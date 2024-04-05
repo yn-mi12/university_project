@@ -56,6 +56,7 @@ public class AdminOverviewCtrl implements Initializable {
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        refresh();
         eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
@@ -110,8 +111,18 @@ public class AdminOverviewCtrl implements Initializable {
     }
 
     public void launch(){
-        server.registerForMessages("/topic/admin", Event.class , q -> {
-            System.out.println("YES");
+        server.registerForMessages("/topic/titles", Event.class , q -> {
+            for(var x: data)
+            {
+                if(x.contains(q.getInviteCode())){
+                    data.remove(x);
+                    break;
+                }
+            }
+            data.add(q.getTitle() + " : " + q.getInviteCode());
+            eventList.refresh();
+        });
+        server.registerForMessages("/topic/events", Event.class , q -> {
             data.add(q.getTitle() + " : " + q.getInviteCode());
             eventList.refresh();
         });

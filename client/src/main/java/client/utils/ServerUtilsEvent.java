@@ -225,7 +225,7 @@ public class ServerUtilsEvent {
                 .put(Entity.entity(participant, APPLICATION_JSON), Participant.class);
     }
 
-    private StompSession session = connect("ws://localhost:8080/websocket");
+    private final StompSession session = connect("ws://localhost:8080/websocket");
 
     private StompSession connect(String url)
     {

@@ -153,7 +153,7 @@ public class StartScreenCtrl implements Initializable {
         try {
             System.out.println("Add event");
             event = new Event(title);
-            server.send("/app/admin", event);
+            server.send("/app/events", event);
             Config.get().addPastCode(String.valueOf(event.getInviteCode()));
             Config.get().save();
         } catch (WebApplicationException e) {
