@@ -233,7 +233,8 @@ public class ServerUtilsEvent {
         var stomp = new WebSocketStompClient(client);
         stomp.setMessageConverter(new MappingJackson2MessageConverter());
         try{
-            return stomp.connect(url, new StompSessionHandlerAdapter() {}).get();
+            return stomp.connectAsync(url, new StompSessionHandlerAdapter() {
+            }).get();
         } catch (InterruptedException e){
             Thread.currentThread().interrupt();
         } catch(ExecutionException e){
@@ -245,12 +246,13 @@ public class ServerUtilsEvent {
     public <T> void registerForMessages(String dest,Class <T> type,Consumer<T> consumer){
         session.subscribe(dest, new StompFrameHandler() {
             @Override
-            public Type getPayloadType(StompHeaders headers) {
+            public @NotNull Type getPayloadType(@NotNull StompHeaders headers) {
                 return type;
             }
 
             @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
+            @SuppressWarnings("unchecked")
+            public void handleFrame(@NotNull StompHeaders headers, Object payload) {
                 consumer.accept((T) payload);
             }
         });
