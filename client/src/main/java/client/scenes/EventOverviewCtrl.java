@@ -166,7 +166,9 @@ public class EventOverviewCtrl implements Initializable {
     public void deleteEvent() {
         try {
             System.out.println("Delete Event");
-            server.deleteEvent(event);
+            event.setId(server.getByInviteCode(event.getInviteCode()).getId());
+            server.send("/app/deleted", event);
+            //server.deleteEvent(event);
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -185,6 +187,7 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void goBack() {
+        Main.reload();
         if(controller.getAdmin()) controller.showAdminOverview();
         else controller.showOverview();
     }

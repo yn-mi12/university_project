@@ -49,6 +49,13 @@ public class EventController {
         return updateTitle(e.getId(),e.getTitle()).getBody();
     }
 
+    @MessageMapping("/deleted")
+    @SendTo("/topic/deleted")
+    public Event deleteEvent(Event e){
+        deleteById(e.getId()).getBody();
+        return e;
+    }
+
     /**
      * Return a specific Event from its id
      * @param id - The id of the Event

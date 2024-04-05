@@ -126,6 +126,17 @@ public class AdminOverviewCtrl implements Initializable {
             data.add(q.getTitle() + " : " + q.getInviteCode());
             eventList.refresh();
         });
+        server.registerForMessages("/topic/deleted", Event.class , q -> {
+            for(var x: data)
+            {
+                if(x.contains(q.getInviteCode())){
+                    data.remove(x);
+                    break;
+                }
+            }
+            System.out.println("TEST");
+            eventList.refresh();
+        });
     }
 
     public void refresh() {
