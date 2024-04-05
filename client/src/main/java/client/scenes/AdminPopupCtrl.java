@@ -33,7 +33,7 @@ public class AdminPopupCtrl {
             if(server.checkToken(insertedToken.getText())) {
                 controller.setAdmin(true);
                 controller.showAdminOverview();
-                Main.refreshAdminOverview();
+                //Main.refreshAdminOverview();
                 insertedToken.clear();
                 incorrectToken.visibleProperty().setValue(false);
             }

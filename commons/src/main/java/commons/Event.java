@@ -106,12 +106,13 @@ public class Event {
      */
 
     public Participant getParticipantByName(String name){
-        for(int i = 0; i <= participants.size(); i++){
-            if (participants.get(i).getFirstName().equals(name)){
-                return participants.get(i);
+        for(var x : participants){
+            if (x.getFirstName().equals(name)){
+                return x;
             }
         }
-        throw new NoSuchElementException("There is no participant with name: " + name);
+        return null;
+        //throw new NoSuchElementException("There is no participant with name: " + name);
     }
 
     /**

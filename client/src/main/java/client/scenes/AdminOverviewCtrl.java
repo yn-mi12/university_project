@@ -47,6 +47,7 @@ public class AdminOverviewCtrl implements Initializable {
     @FXML
     public Button showButtonE;
     private Stage primaryStage;
+    private ObservableList<String> data;
 
     @Inject
     public AdminOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
@@ -55,7 +56,6 @@ public class AdminOverviewCtrl implements Initializable {
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        refresh();
         eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
@@ -109,6 +109,14 @@ public class AdminOverviewCtrl implements Initializable {
         }));
     }
 
+    public void launch(){
+        server.registerForMessages("/topic/admin", Event.class , q -> {
+            System.out.println("YES");
+            data.add(q.getTitle() + " : " + q.getInviteCode());
+            eventList.refresh();
+        });
+    }
+
     public void refresh() {
         List<Event> events = server.getAllEvents();
         List<String> titles = new ArrayList<>();
@@ -116,7 +124,8 @@ public class AdminOverviewCtrl implements Initializable {
         {
             titles.add(x.getTitle() + " : " + x.getInviteCode());
         }
-        eventList.setItems(FXCollections.observableList(titles));
+        data = FXCollections.observableList(titles);
+        eventList.setItems(data);
     }
 
     public void goBack() {

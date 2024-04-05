@@ -4,6 +4,8 @@ import java.util.List;
 
 import commons.Event;
 import commons.Participant;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import server.database.EventRepository;
 
@@ -32,6 +34,13 @@ public class EventController {
     @GetMapping(path = { "", "/" })
     public List<Event> getAll() {
         return repo.findAll();
+    }
+
+    @MessageMapping("/admin")
+    @SendTo("/topic/admin")
+    public Event addEvent(Event e){
+        save(e);
+        return e;
     }
 
     /**
@@ -75,13 +84,13 @@ public class EventController {
     }
     @RequestMapping(value = "/{id}/participants", method = RequestMethod.POST)
     public ResponseEntity<Participant> saveParticipantToEvent(@RequestBody Participant participant,
-                                                              @PathVariable("id") long id) {
+                                                              @PathVariable("id") String id) {
 
         if (participant == null || isNullOrEmpty(participant.getFirstName()) || isNullOrEmpty(participant.getLastName())
-                || id < 0 || !repo.existsById(id)){
+                ||!repo.existsByInviteCode(id)){
             return ResponseEntity.badRequest().build();
         }
-        Event event = repo.findById(id).get();
+        Event event = repo.findByInviteCode(id).getFirst();
         participant.setEvent(event);
         partRepo.save(participant);
         return ResponseEntity.ok(participant);

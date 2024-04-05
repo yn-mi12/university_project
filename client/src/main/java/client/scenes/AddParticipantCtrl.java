@@ -66,31 +66,15 @@ public class AddParticipantCtrl {
         String partFirstName = firstName.getText();
         String partLastName = lastName.getText();
         String partEmail = email.getText();
-
-        if (participant != null) {
-            participant.setFirstName(partFirstName);
-            participant.setLastName(partLastName);
-            participant.setEmail(partEmail);
-            return participant;
-        } else
-            return new Participant(partFirstName, partLastName, partEmail);
+        return new Participant(partFirstName, partLastName, partEmail);
     }
 
     public void ok() {
         try {
-//            if (participant != null && participant.getId() != 0) {
-//                setFirstName(participant.getFirstName());
-//                setLastName(participant.getLastName());
-//                setEmail(participant.getEmail());
-//            }
-            //TODO looks better if the fields show the old data
-
             participant = getParticipant();
             participantExists.visibleProperty().setValue(false);
-            if (participant != null && participant.getId() != 0 && !participantAlreadyExists()) {
-                server.updateParticipant(participant);
-            } else if(!participantAlreadyExists()){
-                participant.setEvent(event);
+            if (participant != null && !participantAlreadyExists()) {
+
                 server.addParticipant(participant, event);
                 Event updated = server.getByInviteCode(event.getInviteCode());
                 clearFields();
