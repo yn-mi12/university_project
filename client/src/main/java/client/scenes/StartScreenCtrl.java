@@ -27,6 +27,7 @@ import java.util.List;
 public class StartScreenCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
+    private ObservableList<String> data;
     private final SplittyCtrl eventCtrl;
     @FXML
     private ListView<String> eventList;
@@ -102,6 +103,10 @@ public class StartScreenCtrl implements Initializable {
                 }
             }
         });
+
+        server.registerForUpdates(ev-> {
+            data.add(ev.getTitle() + " : " + ev.getInviteCode());
+        });
     }
 
     public void refresh() {
@@ -132,7 +137,8 @@ public class StartScreenCtrl implements Initializable {
             }
 
             Config.get().save();
-            eventList.setItems(FXCollections.observableList(titles));
+            data = FXCollections.observableList(titles);
+            eventList.setItems(data);
         }
     }
 
@@ -153,8 +159,6 @@ public class StartScreenCtrl implements Initializable {
         try {
             System.out.println("Add event");
             event = server.addEvent(new Event(title));
-            Config.get().addPastCode(String.valueOf(event.getInviteCode()));
-            Config.get().save();
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
@@ -164,8 +168,12 @@ public class StartScreenCtrl implements Initializable {
         }
         eventCtrl.showEventOverview(event);
     }
+    public void stop(){
+        server.stop();
+    }
 
-    public void viewEvent() {
+
+        public void viewEvent() {
         var inviteCode = this.codeField.getText();
         if(inviteCode.isEmpty()) {
             invalidCode.setVisible(false);

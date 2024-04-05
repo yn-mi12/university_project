@@ -23,10 +23,14 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -193,6 +197,26 @@ public class ServerUtilsEvent {
                     });
         return events;
     }
+        private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
+    public void registerForUpdates(Consumer<Event> consumer)
+    {
+        EXEC.submit(() -> {
+            while(!Thread.interrupted()) {
+                var res = ClientBuilder.newClient(new ClientConfig()) //
+                        .target(SERVER).path("api/events/updates") //
+                        .request(APPLICATION_JSON) //
+                        .accept(APPLICATION_JSON) //
+                        .get(Response.class);
+                if(res.getStatus() == 204) {
+                    continue;
+                }
+                var q = res.readEntity(Event.class);
+                consumer.accept(q);
+            }});
+    }
+    public void stop(){
+        EXEC.shutdownNow();
+    }
     public List<Participant> getEventParticipants(Event event)
     {
         List<Participant> participants;
@@ -211,6 +235,5 @@ public class ServerUtilsEvent {
                 .accept(APPLICATION_JSON) //
                 .put(Entity.entity(participant, APPLICATION_JSON), Participant.class);
     }
-
 
 }

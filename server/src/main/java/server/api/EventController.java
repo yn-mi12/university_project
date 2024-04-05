@@ -1,14 +1,18 @@
 package server.api;
 
-import java.util.List;
-
 import commons.Event;
 import commons.Participant;
-import org.springframework.web.bind.annotation.*;
-import server.database.EventRepository;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
+import server.database.EventRepository;
 import server.database.ParticipantRepository;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 @RestController
 @RequestMapping("api/events")
@@ -32,6 +36,20 @@ public class EventController {
     @GetMapping(path = { "", "/" })
     public List<Event> getAll() {
         return repo.findAll();
+    }
+
+    private Map<Object, Consumer<Event>> listeners = new HashMap<>();
+    @GetMapping(path = { "", "/updates" })
+    public DeferredResult<ResponseEntity<Event>> getUpdates() {
+        var noContent = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        var res = new DeferredResult<ResponseEntity<Event>>(5000L, noContent);
+
+        var key = new Object();
+        listeners.put(key, event -> {
+            res.setResult(ResponseEntity.ok(event));
+        });
+        res.onCompletion(() -> listeners.remove(key));
+        return res;
     }
 
     /**
@@ -69,7 +87,7 @@ public class EventController {
         if (isNullOrEmpty(event.getTitle())||isNullOrEmpty(event.getInviteCode())) {
             return ResponseEntity.badRequest().build();
         }
-
+        listeners.forEach((key, listener) -> listener.accept(event));
         Event saved = repo.save(event);
         return ResponseEntity.ok(saved);
     }
