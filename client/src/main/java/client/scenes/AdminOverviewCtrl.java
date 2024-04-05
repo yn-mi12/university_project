@@ -111,6 +111,11 @@ public class AdminOverviewCtrl implements Initializable {
 
     public void refresh() {
         List<Event> events = server.getAllEvents();
+        if(events.isEmpty()) {
+            showButton.setDisable(true);
+            showButtonD.setDisable(true);
+            showButtonE.setDisable(true);
+        }
         List<String> titles = new ArrayList<>();
         for(Event x : events)
         {
@@ -194,16 +199,18 @@ public class AdminOverviewCtrl implements Initializable {
                 List<Participant> participants = event.getParticipants();;
                 List<Expense> expenses = event.getExpenses();
                 List<Tag> tags = event.getTags();
+                List<Debt> debts = event.getDebts();
                 event.setParticipants(null);
                 event.setExpenses(null);
                 event.setTags(null);
+                event.setDebts(null);
                 Event find = server.getByInviteCode(event.getInviteCode());
 
                 if(find == null) {
-                    addJsonToServer(event, participants, expenses);
+                    addJsonToServer(event, participants, expenses, debts);
                 } else {
                     server.deleteEvent(find);
-                    addJsonToServer(event, participants, expenses);
+                    addJsonToServer(event, participants, expenses, debts);
                 }
                 // TODO tags when we have a proper system for those
                 refresh();
@@ -213,14 +220,17 @@ public class AdminOverviewCtrl implements Initializable {
         }
     }
 
-    private void addJsonToServer(Event event, List<Participant> participants, List<Expense> expenses) {
+    private void addJsonToServer(Event event, List<Participant> participants, List<Expense> expenses, List<Debt> debts) {
         Event saved = server.addJsonEvent(event);
-        for(Participant p : participants) {
+        for(Participant p : participants)
             server.addParticipant(p, saved);
-        }
 
         saved = server.getByInviteCode(saved.getInviteCode());
         List<Participant> newParts = saved.getParticipants();
+        Map<Long, Participant> idToNewPart = new HashMap<>();
+        for(int i = 0; i < participants.size(); i++)
+            idToNewPart.put(participants.get(i).getId(), newParts.get(i));
+
         Set<ExpenseParticipant> debtors = new HashSet<>();
         int count = 0;
         for(Expense e : expenses) {
@@ -233,8 +243,14 @@ public class AdminOverviewCtrl implements Initializable {
             e.setDebtors(debtors);
             e.setEvent(saved);
             server.addExpense(e, saved);
-            saved = server.getByInviteCode(saved.getInviteCode());
             count++;
+        }
+
+        saved = server.getByInviteCode(saved.getInviteCode());
+        for(Debt d : debts) {
+            Debt newDebt = new Debt(idToNewPart.get(d.getDebtor().getId()),
+                    idToNewPart.get(d.getCreditor().getId()), d.getAmount());
+            server.addDebt(newDebt, saved);
         }
     }
 }
