@@ -1,12 +1,18 @@
 package server.api;
 
+import java.util.List;
+
 import commons.Event;
 import commons.Participant;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import server.database.EventRepository;
+
+import org.springframework.http.ResponseEntity;
 import server.database.ParticipantRepository;
 
 import java.util.HashMap;
@@ -36,6 +42,26 @@ public class EventController {
     @GetMapping(path = { "", "/" })
     public List<Event> getAll() {
         return repo.findAll();
+    }
+
+    @MessageMapping("/events")
+    @SendTo("/topic/events")
+    public Event addEvent(Event e){
+        save(e);
+        return e;
+    }
+
+    @MessageMapping("/titles")
+    @SendTo("/topic/titles")
+    public Event editTitleEvent(Event e){
+        return updateTitle(e.getId(),e.getTitle()).getBody();
+    }
+
+    @MessageMapping("/deleted")
+    @SendTo("/topic/deleted")
+    public Event deleteEvent(Event e){
+        deleteById(e.getId()).getBody();
+        return e;
     }
 
     private Map<Object, Consumer<Event>> listeners = new HashMap<>();
@@ -91,15 +117,15 @@ public class EventController {
         Event saved = repo.save(event);
         return ResponseEntity.ok(saved);
     }
-    @RequestMapping(value = "/{id}/participants", method = RequestMethod.POST)
+    @RequestMapping(value = "/{invite_code}/participants", method = RequestMethod.POST)
     public ResponseEntity<Participant> saveParticipantToEvent(@RequestBody Participant participant,
-                                                              @PathVariable("id") long id) {
+                                                              @PathVariable("invite_code") String id) {
 
         if (participant == null || isNullOrEmpty(participant.getFirstName()) || isNullOrEmpty(participant.getLastName())
-                || id < 0 || !repo.existsById(id)){
+                ||!repo.existsByInviteCode(id)){
             return ResponseEntity.badRequest().build();
         }
-        Event event = repo.findById(id).get();
+        Event event = repo.findByInviteCode(id).getFirst();
         participant.setEvent(event);
         partRepo.save(participant);
         return ResponseEntity.ok(participant);

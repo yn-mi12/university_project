@@ -112,18 +112,15 @@ public class SplittyCtrl {
     public void showExpOverview() {
         primaryStage.setTitle("Add/Edit expense");
         primaryStage.setScene(expense);
-
         expense.setOnKeyPressed(e -> addExpenseCtrl.keyPressed(e));
     }
     public void initEditParticipantOverview(Event event) {
         editParticipantOverviewCtrl.setEvent(event);
-
         showEditParticipantOverview();
         primaryStage.show();
     }
     public void showEditParticipantOverview() {
         primaryStage.setTitle("Edit participant");
-
         primaryStage.setScene(editParticipant);
         //editParticipant.setOnKeyPressed(e -> editParticipantOverviewCtrl.keyPressed(e));
     }
