@@ -152,11 +152,7 @@ public class Event {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
-        return Objects.equals(title, event.title)
-                && Objects.equals(inviteCode, event.inviteCode)
-                && Objects.equals(participants, event.participants)
-                && Objects.equals(expenses, event.expenses)
-                && Objects.equals(tags, event.tags);
+        return Objects.equals(inviteCode, event.inviteCode);
     }
 
     /**
@@ -165,7 +161,7 @@ public class Event {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(title, inviteCode, participants, expenses, tags);
+        return Objects.hash(inviteCode);
     }
 
     /**
