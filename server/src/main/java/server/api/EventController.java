@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.*;
 import server.database.EventRepository;
 
 import org.springframework.http.ResponseEntity;
-import server.database.ParticipantRepository;
 
 @RestController
 @RequestMapping("api/events")
 public class EventController {
 
     private final EventRepository repo;
+
     /**
      * The constructor for the EventController class
      * @param repo - The Event repository
      */
-    public EventController(EventRepository repo, ParticipantRepository partRepo){
+    public EventController(EventRepository repo){
         this.repo = repo;
     }
 
