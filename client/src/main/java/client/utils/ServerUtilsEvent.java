@@ -47,21 +47,10 @@ public class ServerUtilsEvent {
     private List<Event> events = new ArrayList<>();
 
     public Event getByInviteCode(String inviteCode) {
-        Event event;
-        try {
-            event = ClientBuilder.newClient(new ClientConfig())
-                    .target(SERVER).path("api/events/code=" + inviteCode)
-                    .request(APPLICATION_JSON)
-                    .accept(APPLICATION_JSON)
-                    .get(new GenericType<>() {
-                    });
-        } catch(BadRequestException e) {
-            event = null;
-        }
-        return event;
+        return getByID(inviteCode);
     }
 
-    public Event getByID(Long id) {
+    public Event getByID(String id) {
         Event event;
         try {
             event = ClientBuilder.newClient(new ClientConfig()) //
@@ -128,7 +117,7 @@ public class ServerUtilsEvent {
                 .post(Entity.entity(event, APPLICATION_JSON), Event.class);
         System.out.println("Add event" + saved);
 
-        Config.get().addPastCode(String.valueOf(saved.getInviteCode()));
+        Config.get().addPastCode(String.valueOf(saved.getId()));
 
         return saved;
     }
@@ -151,7 +140,7 @@ public class ServerUtilsEvent {
 
     public Participant addParticipant(Participant participant, Event event) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(getServer()).path("/api/events/" + event.getInviteCode() + "/participants") //
+                .target(getServer()).path("/api/events/" + event.getId() + "/participants") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(participant, APPLICATION_JSON), Participant.class);

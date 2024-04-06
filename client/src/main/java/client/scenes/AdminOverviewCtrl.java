@@ -114,22 +114,22 @@ public class AdminOverviewCtrl implements Initializable {
         server.registerForMessages("/topic/titles", Event.class , q -> {
             for(var x: data)
             {
-                if(x.contains(q.getInviteCode())){
+                if(x.contains(q.getId())){
                     data.remove(x);
                     break;
                 }
             }
-            data.add(q.getTitle() + " : " + q.getInviteCode());
+            data.add(q.getTitle() + " : " + q.getId());
             eventList.refresh();
         });
         server.registerForMessages("/topic/events", Event.class , q -> {
-            data.add(q.getTitle() + " : " + q.getInviteCode());
+            data.add(q.getTitle() + " : " + q.getId());
             eventList.refresh();
         });
         server.registerForMessages("/topic/deleted", Event.class , q -> {
             for(var x: data)
             {
-                if(x.contains(q.getInviteCode())){
+                if(x.contains(q.getId())){
                     data.remove(x);
                     break;
                 }
@@ -144,7 +144,7 @@ public class AdminOverviewCtrl implements Initializable {
         List<String> titles = new ArrayList<>();
         for(Event x : events)
         {
-            titles.add(x.getTitle() + " : " + x.getInviteCode());
+            titles.add(x.getTitle() + " : " + x.getId());
         }
         data = FXCollections.observableList(titles);
         eventList.setItems(data);
@@ -220,7 +220,7 @@ public class AdminOverviewCtrl implements Initializable {
                 String json = jsonScanner.next();
                 var event = om.readValue(json, Event.class);
                 System.out.println("Imported event: " + event);
-                Event find = server.getByInviteCode(event.getInviteCode());
+                Event find = server.getByInviteCode(event.getId());
                 if(find == null) {
                     server.addEvent(event);
                 } else {

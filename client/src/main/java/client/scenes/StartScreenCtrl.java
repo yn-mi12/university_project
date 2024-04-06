@@ -121,7 +121,7 @@ public class StartScreenCtrl implements Initializable {
                 Event e = server.getByInviteCode(code);
                 if (e != null) {
                     events.add(e);
-                    titles.add(e.getTitle() + " : " + e.getInviteCode());
+                    titles.add(e.getTitle() + " : " + e.getId());
                 } else {
                     removedCodes.add(code);
                 }
@@ -154,7 +154,7 @@ public class StartScreenCtrl implements Initializable {
             System.out.println("Add event");
             event = new Event(title);
             server.send("/app/events", event);
-            Config.get().addPastCode(String.valueOf(event.getInviteCode()));
+            Config.get().addPastCode(String.valueOf(event.getId()));
             Config.get().save();
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -179,8 +179,8 @@ public class StartScreenCtrl implements Initializable {
         if(event != null) {
             clearFields();
             Set<String> codes = Config.get().getPastCodes();
-            if(!codes.contains(event.getInviteCode())) {
-                Config.get().addPastCode(String.valueOf(event.getInviteCode()));
+            if(!codes.contains(event.getId())) {
+                Config.get().addPastCode(String.valueOf(event.getId()));
                 Config.get().save();
             }
             eventCtrl.showEventOverview(event);
