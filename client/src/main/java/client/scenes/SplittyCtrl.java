@@ -98,16 +98,6 @@ public class SplittyCtrl {
         primaryStage.setScene(event);
         eventCtrl.expensesNotSelectedPart();
         eventCtrl.expensesIncludingParticipant();
-        eventCtrl.expensesFromParticipant();
-    }
-
-    public void showEventOverviewExpense(Event selectedEvent) {
-        primaryStage.setTitle("Event: " + selectedEvent.getTitle());
-        this.eventCtrl.setSelectedEvent(selectedEvent);
-        this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
-        primaryStage.setScene(event);
-        eventCtrl.expensesFromParticipant();
-        eventCtrl.expensesIncludingParticipant();
         eventCtrl.expensesNotSelectedPart();
     }
 

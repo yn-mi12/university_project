@@ -117,7 +117,7 @@ public class AddExpenseCtrl {
 
         }
         clearFields();
-        controller.showEventOverviewExpense(updated);
+        controller.showEventOverview(updated);
     }
 
     public void calculateDebts(Expense saved, Event event) {

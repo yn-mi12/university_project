@@ -174,4 +174,14 @@ public class AddParticipantCtrl {
     public void setEmail(String email) {
         this.email.setText(email);
     }
+
+    public void setAccountName(String accountName) {
+        this.accountName.setText(accountName);
+    }
+
+    public void setIban(String iban) {
+        this.iban.setText(iban);
+    }
+
+    public void setBic(String bic) { this.bic.setText(bic); }
 }

@@ -80,14 +80,6 @@ public class SettleDebtsCtrl {
         setDebtors(df);
     }
 
-    public void refreshText() {
-        String text = groupPay.getText().replaceAll("[0-9]","").replace(".", "");
-        groupPay.setText(text.substring(0, text.length() - 1));
-
-        text = partPay.getText().replaceAll("[0-9]","").replace(".", "");
-        partPay.setText(text.substring(0, text.length() - 1));
-    }
-
     private void setCreditors(DecimalFormat df) {
         double groupAmount = 0;
         for(Debt d : creditorDebts) {
@@ -102,7 +94,6 @@ public class SettleDebtsCtrl {
                     server.deleteDebt(d);
                     creditorDebts.remove(d);
                     creditorBox.getChildren().clear();
-                    refreshText();
                     refresh();
                 }
             });
@@ -125,7 +116,9 @@ public class SettleDebtsCtrl {
             groupAmount += d.getAmount();
         }
         String text = groupPay.getText().replaceAll("[0-9]","").replace(".", "");
-        groupPay.setText(text + " " + df.format(groupAmount));
+        if(text.charAt(text.length() - 1) == ' ')
+            groupPay.setText(text + df.format(groupAmount));
+        else groupPay.setText(text + " " + df.format(groupAmount));
     }
 
     private void setDebtors(DecimalFormat df) {
@@ -142,7 +135,6 @@ public class SettleDebtsCtrl {
                     server.deleteDebt(d);
                     debtorDebts.remove(d);
                     debtorBox.getChildren().clear();
-                    refreshText();
                     refresh();
                 }
             });
@@ -166,11 +158,12 @@ public class SettleDebtsCtrl {
         }
 
         String text = partPay.getText().replaceAll("[0-9]","").replace(".", "");
-        partPay.setText(text + " " + df.format(partAmount));
+        if(text.charAt(text.length() - 1) == ' ')
+            partPay.setText(text + df.format(partAmount));
+        else partPay.setText(text + " " + df.format(partAmount));
     }
 
     public void goBack() {
-        refreshText();
         creditorBox.getChildren().clear();
         debtorBox.getChildren().clear();
         eventCtrl.showEventOverview(event);

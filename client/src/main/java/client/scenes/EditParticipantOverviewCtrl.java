@@ -66,7 +66,15 @@ public class EditParticipantOverviewCtrl {
             addCtrl.setEditPart(true);
             addCtrl.setFirstName(selectedParticipant.getFirstName());
             addCtrl.setLastName(selectedParticipant.getLastName());
-            addCtrl.setEmail(selectedParticipant.getEmail());
+
+            if(selectedParticipant.getEmail() != null)
+                addCtrl.setEmail(selectedParticipant.getEmail());
+
+            if(selectedParticipant.getAccountName() != null) {
+                addCtrl.setAccountName(selectedParticipant.getAccountName());
+                addCtrl.setIban(selectedParticipant.getIban());
+                addCtrl.setBic(selectedParticipant.getBic());
+            }
             //addCtrl.ok();
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
