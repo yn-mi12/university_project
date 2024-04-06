@@ -9,6 +9,7 @@ import commons.Expense;
 import commons.ExpenseParticipant;
 import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

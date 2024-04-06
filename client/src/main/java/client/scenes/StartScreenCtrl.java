@@ -6,6 +6,7 @@ import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
 import jakarta.ws.rs.WebApplicationException;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -104,8 +105,23 @@ public class StartScreenCtrl implements Initializable {
             }
         });
 
+
+        if(data == null)
+            data = FXCollections.observableArrayList();
+
         server.registerForUpdates(ev-> {
-            data.add(ev.getTitle() + " : " + ev.getInviteCode());
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    data.add(ev.getTitle() + " : " + ev.getInviteCode());
+//                    for(String x: data)
+//                    {
+//                        System.out.println(x);
+//                    }
+                    eventList.setItems(data);
+                }
+            });
         });
     }
 
@@ -134,6 +150,7 @@ public class StartScreenCtrl implements Initializable {
 
             for (String removed : removedCodes) {
                 Config.get().removePastCode(removed);
+                System.out.println("removed code");
             }
 
             Config.get().save();
@@ -169,7 +186,11 @@ public class StartScreenCtrl implements Initializable {
             alert.showAndWait();
             return;
         }
-        eventCtrl.showEventOverview(event);
+        //eventCtrl.showEventOverview(event);
+
+        //after rerun shows only the last added event
+        //weird with show Event
+        //without it runs simultaneously
     }
     public void stop(){
         server.stop();
