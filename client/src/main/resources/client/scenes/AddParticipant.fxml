@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="343.0" prefWidth="435.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddParticipantCtrl">
     <children>
@@ -22,5 +23,9 @@
       <TextField fx:id="accountName" layoutX="148.0" layoutY="175.0" prefHeight="26.0" prefWidth="166.0" />
       <TextField fx:id="iban" layoutX="148.0" layoutY="210.0" prefHeight="26.0" prefWidth="166.0" />
       <TextField fx:id="bic" layoutX="148.0" layoutY="248.0" prefHeight="26.0" prefWidth="166.0" />
+    <Label fx:id="participantExists" layoutX="224.0" layoutY="19.0" prefHeight="69.0" prefWidth="164.0" text="%participantExists" textAlignment="CENTER" textFill="RED" visible="false" wrapText="true">
+       <font>
+           <Font size="14.0" />
+       </font></Label>
     </children>
 </AnchorPane>

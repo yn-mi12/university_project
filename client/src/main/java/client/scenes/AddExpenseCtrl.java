@@ -15,7 +15,7 @@ import javafx.stage.Modality;
 import java.net.URL;
 import java.util.*;
 
-public class AddExpenseCtrl implements Initializable {
+public class AddExpenseCtrl {
     private EventOverviewCtrl ctrl;
     private Event event;
     private final ServerUtilsEvent server;
@@ -38,18 +38,13 @@ public class AddExpenseCtrl implements Initializable {
     @FXML
     private CheckBox someHaveToPay = new CheckBox();
     @FXML
-    private TextArea whoPays;
+    private ListView<String> whoPays;
 
 
     @Inject
     public AddExpenseCtrl(ServerUtilsEvent server, SplittyCtrl ctrl) {
         this.controller = ctrl;
         this.server = server;
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        // Removed this because we don't need to have language switching in the Expense overview
     }
 
     public void setEvent(Participant paid, EventOverviewCtrl ctrl) {
@@ -73,6 +68,13 @@ public class AddExpenseCtrl implements Initializable {
                 expensePayer = map.get(mi);
             });
         }
+        List<String> listOfParticipants = new ArrayList<>();
+        for(Participant participant : event.getParticipants()){
+            listOfParticipants.add(participant.getFirstName());
+        }
+        whoPays.setItems(FXCollections.observableList(listOfParticipants));
+        whoPays.refresh();
+        whoPays.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
     }
 
     public void cancel() {
@@ -149,15 +151,15 @@ public class AddExpenseCtrl implements Initializable {
     }
 
     public void setAndAddDebts(Expense saved, Event event, Map<Participant, Debt> debtorToDebt) {
-        for(ExpenseParticipant ep : saved.getDebtors()) {
+        for (ExpenseParticipant ep : saved.getDebtors()) {
             if (!ep.isOwner()) {
                 Debt d = debtorToDebt.get(ep.getParticipant());
                 d.setAmount(d.getAmount() + (ep.getShare() / 100 * saved.getAmount()));
                 debtorToDebt.replace(ep.getParticipant(), d);
             }
         }
-        for(Debt debt : debtorToDebt.values()) {
-            if(debt.getAmount() != 0)
+        for (Debt debt : debtorToDebt.values()) {
+            if (debt.getAmount() != 0)
                 server.addDebt(debt, event);
         }
     }
@@ -186,12 +188,12 @@ public class AddExpenseCtrl implements Initializable {
             }
             return debtors;
         }
-        String delimiterPattern = "[\\s,]+";
-        String[] givenParticipants = whoPays.getText().split(delimiterPattern);
-        for (int i = 0; i < givenParticipants.length; i++){
-            double share = 100.0/givenParticipants.length;
-            boolean isOwner = this.event.getParticipants().get(i).getFirstName().equals(whoPaid.getText());
-            ExpenseParticipant expenseParticipant = new ExpenseParticipant(expense, event.getParticipantByName(givenParticipants[i]), share, isOwner);
+        ObservableList<String> selectedParticipants = whoPays.getSelectionModel().getSelectedItems();
+        for (int i = 0; i < selectedParticipants.size(); i++){
+            double share = 100.0/selectedParticipants.size();
+            boolean isOwner = selectedParticipants.get(i).equals(whoPaid.getText());
+            ExpenseParticipant expenseParticipant = new
+                    ExpenseParticipant(expense, event.getParticipantByName(selectedParticipants.get(i)), share, isOwner);
             debtors.add(expenseParticipant);
         }
         return debtors;
@@ -217,7 +219,7 @@ public class AddExpenseCtrl implements Initializable {
         currency.setValue(null);
         allHaveToPay.setSelected(false);
         someHaveToPay.setSelected(false);
-        whoPays.clear();
+        whoPays.getSelectionModel().clearSelection();
     }
 
 }

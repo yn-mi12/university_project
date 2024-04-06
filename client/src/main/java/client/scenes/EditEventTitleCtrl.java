@@ -66,7 +66,10 @@ public class EditEventTitleCtrl {
             event.setTitle(editedTitle);
             System.out.println("Edit Title");
             System.out.println("Id:" + event.getId());
-            server.editEventTitle(editedTitle, event);
+            event.setId(server.getByInviteCode(event.getInviteCode()).getId());
+            event.setTitle(newTitle.getText());
+            server.send("/app/titles", event);
+            //server.editEventTitle(editedTitle, event);
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -75,10 +78,8 @@ public class EditEventTitleCtrl {
             alert.showAndWait();
             return;
         }
-
         clearFields();
-        Event updated = server.getByInviteCode(event.getInviteCode());
-        mainCtrl.showEventOverview(updated);
+        mainCtrl.showEventOverview(event);
     }
 
 

@@ -45,7 +45,7 @@
       </Text>
       <Button focusTraversable="false" layoutX="419.0" layoutY="52.0" minWidth="100" mnemonicParsing="false" onAction="#sendInvites" text="%invite_button" />
       <TextArea fx:id="participantText" accessibleText="false" layoutX="20.0" layoutY="107.0" prefHeight="64.0" prefWidth="155.0" />
-      <TabPane layoutX="15.0" layoutY="299.0" prefHeight="191.0" prefWidth="500.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabPane" layoutX="15.0" layoutY="299.0" prefHeight="191.0" prefWidth="500.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="%all">
             <content>
@@ -53,13 +53,13 @@
             </content>
               <ListView fx:id="allExpenses" layoutX="96.0" layoutY="218.0" prefHeight="141.0" prefWidth="227.0" />
           </Tab>
-          <Tab onSelectionChanged="#expensesFromParticipant" text="%from">
+          <Tab onSelectionChanged="#expensesFromParticipant" text="%from" fx:id="fromTab">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
             </content>
               <ListView fx:id="fromExpenses" layoutX="96.0" layoutY="218.0" prefHeight="141.0" prefWidth="227.0" />
           </Tab>
-            <Tab onSelectionChanged="#expensesIncludingParticipant" text="%including">
+            <Tab onSelectionChanged="#expensesIncludingParticipant" text="%including" fx:id="includingTab">
                 <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                 </content>
