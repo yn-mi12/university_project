@@ -193,14 +193,22 @@ public class ServerUtilsEvent {
                 .put(Entity.entity(participant, APPLICATION_JSON), Participant.class);
     }
 
-    public Debt addDebt(Debt debt, Event event) {
-        Debt saved = ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/debts/event/" + event.getId()) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(debt, APPLICATION_JSON), Debt.class);
-        System.out.println("Add debt " + saved);
-        return saved;
+    public List<Debt> addAllDebts(List<Debt> debts, Event event) {
+        List<Debt> savedDebts = new ArrayList<>();
+        try {
+            for(Debt d : debts) {
+                Debt saved = ClientBuilder.newClient(new ClientConfig()) //
+                        .target(SERVER).path("api/debts/event/" + event.getId()) //
+                        .request(APPLICATION_JSON) //
+                        .accept(APPLICATION_JSON) //
+                        .post(Entity.entity(d, APPLICATION_JSON), Debt.class);
+                System.out.println("Add debt " + saved);
+                savedDebts.add(saved);
+            }
+        } catch(BadRequestException e) {
+            System.out.println("Failed to add all debts");
+        }
+        return savedDebts;
     }
 
     public List<Debt> getDebtsByEvent(Event event) {

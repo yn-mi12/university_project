@@ -175,11 +175,14 @@ public class AddExpenseCtrl {
             }
         }
 
+        List<Debt> finalDebts = new ArrayList<>();
         for (Debt debt : debtorToDebt.values()) {
             System.out.println(debt);
             if (debt.getAmount() != 0)
-                server.addDebt(debt, event);
+                finalDebts.add(debt);
         }
+
+        server.addAllDebts(finalDebts, event);
     }
 
     @FXML
