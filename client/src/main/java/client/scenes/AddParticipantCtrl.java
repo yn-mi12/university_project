@@ -25,6 +25,7 @@ public class AddParticipantCtrl {
     private Participant participant;
     @FXML
     private Label participantExists;
+    private boolean editPart = false;
 
 
     @Inject
@@ -42,6 +43,10 @@ public class AddParticipantCtrl {
     public void setEvent(Event event) {
         this.event = event;
         participantExists.visibleProperty().setValue(false);
+    }
+
+    public void setEditPart(boolean editPart) {
+        this.editPart = editPart;
     }
 
     public void keyPressed(KeyEvent e) {
@@ -66,37 +71,36 @@ public class AddParticipantCtrl {
         String partFirstName = firstName.getText();
         String partLastName = lastName.getText();
         String partEmail = email.getText();
-
-        if (participant != null) {
-            participant.setFirstName(partFirstName);
-            participant.setLastName(partLastName);
-            participant.setEmail(partEmail);
-            return participant;
-        } else
-            return new Participant(partFirstName, partLastName, partEmail);
+        return new Participant(partFirstName, partLastName, partEmail);
     }
 
     public void ok() {
         try {
-//            if (participant != null && participant.getId() != 0) {
-//                setFirstName(participant.getFirstName());
-//                setLastName(participant.getLastName());
-//                setEmail(participant.getEmail());
-//            }
-            //TODO looks better if the fields show the old data
-
+            if(editPart == false){
             participant = getParticipant();
             participantExists.visibleProperty().setValue(false);
-            if (participant != null && participant.getId() != 0 && !participantAlreadyExists()) {
-                server.updateParticipant(participant);
-            } else if(!participantAlreadyExists()){
-                participant.setEvent(event);
+            if (participant != null && !participantAlreadyExists()) {
                 server.addParticipant(participant, event);
                 Event updated = server.getByInviteCode(event.getInviteCode());
                 clearFields();
                 mainCtrl.showEventOverview(updated);
             }else{
                 participantExists.visibleProperty().setValue(true);
+            }
+            }
+            else {
+                participant.setFirstName(getParticipant().getFirstName());
+                participant.setLastName(getParticipant().getLastName());
+                participant.setEmail(getParticipant().getEmail());
+                participantExists.visibleProperty().setValue(false);
+                if(participant.getFirstName() != null && participant.getLastName()!=null) {
+                    server.updateParticipant(participant);
+                    event = server.getByInviteCode(event.getInviteCode());
+                    editPart = false;
+                    mainCtrl.initEditParticipantOverview(event);
+                    mainCtrl.showEditParticipantOverview();
+                }
+                clearFields();
             }
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -121,4 +125,15 @@ public class AddParticipantCtrl {
         email.clear();
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName.setText(firstName);
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName.setText(lastName);
+    }
+
+    public void setEmail(String email) {
+        this.email.setText(email);
+    }
 }

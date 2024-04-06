@@ -20,18 +20,31 @@ import commons.Event;
 import commons.Expense;
 import commons.Participant;
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import org.glassfish.jersey.client.ClientConfig;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtilsEvent {
     private static final String SERVER = Config.get().getHost();
+    private List<Event> events = new ArrayList<>();
 
     public Event getByInviteCode(String inviteCode) {
         Event event;
@@ -86,10 +99,10 @@ public class ServerUtilsEvent {
                    .accept(APPLICATION_JSON)
                    .get(new GenericType<>(){
                    });
-       }catch(BadRequestException e){
+       }catch(BadRequestException | NotFoundException e){
            expenses = null;
        }
-       return expenses;
+        return expenses;
 
     }
     public Participant getParticipantByID(Long id) {
@@ -138,7 +151,7 @@ public class ServerUtilsEvent {
 
     public Participant addParticipant(Participant participant, Event event) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(getServer()).path("/api/events/" + event.getId() + "/participants") //
+                .target(getServer()).path("/api/events/" + event.getInviteCode() + "/participants") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(participant, APPLICATION_JSON), Participant.class);
@@ -212,5 +225,40 @@ public class ServerUtilsEvent {
                 .put(Entity.entity(participant, APPLICATION_JSON), Participant.class);
     }
 
+    private final StompSession session = connect("ws://localhost:8080/websocket");
 
+    private StompSession connect(String url)
+    {
+        var client = new StandardWebSocketClient();
+        var stomp = new WebSocketStompClient(client);
+        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+        try{
+            return stomp.connectAsync(url, new StompSessionHandlerAdapter() {
+            }).get();
+        } catch (InterruptedException e){
+            Thread.currentThread().interrupt();
+        } catch(ExecutionException e){
+            throw new RuntimeException(e);
+        }
+        throw new IllegalStateException();
+    }
+
+    public <T> void registerForMessages(String dest,Class <T> type,Consumer<T> consumer){
+        session.subscribe(dest, new StompFrameHandler() {
+            @Override
+            public @NotNull Type getPayloadType(@NotNull StompHeaders headers) {
+                return type;
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public void handleFrame(@NotNull StompHeaders headers, Object payload) {
+                consumer.accept((T) payload);
+            }
+        });
+    }
+
+    public void send(String dest, Object o){
+        session.send(dest,o);
+    }
 }

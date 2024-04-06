@@ -166,7 +166,9 @@ public class EventOverviewCtrl implements Initializable {
     public void deleteEvent() {
         try {
             System.out.println("Delete Event");
-            server.deleteEvent(event);
+            event.setId(server.getByInviteCode(event.getInviteCode()).getId());
+            server.send("/app/deleted", event);
+            //server.deleteEvent(event);
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -185,6 +187,7 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void goBack() {
+        Main.reload();
         if(controller.getAdmin()) controller.showAdminOverview();
         else controller.showOverview();
     }
@@ -192,6 +195,7 @@ public class EventOverviewCtrl implements Initializable {
     public void expensesNotSelectedPart(){
         List<Expense> expenses = server.getExpensesByEventId(event);
         List<String> titles = new ArrayList<>();
+        if(expenses!=null){
         for (Expense expense : expenses){
             Participant owner = new Participant();
             Set<ExpenseParticipant> expenseParticipants = expense.getDebtors();
@@ -202,28 +206,29 @@ public class EventOverviewCtrl implements Initializable {
             }
             String expenseString = owner.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
             titles.add(expenseString);
-        }
+        }}
         allExpenses.setItems(FXCollections.observableList(titles));
     }
 
     public void expensesFromParticipant(){
         String participantsName = part.getText();
         Participant participant = event.getParticipantByName(participantsName);
-
         List<Expense> expenses = server.getExpensesByEventId(event);
         List<Expense> expensesFromParticipant = new ArrayList<>();
         List<String> titles = new ArrayList<>();
-        for(Expense expense : expenses){
-            List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
-            for(int i = 0; i < debtors.size(); i++){
-                if (debtors.get(i).isOwner() && debtors.get(i).getParticipant().equals(participant)){
-                    expensesFromParticipant.add(expense);
+        if(expenses!=null) {
+            for (Expense expense : expenses) {
+                List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
+                for (int i = 0; i < debtors.size(); i++) {
+                    if (debtors.get(i).isOwner() && debtors.get(i).getParticipant().equals(participant)) {
+                        expensesFromParticipant.add(expense);
+                    }
                 }
             }
-        }
-        for (Expense expense: expensesFromParticipant){
-            String expenseString = participant.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
-            titles.add(expenseString);
+            for (Expense expense : expensesFromParticipant) {
+                String expenseString = participant.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
+                titles.add(expenseString);
+            }
         }
         fromExpenses.setItems(FXCollections.observableList(titles));
     }
@@ -231,10 +236,10 @@ public class EventOverviewCtrl implements Initializable {
     public void expensesIncludingParticipant(){
         String participantsName = part.getText();
         Participant participant = event.getParticipantByName(participantsName);
-
         List<Expense> expenses = server.getExpensesByEventId(event);
         List<Expense> expensesIncludingParticipant = new ArrayList<>();
         List<String> titles = new ArrayList<>();
+        if(expenses!=null){
         for(Expense expense : expenses){
             List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
             for(int i = 0; i < debtors.size(); i++){
@@ -254,6 +259,7 @@ public class EventOverviewCtrl implements Initializable {
             }
             String expenseString = owner.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
             titles.add(expenseString);
+        }
         }
         includingExpenses.setItems(FXCollections.observableList(titles));
     }

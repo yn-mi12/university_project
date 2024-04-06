@@ -109,11 +109,15 @@ public class EditParticipantOverviewCtrl implements Initializable {
     public void editParticipant() {
         setParticipant();
         try {
+            event = server.getByInviteCode(event.getInviteCode());
             controller.showAddParticipant(event);
             AddParticipantCtrl addCtrl = controller.getAddParticipantCtrl();
             addCtrl.setParticipant(selectedParticipant);
-            addCtrl.ok();
-
+            addCtrl.setEditPart(true);
+            addCtrl.setFirstName(selectedParticipant.getFirstName());
+            addCtrl.setLastName(selectedParticipant.getLastName());
+            addCtrl.setEmail(selectedParticipant.getEmail());
+            //addCtrl.ok();
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
@@ -123,6 +127,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
     }
 
     public void cancel() {
+        controller.getAddParticipantCtrl().setEditPart(false);
         clearFields();
         selectedParticipant = null;
         Main.reloadUIEvent(event);
