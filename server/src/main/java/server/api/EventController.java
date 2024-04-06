@@ -78,7 +78,7 @@ public class EventController {
     public ResponseEntity<Event> getByInviteCode(@PathVariable("invite-code") String inviteCode) {
         if(inviteCode == null || !repo.existsByInviteCode(inviteCode))
             return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(repo.findByInviteCode(inviteCode).get(0));
+        return ResponseEntity.ok(repo.findByInviteCode(inviteCode).get());
     }
 
     /**
@@ -103,7 +103,7 @@ public class EventController {
                 ||!repo.existsByInviteCode(id)){
             return ResponseEntity.badRequest().build();
         }
-        Event event = repo.findByInviteCode(id).getFirst();
+        Event event = repo.findByInviteCode(id).get();
         participant.setEvent(event);
         partRepo.save(participant);
         return ResponseEntity.ok(participant);
