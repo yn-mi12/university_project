@@ -189,16 +189,14 @@ public class TestEventRepository implements EventRepository {
     }
 
     @Override
-    public List<Event> findByInviteCode(String inviteCode) {
-        Event event = events.stream().filter(e -> e.getInviteCode().equals(inviteCode)).findFirst().orElse(null);
-        if(event != null)
-            return List.of(event);
-        return null;
+    public Optional<Event> findByInviteCode(String inviteCode) {
+        return events.stream().filter(e -> e.getInviteCode().equals(inviteCode)).findFirst();
+
     }
 
     @Override
     public boolean existsByInviteCode(String inviteCode) {
-        Event event = events.stream().filter(e -> e.getInviteCode().equals(inviteCode)).findFirst().orElse(null);
-        return event != null;
+        return events.stream().anyMatch(e -> e.getInviteCode().equals(inviteCode));
+
     }
 }

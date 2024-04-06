@@ -180,14 +180,4 @@ public class TestExpenseRepository implements ExpenseRepository {
     public List<Expense> findAllByParticipantId(Long participantId) {
         return null;
     }
-
-    @Override
-    public List<Expense> findAllByParticipantIdWhereOwner(Long participantId) {
-        return null;
-    }
-
-    @Override
-    public List<Expense> findAllByParticipantIdWhereDebt(Long participantId) {
-        return null;
-    }
 }
