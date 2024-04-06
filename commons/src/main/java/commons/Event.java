@@ -102,6 +102,10 @@ public class Event {
         this.lastUpdateDate = lastUpdateDate;
     }
 
+    public void updateDate() {
+        lastUpdateDate = Timestamp.valueOf(LocalDateTime.now());
+    }
+
     /**
      * Returns the participant with the specified name
      * @param name the specified name
@@ -148,7 +152,7 @@ public class Event {
     @Override
     public String toString() {
         return "Event{" +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
                 ", inviteCode='" + id + '\'' +
                 ", participants=" + participants +
                 ", expenses=" + expenses +
