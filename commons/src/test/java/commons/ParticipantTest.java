@@ -82,8 +82,8 @@ class ParticipantTest {
         expenseWhereDebtor.add(ep1);
         expenseWhereDebtor.add(ep2);
 
-        x.setExpenseWhereDebtor(expenseWhereDebtor);
-        assertEquals(expenseWhereDebtor, x.getExpenseWhereDebtor());
+        x.setExpenses(expenseWhereDebtor);
+        assertEquals(expenseWhereDebtor, x.getExpenses());
     }
 
     @Test
@@ -121,17 +121,5 @@ class ParticipantTest {
     @Test
     void testToString() {
         assertEquals("Participant{id=0, firstName='a', lastName='b', email='null'}", x.toString());
-    }
-
-    @Test
-    void getByIdTest() {
-        List<Participant> ps = new ArrayList<>();
-        Participant y = new Participant("a","b");
-        x.setId(1);
-        y.setId(2);
-        ps.add(x);
-        ps.add(y);
-        assertEquals(x, Participant.getById(ps, 1));
-        assertNull(Participant.getById(ps, 3));
     }
 }
