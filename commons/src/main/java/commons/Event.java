@@ -2,6 +2,7 @@ package commons;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -9,7 +10,9 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false, unique = true)
     private String inviteCode;
     @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
@@ -17,6 +20,10 @@ public class Event {
     private List<Expense> expenses = new ArrayList<>();
     @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags = new ArrayList<>();
+    @Column(nullable = false)
+    private LocalDateTime creationDate;
+    @Column(nullable = false)
+    private LocalDateTime lastUpdateDate;
 
     @SuppressWarnings("unused")
     public Event() {}
@@ -28,6 +35,10 @@ public class Event {
     public Event(String title) {
         this.title = title;
         this.inviteCode = UUID.randomUUID().toString().substring(0,11).replace("-", "");
+        this.creationDate = LocalDateTime.now();
+        this.lastUpdateDate = LocalDateTime.of(creationDate.getYear(), creationDate.getMonth(),
+                creationDate.getDayOfMonth(), creationDate.getHour(),
+                creationDate.getMinute(), creationDate.getSecond());
     }
 
     public long getId() {
@@ -99,6 +110,22 @@ public class Event {
         this.tags = tags;
     }
 
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getLastUpdateDate() {
+        return lastUpdateDate;
+    }
+
+    public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
+        this.lastUpdateDate = lastUpdateDate;
+    }
+
     /**
      * Returns the participant with the specified name
      * @param name the specified name
@@ -143,6 +170,7 @@ public class Event {
 
     /**
      * Gives a human-friendly representation of an Event
+     *
      * @return the human-friendly representation of the Event
      */
     @Override
@@ -154,6 +182,8 @@ public class Event {
                 ", participants=" + participants +
                 ", expenses=" + expenses +
                 ", tags=" + tags +
+                ", creationDate=" + creationDate +
+                ", lastUpdateDate=" + lastUpdateDate +
                 '}';
     }
 
