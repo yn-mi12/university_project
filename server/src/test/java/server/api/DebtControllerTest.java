@@ -56,6 +56,28 @@ public class DebtControllerTest {
     }
 
     @Test
+    void getByEventIdTest() {
+        d.setEvent(event);
+        assertEquals(d, debtc.getByEventId(1).getBody().get(0));
+
+        var br = debtc.getByEventId(-1).getStatusCode();
+        var br2 = debtc.getByEventId(42).getStatusCode();
+        assertEquals(BAD_REQUEST, br);
+        assertEquals(BAD_REQUEST, br2);
+    }
+
+    @Test
+    void updateAmountTest() {
+        debtc.updateAmount(repo.debts.get(0).getId(), 1000);
+        assertEquals(1000, repo.debts.get(0).getAmount());
+
+        var br = debtc.getByEventId(100).getStatusCode();
+        var br2 = debtc.updateAmount(42, 1000).getStatusCode();
+        assertEquals(BAD_REQUEST, br);
+        assertEquals(BAD_REQUEST, br2);
+    }
+
+    @Test
     void getAllByCreditorIdTest() {
         var br = debtc.getAllByCreditorId(Long.valueOf(-1));
         assertEquals(BAD_REQUEST, br.getStatusCode());
@@ -67,7 +89,7 @@ public class DebtControllerTest {
 
     @Test
     void getAllByDebtorTest() {
-        var br = debtc.getAllByCreditorId(Long.valueOf(-1));
+        var br = debtc.getAllByDebtorId(Long.valueOf(-1));
         assertEquals(BAD_REQUEST, br.getStatusCode());
 
         List<Debt> debtorDebts = debtc.getAllByDebtorId(Long.valueOf(debtor.getId())).getBody();

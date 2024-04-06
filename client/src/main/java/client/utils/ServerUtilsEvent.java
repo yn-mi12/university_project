@@ -203,6 +203,19 @@ public class ServerUtilsEvent {
         return saved;
     }
 
+    public List<Debt> getDebtsByEvent(Event event) {
+        List<Debt> debts = new ArrayList<>();
+
+        debts.addAll(ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/event/" + event.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                }));
+
+        return debts;
+    }
+
     public List<Debt> getDebtsByCreditor(Participant creditor) {
         List<Debt> debts = new ArrayList<>();
 
@@ -229,11 +242,19 @@ public class ServerUtilsEvent {
         return debts;
     }
 
+    public void updateDebtAmount(double amount, Debt debt) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/" + debt.getId() + "/amount")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(amount, APPLICATION_JSON), Debt.class);
+    }
+
     public void deleteDebt(Debt debt) {
-        ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/debts/" + debt.getId()) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/" + debt.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
                 .delete();
         System.out.println("Debt deleted:" + debt);
     }

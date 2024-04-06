@@ -17,36 +17,26 @@ import javafx.scene.layout.VBox;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class SettleDebtsCtrl {
 
     private ServerUtilsEvent server;
     private final SplittyCtrl eventCtrl;
-    private List<Debt> creditorDebts;
-    private List<Debt> debtorDebts;
-    private Map<Debt, String> removed = new HashMap<>();
+    private List<Debt> debts;
+    private List<Debt> removed = new ArrayList<>();
     private Event event;
     @FXML
-    private ScrollPane creditPane;
-    @FXML
-    private ScrollPane debtPane;
+    private ScrollPane openDebtPane;
     @FXML
     private ScrollPane settledPane;
     @FXML
-    private VBox creditorBox;
-    @FXML
-    private VBox debtorBox;
+    private VBox openDebtBox;
     @FXML
     private VBox settledBox;
     @FXML
     private Label settledLabel;
-    @FXML
-    private Label groupPay;
-    @FXML
-    private Label partPay;
     @FXML
     private Label bankAvail;
     @FXML
@@ -67,22 +57,14 @@ public class SettleDebtsCtrl {
     }
 
     public void refresh() {
-        groupPay.setVisible(true);
-        partPay.setVisible(true);
-        creditPane.setFitToWidth(true);
-        debtPane.setFitToWidth(true);
+        openDebtPane.setFitToWidth(true);
         settledPane.setFitToWidth(true);
-        creditPane.setVisible(true);
-        debtPane.setVisible(true);
+        openDebtPane.setVisible(true);
         settledDebtsLabel.setVisible(true);
         settledLabel.setVisible(false);
-        if(creditorDebts.isEmpty() && debtorDebts.isEmpty() && removed.isEmpty()) {
-            creditorBox.getChildren().clear();
-            debtorBox.getChildren().clear();
-            groupPay.setVisible(false);
-            partPay.setVisible(false);
-            creditPane.setVisible(false);
-            debtPane.setVisible(false);
+        if(debts.isEmpty() && removed.isEmpty()) {
+            openDebtBox.getChildren().clear();
+            openDebtPane.setVisible(false);
             settledPane.setVisible(false);
             settledDebtsLabel.setVisible(false);
             settledLabel.setVisible(true);
@@ -92,42 +74,66 @@ public class SettleDebtsCtrl {
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.HALF_UP);
 
-        setCreditors(df);
-        setDebtors(df);
+        setOpenDebts(df);
         setRemovedDebts(df);
     }
 
+    private void setOpenDebts(DecimalFormat df) {
+        double groupAmount = 0;
+        for(Debt d : debts) {
+            String dString = d.getDebtor().getFirstName() + " " + give.getText() + " " + d.getCreditor().getFirstName()
+                    + " " + df.format(d.getAmount());
+            HBox row = new HBox();
+            row.setSpacing(dString.length() + 75);
+            Button receivedButton = new Button(received.getText());
+            receivedButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    removed.add(d);
+                    debts.remove(d);
+                    settledBox.getChildren().clear();
+                    openDebtBox.getChildren().clear();
+                    refresh();
+                }
+            });
+
+            Participant creditor = d.getCreditor();
+            Label bankDetails;
+            if(creditor.getAccountName() != null) {
+                bankDetails = new Label(bankAvail.getText() + creditor.getAccountName() + "\n" +
+                        "IBAN: " + creditor.getIban() + "\n" +
+                        "BIC: " +creditor.getBic());
+            } else {
+                bankDetails = new Label(bankUnavail.getText());
+            }
+
+            TitledPane creditorDetails = new TitledPane(dString, bankDetails);
+            creditorDetails.setExpanded(false);
+            row.getChildren().addAll(creditorDetails, receivedButton);
+            openDebtBox.getChildren().add(row);
+
+            groupAmount += d.getAmount();
+        }
+    }
+
     private void setRemovedDebts(DecimalFormat df) {
-        for(Debt d : removed.keySet()) {
+        for(Debt d : removed) {
             String dString = d.getDebtor().getFirstName() + " " + give.getText() + " " + d.getCreditor().getFirstName()
                     + " " + df.format(d.getAmount());
             HBox row = new HBox();
             row.setSpacing(dString.length() + 75);
             Button undoButton = new Button(undo.getText());
 
-            if(removed.get(d).equals("Creditor")) {
-                undoButton.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        removed.remove(d);
-                        creditorDebts.add(d);
-                        settledBox.getChildren().clear();
-                        creditorBox.getChildren().clear();
-                        refresh();
-                    }
-                });
-            } else {
-                undoButton.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        removed.remove(d);
-                        debtorDebts.add(d);
-                        settledBox.getChildren().clear();
-                        debtorBox.getChildren().clear();
-                        refresh();
-                    }
-                });
-            }
+            undoButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    removed.remove(d);
+                    debts.add(d);
+                    settledBox.getChildren().clear();
+                    openDebtBox.getChildren().clear();
+                    refresh();
+                }
+            });
 
             Participant creditor = d.getCreditor();
             Label bankDetails;
@@ -146,104 +152,17 @@ public class SettleDebtsCtrl {
         }
     }
 
-    private void setCreditors(DecimalFormat df) {
-        double groupAmount = 0;
-        for(Debt d : creditorDebts) {
-            String dString = d.getDebtor().getFirstName() + " " + give.getText() + " " + d.getCreditor().getFirstName()
-                    + " " + df.format(d.getAmount());
-            HBox row = new HBox();
-            row.setSpacing(dString.length() + 75);
-            Button receivedButton = new Button(received.getText());
-            receivedButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    removed.put(d, "Creditor");
-                    creditorDebts.remove(d);
-                    settledBox.getChildren().clear();
-                    creditorBox.getChildren().clear();
-                    refresh();
-                }
-            });
-
-            Participant creditor = d.getCreditor();
-            Label bankDetails;
-            if(creditor.getAccountName() != null) {
-                bankDetails = new Label(bankAvail.getText() + creditor.getAccountName() + "\n" +
-                        "IBAN: " + creditor.getIban() + "\n" +
-                        "BIC: " +creditor.getBic());
-            } else {
-                bankDetails = new Label(bankUnavail.getText());
-            }
-
-            TitledPane creditorDetails = new TitledPane(dString, bankDetails);
-            creditorDetails.setExpanded(false);
-            row.getChildren().addAll(creditorDetails, receivedButton);
-            creditorBox.getChildren().add(row);
-
-            groupAmount += d.getAmount();
-        }
-        String text = groupPay.getText().replaceAll("[0-9]","").replace(".", "");
-        if(text.charAt(text.length() - 1) == ' ')
-            groupPay.setText(text + df.format(groupAmount));
-        else groupPay.setText(text + " " + df.format(groupAmount));
-    }
-
-    private void setDebtors(DecimalFormat df) {
-        double partAmount = 0;
-        for(Debt d : debtorDebts) {
-            String dString = d.getDebtor().getFirstName() + " " + give.getText() + " " + d.getCreditor().getFirstName()
-                    + " " + df.format(d.getAmount());
-            HBox row = new HBox();
-            row.setSpacing(dString.length() + 75);
-            Button receivedButton = new Button(received.getText());
-            receivedButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    removed.put(d, "Debtor");
-                    debtorDebts.remove(d);
-                    settledBox.getChildren().clear();
-                    debtorBox.getChildren().clear();
-                    refresh();
-                }
-            });
-
-            Participant creditor = d.getCreditor();
-            Label bankDetails;
-            if(creditor.getAccountName() != null) {
-                bankDetails = new Label(bankAvail.getText() + creditor.getAccountName() + "\n" +
-                        "IBAN: " + creditor.getIban() + "\n" +
-                        "BIC: " +creditor.getBic());
-            } else {
-                bankDetails = new Label(bankUnavail.getText());
-            }
-
-            TitledPane creditorDetails = new TitledPane(dString, bankDetails);
-            creditorDetails.setExpanded(false);
-            row.getChildren().addAll(creditorDetails, receivedButton);
-            debtorBox.getChildren().add(row);
-
-            partAmount += d.getAmount();
-        }
-
-        String text = partPay.getText().replaceAll("[0-9]","").replace(".", "");
-        if(text.charAt(text.length() - 1) == ' ')
-            partPay.setText(text + df.format(partAmount));
-        else partPay.setText(text + " " + df.format(partAmount));
-    }
-
     public void goBack() {
-        for(Debt d : removed.keySet())
+        for(Debt d : removed) {
             server.deleteDebt(d);
-        creditorBox.getChildren().clear();
-        debtorBox.getChildren().clear();
+            removed.remove(d);
+        }
+        settledBox.getChildren().clear();
+        openDebtBox.getChildren().clear();
         eventCtrl.showEventOverview(event);
     }
 
-    public void setCreditorDebts(List<Debt> creditorDebts) {
-        this.creditorDebts = creditorDebts;
-    }
-
-    public void setDebtorDebts(List<Debt> debtorDebts) { this.debtorDebts = debtorDebts; }
+    public void setDebts(List<Debt> debts) { this.debts = debts; }
 
     public void setEvent(Event event) {
         this.event = event;

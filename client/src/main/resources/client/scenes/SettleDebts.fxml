@@ -7,61 +7,46 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="624.0" prefWidth="555.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="client.scenes.SettleDebtsCtrl">
-   <content>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="806.0" prefWidth="537.0">
-         <children>
-            <Label layoutX="51.0" layoutY="18.0" text="%open_debts">
-               <font>
-                  <Font name="System Bold" size="16.0" />
-               </font>
-            </Label>
-            <Button layoutX="14.0" layoutY="18.0" mnemonicParsing="false" onAction="#goBack" text="⬅" />
-            <Label fx:id="settledLabel" layoutX="164.0" layoutY="282.0" prefHeight="26.0" prefWidth="196.0" text="%debts_settled">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <Label fx:id="bankAvail" layoutX="393.0" layoutY="550.0" text="%debt_bank_available" visible="false" />
-            <Label fx:id="bankUnavail" layoutX="379.0" layoutY="550.0" text="%debt_bank_unavailable" visible="false" />
-            <Label fx:id="give" layoutX="466.0" layoutY="550.0" text="%give" visible="false" />
-            <Label fx:id="received" layoutX="411.0" layoutY="550.0" text="%mark_received" visible="false" />
-            <Label fx:id="groupPay" layoutX="51.0" layoutY="54.0" prefHeight="18.0" prefWidth="158.0" text="%group_pay" />
-            <ScrollPane fx:id="creditPane" layoutX="50.0" layoutY="80.0" prefHeight="194.0" prefWidth="454.0">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="454.0">
-                     <children>
-                        <VBox fx:id="creditorBox" prefHeight="194.0" prefWidth="454.0" spacing="10.0" />
-                     </children>
-                  </AnchorPane>
-               </content>
-            </ScrollPane>
-            <ScrollPane fx:id="debtPane" layoutX="50.0" layoutY="330.0" prefHeight="194.0" prefWidth="454.0">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="454.0">
-                     <children>
-                        <VBox fx:id="debtorBox" prefHeight="194.0" prefWidth="454.0" spacing="10.0" />
-                     </children>
-                  </AnchorPane>
-               </content>
-            </ScrollPane>
-            <ScrollPane fx:id="settledPane" layoutX="52.0" layoutY="594.0" prefHeight="194.0" prefWidth="454.0">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="454.0">
-                     <children>
-                        <VBox fx:id="settledBox" prefHeight="194.0" prefWidth="454.0" spacing="10.0" />
-                     </children>
-                  </AnchorPane>
-              </content>
-            </ScrollPane>
-            <Label fx:id="partPay" layoutX="61.0" layoutY="305.0" prefHeight="18.0" prefWidth="240.0" text="%part_pay" />
-            <Label fx:id="settledDebtsLabel" layoutX="51.0" layoutY="546.0" text="%settled_debts">
-               <font>
-                  <Font name="System Bold" size="16.0" />
-               </font>
-            </Label>
-            <Label fx:id="undo" layoutX="452.0" layoutY="550.0" text="%undo" visible="false" />
-         </children>
-      </AnchorPane>
-   </content>
-</ScrollPane>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="552.0" prefWidth="537.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SettleDebtsCtrl">
+   <children>
+      <Label layoutX="51.0" layoutY="18.0" text="%open_debts">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Button layoutX="14.0" layoutY="18.0" mnemonicParsing="false" onAction="#goBack" text="⬅" />
+      <Label fx:id="settledLabel" layoutX="165.0" layoutY="261.0" prefHeight="26.0" prefWidth="196.0" text="%debts_settled">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="bankAvail" layoutX="393.0" layoutY="260.0" text="%debt_bank_available" visible="false" />
+      <Label fx:id="bankUnavail" layoutX="379.0" layoutY="260.0" text="%debt_bank_unavailable" visible="false" />
+      <Label fx:id="give" layoutX="466.0" layoutY="260.0" text="%give" visible="false" />
+      <Label fx:id="received" layoutX="411.0" layoutY="260.0" text="%mark_received" visible="false" />
+      <ScrollPane fx:id="openDebtPane" layoutX="50.0" layoutY="52.0" prefHeight="194.0" prefWidth="454.0">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="454.0">
+               <children>
+                  <VBox fx:id="openDebtBox" prefHeight="194.0" prefWidth="454.0" spacing="10.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+      <Label fx:id="settledDebtsLabel" layoutX="51.0" layoutY="274.0" text="%settled_debts">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="undo" layoutX="452.0" layoutY="550.0" text="%undo" visible="false" />
+      <ScrollPane fx:id="settledPane" layoutX="50.0" layoutY="306.0" prefHeight="194.0" prefWidth="454.0">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="454.0">
+               <children>
+                  <VBox fx:id="settledBox" prefHeight="194.0" prefWidth="454.0" spacing="10.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

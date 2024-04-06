@@ -34,6 +34,13 @@ public class DebtController {
         return ResponseEntity.ok(saved);
     }
 
+    @GetMapping("/event/{id}")
+    public ResponseEntity<List<Debt>> getByEventId(@PathVariable("id") long id) {
+        if (id < 0 || !eventRepo.existsById(id))
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(repo.findByEventId(id));
+    }
+
     @GetMapping("/creditor/{creditor-id}")
     public ResponseEntity<List<Debt>> getAllByCreditorId(@PathVariable("creditor-id") long id) {
         if(id < 0)
@@ -48,6 +55,17 @@ public class DebtController {
             return ResponseEntity.badRequest().build();
 
         return ResponseEntity.ok(repo.findAllByDebtorId(id));
+    }
+
+    @PutMapping("/{id}/amount")
+    public ResponseEntity<Debt> updateAmount(@PathVariable("id") long id, @RequestBody double amount) {
+        Debt debt = repo.findById(id).orElse(null);
+        if (debt == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        debt.setAmount(amount);
+        Debt saved = repo.save(debt);
+        return ResponseEntity.ok(saved);
     }
 
     @DeleteMapping("/{id}")

@@ -1,6 +1,7 @@
 package server.api;
 
 import commons.Debt;
+import commons.Participant;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +48,17 @@ public class TestDebtRepository implements DebtRepository {
                 debtorDebts.add(d);
         }
         return debtorDebts;
+    }
+
+    @Override
+    public List<Debt> findByEventId(Long eventId) {
+        List<Debt> result = new ArrayList<>();
+        for(Debt d : debts) {
+            if(d.getEvent().getId() == eventId) {
+                result.add(d);
+            }
+        }
+        return result;
     }
 
     @Override

@@ -149,11 +149,8 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void settleDebts() {
-        List<Debt> creditorDebts = server.getDebtsByCreditor(expensePayer);
-        List<Debt> debtorDebts = server.getDebtsByDebtor(expensePayer);
-        System.out.println(creditorDebts);
-        System.out.println(debtorDebts);
-        controller.showSettleDebts(creditorDebts, debtorDebts, event);
+        List<Debt> allDebts = server.getDebtsByEvent(event);
+        controller.showSettleDebts(allDebts, event);
     }
 
     public void sendInvites() {

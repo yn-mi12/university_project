@@ -121,10 +121,10 @@ public class AddExpenseCtrl {
     }
 
     public void calculateDebts(Expense saved, Event event) {
-        List<Debt> debts = server.getDebtsByCreditor(expensePayer);
+        List<Debt> debtsCreditor = server.getDebtsByCreditor(expensePayer);
         Map<Participant, Debt> debtorToDebt = new HashMap<>();
 
-        if(debts.isEmpty()) {
+        if(debtsCreditor.isEmpty()) {
             for(Participant p : participants) {
                 Debt d = new Debt(p, expensePayer, 0);
                 debtorToDebt.put(p, d);
@@ -132,7 +132,7 @@ public class AddExpenseCtrl {
             debtorToDebt.remove(expensePayer);
         } else {
             List<Participant> debtParticipants = new ArrayList<>();
-            for(Debt d : debts) {
+            for(Debt d : debtsCreditor) {
                 debtParticipants.add(d.getDebtor());
                 debtorToDebt.put(d.getDebtor(), d);
             }
@@ -140,7 +140,7 @@ public class AddExpenseCtrl {
             for(Participant p : participants) {
                 if(!debtParticipants.contains(p) && !p.equals(expensePayer)) {
                     Debt created = new Debt(p, expensePayer, 0);
-                    debts.add(created);
+                    debtsCreditor.add(created);
                     debtorToDebt.put(p, created);
                 }
             }
@@ -156,7 +156,27 @@ public class AddExpenseCtrl {
                 debtorToDebt.replace(ep.getParticipant(), d);
             }
         }
+        List<Debt> debtsDebtor = server.getDebtsByDebtor(expensePayer);
+        for(Debt debt : debtsDebtor) {
+            Participant p = debt.getCreditor();
+            Debt d = debtorToDebt.get(p);
+            if(debt.getAmount() > d.getAmount()) {
+                debtorToDebt.remove(p);
+                debt.setAmount(debt.getAmount() - d.getAmount());
+                server.updateDebtAmount(debt.getAmount(), debt);
+            } else if(debt.getAmount() < d.getAmount()) {
+                server.deleteDebt(debt);
+                event.getDebts().remove(debt);
+                d.setAmount(d.getAmount() - debt.getAmount());
+                debtorToDebt.replace(p, d);
+            } else {
+                server.deleteDebt(debt);
+                debtorToDebt.remove(p);
+            }
+        }
+
         for (Debt debt : debtorToDebt.values()) {
+            System.out.println(debt);
             if (debt.getAmount() != 0)
                 server.addDebt(debt, event);
         }
