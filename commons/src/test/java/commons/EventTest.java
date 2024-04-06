@@ -156,9 +156,7 @@ class EventTest {
         Participant test = new Participant("John", "Doe");
         event.addParticipant(test);
         assertEquals(test, event.getParticipantByName("John"));
-        assertThrows(NoSuchElementException.class, () ->  {
-            event.getParticipantByName("Jack");
-        });
+        assertNull(event.getParticipantByName("Jack"));
     }
 
     @Test
