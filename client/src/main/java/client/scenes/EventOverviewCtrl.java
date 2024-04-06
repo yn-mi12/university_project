@@ -84,7 +84,7 @@ public class EventOverviewCtrl implements Initializable {
                 namesString.append(", ");
             i++;
         }
-
+        part.setText("Participants");
         part.getItems().setAll(names);
         participantText.setEditable(false);
         participantText.setText(namesString.toString());

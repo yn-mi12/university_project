@@ -114,14 +114,14 @@ public class AddParticipantCtrl {
             if(editPart == false){
             participant = getParticipant();
             participantExists.visibleProperty().setValue(false);
-            if (participant != null && !participantAlreadyExists()) {
-                server.addParticipant(participant, event);
-                Event updated = server.getByInviteCode(event.getInviteCode());
-                clearFields();
-                mainCtrl.showEventOverview(updated);
-            }else{
-                participantExists.visibleProperty().setValue(true);
-            }
+                if (participant != null && !participantAlreadyExists()) {
+                    server.addParticipant(participant, event);
+                    Event updated = server.getByInviteCode(event.getInviteCode());
+                    clearFields();
+                    mainCtrl.showEventOverview(updated);
+                } else {
+                    participantExists.visibleProperty().setValue(true);
+                }
             }
             else {
                 participant.setFirstName(getParticipant().getFirstName());
