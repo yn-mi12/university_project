@@ -29,7 +29,8 @@ public class ExpenseTest {
     public void testConstructor() {
         assertNotNull(e1);
         assertNotNull(e2);
-        assertNotNull(new Expense());
+        Expense empty = new Expense();
+        assertNotNull(empty);
     }
 
     @Test
@@ -101,7 +102,7 @@ public class ExpenseTest {
 
     @Test
     public void toStringTest() {
-        assertEquals("Expense{id=0, description='item', currency='EUR', amount=20.0, date=" +
-                        Date.valueOf(LocalDate.now()) + ", tag=null}", e1.toString());
+        assertEquals(e1.toString(), "Expense{id=0, description='item', debtors=null, currency='EUR', amount=20.0, date=" +
+                        Date.valueOf(LocalDate.now()) + ", tag=null}");
     }
 }

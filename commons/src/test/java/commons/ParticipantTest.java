@@ -5,9 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +25,8 @@ class ParticipantTest {
         assertEquals("a",withEmail.getFirstName());
         assertEquals("b",withEmail.getLastName());
         assertEquals("c",withEmail.getEmail());
-        assertNotNull(new Participant());
+        Participant empty = new Participant();
+        assertNotNull(empty);
     }
 
     @Test
