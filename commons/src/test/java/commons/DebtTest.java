@@ -109,8 +109,8 @@ public class DebtTest {
 
     @Test
     void testToString() {
-        assertEquals("Debt{id=0, debtor=Participant{id=0, firstName='John', " +
-                "lastName='Doe', email='null'}, " + "creditor=Participant{id=0, firstName='Jane', " +
-                "lastName='Doe', email='null'}, amount=100.0}", debt.toString());
+        assertEquals("Debt{id=0, debtor=Participant{id=0, firstName='John', lastName='Doe', email='null', " +
+                "accountName='null', iban='null', bic='null'}, creditor=Participant{id=0, firstName='Jane', lastName=" +
+                "'Doe', email='null', accountName='null', iban='null', bic='null'}, amount=100.0}", debt.toString());
     }
 }
