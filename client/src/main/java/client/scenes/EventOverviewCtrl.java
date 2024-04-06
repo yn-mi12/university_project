@@ -135,6 +135,7 @@ public class EventOverviewCtrl implements Initializable {
     public void settleDebts() {
         List<Debt> debts = server.getDebtsByCreditor(expensePayer);
         System.out.println(debts);
+        controller.showSettleDebts(debts, event);
     }
 
     public void sendInvites() {
@@ -174,6 +175,7 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void goBack() {
+        part.setText("Participant");
         if(controller.getAdmin()) controller.showAdminOverview();
         else controller.showOverview();
     }

@@ -117,7 +117,7 @@ public class AddExpenseCtrl implements Initializable {
 
         }
         clearFields();
-        controller.showEventOverview(updated);
+        controller.showEventOverviewExpense(updated);
     }
 
     public void calculateDebts(Expense saved, Event event) {

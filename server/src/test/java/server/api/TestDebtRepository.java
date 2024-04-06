@@ -19,6 +19,13 @@ public class TestDebtRepository implements DebtRepository {
     public final List<String> calledMethods = new ArrayList<>();
 
     private void call(String name){calledMethods.add(name);}
+    private Debt findI(Long id){
+        for(var d: debts)
+        {
+            if(d.getId() == id) return d;
+        }
+        return null;
+    }
 
     @Override
     public List<Debt> findAllByCreditorId(Long creditorId) {
@@ -126,12 +133,13 @@ public class TestDebtRepository implements DebtRepository {
 
     @Override
     public Optional<Debt> findById(Long aLong) {
-        return Optional.empty();
+        return Optional.ofNullable(findI(aLong));
     }
 
     @Override
     public boolean existsById(Long aLong) {
-        return false;
+        Debt find = findI(aLong);
+        return find != null;
     }
 
     @Override
@@ -151,7 +159,8 @@ public class TestDebtRepository implements DebtRepository {
 
     @Override
     public void deleteById(Long aLong) {
-
+        call("deleteById");
+        debts.remove(findI(aLong));
     }
 
     @Override

@@ -99,6 +99,16 @@ public class SplittyCtrl {
         eventCtrl.expensesNotSelectedPart();
     }
 
+    public void showEventOverviewExpense(Event selectedEvent) {
+        primaryStage.setTitle("Event: " + selectedEvent.getTitle());
+        this.eventCtrl.setSelectedEvent(selectedEvent);
+        this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
+        primaryStage.setScene(event);
+        eventCtrl.expensesFromParticipant();
+        eventCtrl.expensesIncludingParticipant();
+        eventCtrl.expensesNotSelectedPart();
+    }
+
     public void showInvitePage(Event selectedEvent) {
         primaryStage.setTitle("Event: " + selectedEvent.getTitle());
         this.inviteCtrl.eventInviteTitle.setText(selectedEvent.getTitle());
@@ -157,6 +167,7 @@ public class SplittyCtrl {
         primaryStage.setScene(settleDebts);
         settleDebtsCtrl.setDebts(debts);
         settleDebtsCtrl.setEvent(selectedEvent);
+        settleDebtsCtrl.refresh();
         primaryStage.show();
     }
 
