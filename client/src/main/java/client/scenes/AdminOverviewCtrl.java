@@ -47,6 +47,7 @@ public class AdminOverviewCtrl implements Initializable {
     @FXML
     public Button showButtonE;
     private Stage primaryStage;
+    private ObservableList<String> data;
 
     @Inject
     public AdminOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
@@ -109,6 +110,35 @@ public class AdminOverviewCtrl implements Initializable {
         }));
     }
 
+    public void launch(){
+        server.registerForMessages("/topic/titles", Event.class , q -> {
+            for(var x: data)
+            {
+                if(x.contains(q.getInviteCode())){
+                    data.remove(x);
+                    break;
+                }
+            }
+            data.add(q.getTitle() + " : " + q.getInviteCode());
+            eventList.refresh();
+        });
+        server.registerForMessages("/topic/events", Event.class , q -> {
+            data.add(q.getTitle() + " : " + q.getInviteCode());
+            eventList.refresh();
+        });
+        server.registerForMessages("/topic/deleted", Event.class , q -> {
+            for(var x: data)
+            {
+                if(x.contains(q.getInviteCode())){
+                    data.remove(x);
+                    break;
+                }
+            }
+            System.out.println("TEST");
+            eventList.refresh();
+        });
+    }
+
     public void refresh() {
         List<Event> events = server.getAllEvents();
         List<String> titles = new ArrayList<>();
@@ -116,7 +146,8 @@ public class AdminOverviewCtrl implements Initializable {
         {
             titles.add(x.getTitle() + " : " + x.getInviteCode());
         }
-        eventList.setItems(FXCollections.observableList(titles));
+        data = FXCollections.observableList(titles);
+        eventList.setItems(data);
     }
 
     public void goBack() {
