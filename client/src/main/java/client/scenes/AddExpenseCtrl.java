@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.*;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -157,22 +158,27 @@ public class AddExpenseCtrl {
             }
         }
         List<Debt> debtsDebtor = server.getDebtsByDebtor(expensePayer);
-        for(Debt debt : debtsDebtor) {
-            Participant p = debt.getCreditor();
-            Debt d = debtorToDebt.get(p);
-            if(debt.getAmount() > d.getAmount()) {
-                debtorToDebt.remove(p);
-                debt.setAmount(debt.getAmount() - d.getAmount());
-                server.updateDebtAmount(debt.getAmount(), debt);
-            } else if(debt.getAmount() < d.getAmount()) {
-                server.deleteDebt(debt);
-                event.getDebts().remove(debt);
-                d.setAmount(d.getAmount() - debt.getAmount());
-                debtorToDebt.replace(p, d);
-            } else {
-                server.deleteDebt(debt);
-                debtorToDebt.remove(p);
+        try {
+            for (Debt debt : debtsDebtor) {
+                Participant p = debt.getCreditor();
+                Debt d = debtorToDebt.get(p);
+                if (debt.getAmount() > d.getAmount()) {
+                    debtorToDebt.remove(p);
+                    debt.setAmount(debt.getAmount() - d.getAmount());
+                    server.updateDebtAmount(debt.getAmount(), debt);
+                } else if (debt.getAmount() < d.getAmount()) {
+                    server.deleteDebt(debt);
+                    event.getDebts().remove(debt);
+                    d.setAmount(d.getAmount() - debt.getAmount());
+                    debtorToDebt.replace(p, d);
+                } else {
+                    server.deleteDebt(debt);
+                    debtorToDebt.remove(p);
+                }
             }
+        } catch(BadRequestException e) {
+            System.out.println("Failed to add debts");
+            return;
         }
 
         List<Debt> finalDebts = new ArrayList<>();
