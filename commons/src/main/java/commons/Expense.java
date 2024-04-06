@@ -120,6 +120,7 @@ public class Expense {
         return "Expense{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
+                ", debtors=" + debtors +
                 ", currency='" + currency + '\'' +
                 ", amount=" + amount +
                 ", date=" + date +
