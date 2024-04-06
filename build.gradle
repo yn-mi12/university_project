@@ -41,7 +41,7 @@ subprojects {
 	dependencies {
 		implementation 'org.apache.commons:commons-lang3:3.12.0'
 		implementation 'org.springframework.boot:spring-boot-starter-websocket:3.2.2'
-
+		implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310' // For LocalData in jackson
 		//TODO: Find out correct version and set it
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
