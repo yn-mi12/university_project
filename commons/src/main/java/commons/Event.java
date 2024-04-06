@@ -8,12 +8,9 @@ import java.util.*;
 @Entity
 public class Event {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private String id;
     @Column(nullable = false)
     private String title;
-    @Column(nullable = false, unique = true)
-    private String inviteCode;
     @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
     @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
@@ -34,20 +31,11 @@ public class Event {
      */
     public Event(String title) {
         this.title = title;
-        this.inviteCode = UUID.randomUUID().toString().substring(0,11).replace("-", "");
+        this.id = UUID.randomUUID().toString().substring(0,11).replace("-", "");
         this.creationDate = LocalDateTime.now();
         this.lastUpdateDate = LocalDateTime.of(creationDate.getYear(), creationDate.getMonth(),
                 creationDate.getDayOfMonth(), creationDate.getHour(),
                 creationDate.getMinute(), creationDate.getSecond());
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    //TESTING ONLY
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -58,11 +46,13 @@ public class Event {
         this.title = title;
     }
 
-    public String getInviteCode() {
-        return inviteCode;
+    public String getId() {
+        return id;
     }
 
-    public void setInviteCode(String inviteCode) { this.inviteCode = inviteCode; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public List<Participant> getParticipants() {
         return participants;
@@ -139,7 +129,7 @@ public class Event {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
-        return Objects.equals(inviteCode, event.inviteCode);
+        return Objects.equals(id, event.id);
     }
 
     /**
@@ -148,7 +138,7 @@ public class Event {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(inviteCode);
+        return Objects.hash(id);
     }
 
     /**
@@ -159,9 +149,8 @@ public class Event {
     @Override
     public String toString() {
         return "Event{" +
-                "id=" + id +
                 ", title='" + title + '\'' +
-                ", inviteCode='" + inviteCode + '\'' +
+                ", inviteCode='" + id + '\'' +
                 ", participants=" + participants +
                 ", expenses=" + expenses +
                 ", tags=" + tags +
