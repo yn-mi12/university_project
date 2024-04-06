@@ -11,6 +11,8 @@ java {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.2.4'
+
 
 	// NotNull & Nullable annotations
 	implementation 'org.jetbrains:annotations:24.1.0'
