@@ -11,15 +11,18 @@ public class Participant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(nullable = false)
     private String firstName;
+    @Column(nullable = false)
     private String lastName;
     //Optional parameter. Will not be part of equals or hashcode.
     private String email;
     @JsonIgnore
     @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
-    private Set<ExpenseParticipant> expenseWhereDebtor;
+    private Set<ExpenseParticipant> expenses;
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Event event;
 
     @SuppressWarnings("unused")
@@ -68,12 +71,12 @@ public class Participant {
         this.email = email;
     }
 
-    public Set<ExpenseParticipant> getExpenseWhereDebtor() {
-        return expenseWhereDebtor;
+    public Set<ExpenseParticipant> getExpenses() {
+        return expenses;
     }
 
-    public void setExpenseWhereDebtor(Set<ExpenseParticipant> expenseWhereDebtor) {
-        this.expenseWhereDebtor = expenseWhereDebtor;
+    public void setExpenses(Set<ExpenseParticipant> expenses) {
+        this.expenses = expenses;
     }
 
     public Event getEvent() {
@@ -86,31 +89,17 @@ public class Participant {
 
     @Override
     public boolean equals(Object o) {
-        if(email == null) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Participant that = (Participant) o;
-            return Objects.equals(firstName, that.firstName)
-                    && Objects.equals(lastName, that.lastName);
-        } else {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Participant that = (Participant) o;
-            return Objects.equals(firstName, that.firstName)
-                    && Objects.equals(lastName, that.lastName)
-                    && Objects.equals(email, that.email);
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Participant that = (Participant) o;
+        return Objects.equals(firstName, that.firstName)
+                && Objects.equals(lastName, that.lastName)
+                && Objects.equals(email, that.email);
     }
 
     @Override
     public int hashCode() {
-        int hashcode;
-        if(email == null) {
-            hashcode = Objects.hash(firstName, lastName);
-        } else {
-            hashcode = Objects.hash(firstName, lastName, email);
-        }
-        return hashcode;
+        return Objects.hash(firstName, lastName, email);
     }
 
     @Override
@@ -121,14 +110,5 @@ public class Participant {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 '}';
-    }
-
-    // I don't know if this one belongs here or should be moved to Event.java Class
-    public static Participant getById(List<Participant> all, long id){
-        for(Participant part: all){
-            if(part.getId() == id)
-                return part;
-        }
-        return null;
     }
 }

@@ -11,6 +11,7 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(nullable = false)
     private String label;
     private String color;
 
@@ -20,6 +21,7 @@ public class Tag {
 
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Event event;
 
     @SuppressWarnings("unused")
