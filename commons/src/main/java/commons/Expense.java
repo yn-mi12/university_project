@@ -3,7 +3,7 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -20,7 +20,7 @@ public class Expense {
     private String currency;
     @Column(nullable = false)
     private double amount;
-    private LocalDate date;
+    private Date date;
     @ManyToOne
     private Tag tag;
     @JsonIgnore
@@ -30,7 +30,7 @@ public class Expense {
     @SuppressWarnings("unused")
     public Expense() {}
 
-    public Expense(String description, String currency, double amount, LocalDate date) {
+    public Expense(String description, String currency, double amount, Date date) {
         this.description = description;
         this.currency = currency;
         this.amount = amount;
@@ -77,11 +77,11 @@ public class Expense {
         this.amount = amount;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
