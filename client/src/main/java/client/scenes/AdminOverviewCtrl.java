@@ -278,10 +278,12 @@ public class AdminOverviewCtrl implements Initializable {
         }
 
         saved = server.getByInviteCode(saved.getInviteCode());
+        List<Debt> newDebts = new ArrayList<>();
         for(Debt d : debts) {
             Debt newDebt = new Debt(idToNewPart.get(d.getDebtor().getId()),
                     idToNewPart.get(d.getCreditor().getId()), d.getAmount());
-            server.addDebt(newDebt, saved);
+            newDebts.add(newDebt);
         }
+        server.addAllDebts(newDebts, saved);
     }
 }
