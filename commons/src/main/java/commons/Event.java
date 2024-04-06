@@ -2,6 +2,7 @@ package commons;
 
 import jakarta.persistence.*;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -18,9 +19,9 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags = new ArrayList<>();
     @Column(nullable = false)
-    private LocalDateTime creationDate;
+    private Timestamp creationDate;
     @Column(nullable = false)
-    private LocalDateTime lastUpdateDate;
+    private Timestamp lastUpdateDate;
 
     @SuppressWarnings("unused")
     public Event() {}
@@ -32,10 +33,8 @@ public class Event {
     public Event(String title) {
         this.title = title;
         this.id = UUID.randomUUID().toString().substring(0,11).replace("-", "");
-        this.creationDate = LocalDateTime.now();
-        this.lastUpdateDate = LocalDateTime.of(creationDate.getYear(), creationDate.getMonth(),
-                creationDate.getDayOfMonth(), creationDate.getHour(),
-                creationDate.getMinute(), creationDate.getSecond());
+        this.creationDate = Timestamp.valueOf(LocalDateTime.now());
+        this.lastUpdateDate = (Timestamp) creationDate.clone();
     }
 
     public String getTitle() {
@@ -87,19 +86,19 @@ public class Event {
         this.tags = tags;
     }
 
-    public LocalDateTime getCreationDate() {
+    public Timestamp getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(Timestamp creationDate) {
         this.creationDate = creationDate;
     }
 
-    public LocalDateTime getLastUpdateDate() {
+    public Timestamp getLastUpdateDate() {
         return lastUpdateDate;
     }
 
-    public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
+    public void setLastUpdateDate(Timestamp lastUpdateDate) {
         this.lastUpdateDate = lastUpdateDate;
     }
 
