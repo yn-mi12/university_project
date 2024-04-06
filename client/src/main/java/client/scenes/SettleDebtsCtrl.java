@@ -153,10 +153,9 @@ public class SettleDebtsCtrl {
     }
 
     public void goBack() {
-        for(Debt d : removed) {
+        for(Debt d : removed)
             server.deleteDebt(d);
-            removed.remove(d);
-        }
+        removed = new ArrayList<>();
         settledBox.getChildren().clear();
         openDebtBox.getChildren().clear();
         eventCtrl.showEventOverview(event);
