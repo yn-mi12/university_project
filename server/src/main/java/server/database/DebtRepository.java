@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface DebtRepository extends JpaRepository<Debt, Long> {
     List<Debt> findAllByCreditorId(@Param("creditorId") Long creditorId);
+    List<Debt> findAllByDebtorId(@Param("debtorId") Long debtorId);
 }

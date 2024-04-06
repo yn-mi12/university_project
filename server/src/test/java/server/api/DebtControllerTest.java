@@ -17,6 +17,10 @@ public class DebtControllerTest {
     private TestParticipantRepository partRepo;
     private TestEventRepository eventRepo;
     private DebtController debtc;
+    private Participant debtor;
+    private Participant creditor;
+    private Event event;
+    private Debt d;
 
     @BeforeEach
     void setUp() {
@@ -24,22 +28,22 @@ public class DebtControllerTest {
         partRepo = new TestParticipantRepository();
         eventRepo = new TestEventRepository();
         debtc = new DebtController(repo, partRepo, eventRepo);
+
+        debtor = new Participant("a", "b");
+        debtor.setId(1);
+        creditor = new Participant("c", "d");
+        creditor.setId(2);
+        event = new Event("Test");
+        event.setId(1);
+        d = new Debt(debtor, creditor, 100);
+        partRepo.participants.add(debtor);
+        partRepo.participants.add(creditor);
+        eventRepo.events.add(event);
+        debtc.save(event.getId(), d);
     }
 
     @Test
     void save() {
-        Participant debtor = new Participant("a", "b");
-        debtor.setId(1);
-        Participant creditor = new Participant("c", "d");
-        creditor.setId(2);
-        Event event = new Event("Test");
-        event.setId(1);
-        Debt d = new Debt(debtor, creditor, 100);
-        partRepo.participants.add(debtor);
-        partRepo.participants.add(creditor);
-        eventRepo.events.add(event);
-
-        debtc.save(event.getId(), d);
         assertTrue(repo.calledMethods.contains("save"));
         assertTrue(repo.debts.contains(d));
 
@@ -53,18 +57,6 @@ public class DebtControllerTest {
 
     @Test
     void getAllByCreditorIdTest() {
-        Participant debtor = new Participant("a", "b");
-        debtor.setId(1);
-        Participant creditor = new Participant("c", "d");
-        creditor.setId(2);
-        Event event = new Event("Test");
-        event.setId(1);
-        Debt d = new Debt(debtor, creditor, 100);
-        partRepo.participants.add(debtor);
-        partRepo.participants.add(creditor);
-        eventRepo.events.add(event);
-        debtc.save(event.getId(), d);
-
         var br = debtc.getAllByCreditorId(Long.valueOf(-1));
         assertEquals(BAD_REQUEST, br.getStatusCode());
 
@@ -74,20 +66,17 @@ public class DebtControllerTest {
     }
 
     @Test
+    void getAllByDebtorTest() {
+        var br = debtc.getAllByCreditorId(Long.valueOf(-1));
+        assertEquals(BAD_REQUEST, br.getStatusCode());
+
+        List<Debt> debtorDebts = debtc.getAllByDebtorId(Long.valueOf(debtor.getId())).getBody();
+        assertTrue(repo.calledMethods.contains("getAllByDebtorId"));
+        assertEquals(List.of(d), debtorDebts);
+    }
+
+    @Test
     void deleteById() {
-        Participant debtor = new Participant("a", "b");
-        debtor.setId(1);
-        Participant creditor = new Participant("c", "d");
-        creditor.setId(2);
-        Event event = new Event("Test");
-        event.setId(1);
-        Debt d = new Debt(debtor, creditor, 100);
-        partRepo.participants.add(debtor);
-        partRepo.participants.add(creditor);
-        eventRepo.events.add(event);
-
-        debtc.save(event.getId(), d);
-
         debtc.deleteById(repo.debts.get(0).getId());
         assertFalse(repo.debts.contains(d));
 

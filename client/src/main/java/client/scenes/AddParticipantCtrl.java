@@ -21,6 +21,12 @@ public class AddParticipantCtrl {
     private TextField lastName;
     @FXML
     private TextField email;
+    @FXML
+    private TextField accountName;
+    @FXML
+    private TextField iban;
+    @FXML
+    private TextField bic;
     private Participant participant;
 
     @Inject
@@ -43,6 +49,7 @@ public class AddParticipantCtrl {
         switch (e.getCode()) {
             case ENTER:
                 ok();
+                break;
             case ESCAPE:
                 cancel();
                 break;
@@ -60,15 +67,36 @@ public class AddParticipantCtrl {
     public Participant getParticipant() {
         String partFirstName = firstName.getText();
         String partLastName = lastName.getText();
-        String partEmail = email.getText();
+
+        String partEmail;
+        if(!email.getText().isEmpty())
+            partEmail = email.getText();
+        else
+            partEmail = null;
+
+        String partAccountName;
+        String partIban;
+        String partBic;
+        if(!accountName.getText().isEmpty()) {
+            partAccountName = accountName.getText();
+            partIban = iban.getText();
+            partBic = bic.getText();
+        } else {
+            partAccountName = null;
+            partIban = null;
+            partBic = null;
+        }
 
         if (participant != null) {
             participant.setFirstName(partFirstName);
             participant.setLastName(partLastName);
             participant.setEmail(partEmail);
+            participant.setAccountName(partAccountName);
+            participant.setIban(partIban);
+            participant.setBic(partBic);
             return participant;
         } else
-            return new Participant(partFirstName, partLastName, partEmail);
+            return new Participant(partFirstName, partLastName, partEmail, partAccountName, partIban, partBic);
     }
 
     public void ok() {
@@ -81,6 +109,7 @@ public class AddParticipantCtrl {
             //TODO looks better if the fields show the old data
 
             participant = getParticipant();
+            clearFields();
 
             if (participant != null && participant.getId() != 0) {
                 server.updateParticipant(participant);
@@ -102,6 +131,9 @@ public class AddParticipantCtrl {
         firstName.clear();
         lastName.clear();
         email.clear();
+        accountName.clear();
+        iban.clear();
+        bic.clear();
     }
 
 }

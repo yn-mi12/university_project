@@ -2,11 +2,12 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="454.0" prefWidth="524.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SettleDebtsCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.0" prefWidth="524.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SettleDebtsCtrl">
    <children>
       <Label layoutX="51.0" layoutY="18.0" text="%open_debts">
          <font>
@@ -14,11 +15,34 @@
          </font>
       </Label>
       <Button layoutX="14.0" layoutY="18.0" mnemonicParsing="false" onAction="#goBack" text="⬅" />
-      <VBox fx:id="debtBox" layoutX="105.0" layoutY="77.0" prefHeight="116.0" prefWidth="306.0" spacing="10.0" />
-      <Label fx:id="settledLabel" layoutX="159.0" layoutY="214.0" prefHeight="26.0" prefWidth="206.0" text="%debts_settled">
+      <Label fx:id="settledLabel" layoutX="152.0" layoutY="282.0" prefHeight="26.0" prefWidth="206.0" text="%debts_settled">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
+      <Label fx:id="bankAvail" layoutX="393.0" layoutY="427.0" text="%debt_bank_available" visible="false" />
+      <Label fx:id="bankUnavail" layoutX="379.0" layoutY="419.0" text="%debt_bank_unavailable" visible="false" />
+      <Label fx:id="give" layoutX="466.0" layoutY="427.0" text="%give" visible="false" />
+      <Label fx:id="received" layoutX="411.0" layoutY="419.0" text="%mark_received" visible="false" />
+      <Label fx:id="partPay" layoutX="51.0" layoutY="295.0" prefHeight="18.0" prefWidth="240.0" text="%part_pay" />
+      <Label fx:id="groupPay" layoutX="51.0" layoutY="54.0" prefHeight="18.0" prefWidth="158.0" text="%group_pay" />
+      <ScrollPane fx:id="creditPane" layoutX="50.0" layoutY="80.0" prefHeight="194.0" prefWidth="454.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="454.0">
+               <children>
+                  <VBox fx:id="creditorBox" prefHeight="194.0" prefWidth="454.0" spacing="10.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <ScrollPane fx:id="debtPane" layoutX="50.0" layoutY="330.0" prefHeight="194.0" prefWidth="454.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="454.0">
+               <children>
+                  <VBox fx:id="debtorBox" prefHeight="194.0" prefWidth="454.0" spacing="10.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

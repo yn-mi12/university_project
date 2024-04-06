@@ -162,10 +162,11 @@ public class SplittyCtrl {
         addParticipant.setOnKeyPressed(e -> addParticipantCtrl.keyPressed(e));
     }
 
-    public void showSettleDebts(List<Debt> debts, Event selectedEvent) {
+    public void showSettleDebts(List<Debt> creditorDebts, List<Debt> debtorDebts, Event selectedEvent) {
         primaryStage.setTitle("Settle Debts");
         primaryStage.setScene(settleDebts);
-        settleDebtsCtrl.setDebts(debts);
+        settleDebtsCtrl.setCreditorDebts(creditorDebts);
+        settleDebtsCtrl.setDebtorDebts(debtorDebts);
         settleDebtsCtrl.setEvent(selectedEvent);
         settleDebtsCtrl.refresh();
         primaryStage.show();

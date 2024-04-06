@@ -42,6 +42,14 @@ public class DebtController {
         return ResponseEntity.ok(repo.findAllByCreditorId(id));
     }
 
+    @GetMapping("/debtor/{debtor-id}")
+    public ResponseEntity<List<Debt>> getAllByDebtorId(@PathVariable("debtor-id") long id) {
+        if(id < 0)
+            return ResponseEntity.badRequest().build();
+
+        return ResponseEntity.ok(repo.findAllByDebtorId(id));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Debt> deleteById(@PathVariable("id") long id){
         if (id < 0 || !repo.existsById(id)) {

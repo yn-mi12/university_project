@@ -204,6 +204,19 @@ public class ServerUtilsEvent {
         return debts;
     }
 
+    public List<Debt> getDebtsByDebtor(Participant debtor) {
+        List<Debt> debts = new ArrayList<>();
+
+        debts.addAll(ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/debtor/" + debtor.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                }));
+
+        return debts;
+    }
+
     public void deleteDebt(Debt debt) {
         ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/debts/" + debt.getId()) //

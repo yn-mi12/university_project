@@ -39,6 +39,17 @@ public class TestDebtRepository implements DebtRepository {
     }
 
     @Override
+    public List<Debt> findAllByDebtorId(Long debtorId) {
+        call("getAllByDebtorId");
+        List<Debt> debtorDebts = new ArrayList<>();
+        for(Debt d : debts) {
+            if(d.getDebtor().getId() == debtorId)
+                debtorDebts.add(d);
+        }
+        return debtorDebts;
+    }
+
+    @Override
     public void flush() {
 
     }

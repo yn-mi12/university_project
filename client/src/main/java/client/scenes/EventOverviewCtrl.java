@@ -37,6 +37,8 @@ public class EventOverviewCtrl implements Initializable {
     public Label eventTitle;
     @FXML
     private ComboBox<Label> languageBox;
+    @FXML
+    private Label totalCost;
     public Event event;
     public boolean isAdmin = false;
 
@@ -128,28 +130,42 @@ public class EventOverviewCtrl implements Initializable {
                 }
             }));
     }
+
+    public void refreshCost() {
+        String text = totalCost.getText().replaceAll("[0-9]","").replace(".", "");
+        totalCost.setText(text.substring(0, text.length() - 1));
+    }
+
     public void addExpense() {
+        refreshCost();
         controller.initExpShowOverview(event,expensePayer);
     }
 
     public void settleDebts() {
-        List<Debt> debts = server.getDebtsByCreditor(expensePayer);
-        System.out.println(debts);
-        controller.showSettleDebts(debts, event);
+        refreshCost();
+        List<Debt> creditorDebts = server.getDebtsByCreditor(expensePayer);
+        List<Debt> debtorDebts = server.getDebtsByDebtor(expensePayer);
+        System.out.println(creditorDebts);
+        System.out.println(debtorDebts);
+        controller.showSettleDebts(creditorDebts, debtorDebts, event);
     }
 
     public void sendInvites() {
+        refreshCost();
         controller.showInvitePage(event);
     }
 
     public void editTitle(){
+        refreshCost();
         controller.showEditTitle(event);
     }
     public void updateParticipant(){
+        refreshCost();
         controller.initEditParticipantOverview(event);
     }
 
     public void addParticipant(){
+        refreshCost();
         controller.showAddParticipant(event);
     }
 
@@ -175,6 +191,7 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void goBack() {
+        refreshCost();
         part.setText("Participant");
         if(controller.getAdmin()) controller.showAdminOverview();
         else controller.showOverview();
@@ -183,6 +200,7 @@ public class EventOverviewCtrl implements Initializable {
     public void expensesNotSelectedPart(){
         List<Expense> expenses = server.getExpensesByEventId(event);
         List<String> titles = new ArrayList<>();
+        double totalAmount = 0;
         for (Expense expense : expenses){
             Participant owner = new Participant();
             Set<ExpenseParticipant> expenseParticipants = expense.getDebtors();
@@ -193,7 +211,10 @@ public class EventOverviewCtrl implements Initializable {
             }
             String expenseString = owner.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
             titles.add(expenseString);
+            totalAmount += expense.getAmount();
         }
+        String text = totalCost.getText().replaceAll("[0-9]","").replace(".", "");
+        totalCost.setText(text + " " + totalAmount);
         allExpenses.setItems(FXCollections.observableList(titles));
     }
 
