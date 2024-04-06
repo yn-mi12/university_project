@@ -66,29 +66,6 @@ public class ExpenseController {
         return ResponseEntity.ok(repo.findAllByParticipantId(pid));
     }
 
-    /**
-     * @param pid - The id of participant
-     * @return - all Expenses where specified participant
-     */
-    @GetMapping("/participant/{p_id}/owner")
-    public ResponseEntity<List<Expense>> findAllByParticipantIdWhereOwner(@PathVariable("p_id") long pid) {
-        if (pid < 0 || !partRepo.existsById(pid)) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(repo.findAllByParticipantIdWhereOwner(pid));
-    }
-
-    /**
-     * @param pid - The id of participant
-     * @return - all Expenses associated with specified participant
-     */
-    @GetMapping("/participant/{p_id}/debts")
-    public ResponseEntity<List<Expense>> findAllByParticipantIdWhereDebt(@PathVariable("p_id") long pid) {
-        if (pid < 0 || !partRepo.existsById(pid)) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(repo.findAllByParticipantIdWhereDebt(pid));
-    }
 
     /**
      * Adds an Expense to the repository

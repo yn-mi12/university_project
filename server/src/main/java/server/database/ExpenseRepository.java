@@ -12,8 +12,4 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     List<Expense> findAllByEventId(@Param("eventId") Long eventId);
     @Query("SELECT e FROM Expense e JOIN ExpenseParticipant ep ON e.id = ep.expense.id WHERE ep.participant.id = :participantId")
     List<Expense> findAllByParticipantId(@Param("participantId") Long participantId);
-    @Query("SELECT e FROM Expense e JOIN ExpenseParticipant ep ON e.id = ep.expense.id WHERE ep.participant.id = :participantId AND ep.owner = true")
-    List<Expense> findAllByParticipantIdWhereOwner(@Param("participantId") Long participantId);
-    @Query("SELECT e FROM Expense e JOIN ExpenseParticipant ep ON e.id = ep.expense.id WHERE ep.participant.id = :participantId AND ep.share != 0")
-    List<Expense> findAllByParticipantIdWhereDebt(@Param("participantId") Long participantId);
 }
