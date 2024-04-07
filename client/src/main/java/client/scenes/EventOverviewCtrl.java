@@ -57,7 +57,6 @@ public class EventOverviewCtrl implements Initializable {
     private Tab includingTab;
 
 
-
     @Inject
     public EventOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
         this.server = server;
@@ -74,12 +73,12 @@ public class EventOverviewCtrl implements Initializable {
         this.participants = event.getParticipants();
         ObservableList<MenuItem> names = FXCollections.observableArrayList();
         StringBuilder namesString = new StringBuilder();
-        HashMap<MenuItem,Participant> map = new HashMap<>();
+        HashMap<MenuItem, Participant> map = new HashMap<>();
         int i = 0;
         for (Participant p : participants) {
             MenuItem item = new MenuItem(p.getFirstName());
             names.add(item);
-            map.put(item,p);
+            map.put(item, p);
             namesString.append(p.getFirstName());
             if (i < participants.size() - 1)
                 namesString.append(", ");
@@ -104,62 +103,64 @@ public class EventOverviewCtrl implements Initializable {
     @SuppressWarnings("java.lang.ClassCastException")
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-            ObservableList<Label> x = FXCollections.observableArrayList();
-            List<Config.SupportedLocale> languages = Config.get().getSupportedLocales().stream().toList();
-            for (var item : languages) {
-                Image icon;
-                String iconPath = "client/images/" + item.getCode() + ".png";
-                icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
-                ImageView iconImageView = new ImageView(icon);
-                iconImageView.setFitHeight(25);
-                iconImageView.setPreserveRatio(true);
-                x.add(new Label(item.getName(), iconImageView));
-            }
-            languageBox.setItems(x);
-            languageBox.setCellFactory(new Callback<>() {
-                @Override
-                public ListCell<Label> call(ListView<Label> param) {
-                    return new ListCell<>() {
-                        @Override
-                        protected void updateItem(Label item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (item == null || empty) {
-                            } else {
-                                item.setTextFill(Color.color(0, 0, 0));
-                                setGraphic(item);
-                            }
+        ObservableList<Label> x = FXCollections.observableArrayList();
+        List<Config.SupportedLocale> languages = Config.get().getSupportedLocales().stream().toList();
+        for (var item : languages) {
+            Image icon;
+            String iconPath = "client/images/" + item.getCode() + ".png";
+            icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
+            ImageView iconImageView = new ImageView(icon);
+            iconImageView.setFitHeight(25);
+            iconImageView.setPreserveRatio(true);
+            x.add(new Label(item.getName(), iconImageView));
+        }
+        languageBox.setItems(x);
+        languageBox.setCellFactory(new Callback<>() {
+            @Override
+            public ListCell<Label> call(ListView<Label> param) {
+                return new ListCell<>() {
+                    @Override
+                    protected void updateItem(Label item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                        } else {
+                            item.setTextFill(Color.color(0, 0, 0));
+                            setGraphic(item);
                         }
-                    };
-                }
-            });
-            String current = String.valueOf(Config.get().getCurrentLocaleName());
-            languageBox.setValue(languageBox.getItems().stream()
-                    .filter(l -> String.valueOf(l.getText()).equals(current)).findFirst().orElse(null));
-            languageBox.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
-                if (newVal != null) {
-                    Config.get().setCurrentLocale(newVal.getText());
-                    Config.get().save();
-                    Main.reloadUIEvent(event);
-                    controller.showEventOverview(event);
-                }
-            }));
+                    }
+                };
+            }
+        });
+        String current = String.valueOf(Config.get().getCurrentLocaleName());
+        languageBox.setValue(languageBox.getItems().stream()
+                .filter(l -> String.valueOf(l.getText()).equals(current)).findFirst().orElse(null));
+        languageBox.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                Config.get().setCurrentLocale(newVal.getText());
+                Config.get().save();
+                Main.reloadUIEvent(event);
+                controller.showEventOverview(event);
+            }
+        }));
     }
+
     public void addExpense() {
-        controller.initExpShowOverview(event,expensePayer);
+        controller.initExpShowOverview(event, expensePayer);
     }
 
     public void sendInvites() {
         controller.showInvitePage(event);
     }
 
-    public void editTitle(){
+    public void editTitle() {
         controller.showEditTitle(event);
     }
-    public void updateParticipant(){
+
+    public void updateParticipant() {
         controller.initEditParticipantOverview(event);
     }
 
-    public void addParticipant(){
+    public void addParticipant() {
         controller.showAddParticipant(event);
     }
 
@@ -167,8 +168,9 @@ public class EventOverviewCtrl implements Initializable {
         try {
             System.out.println("Delete Event");
             event.setId(server.getByInviteCode(event.getInviteCode()).getId());
+            Config.get().removePastCode(String.valueOf(event.getInviteCode()));
             server.send("/app/deleted", event);
-            //server.deleteEvent(event);
+
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -188,35 +190,36 @@ public class EventOverviewCtrl implements Initializable {
 
     public void goBack() {
         Main.reload();
-        if(controller.getAdmin()) controller.showAdminOverview();
+        if (controller.getAdmin()) controller.showAdminOverview();
         else controller.showOverview();
     }
 
-    public void expensesNotSelectedPart(){
+    public void expensesNotSelectedPart() {
         List<Expense> expenses = server.getExpensesByEventId(event);
         List<String> titles = new ArrayList<>();
-        if(expenses!=null){
-        for (Expense expense : expenses){
-            Participant owner = new Participant();
-            Set<ExpenseParticipant> expenseParticipants = expense.getDebtors();
-            for (ExpenseParticipant expenseParticipant : expenseParticipants){
-                if (expenseParticipant.isOwner()){
-                    owner = expenseParticipant.getParticipant();
+        if (expenses != null) {
+            for (Expense expense : expenses) {
+                Participant owner = new Participant();
+                Set<ExpenseParticipant> expenseParticipants = expense.getDebtors();
+                for (ExpenseParticipant expenseParticipant : expenseParticipants) {
+                    if (expenseParticipant.isOwner()) {
+                        owner = expenseParticipant.getParticipant();
+                    }
                 }
+                String expenseString = owner.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
+                titles.add(expenseString);
             }
-            String expenseString = owner.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
-            titles.add(expenseString);
-        }}
+        }
         allExpenses.setItems(FXCollections.observableList(titles));
     }
 
-    public void expensesFromParticipant(){
+    public void expensesFromParticipant() {
         String participantsName = part.getText();
         Participant participant = event.getParticipantByName(participantsName);
         List<Expense> expenses = server.getExpensesByEventId(event);
         List<Expense> expensesFromParticipant = new ArrayList<>();
         List<String> titles = new ArrayList<>();
-        if(expenses!=null) {
+        if (expenses != null) {
             for (Expense expense : expenses) {
                 List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
                 for (int i = 0; i < debtors.size(); i++) {
@@ -233,33 +236,33 @@ public class EventOverviewCtrl implements Initializable {
         fromExpenses.setItems(FXCollections.observableList(titles));
     }
 
-    public void expensesIncludingParticipant(){
+    public void expensesIncludingParticipant() {
         String participantsName = part.getText();
         Participant participant = event.getParticipantByName(participantsName);
         List<Expense> expenses = server.getExpensesByEventId(event);
         List<Expense> expensesIncludingParticipant = new ArrayList<>();
         List<String> titles = new ArrayList<>();
-        if(expenses!=null){
-        for(Expense expense : expenses){
-            List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
-            for(int i = 0; i < debtors.size(); i++){
-                if (debtors.get(i).getParticipant().equals(participant)){
-                    expensesIncludingParticipant.add(expense);
+        if (expenses != null) {
+            for (Expense expense : expenses) {
+                List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
+                for (int i = 0; i < debtors.size(); i++) {
+                    if (debtors.get(i).getParticipant().equals(participant)) {
+                        expensesIncludingParticipant.add(expense);
+                    }
                 }
             }
-        }
 
-        Participant owner = new Participant();
-        for (Expense expense: expensesIncludingParticipant){
-            List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
-            for(ExpenseParticipant expenseParticipant : debtors){
-                if (expenseParticipant.isOwner()){
-                    owner = expenseParticipant.getParticipant();
+            Participant owner = new Participant();
+            for (Expense expense : expensesIncludingParticipant) {
+                List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
+                for (ExpenseParticipant expenseParticipant : debtors) {
+                    if (expenseParticipant.isOwner()) {
+                        owner = expenseParticipant.getParticipant();
+                    }
                 }
+                String expenseString = owner.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
+                titles.add(expenseString);
             }
-            String expenseString = owner.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
-            titles.add(expenseString);
-        }
         }
         includingExpenses.setItems(FXCollections.observableList(titles));
     }

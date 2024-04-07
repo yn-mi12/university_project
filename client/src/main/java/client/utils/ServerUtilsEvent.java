@@ -38,10 +38,9 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -59,7 +58,7 @@ public class ServerUtilsEvent {
                     .accept(APPLICATION_JSON)
                     .get(new GenericType<>() {
                     });
-        } catch(BadRequestException e) {
+        } catch (BadRequestException e) {
             event = null;
         }
         return event;
@@ -74,7 +73,7 @@ public class ServerUtilsEvent {
                     .accept(APPLICATION_JSON) //
                     .get(new GenericType<>() {
                     });
-        } catch(BadRequestException e) {
+        } catch (BadRequestException e) {
             event = null;
         }
         return event;
@@ -82,33 +81,35 @@ public class ServerUtilsEvent {
 
     public Expense getExpenseById(Long id) {
         Expense expense;
-        try{
+        try {
             expense = ClientBuilder.newClient(new ClientConfig())
                     .target(SERVER).path("api/expenses/" + id)
                     .request(APPLICATION_JSON)
                     .accept(APPLICATION_JSON)
-                    .get(new GenericType<>(){});
-        }catch (BadRequestException e){
+                    .get(new GenericType<>() {
+                    });
+        } catch (BadRequestException e) {
             expense = null;
         }
         return expense;
     }
 
-    public List<Expense> getExpensesByEventId(Event event){
-       List<Expense> expenses;
-       try{
-           expenses = ClientBuilder.newClient(new ClientConfig())
-                   .target(SERVER).path("api/expenses/event/" + event.getId())
-                   .request(APPLICATION_JSON)
-                   .accept(APPLICATION_JSON)
-                   .get(new GenericType<>(){
-                   });
-       }catch(BadRequestException | NotFoundException e){
-           expenses = null;
-       }
+    public List<Expense> getExpensesByEventId(Event event) {
+        List<Expense> expenses;
+        try {
+            expenses = ClientBuilder.newClient(new ClientConfig())
+                    .target(SERVER).path("api/expenses/event/" + event.getId())
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get(new GenericType<>() {
+                    });
+        } catch (BadRequestException | NotFoundException e) {
+            expenses = null;
+        }
         return expenses;
 
     }
+
     public Participant getParticipantByID(Long id) {
         Participant participant;
         try {
@@ -118,7 +119,7 @@ public class ServerUtilsEvent {
                     .accept(APPLICATION_JSON) //
                     .get(new GenericType<>() {
                     });
-        } catch(BadRequestException e) {
+        } catch (BadRequestException e) {
             participant = null;
         }
         return participant;
@@ -147,7 +148,7 @@ public class ServerUtilsEvent {
 
     public Event editEventTitle(String editedTitle, Event event) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(getServer()).path("/api/events/" + event.getId()+ "/title")
+                .target(getServer()).path("/api/events/" + event.getId() + "/title")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .put(Entity.entity(editedTitle, APPLICATION_JSON), Event.class);
@@ -199,39 +200,62 @@ public class ServerUtilsEvent {
                 .post(Entity.entity(token, APPLICATION_JSON), Boolean.class);
     }
 
-    public List<Event> getAllEvents()
-    {
+    public List<Event> getAllEvents() {
         List<Event> events;
         events = ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/events/") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                    .get(new GenericType<>() {
-                    });
+                .get(new GenericType<>() {
+                });
         return events;
     }
-        private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
-    public void registerForUpdates(Consumer<Event> consumer)
-    {
+
+    private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
+
+    public void registerForAddUpdates(Consumer<Event> consumer) {
         EXEC.submit(() -> {
-            while(!Thread.interrupted()) {
+            while (!Thread.interrupted()) {
                 var res = ClientBuilder.newClient(new ClientConfig()) //
-                        .target(SERVER).path("api/events/updates") //
+                        .target(SERVER).path("api/events/addUpdates") //
                         .request(APPLICATION_JSON) //
                         .accept(APPLICATION_JSON) //
                         .get(Response.class);
-                if(res.getStatus() == 204) {
+                if (res.getStatus() == 204) {
                     continue;
                 }
                 var q = res.readEntity(Event.class);
                 consumer.accept(q);
-            }});
+            }
+        });
     }
-    public void stop(){
+
+    private static final ExecutorService EXECdel = Executors.newSingleThreadExecutor();
+
+    public void registerForDeleteUpdates(Consumer<Event> consumer) {
+        EXECdel.submit(() -> {
+            while (!Thread.interrupted()) {
+                var res = ClientBuilder.newClient(new ClientConfig()) //
+                        .target(SERVER).path("api/events/deleteUpdates") //
+                        .request(APPLICATION_JSON) //
+                        .accept(APPLICATION_JSON) //
+                        .get(Response.class);
+                if (res.getStatus() == 204) {
+                    continue;
+                }
+                var q = res.readEntity(Event.class);
+                System.out.println(q);
+                consumer.accept(q);
+            }
+        });
+    }
+
+    public void stop() {
         EXEC.shutdownNow();
+        EXECdel.shutdownNow();
     }
-    public List<Participant> getEventParticipants(Event event)
-    {
+
+    public List<Participant> getEventParticipants(Event event) {
         List<Participant> participants;
         participants = ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/participants/event/" + event.getId()) //
@@ -241,6 +265,7 @@ public class ServerUtilsEvent {
                 });
         return participants;
     }
+
     public void updateParticipant(Participant participant) {
         ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/participants/" + participant.getId()) //
@@ -251,23 +276,22 @@ public class ServerUtilsEvent {
 
     private final StompSession session = connect("ws://localhost:8080/websocket");
 
-    private StompSession connect(String url)
-    {
+    private StompSession connect(String url) {
         var client = new StandardWebSocketClient();
         var stomp = new WebSocketStompClient(client);
         stomp.setMessageConverter(new MappingJackson2MessageConverter());
-        try{
+        try {
             return stomp.connectAsync(url, new StompSessionHandlerAdapter() {
             }).get();
-        } catch (InterruptedException e){
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch(ExecutionException e){
+        } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
         throw new IllegalStateException();
     }
 
-    public <T> void registerForMessages(String dest,Class <T> type,Consumer<T> consumer){
+    public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
         session.subscribe(dest, new StompFrameHandler() {
             @Override
             public @NotNull Type getPayloadType(@NotNull StompHeaders headers) {
@@ -282,7 +306,7 @@ public class ServerUtilsEvent {
         });
     }
 
-    public void send(String dest, Object o){
-        session.send(dest,o);
+    public void send(String dest, Object o) {
+        session.send(dest, o);
     }
 }
