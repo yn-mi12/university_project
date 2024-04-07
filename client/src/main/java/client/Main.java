@@ -19,7 +19,12 @@ import client.scenes.*;
 import com.google.inject.Injector;
 import commons.Event;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.layout.Background;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.control.*;
 
 import static com.google.inject.Guice.createInjector;
 
@@ -99,5 +104,53 @@ public class Main extends Application {
     public static void changeContrast()
     {
         contrastMode = (!contrastMode);
+        reloadUI();
     }
+
+    public static boolean isContrastMode() {
+        return contrastMode;
+    }
+    public static String changeUI(Object o)
+    {
+        if(o.getClass() == Button.class || o.getClass() == Text.class)
+            return "-fx-background-color: #211951; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
+                    "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1";
+        if(o.getClass() == TextField.class)
+            return "-fx-background-color: #836FFF; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder; -fx-prompt-text-fill: #BDBDBD; -fx-border-color: #211951;";
+        if(o.getClass() == ComboBox.class || o.getClass() == ToggleButton.class)
+            return "-fx-background-color: #211951; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
+                    "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 2.5; -fx-border-insets: -2";
+        if(o.getClass() == Label.class)
+            return "-fx-text-fill: #ff0000;-fx-font-weight: bolder;";
+        return "";
+    }
+
+    public static void buttonFeedback(Button o)
+    {
+        o.setOnMouseEntered(e -> o.setStyle("-fx-background-color: #836FFF; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
+                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;"));
+        o.setOnMouseExited(e -> o.setStyle(Main.changeUI(o)));
+        o.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                o.setStyle("-fx-background-color: #836FFF; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
+                        "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;");
+            }
+            else o.setStyle(Main.changeUI(o));
+        });
+    }
+
+    public static void languageFeedback(ComboBox<Label> o)
+    {
+        o.setOnMouseEntered(e -> o.setStyle("-fx-background-color: #836FFF; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
+                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 2.5; -fx-border-insets: -2"));
+        o.setOnMouseExited(e -> o.setStyle(Main.changeUI(o)));
+        o.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                o.setStyle("-fx-background-color: #836FFF; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
+                        "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 2.5; -fx-border-insets: -2");
+            }
+            else o.setStyle(Main.changeUI(o));
+        });
+    }
+
 }
