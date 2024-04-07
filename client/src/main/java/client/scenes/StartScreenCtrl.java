@@ -6,41 +6,37 @@ import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
 import jakarta.ws.rs.WebApplicationException;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 import java.net.URL;
 import java.util.*;
-import java.util.List;
 
 
 public class StartScreenCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
+    private ObservableList<String> data;
     private final SplittyCtrl eventCtrl;
     public ToggleButton highContrastButton;
     public AnchorPane background;
     public Button showAdminButton;
     public Button createButton;
     public Button joinButton;
-    public Text event_create;
-    public Text event_join;
-    public Text language_choice;
-    public Text recent_events;
+    public Text eventCreate;
+    public Text eventJoin;
+    public Text languageChoice;
+    public Text recentEvents;
     public Text isAdmin;
     @FXML
     private ListView<String> eventList;
@@ -69,8 +65,7 @@ public class StartScreenCtrl implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         ObservableList<Label> x = FXCollections.observableArrayList();
         List<Config.SupportedLocale> languages = Config.get().getSupportedLocales().stream().toList();
-        for(var item : languages)
-        {
+        for (var item : languages) {
             Image icon;
             String iconPath = "client/images/" + item.getCode() + ".png";
             icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
@@ -90,8 +85,7 @@ public class StartScreenCtrl implements Initializable {
                     protected void updateItem(Label item, boolean empty) {
                         super.updateItem(item, empty);
                         if (item == null || empty) {
-                        }
-                        else {
+                        } else {
                             item.setTextFill(Color.color(0, 0, 0));
                             if(Main.isContrastMode())this.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;" +
                                     "-fx-font-weight: bolder;-fx-border-color: #836FFF");
@@ -112,12 +106,9 @@ public class StartScreenCtrl implements Initializable {
             }
         }));
 
-        eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (eventList.getSelectionModel().getSelectedItem() != null) {
-                    showButton.setDisable(false);
-                }
+        eventList.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            if (eventList.getSelectionModel().getSelectedItem() != null) {
+                showButton.setDisable(false);
             }
         });
         Image highContrastIcon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("client/images/highContrast.png")));
@@ -129,6 +120,49 @@ public class StartScreenCtrl implements Initializable {
         else {
             highContrastButton = new ToggleButton();
         }
+        if (data == null)
+            data = FXCollections.observableArrayList();
+
+        server.registerForAddUpdates(ev -> {
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    //refresh method loops in PastCodes
+                    Config.get().addPastCode(ev.getInviteCode());
+                    //System.out.println("adding event " + ev.getTitle() + " : " + ev.getInviteCode());
+                    data.add(ev.getTitle() + " : " + ev.getInviteCode());
+                    eventList.setItems(data);
+                }
+            });
+        });
+        server.registerForDeleteUpdates(ev -> {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    Config.get().removePastCode(ev.getInviteCode());
+                    //System.out.println("deleting event " + ev.getTitle() + " : " + ev.getInviteCode());
+                    data.remove(ev.getTitle() + " : " + ev.getInviteCode());
+                    eventList.setItems(data);
+                }
+            });
+        });
+        server.registerForEditUpdates(ev -> {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    int index=0;
+                    for(String s : data){
+                        if(s.contains(ev.getInviteCode())){
+                            index = data.indexOf(s);
+                            break;
+                        }
+                    }
+                    data.set(index, ev.getTitle() + " : " + ev.getInviteCode());
+                    eventList.setItems(data);
+                }
+            });
+        });
     }
 
     private void isContrast() {
@@ -146,8 +180,8 @@ public class StartScreenCtrl implements Initializable {
         eventList.setStyle("-fx-background-color: #836FFF;-fx-font-weight: bolder; " +
                 "-fx-border-color: #211951; -fx-control-inner-background: #836FFF; " +
                 "-fx-control-inner-background-alt: derive(-fx-control-inner-background, 15%);" +
-                "-fx-text-fill: #F0F3FF; -fx-color-label-visible: #F0F3FF");
-        highContrastButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
+                "-fx-color-label-visible: #F0F3FF");
+        highContrastButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
                 "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 2.5; -fx-border-insets: -2");
         highContrastIcon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("client/images/highContrastInvert.png")));
         iconImageView = new ImageView(highContrastIcon);
@@ -161,8 +195,7 @@ public class StartScreenCtrl implements Initializable {
                 highContrastButton.getGraphic().setStyle("-fx-background-color: #836FFF; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
                         "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 2.5; -fx-border-insets: -2");
 
-            }
-            else {
+            } else {
                 highContrastButton.setStyle(Main.changeUI(highContrastButton));
                 highContrastButton.setGraphic((new Label("", iconImageView)));
             }
@@ -171,17 +204,17 @@ public class StartScreenCtrl implements Initializable {
         titleField.setStyle(Main.changeUI(titleField));
         codeField.setStyle(Main.changeUI(codeField));
         languageBox.setStyle(Main.changeUI(languageBox));
-        event_create.setStyle(Main.changeUI(event_create));
-        event_join.setStyle(Main.changeUI(event_join));
-        recent_events.setStyle(Main.changeUI(recent_events));
+        eventCreate.setStyle(Main.changeUI(eventCreate));
+        eventJoin.setStyle(Main.changeUI(eventJoin));
+        recentEvents.setStyle(Main.changeUI(recentEvents));
         invalidCode.setStyle(Main.changeUI(invalidCode));
         emptyCode.setStyle(Main.changeUI(emptyCode));
         emptyTitle.setStyle(Main.changeUI(emptyTitle));
-        language_choice.setStyle(Main.changeUI(language_choice));
+        languageChoice.setStyle(Main.changeUI(languageChoice));
         isAdmin.setStyle(Main.changeUI(isAdmin));
     }
 
-    public void refresh() {
+        public void refresh() {
         emptyTitle.setVisible(false);
         emptyCode.setVisible(false);
         invalidCode.setVisible(false);
@@ -206,10 +239,12 @@ public class StartScreenCtrl implements Initializable {
 
             for (String removed : removedCodes) {
                 Config.get().removePastCode(removed);
+                System.out.println("removed code " + removed);
             }
 
             Config.get().save();
-            eventList.setItems(FXCollections.observableList(titles));
+            data = FXCollections.observableList(titles);
+            eventList.setItems(data);
         }
     }
 
@@ -220,7 +255,7 @@ public class StartScreenCtrl implements Initializable {
 
     public void createEvent() {
         var title = this.titleField.getText();
-        if(title.isEmpty()) {
+        if (title.isEmpty()) {
             emptyTitle.setVisible(true);
             return;
         }
@@ -241,11 +276,17 @@ public class StartScreenCtrl implements Initializable {
             return;
         }
         eventCtrl.showEventOverview(event);
+
     }
+
+    public void stop() {
+        server.stop();
+    }
+
 
     public void viewEvent() {
         var inviteCode = this.codeField.getText();
-        if(inviteCode.isEmpty()) {
+        if (inviteCode.isEmpty()) {
             invalidCode.setVisible(false);
             emptyCode.setVisible(true);
             return;
@@ -253,10 +294,10 @@ public class StartScreenCtrl implements Initializable {
 
         Event event = server.getByInviteCode(inviteCode);
 
-        if(event != null) {
+        if (event != null) {
             clearFields();
             Set<String> codes = Config.get().getPastCodes();
-            if(!codes.contains(event.getInviteCode())) {
+            if (!codes.contains(event.getInviteCode())) {
                 Config.get().addPastCode(String.valueOf(event.getInviteCode()));
                 Config.get().save();
             }

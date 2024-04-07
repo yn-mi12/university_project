@@ -122,7 +122,9 @@ public class Event {
     public Participant getParticipantByName(String name){
         String[] nameInArray = name.split(" ");
         String first = nameInArray[0];
-        String last = nameInArray[1];
+        String last;
+        if(nameInArray.length == 1) last = null;
+        else last = nameInArray[1];
         for(var x : participants){
             if (x.getFirstName().equals(first) && x.getLastName().equals(last)){
                 return x;

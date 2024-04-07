@@ -19,9 +19,6 @@ import client.scenes.*;
 import com.google.inject.Injector;
 import commons.Event;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.layout.Background;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
@@ -79,6 +76,7 @@ public class Main extends Application {
 
     public static void reload(){
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
+        primaryStage.setOnCloseRequest(e -> overview.getKey().stop());
         var eventOverview = FXML.load(EventOverviewCtrl.class, "client", "scenes", "EventOverview.fxml");
         var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
         var partOverview = FXML.load(EditParticipantOverviewCtrl.class, "client", "scenes", "EditParticipantOverview.fxml");
@@ -114,12 +112,15 @@ public class Main extends Application {
     {
         if(o.getClass() == Button.class || o.getClass() == Text.class)
             return "-fx-background-color: #211951; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
-                    "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1";
+                    "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
+                    "-fx-border-width: 1.5; -fx-border-insets: -1";
         if(o.getClass() == TextField.class)
-            return "-fx-background-color: #836FFF; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder; -fx-prompt-text-fill: #BDBDBD; -fx-border-color: #211951;";
+            return "-fx-background-color: #836FFF; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder; " +
+                    "-fx-prompt-text-fill: #BDBDBD; -fx-border-color: #211951;";
         if(o.getClass() == ComboBox.class || o.getClass() == ToggleButton.class)
             return "-fx-background-color: #211951; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
-                    "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 2.5; -fx-border-insets: -2";
+                    "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
+                    "-fx-border-width: 2.5; -fx-border-insets: -2";
         if(o.getClass() == Label.class)
             return "-fx-text-fill: #ff0000;-fx-font-weight: bolder;";
         return "";

@@ -178,7 +178,7 @@ public class EventOverviewCtrl implements Initializable {
             System.out.println("Delete Event");
             event.setId(server.getByInviteCode(event.getInviteCode()).getId());
             server.send("/app/deleted", event);
-            //server.deleteEvent(event);
+
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
