@@ -249,10 +249,30 @@ public class ServerUtilsEvent {
             }
         });
     }
+    private static final ExecutorService EXECed = Executors.newSingleThreadExecutor();
+
+    public void registerForEditUpdates(Consumer<Event> consumer) {
+        EXECed.submit(() -> {
+            while (!Thread.interrupted()) {
+                var res = ClientBuilder.newClient(new ClientConfig()) //
+                        .target(SERVER).path("api/events/editUpdates") //
+                        .request(APPLICATION_JSON) //
+                        .accept(APPLICATION_JSON) //
+                        .get(Response.class);
+                if (res.getStatus() == 204) {
+                    continue;
+                }
+                var q = res.readEntity(Event.class);
+                System.out.println(q);
+                consumer.accept(q);
+            }
+        });
+    }
 
     public void stop() {
         EXEC.shutdownNow();
         EXECdel.shutdownNow();
+        EXECed.shutdownNow();
     }
 
     public List<Participant> getEventParticipants(Event event) {

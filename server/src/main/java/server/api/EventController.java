@@ -53,6 +53,7 @@ public class EventController {
     @MessageMapping("/titles")
     @SendTo("/topic/titles")
     public Event editTitleEvent(Event e) {
+        editListeners.forEach((key, listener) -> listener.accept(e));
         return updateTitle(e.getId(), e.getTitle()).getBody();
     }
 
@@ -77,6 +78,21 @@ public class EventController {
         });
 
         res.onCompletion(() -> addListeners.remove(key));
+        return res;
+    }
+    private Map<Object, Consumer<Event>> editListeners = new HashMap<>();
+
+    @GetMapping(path = {"", "/editUpdates"})
+    public DeferredResult<ResponseEntity<Event>> getEditUpdates() {
+        var noContent = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        var res = new DeferredResult<ResponseEntity<Event>>(5000L, noContent);
+
+        var key = new Object();
+        editListeners.put(key, event -> {
+            res.setResult(ResponseEntity.ok(event));
+        });
+
+        res.onCompletion(() -> editListeners.remove(key));
         return res;
     }
 

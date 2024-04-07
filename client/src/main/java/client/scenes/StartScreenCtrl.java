@@ -129,6 +129,22 @@ public class StartScreenCtrl implements Initializable {
                 }
             });
         });
+        server.registerForEditUpdates(ev -> {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    int index=0;
+                    for(String s : data){
+                        if(s.contains(ev.getInviteCode())){
+                            index = data.indexOf(s);
+                            break;
+                        }
+                    }
+                    data.set(index, ev.getTitle() + " : " + ev.getInviteCode());
+                    eventList.setItems(data);
+                }
+            });
+        });
     }
 
     public void refresh() {
