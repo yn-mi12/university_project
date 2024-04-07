@@ -105,7 +105,7 @@ public class TestExpenseRepository implements ExpenseRepository {
             expenses.replaceAll(e -> (e.getId() == entity.getId()) ? entity : e);
             return entity;
         }
-        entity.setId(expenses.stream().mapToLong(Expense::getId).max().orElse(1L));
+        entity.setId(expenses.stream().mapToLong(Expense::getId).max().orElse(0L)+1);
         expenses.add(entity);
         return entity;
     }

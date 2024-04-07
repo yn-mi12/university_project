@@ -105,7 +105,7 @@ public class TestParticipantRepository implements ParticipantRepository {
             participants.replaceAll(p -> (p.getId() == entity.getId()) ? entity : p);
             return entity;
         }
-        entity.setId(participants.stream().mapToLong(Participant::getId).max().orElse(1L));
+        entity.setId(participants.stream().mapToLong(Participant::getId).max().orElse(0L)+1);
         participants.add(entity);
         return entity;
     }
