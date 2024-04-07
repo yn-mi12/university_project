@@ -111,7 +111,7 @@ public class AddParticipantCtrl {
 
     public void ok() {
         try {
-            if(editPart == false){
+            if(!editPart){
             participant = getParticipant();
             participantExists.visibleProperty().setValue(false);
                 if (participant != null && !participantAlreadyExists()) {
@@ -128,13 +128,15 @@ public class AddParticipantCtrl {
                 participant.setLastName(getParticipant().getLastName());
                 participant.setEmail(getParticipant().getEmail());
                 participantExists.visibleProperty().setValue(false);
-                if(participant.getFirstName() != null && participant.getLastName()!=null) {
+                if(participant.getFirstName() != null && participant.getLastName()!=null
+                    && !participantAlreadyExists()) {
                     server.updateParticipant(participant);
                     event = server.getByInviteCode(event.getInviteCode());
                     editPart = false;
                     mainCtrl.initEditParticipantOverview(event);
                     mainCtrl.showEditParticipantOverview();
                 }
+                participantExists.visibleProperty().setValue(true);
                 clearFields();
             }
         } catch (WebApplicationException e) {
@@ -147,7 +149,8 @@ public class AddParticipantCtrl {
 
     private boolean participantAlreadyExists() {
         for (int i = 0; i < event.getParticipants().size(); i++){
-            if (firstName.getText().equals(event.getParticipants().get(i).getFirstName())){
+            if (firstName.getText().equals(event.getParticipants().get(i).getFirstName()) &&
+                lastName.getText().equals(event.getParticipants().get(i).getLastName())){
                 return true;
             }
         }

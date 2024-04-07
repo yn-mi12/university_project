@@ -19,7 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 
-import java.math.RoundingMode;
+//import java.math.RoundingMode;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -76,10 +76,10 @@ public class EventOverviewCtrl implements Initializable {
         HashMap<MenuItem, Participant> map = new HashMap<>();
         int i = 0;
         for (Participant p : participants) {
-            MenuItem item = new MenuItem(p.getFirstName());
+            MenuItem item = new MenuItem(p.getFirstName() + " " + p.getLastName());
             names.add(item);
             map.put(item, p);
-            namesString.append(p.getFirstName());
+            namesString.append(p.getFirstName() + " " + p.getLastName());
             if (i < participants.size() - 1)
                 namesString.append(", ");
             i++;
@@ -212,14 +212,14 @@ public class EventOverviewCtrl implements Initializable {
                         owner = expenseParticipant.getParticipant();
                     }
                 }
-                String expenseString = owner.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
+                String expenseString = owner.getFirstName() + " " + owner.getLastName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
                 titles.add(expenseString);
                 totalAmount += expense.getAmount();
             }
         }
 
         DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.HALF_UP);
+//        df.setRoundingMode(RoundingMode.HALF_UP);
         String text = totalCost.getText().replaceAll("[0-9]", "").replace(".", "");
         if (text.charAt(text.length() - 1) == ' ')
             totalCost.setText(text + df.format(totalAmount));
@@ -244,7 +244,7 @@ public class EventOverviewCtrl implements Initializable {
                 }
             }
             for (Expense expense : expensesFromParticipant) {
-                String expenseString = participant.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
+                String expenseString = participant.getFirstName() + " " + participant.getLastName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
                 titles.add(expenseString);
             }
         }
@@ -275,7 +275,7 @@ public class EventOverviewCtrl implements Initializable {
                         owner = expenseParticipant.getParticipant();
                     }
                 }
-                String expenseString = owner.getFirstName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
+                String expenseString = owner.getFirstName() +  " " + owner.getLastName() +  " paid " + expense.getAmount() + " for " + expense.getDescription();
                 titles.add(expenseString);
             }
         }

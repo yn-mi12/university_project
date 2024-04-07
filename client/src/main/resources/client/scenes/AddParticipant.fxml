@@ -23,7 +23,7 @@
       <TextField fx:id="accountName" layoutX="148.0" layoutY="175.0" prefHeight="26.0" prefWidth="166.0" />
       <TextField fx:id="iban" layoutX="148.0" layoutY="210.0" prefHeight="26.0" prefWidth="166.0" />
       <TextField fx:id="bic" layoutX="148.0" layoutY="248.0" prefHeight="26.0" prefWidth="166.0" />
-    <Label fx:id="participantExists" layoutX="224.0" layoutY="19.0" prefHeight="69.0" prefWidth="164.0" text="%participantExists" textAlignment="CENTER" textFill="RED" visible="false" wrapText="true">
+    <Label fx:id="participantExists" layoutX="232.0" layoutY="65.0" prefHeight="69.0" prefWidth="164.0" text="%participantExists" textAlignment="CENTER" textFill="RED" visible="false" wrapText="true">
        <font>
            <Font size="14.0" />
        </font></Label>

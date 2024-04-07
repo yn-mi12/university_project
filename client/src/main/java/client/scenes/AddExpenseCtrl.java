@@ -55,12 +55,12 @@ public class AddExpenseCtrl {
         HashMap<MenuItem,Participant> map = new HashMap<>();
 
         for (Participant p : participants) {
-            MenuItem item = new MenuItem(p.getFirstName());
+            MenuItem item = new MenuItem(p.getFirstName() + " " + p.getLastName());
             names.add(item);
             map.put(item,p);
         }
         whoPaid.getItems().setAll(names);
-        whoPaid.setText(paid.getFirstName());
+        whoPaid.setText(paid.getFirstName() + " " + paid.getLastName());
         for (MenuItem mi : whoPaid.getItems()) {
             mi.setOnAction(e -> {
                 whoPaid.setText(mi.getText());
@@ -69,7 +69,7 @@ public class AddExpenseCtrl {
         }
         List<String> listOfParticipants = new ArrayList<>();
         for(Participant participant : event.getParticipants()){
-            listOfParticipants.add(participant.getFirstName());
+            listOfParticipants.add(participant.getFirstName() + " " + participant.getLastName());
         }
         whoPays.setItems(FXCollections.observableList(listOfParticipants));
         whoPays.refresh();
@@ -208,7 +208,9 @@ public class AddExpenseCtrl {
         if (allHaveToPay.isSelected()){
             double share = 100.0/event.getParticipants().size();
             for (int i = 0; i < event.getParticipants().size(); i++){
-                boolean isOwner = this.event.getParticipants().get(i).getFirstName().equals(whoPaid.getText());
+                String fullName = this.event.getParticipants().get(i).getFirstName() + " " +
+                        this.event.getParticipants().get(i).getLastName();
+                boolean isOwner = fullName.equals(whoPaid.getText());
                 ExpenseParticipant expenseParticipant =
                         new ExpenseParticipant(expense, event.getParticipants().get(i),share, isOwner);
                 debtors.add(expenseParticipant);
