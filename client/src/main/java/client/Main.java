@@ -29,6 +29,7 @@ public class Main extends Application {
     private static final MyFXML FXML = new MyFXML(INJECTOR);
     private static Stage primaryStage;
     private static SplittyCtrl mainCtrl;
+    private static boolean contrastMode = false;
 
     public static void main(String[] args) {
         launch();
@@ -93,5 +94,10 @@ public class Main extends Application {
         mainCtrl.initAddParticipant(addParticipant);
         mainCtrl.initAdminOverview(adminOverview);
         mainCtrl.initSettleDebts(settleDebts);
+    }
+
+    public static void changeContrast()
+    {
+        contrastMode = (!contrastMode);
     }
 }

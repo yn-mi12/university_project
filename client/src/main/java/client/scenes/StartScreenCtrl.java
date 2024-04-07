@@ -10,8 +10,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -28,6 +30,7 @@ public class StartScreenCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
     private final SplittyCtrl eventCtrl;
+    public ToggleButton highContrastButton;
     @FXML
     private ListView<String> eventList;
     @FXML
@@ -102,6 +105,11 @@ public class StartScreenCtrl implements Initializable {
                 }
             }
         });
+        Image highContrastIcon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("client/images/highContrast.png")));
+        ImageView iconImageView = new ImageView(highContrastIcon);
+        iconImageView.setFitHeight(32);
+        iconImageView.setPreserveRatio(true);
+        highContrastButton.setGraphic(new Label("", iconImageView));
     }
 
     public void refresh() {
@@ -206,5 +214,9 @@ public class StartScreenCtrl implements Initializable {
 
     public void showAdminLogin() {
         eventCtrl.showAdminLogin();
+    }
+
+    public void changeContrast() {
+
     }
 }
