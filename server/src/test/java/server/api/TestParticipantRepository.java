@@ -129,7 +129,7 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public List<Participant> findAll() {
-        calledMethods.add("findAll");
+        call("findAll");
         return participants;
     }
 
@@ -140,7 +140,7 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public long count() {
-        calledMethods.add("count");
+        call("count");
         return participants.size();
     }
 
@@ -166,7 +166,7 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public void deleteAll() {
-        calledMethods.add("deleteAll");
+        call("deleteAll");
         participants.clear();
     }
 
@@ -182,6 +182,7 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public List<Participant> findByEventId(String eventId) {
+        call("findByEventId");
         return participants.stream().filter(p -> p.getEvent().getId().equals(eventId)).toList();
     }
 }
