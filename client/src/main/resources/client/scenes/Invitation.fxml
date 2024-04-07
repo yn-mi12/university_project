@@ -6,47 +6,46 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.InvitationCtrl" >
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="390.0" prefWidth="562.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.InvitationCtrl">
    <children>
-      <Text layoutX="14.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%invitation">
+      <Text layoutX="14.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%invitation">
          <font>
-            <Font size="26.0" />
+            <Font size="16.0" />
          </font>
       </Text>
-      <Text fx:id="eventInviteTitle" layoutX="68.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event">
+      <Text fx:id="eventInviteTitle" layoutX="14.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Event">
          <font>
-            <Font name="System Bold" size="24.0" />
+            <Font name="System Bold" size="16.0" />
          </font>
       </Text>
-      <Text layoutX="68.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%give_invite_code">
+      <Text layoutX="67.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%give_invite_code">
          <font>
-            <Font size="18.0" />
+            <Font size="13.0" />
          </font>
       </Text>
-      <Text layoutX="68.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%invite_people">
+      <Text layoutX="68.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%invite_people">
          <font>
-            <Font size="18.0" />
+            <Font size="13.0" />
          </font>
       </Text>
-      <Text fx:id="inviteCode" layoutX="430.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="code">
+      <Text fx:id="inviteCode" layoutX="351.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="code">
          <font>
-            <Font name="System Bold" size="18.0" />
+            <Font name="System Bold" size="13.0" />
          </font>
       </Text>
-      <TextArea layoutX="68.0" layoutY="186.0" prefHeight="138.0" prefWidth="461.0" promptText="%enter_emails">
+      <TextArea layoutX="50.0" layoutY="185.0" prefHeight="138.0" prefWidth="461.0" promptText="%enter_emails">
          <font>
             <Font size="14.0" />
          </font>
       </TextArea>
-      <Button layoutX="421.0" layoutY="345.0" mnemonicParsing="false" text="%send_invites" onAction="#sendInvites">
+      <Button layoutX="406.0" layoutY="345.0" mnemonicParsing="false" onAction="#sendInvites" text="%send_invites">
          <font>
-            <Font size="16.0" />
+            <Font size="14.0" />
          </font>
       </Button>
-      <Button layoutX="67.0" layoutY="345.0" mnemonicParsing="false" text="%cancel" onAction="#back">
+      <Button layoutX="50.0" layoutY="345.0" mnemonicParsing="false" onAction="#back" text="%cancel">
          <font>
-            <Font size="16.0" />
+            <Font size="14.0" />
          </font>
       </Button>
    </children>

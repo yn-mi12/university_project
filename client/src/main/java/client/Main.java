@@ -54,7 +54,7 @@ public class Main extends Application {
      * @param selectedEvent - The event that is currently being viewed
      */
     public static void reloadUIEvent(Event selectedEvent) {
-        reload();
+    reload();
         mainCtrl.showEventOverview(selectedEvent);
     }
 
@@ -81,7 +81,8 @@ public class Main extends Application {
         var editTitle = FXML.load(EditEventTitleCtrl.class,"client", "scenes", "EditTitle.fxml");
         var addParticipant = FXML.load(AddParticipantCtrl.class, "client", "scenes", "AddParticipant.fxml");
         var adminPopup = FXML.load(AdminPopupCtrl.class,"client", "scenes", "AdminPopup.fxml");
-        var adminOverview =FXML.load(AdminOverviewCtrl.class, "client", "scenes", "AdminOverview.fxml");
+        var adminOverview = FXML.load(AdminOverviewCtrl.class, "client", "scenes", "AdminOverview.fxml");
+        var settleDebts = FXML.load(SettleDebtsCtrl.class, "client", "scenes", "SettleDebts.fxml");
         mainCtrl.initialize(primaryStage);
         mainCtrl.initAdminPopup(adminPopup);
         mainCtrl.initShowOverview(overview);
@@ -91,6 +92,7 @@ public class Main extends Application {
         mainCtrl.initExp(addExp);
         mainCtrl.initEditTitle(editTitle);
         mainCtrl.initAddParticipant(addParticipant);
-        mainCtrl.initializeAdminOverview(adminOverview);
+        mainCtrl.initAdminOverview(adminOverview);
+        mainCtrl.initSettleDebts(settleDebts);
     }
 }

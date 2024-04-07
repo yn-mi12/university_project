@@ -11,11 +11,13 @@ public class Event {
     private long id;
     private String title;
     private String inviteCode;
-    @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
-    @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expenses = new ArrayList<>();
-    @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Debt> debts = new ArrayList<>();
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags = new ArrayList<>();
 
     @SuppressWarnings("unused")
@@ -99,6 +101,18 @@ public class Event {
         this.tags = tags;
     }
 
+    public List<Debt> getDebts() {
+        return debts;
+    }
+
+    public void addDebt(Debt debt) {
+        this.debts.add(debt);
+    }
+
+    public void setDebts(List<Debt> debts) {
+        this.debts = debts;
+    }
+
     /**
      * Returns the participant with the specified name
      * @param name the specified name
@@ -106,13 +120,15 @@ public class Event {
      */
 
     public Participant getParticipantByName(String name){
+        String[] nameInArray = name.split(" ");
+        String first = nameInArray[0];
+        String last = nameInArray[1];
         for(var x : participants){
-            if (x.getFirstName().equals(name)){
+            if (x.getFirstName().equals(first) && x.getLastName().equals(last)){
                 return x;
             }
         }
         return null;
-        //throw new NoSuchElementException("There is no participant with name: " + name);
     }
 
     /**

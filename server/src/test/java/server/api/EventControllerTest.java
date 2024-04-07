@@ -85,10 +85,10 @@ class EventControllerTest {
     void updateTitle() {
         Event x1 = new Event("Event 1");
         eventc.save(x1);
-        eventc.updateTitle(eventc.getAll().get(0).getId(),"New Event");
+        eventc.updateTitle(eventc.getAll().get(0).getId(), "New Event");
         var bad_req = eventc.updateTitle(12423432L, "Test");
         assertTrue(repo.calledMethods.contains("save"));
-        assertEquals("New Event",eventc.getAll().get(0).getTitle());
+        assertEquals("New Event", eventc.getAll().get(0).getTitle());
         assertEquals(BAD_REQUEST, bad_req.getStatusCode());
     }
 }
