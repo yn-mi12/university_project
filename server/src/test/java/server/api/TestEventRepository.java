@@ -34,13 +34,12 @@ public class TestEventRepository implements EventRepository {
 
     @Override
     public <S extends Event> List<S> saveAllAndFlush(Iterable<S> entities) {
-
         return null;
     }
 
     @Override
     public void deleteInBatch(Iterable<Event> entities) {
-        EventRepository.super.deleteInBatch(entities);
+
     }
 
     @Override
@@ -71,9 +70,9 @@ public class TestEventRepository implements EventRepository {
 
     @Override
     public Event getReferenceById(String s) {
+        call("getReferenceById");
         return findById(s).orElse(null);
     }
-
 
     @Override
     public <S extends Event> Optional<S> findOne(Example<S> example) {
@@ -113,6 +112,10 @@ public class TestEventRepository implements EventRepository {
     @Override
     public <S extends Event> S save(S entity) {
         call("save");
+        if(existsById(entity.getId())) {
+            events.replaceAll(e -> (e.getId().equals(entity.getId())) ? entity : e);
+            return entity;
+        }
         events.add(entity);
         return entity;
     }
@@ -153,6 +156,7 @@ public class TestEventRepository implements EventRepository {
 
     @Override
     public void deleteById(String s) {
+        call("deleteById");
         if(existsById(s))
             delete(findById(s).get());
     }
@@ -176,6 +180,7 @@ public class TestEventRepository implements EventRepository {
 
     @Override
     public void deleteAll() {
+        call("deleteAll");
         events.clear();
     }
 

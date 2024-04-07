@@ -54,18 +54,13 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public Participant getById(Long id) {
-        call("getById");
-        return find(id).get();
-    }
-
-    private Optional<Participant> find(Long id){
-        return participants.stream().filter(p -> p.getId() == id).findFirst();
+        return null;
     }
 
     @Override
     public Participant getReferenceById(Long id) {
         call("getReferenceById");
-        return find(id).get();
+        return findById(id).orElse(null);
     }
 
     @Override
@@ -106,7 +101,11 @@ public class TestParticipantRepository implements ParticipantRepository {
     @Override
     public <S extends Participant> S save(S entity) {
         call("save");
-        entity.setId(participants.size());
+        if(entity.getId() != 0 && existsById(entity.getId())) {
+            participants.replaceAll(p -> (p.getId() == entity.getId()) ? entity : p);
+            return entity;
+        }
+        entity.setId(participants.stream().mapToLong(Participant::getId).max().orElse(1L));
         participants.add(entity);
         return entity;
     }
@@ -119,13 +118,13 @@ public class TestParticipantRepository implements ParticipantRepository {
     @Override
     public Optional<Participant> findById(Long aLong) {
         call("findById");
-        return find(aLong);
+        return participants.stream().filter(e -> e.getId() == aLong).findFirst();
     }
 
     @Override
     public boolean existsById(Long id) {
         call("existsById");
-        return find(id).isPresent();
+        return participants.stream().anyMatch(e -> e.getId() == id);
     }
 
     @Override
@@ -167,7 +166,8 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public void deleteAll() {
-
+        calledMethods.add("deleteAll");
+        participants.clear();
     }
 
     @Override
@@ -180,16 +180,8 @@ public class TestParticipantRepository implements ParticipantRepository {
         return null;
     }
 
-
     @Override
-    public List<Participant> findByEventId(Long eventId) {
-        call("getByEventId");
-        List<Participant> result = new ArrayList<>();
-        for(Participant p : participants) {
-            if(p.getEvent().getId() == eventId) {
-                result.add(p);
-            }
-        }
-        return result;
+    public List<Participant> findByEventId(String eventId) {
+        return participants.stream().filter(p -> p.getEvent().getId().equals(eventId)).toList();
     }
 }
