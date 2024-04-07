@@ -20,70 +20,61 @@ class EventRepositoryTest {
 
     @Autowired
     private EventRepository eventRepository;
-    private Event testEvent;
-
+    private Event e;
     @BeforeEach
-    public void setUp() {
-        testEvent = new Event("event_no1");
-        eventRepository.save(testEvent);
+    void setUp() {
+        e = new Event("k");
+        eventRepository.saveAndFlush(e);
+    }
+
+    @AfterEach
+    void tearDown() {
+        eventRepository.delete(e);
+        eventRepository.flush();
+    }
+
+    @Test
+    void saveTest() {
+        assertDoesNotThrow(() -> eventRepository.saveAndFlush(e));
+
+    }
+
+    @Test
+    void noIDTest() {
+        e.setId(null);
+        assertThrows(Exception.class, () -> eventRepository.saveAndFlush(e));
     }
 
     @Test
     void badTitleSaveTest() {
-        Event noNameEvent = new Event(null);
-        assertThrows(DataIntegrityViolationException.class, () -> eventRepository.save(noNameEvent));
-        noNameEvent.setTitle("title");
-        assertDoesNotThrow( () -> eventRepository.save(noNameEvent));
+        e.setTitle(null);
+        assertThrows(DataIntegrityViolationException.class, () -> eventRepository.saveAndFlush(e));
     }
 
     @Test
-    void badInviteCodeTest() {
-        Event noInviteCode = new Event("Event without invite");
-        noInviteCode.setInviteCode(null);
-        assertThrows(DataIntegrityViolationException.class, () -> eventRepository.save(noInviteCode));
-        noInviteCode.setInviteCode("inviteCode");
-        assertDoesNotThrow( () -> eventRepository.save(noInviteCode));
+    void badDate1() {
+        e.setCreationDate(null);
+        assertThrows(DataIntegrityViolationException.class, () -> eventRepository.saveAndFlush(e));
     }
-
     @Test
-    void duplicateInviteCodes() {
-        Event e2 = new Event("e2");
-        e2.setInviteCode(testEvent.getInviteCode());
-        assertThrows(DataIntegrityViolationException.class, () -> eventRepository.saveAndFlush(e2));
+    void badDate2() {
+        e.setLastUpdateDate(null);
+        assertThrows(DataIntegrityViolationException.class, () -> eventRepository.saveAndFlush(e));
     }
 
     @Test
     void findById() {
-        Event savedEvent = eventRepository.findById(testEvent.getId()).orElse(null);
-        assertNotNull(savedEvent);
-        assertEquals(testEvent.getTitle(), savedEvent.getTitle());
-        assertEquals(testEvent.getInviteCode(), savedEvent.getInviteCode());
-        assertEquals(testEvent, savedEvent);
+        Event e2 = eventRepository.findById(e.getId()).orElse(null);
+        assertNotNull(e2);
+        assertEquals(e.getTitle(), e2.getTitle());
+        assertEquals(e.getId(), e2.getId());
+        assertEquals(e, e2);
     }
 
     @Test
-    void existsByInviteCode() {
-        Event savedEvent = eventRepository.findById(-1L).orElse(null);
-        assertNull(savedEvent);
+    void dontFindById() {
+        Event e2 = eventRepository.findById("no").orElse(null);
+        assertNull(e2);
     }
 
-    @Test
-    void testExistsByInviteCode() {
-        String inviteCode = testEvent.getInviteCode();
-        assertTrue(eventRepository.existsByInviteCode(inviteCode));
-        assertFalse(eventRepository.existsByInviteCode(""));
-    }
-
-    @Test
-    void findByInviteCode() {
-        String inviteCode = testEvent.getInviteCode();
-        assertTrue(eventRepository.findByInviteCode("NonExistantInviteCode").isEmpty());
-        assertTrue(eventRepository.findByInviteCode(inviteCode).isPresent());
-        assertEquals(testEvent, eventRepository.findByInviteCode(inviteCode).get());
-    }
-
-    @AfterEach
-    public void tearDown() {
-        eventRepository.delete(testEvent);
-    }
 }

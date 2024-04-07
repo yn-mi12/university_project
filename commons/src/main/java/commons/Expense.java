@@ -20,11 +20,13 @@ public class Expense {
     private String currency;
     @Column(nullable = false)
     private double amount;
+    @Column(nullable = false)
     private Date date;
     @ManyToOne
     private Tag tag;
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Event event;
 
     @SuppressWarnings("unused")
