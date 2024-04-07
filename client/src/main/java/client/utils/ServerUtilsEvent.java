@@ -16,6 +16,7 @@
 package client.utils;
 
 import client.Config;
+import commons.Debt;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
@@ -61,35 +62,6 @@ public class ServerUtilsEvent {
         return event;
     }
 
-    public Event getByID(Long id) {
-        Event event;
-        try {
-            event = ClientBuilder.newClient(new ClientConfig()) //
-                    .target(SERVER).path("api/events/" + id) //
-                    .request(APPLICATION_JSON) //
-                    .accept(APPLICATION_JSON) //
-                    .get(new GenericType<>() {
-                    });
-        } catch(BadRequestException e) {
-            event = null;
-        }
-        return event;
-    }
-
-    public Expense getExpenseById(Long id) {
-        Expense expense;
-        try{
-            expense = ClientBuilder.newClient(new ClientConfig())
-                    .target(SERVER).path("api/expenses/" + id)
-                    .request(APPLICATION_JSON)
-                    .accept(APPLICATION_JSON)
-                    .get(new GenericType<>(){});
-        }catch (BadRequestException e){
-            expense = null;
-        }
-        return expense;
-    }
-
     public List<Expense> getExpensesByEventId(Event event){
        List<Expense> expenses;
        try{
@@ -133,6 +105,14 @@ public class ServerUtilsEvent {
         return saved;
     }
 
+    public Event addJsonEvent(Event event) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/events") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(event, APPLICATION_JSON), Event.class);
+    }
+
     public Expense addExpense(Expense expense, Event event) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(getServer()).path("/api/expenses/event/" + event.getId()) //
@@ -157,10 +137,6 @@ public class ServerUtilsEvent {
                 .post(Entity.entity(participant, APPLICATION_JSON), Participant.class);
     }
 
-    private @NotNull String getServer() {
-        return Config.get().getHost();
-    }
-
     public void deleteEvent(Event event) {
         ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/events/" + event.getId()) //
@@ -168,14 +144,6 @@ public class ServerUtilsEvent {
                 .accept(APPLICATION_JSON) //
                 .delete();
         System.out.println("Event deleted:" + event);
-    }
-
-    public Event updateEvent(Event updated) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(getServer()).path("/api/events/" + updated.getId())
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .put(Entity.entity(updated, APPLICATION_JSON), Event.class);
     }
 
     public void deleteParticipant(Participant participant) {
@@ -223,6 +191,84 @@ public class ServerUtilsEvent {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .put(Entity.entity(participant, APPLICATION_JSON), Participant.class);
+    }
+
+    public List<Debt> addAllDebts(List<Debt> debts, Event event) {
+        List<Debt> savedDebts = new ArrayList<>();
+        try {
+            for(Debt d : debts) {
+                Debt saved = ClientBuilder.newClient(new ClientConfig()) //
+                        .target(SERVER).path("api/debts/event/" + event.getId()) //
+                        .request(APPLICATION_JSON) //
+                        .accept(APPLICATION_JSON) //
+                        .post(Entity.entity(d, APPLICATION_JSON), Debt.class);
+                System.out.println("Add debt " + saved);
+                savedDebts.add(saved);
+            }
+        } catch(BadRequestException e) {
+            System.out.println("Failed to add all debts");
+        }
+        return savedDebts;
+    }
+
+    public List<Debt> getDebtsByEvent(Event event) {
+        List<Debt> debts = new ArrayList<>();
+
+        debts.addAll(ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/event/" + event.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                }));
+
+        return debts;
+    }
+
+    public List<Debt> getDebtsByCreditor(Participant creditor) {
+        List<Debt> debts = new ArrayList<>();
+
+        debts.addAll(ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/creditor/" + creditor.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                }));
+
+        return debts;
+    }
+
+    public List<Debt> getDebtsByDebtor(Participant debtor) {
+        List<Debt> debts = new ArrayList<>();
+
+        debts.addAll(ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/debtor/" + debtor.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                }));
+
+        return debts;
+    }
+
+    public void updateDebtAmount(double amount, Debt debt) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/" + debt.getId() + "/amount")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(amount, APPLICATION_JSON), Debt.class);
+    }
+
+    public void deleteDebt(Debt debt) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/" + debt.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete();
+        System.out.println("Debt deleted:" + debt);
+    }
+
+    private @NotNull String getServer() {
+        return Config.get().getHost();
     }
 
     private final StompSession session = connect("ws://localhost:8080/websocket");

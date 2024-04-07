@@ -17,7 +17,7 @@ public class ParticipantControllerTest {
     private ParticipantController partc;
 
     private static Participant getParticipant(String a,String b,String c){
-        return new Participant(a,b,c);
+        return new Participant(a,b,c,null,null,null);
     }
 
     @BeforeEach

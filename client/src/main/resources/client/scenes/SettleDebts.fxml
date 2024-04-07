@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="552.0" prefWidth="537.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SettleDebtsCtrl">
+   <children>
+      <Label layoutX="51.0" layoutY="18.0" text="%open_debts">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Button layoutX="14.0" layoutY="18.0" mnemonicParsing="false" onAction="#goBack" text="⬅" />
+      <Label fx:id="settledLabel" layoutX="165.0" layoutY="261.0" prefHeight="26.0" prefWidth="196.0" text="%debts_settled">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="bankAvail" layoutX="393.0" layoutY="260.0" text="%debt_bank_available" visible="false" />
+      <Label fx:id="bankUnavail" layoutX="379.0" layoutY="260.0" text="%debt_bank_unavailable" visible="false" />
+      <Label fx:id="give" layoutX="466.0" layoutY="260.0" text="%give" visible="false" />
+      <Label fx:id="received" layoutX="411.0" layoutY="260.0" text="%mark_received" visible="false" />
+      <ScrollPane fx:id="openDebtPane" layoutX="50.0" layoutY="52.0" prefHeight="194.0" prefWidth="454.0">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="454.0">
+               <children>
+                  <VBox fx:id="openDebtBox" prefHeight="194.0" prefWidth="454.0" spacing="10.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+      <Label fx:id="settledDebtsLabel" layoutX="51.0" layoutY="274.0" text="%settled_debts">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="undo" layoutX="452.0" layoutY="550.0" text="%undo" visible="false" />
+      <ScrollPane fx:id="settledPane" layoutX="50.0" layoutY="306.0" prefHeight="194.0" prefWidth="454.0">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="454.0">
+               <children>
+                  <VBox fx:id="settledBox" prefHeight="194.0" prefWidth="454.0" spacing="10.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

@@ -1,5 +1,6 @@
 package client.scenes;
 
+import commons.Debt;
 import commons.Event;
 import commons.Participant;
 import javafx.scene.Parent;
@@ -7,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.util.List;
 
 public class SplittyCtrl {
 
@@ -32,6 +34,8 @@ public class SplittyCtrl {
     private AdminOverviewCtrl adminOverviewCtrl;
     private Scene adminOverview;
     private boolean isAdmin;
+    private SettleDebtsCtrl settleDebtsCtrl;
+    private Scene settleDebts;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -76,10 +80,15 @@ public class SplittyCtrl {
         this.addParticipant = new Scene(addParticipant.getValue());
     }
 
+    public void initSettleDebts(Pair<SettleDebtsCtrl, Parent> settleDebts) {
+        this.settleDebtsCtrl = settleDebts.getKey();
+        this.settleDebts = new Scene(settleDebts.getValue());
+    }
+
     public void showOverview() {
+        overviewCtrl.refresh();
         primaryStage.setTitle("Splitty");
         primaryStage.setScene(overview);
-        overviewCtrl.refresh();
     }
 
     public void showEventOverview(Event selectedEvent){
@@ -89,7 +98,7 @@ public class SplittyCtrl {
         primaryStage.setScene(event);
         eventCtrl.expensesNotSelectedPart();
         eventCtrl.expensesIncludingParticipant();
-        eventCtrl.expensesFromParticipant();
+        eventCtrl.expensesNotSelectedPart();
     }
 
     public void showInvitePage(Event selectedEvent) {
@@ -114,11 +123,13 @@ public class SplittyCtrl {
         primaryStage.setScene(expense);
         expense.setOnKeyPressed(e -> addExpenseCtrl.keyPressed(e));
     }
+
     public void initEditParticipantOverview(Event event) {
         editParticipantOverviewCtrl.setEvent(event);
         showEditParticipantOverview();
         primaryStage.show();
     }
+
     public void showEditParticipantOverview() {
         primaryStage.setTitle("Edit participant");
         primaryStage.setScene(editParticipant);
@@ -138,6 +149,15 @@ public class SplittyCtrl {
         primaryStage.setScene(addParticipant);
         this.addParticipantCtrl.setEvent(event);
         addParticipant.setOnKeyPressed(e -> addParticipantCtrl.keyPressed(e));
+    }
+
+    public void showSettleDebts(List<Debt> debts, Event selectedEvent) {
+        primaryStage.setTitle("Settle Debts");
+        primaryStage.setScene(settleDebts);
+        settleDebtsCtrl.setDebts(debts);
+        settleDebtsCtrl.setEvent(selectedEvent);
+        settleDebtsCtrl.refresh();
+        primaryStage.show();
     }
 
     public AddParticipantCtrl getAddParticipantCtrl() {
@@ -160,7 +180,7 @@ public class SplittyCtrl {
         //adminPopup.setOnKeyPressed(e -> adminPopupCtrl.keyPressed(e));
     }
 
-    public void initializeAdminOverview(Pair<AdminOverviewCtrl, Parent> adminOverview) {
+    public void initAdminOverview(Pair<AdminOverviewCtrl, Parent> adminOverview) {
         this.adminOverviewCtrl = adminOverview.getKey();
         this.adminOverview = new Scene(adminOverview.getValue());
     }

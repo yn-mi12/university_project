@@ -2,6 +2,8 @@ package commons;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -13,27 +15,40 @@ public class Participant {
     private long id;
     private String firstName;
     private String lastName;
-    //Optional parameter. Will not be part of equals or hashcode.
     private String email;
+    private String accountName;
+    private String iban;
+    private String bic;
     @JsonIgnore
     @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
     private Set<ExpenseParticipant> expenseWhereDebtor;
     @JsonIgnore
     @ManyToOne
     private Event event;
+    @JsonIgnore
+    @OneToMany(mappedBy = "debtor", cascade = CascadeType.ALL)
+    private List<Debt> debtsWhereDebtor = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "creditor", cascade = CascadeType.ALL)
+    private List<Debt> debtsWhereCreditor = new ArrayList<>();
 
     @SuppressWarnings("unused")
     public Participant() {}
 
+    //Only use for testing, the other constructor should be used for any actual use cases
     public Participant(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public Participant(String firstName, String lastName, String email) {
+    public Participant(String firstName, String lastName, String email, String accountName, String iban,
+                       String bic) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.accountName = accountName;
+        this.iban = iban;
+        this.bic = bic;
     }
 
     public long getId() {
@@ -68,6 +83,18 @@ public class Participant {
         this.email = email;
     }
 
+    public String getAccountName() { return accountName; }
+
+    public void setAccountName(String accountName) { this.accountName = accountName; }
+
+    public String getIban() { return iban; }
+
+    public void setIban(String iban) { this.iban = iban; }
+
+    public String getBic() { return bic; }
+
+    public void setBic(String bic) { this.bic = bic; }
+
     public Set<ExpenseParticipant> getExpenseWhereDebtor() {
         return expenseWhereDebtor;
     }
@@ -84,33 +111,38 @@ public class Participant {
         this.event = event;
     }
 
+    public List<Debt> getDebtsWhereDebtor() {
+        return debtsWhereDebtor;
+    }
+
+    public void setDebtsWhereDebtor(List<Debt> debtsWhereDebtor) {
+        this.debtsWhereDebtor = debtsWhereDebtor;
+    }
+
+    public List<Debt> getDebtsWhereCreditor() {
+        return debtsWhereCreditor;
+    }
+
+    public void setDebtsWhereCreditor(List<Debt> debtsWhereCreditor) {
+        this.debtsWhereCreditor = debtsWhereCreditor;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if(email == null) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Participant that = (Participant) o;
-            return Objects.equals(firstName, that.firstName)
-                    && Objects.equals(lastName, that.lastName);
-        } else {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Participant that = (Participant) o;
-            return Objects.equals(firstName, that.firstName)
-                    && Objects.equals(lastName, that.lastName)
-                    && Objects.equals(email, that.email);
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Participant that = (Participant) o;
+        return Objects.equals(firstName, that.firstName)
+                && Objects.equals(lastName, that.lastName)
+                && Objects.equals(email, that.email)
+                && Objects.equals(accountName, that.accountName)
+                && Objects.equals(iban, that.iban)
+                && Objects.equals(bic, that.bic);
     }
 
     @Override
     public int hashCode() {
-        int hashcode;
-        if(email == null) {
-            hashcode = Objects.hash(firstName, lastName);
-        } else {
-            hashcode = Objects.hash(firstName, lastName, email);
-        }
-        return hashcode;
+        return Objects.hash(firstName, lastName, email, accountName, iban, bic);
     }
 
     @Override
@@ -120,15 +152,9 @@ public class Participant {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", accountName='" + accountName + '\'' +
+                ", iban='" + iban + '\'' +
+                ", bic='" + bic + '\'' +
                 '}';
-    }
-
-    // I don't know if this one belongs here or should be moved to Event.java Class
-    public static Participant getById(List<Participant> all, long id){
-        for(Participant part: all){
-            if(part.getId() == id)
-                return part;
-        }
-        return null;
     }
 }

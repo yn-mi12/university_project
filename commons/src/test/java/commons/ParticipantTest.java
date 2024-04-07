@@ -23,7 +23,7 @@ class ParticipantTest {
 
     @Test
     void checkConstructor() {
-        Participant withEmail = new Participant("a","b","c");
+        Participant withEmail = new Participant("a","b","c", null, null, null);
         assertEquals("a",withEmail.getFirstName());
         assertEquals("b",withEmail.getLastName());
         assertEquals("c",withEmail.getEmail());
@@ -74,6 +74,24 @@ class ParticipantTest {
     }
 
     @Test
+    void getAndSetAccountName() {
+        x.setAccountName("John Doe");
+        assertEquals(x.getAccountName(), "John Doe");
+    }
+
+    @Test
+    void getAndSetIban() {
+        x.setIban("NL12 3456 7890 5345 2342");
+        assertEquals("NL12 3456 7890 5345 2342", x.getIban());
+    }
+
+    @Test
+    void getAndSetBic() {
+        x.setBic("ABCDEFGH");
+        assertEquals("ABCDEFGH", x.getBic());
+    }
+
+    @Test
     void setExpenseWhereDebtor() {
         Expense e1 = new Expense("Food", "EUR", 10.0, Date.valueOf(LocalDate.now()));
         Expense e2 = new Expense("Drinks", "EUR", 12.0, Date.valueOf(LocalDate.now()));
@@ -102,8 +120,8 @@ class ParticipantTest {
         assertNotEquals(x,y);
         assertNotEquals(null,x);
 
-        Participant p1 = new Participant("a", "b", "c");
-        Participant p2 = new Participant("a", "b", "d");
+        Participant p1 = new Participant("a", "b", "c", "d", "e", "f");
+        Participant p2 = new Participant("a", "b", "d", "d", "e", "f");
         assertNotEquals(p1, p2);
     }
 
@@ -114,25 +132,30 @@ class ParticipantTest {
         x.setLastName("z");
         assertNotEquals(x.hashCode(),y.hashCode());
 
-        Participant p1 = new Participant("a", "b", "c");
-        Participant p2 = new Participant("a", "b", "d");
+        Participant p1 = new Participant("a", "b", "c", "d", "e", "f");
+        Participant p2 =new Participant("a", "b", "d", "d", "e", "f");
         assertNotEquals(p1.hashCode(), p2.hashCode());
     }
 
     @Test
     void testToString() {
-        assertEquals("Participant{id=0, firstName='a', lastName='b', email='null'}", x.toString());
+        assertEquals("Participant{id=0, firstName='a', lastName='b', email='null'" +
+                ", accountName='null', iban='null', bic='null'}", x.toString());
     }
 
     @Test
-    void getByIdTest() {
-        List<Participant> ps = new ArrayList<>();
-        Participant y = new Participant("a","b");
-        x.setId(1);
-        y.setId(2);
-        ps.add(x);
-        ps.add(y);
-        assertEquals(x, Participant.getById(ps, 1));
-        assertNull(Participant.getById(ps, 3));
+    void debtsWhereDebtorTest() {
+        Debt test = new Debt(new Participant("a", "b"), new Participant("c", "d"), 100);
+        Participant x = new Participant("John","Doe");
+        x.setDebtsWhereDebtor(List.of(test));
+        assertEquals(List.of(test), x.getDebtsWhereDebtor());
+    }
+
+    @Test
+    void debtsWhereCreditorTest() {
+        Debt test = new Debt(new Participant("a", "b"), new Participant("c", "d"), 100);
+        Participant x = new Participant("John","Doe");
+        x.setDebtsWhereCreditor(List.of(test));
+        assertEquals(List.of(test), x.getDebtsWhereCreditor());
     }
 }

@@ -22,6 +22,12 @@ public class AddParticipantCtrl {
     private TextField lastName;
     @FXML
     private TextField email;
+    @FXML
+    private TextField accountName;
+    @FXML
+    private TextField iban;
+    @FXML
+    private TextField bic;
     private Participant participant;
     @FXML
     private Label participantExists;
@@ -53,6 +59,7 @@ public class AddParticipantCtrl {
         switch (e.getCode()) {
             case ENTER:
                 ok();
+                break;
             case ESCAPE:
                 cancel();
                 break;
@@ -70,8 +77,36 @@ public class AddParticipantCtrl {
     public Participant getParticipant() {
         String partFirstName = firstName.getText();
         String partLastName = lastName.getText();
-        String partEmail = email.getText();
-        return new Participant(partFirstName, partLastName, partEmail);
+
+        String partEmail;
+        if(!email.getText().isEmpty())
+            partEmail = email.getText();
+        else
+            partEmail = null;
+
+        String partAccountName;
+        String partIban;
+        String partBic;
+        if(!accountName.getText().isEmpty()) {
+            partAccountName = accountName.getText();
+            partIban = iban.getText();
+            partBic = bic.getText();
+        } else {
+            partAccountName = null;
+            partIban = null;
+            partBic = null;
+        }
+
+        if (participant != null) {
+            participant.setFirstName(partFirstName);
+            participant.setLastName(partLastName);
+            participant.setEmail(partEmail);
+            participant.setAccountName(partAccountName);
+            participant.setIban(partIban);
+            participant.setBic(partBic);
+            return participant;
+        } else
+            return new Participant(partFirstName, partLastName, partEmail, partAccountName, partIban, partBic);
     }
 
     public void ok() {
@@ -79,14 +114,14 @@ public class AddParticipantCtrl {
             if(editPart == false){
             participant = getParticipant();
             participantExists.visibleProperty().setValue(false);
-            if (participant != null && !participantAlreadyExists()) {
-                server.addParticipant(participant, event);
-                Event updated = server.getByInviteCode(event.getInviteCode());
-                clearFields();
-                mainCtrl.showEventOverview(updated);
-            }else{
-                participantExists.visibleProperty().setValue(true);
-            }
+                if (participant != null && !participantAlreadyExists()) {
+                    server.addParticipant(participant, event);
+                    Event updated = server.getByInviteCode(event.getInviteCode());
+                    clearFields();
+                    mainCtrl.showEventOverview(updated);
+                } else {
+                    participantExists.visibleProperty().setValue(true);
+                }
             }
             else {
                 participant.setFirstName(getParticipant().getFirstName());
@@ -123,6 +158,9 @@ public class AddParticipantCtrl {
         firstName.clear();
         lastName.clear();
         email.clear();
+        accountName.clear();
+        iban.clear();
+        bic.clear();
     }
 
     public void setFirstName(String firstName) {
@@ -136,4 +174,14 @@ public class AddParticipantCtrl {
     public void setEmail(String email) {
         this.email.setText(email);
     }
+
+    public void setAccountName(String accountName) {
+        this.accountName.setText(accountName);
+    }
+
+    public void setIban(String iban) {
+        this.iban.setText(iban);
+    }
+
+    public void setBic(String bic) { this.bic.setText(bic); }
 }
