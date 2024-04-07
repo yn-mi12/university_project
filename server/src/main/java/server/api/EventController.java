@@ -50,8 +50,8 @@ public class EventController {
      * @return - All the Events
      */
     @GetMapping(path = { "", "/" })
-    public List<Event> getAll() {
-        return repo.findAll();
+    public ResponseEntity<List<Event> > getAll() {
+        return ResponseEntity.ok(repo.findAll());
     }
 
     /**
@@ -92,6 +92,9 @@ public class EventController {
         if (!repo.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
+        if(isNullOrEmpty(newTitle))
+            return ResponseEntity.badRequest().build();
+
         Event event = repo.findById(id).get();
         event.setTitle(newTitle);
         Event saved = repo.save(event);
