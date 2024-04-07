@@ -93,15 +93,17 @@ public class ExpenseController {
             shareSum += i.getShare();
             if (i.isOwner()) ownerCount++;
             if (participantRepository.findById(i.getParticipant().getId()).isEmpty())
+                return ResponseEntity.notFound().build();
+            if (!Objects.equals(participantRepository.findById(i.getParticipant().getId()).get().getEvent().getId(), eid)){
                 return ResponseEntity.badRequest().build();
-            if (Objects.equals(participantRepository.findById(i.getParticipant().getId()).get().getEvent().getId(), eid))
-                return ResponseEntity.badRequest().build();
-        }
+        }}
         //TODO: this needs to be changed!!
         if (!((shareSum > 98) && (shareSum < 102))
                 || ownerCount != 1
                 || isNullOrEmpty(expense.getDescription())
-                || expense.getAmount() <= 0 ) {
+                || isNullOrEmpty(expense.getCurrency())
+                || expense.getAmount() <= 0
+                || expense.getDate() == null) {
             return ResponseEntity.badRequest().build();
         } //TODO: Add checks for Date
         Expense saved = repo.save(expense);

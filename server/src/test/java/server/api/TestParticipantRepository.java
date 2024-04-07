@@ -146,7 +146,8 @@ public class TestParticipantRepository implements ParticipantRepository {
 
     @Override
     public void deleteById(Long aLong) {
-
+        call("deleteById");
+        participants.removeIf(i -> i.getId() == aLong);
     }
 
     @Override

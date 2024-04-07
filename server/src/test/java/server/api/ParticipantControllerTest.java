@@ -1,10 +1,12 @@
 package server.api;
 
 import commons.Event;
+import commons.ExpenseParticipant;
 import commons.Participant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,6 +31,9 @@ public class ParticipantControllerTest {
         eventRepository.save(e);
         p1 = new Participant("Tom", "Cruise");
         p2 = new Participant("Ben", "Ten", "yo@ko.co");
+        p1.setExpenses(new HashSet<>());
+        p2.setExpenses(new HashSet<>());
+        p2.getExpenses().add(new ExpenseParticipant());
     }
 
     @Test
@@ -82,6 +87,7 @@ public class ParticipantControllerTest {
         p3 = partc.saveToEvent(e2.getId(), p3).getBody();
         p1.setEvent(e);
         p2.setEvent(e);
+
         p1 = partc.saveToEvent(e.getId(), p1).getBody();
         p2 = partc.saveToEvent(e.getId(), p2).getBody();
 
@@ -97,5 +103,76 @@ public class ParticipantControllerTest {
         assertTrue(repo.calledMethods.contains("findByEventId"));
         assertEquals(OK, actual.getStatusCode());
         assertEquals(List.of(p3), actual.getBody());
+    }
+
+    @Test
+    void updateParticipant() {
+        partc.saveToEvent(e.getId(), p1).getBody();
+        partc.saveToEvent(e.getId(), p2).getBody();
+        long count = repo.count();
+        Participant random = new Participant("John", "Deere","john@deer.co");
+        var actual = partc.updateParticipant(p1.getId(), random);
+        assertEquals(count, repo.count());
+        assertEquals(OK, actual.getStatusCode());
+        assertEquals(p1, actual.getBody());
+    }
+
+    @Test
+    void invalidUpdateParticipantId() {
+        partc.saveToEvent(e.getId(), p1).getBody();
+        partc.saveToEvent(e.getId(), p2).getBody();
+        long count = repo.count();
+        Participant random = new Participant("John", "Deere","john@deer.co");
+
+        var actual = partc.updateParticipant(-1L, random);
+        assertEquals(count, repo.count());
+        assertEquals(NOT_FOUND, actual.getStatusCode());
+        assertNotEquals(p1, random);
+    }
+
+    @Test
+    void invalidUpdateParticipantName() {
+        partc.saveToEvent(e.getId(), p1).getBody();
+        partc.saveToEvent(e.getId(), p2).getBody();
+        long count = repo.count();
+        Participant random = new Participant("John", "","john@deer.co");
+
+        var actual = partc.updateParticipant(p1.getId(), random);
+        assertEquals(count, repo.count());
+        assertEquals(BAD_REQUEST, actual.getStatusCode());
+        assertNotEquals(p1, random);
+    }
+
+    @Test
+    void deleteParticipant() {
+        partc.saveToEvent(e.getId(), p1).getBody();
+        partc.saveToEvent(e.getId(), p2).getBody();
+        long count = repo.count();
+        var req = partc.deleteById(p1.getId());
+        assertEquals(count-1, repo.count());
+        assertEquals(List.of(p2), repo.findAll());
+        assertEquals(OK, req.getStatusCode());
+    }
+
+    @Test
+    void deleteParticipant2() {
+        partc.saveToEvent(e.getId(), p1).getBody();
+        partc.saveToEvent(e.getId(), p2).getBody();
+        long count = repo.count();
+        var req = partc.deleteById(-1L);
+        assertEquals(count, repo.count());
+        assertEquals(List.of(p1, p2), repo.findAll());
+        assertEquals(NOT_FOUND, req.getStatusCode());
+    }
+
+    @Test
+    void deleteParticipant3() {
+        partc.saveToEvent(e.getId(), p1).getBody();
+        partc.saveToEvent(e.getId(), p2).getBody();
+        long count = repo.count();
+        var req = partc.deleteById(p2.getId());
+        assertEquals(count, repo.count());
+        assertEquals(List.of(p1, p2), repo.findAll());
+        assertEquals(BAD_REQUEST, req.getStatusCode());
     }
 }

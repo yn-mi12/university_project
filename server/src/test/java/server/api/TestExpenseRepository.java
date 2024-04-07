@@ -146,7 +146,7 @@ public class TestExpenseRepository implements ExpenseRepository {
 
     @Override
     public void deleteById(Long aLong) {
-
+        expenses.removeIf(i -> i.getId() == aLong);
     }
 
     @Override
