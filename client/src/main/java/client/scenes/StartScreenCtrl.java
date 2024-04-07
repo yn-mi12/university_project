@@ -114,11 +114,9 @@ public class StartScreenCtrl implements Initializable {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
+                    //refresh method loops in PastCodes
+                    Config.get().addPastCode(ev.getInviteCode());
                     data.add(ev.getTitle() + " : " + ev.getInviteCode());
-//                    for(String x: data)
-//                    {
-//                        System.out.println(x);
-//                    }
                     eventList.setItems(data);
                 }
             });
@@ -186,11 +184,8 @@ public class StartScreenCtrl implements Initializable {
             alert.showAndWait();
             return;
         }
-        //eventCtrl.showEventOverview(event);
+        eventCtrl.showEventOverview(event);
 
-        //after rerun shows only the last added event
-        //weird with show Event
-        //without it runs simultaneously
     }
     public void stop(){
         server.stop();
