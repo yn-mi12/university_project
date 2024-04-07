@@ -177,7 +177,6 @@ public class EventOverviewCtrl implements Initializable {
         try {
             System.out.println("Delete Event");
             event.setId(server.getByInviteCode(event.getInviteCode()).getId());
-            Config.get().removePastCode(String.valueOf(event.getInviteCode()));
             server.send("/app/deleted", event);
 
         } catch (WebApplicationException e) {
