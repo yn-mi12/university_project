@@ -212,7 +212,8 @@ public class EventOverviewCtrl implements Initializable {
                         owner = expenseParticipant.getParticipant();
                     }
                 }
-                String expenseString = owner.getFirstName() + " " + owner.getLastName() + " " + paidLanguage() + " " + expense.getAmount() + " " + forLanguage() + " " + expense.getDescription();
+                String expenseString = owner.getFirstName() + " " + owner.getLastName() + " "
+                        + paidLanguage() + " " + expense.getAmount() + " " + forLanguage() + " " + expense.getDescription();
                 titles.add(expenseString);
                 totalAmount += expense.getAmount();
             }
@@ -244,7 +245,8 @@ public class EventOverviewCtrl implements Initializable {
                 }
             }
             for (Expense expense : expensesFromParticipant) {
-                String expenseString = participant.getFirstName() + " " + participant.getLastName() + " " + paidLanguage() + " " + expense.getAmount() + " " + forLanguage() + " " + expense.getDescription();
+                String expenseString = participant.getFirstName() + " " + participant.getLastName() +
+                        " " + paidLanguage() + " " + expense.getAmount() + " " + forLanguage() + " " + expense.getDescription();
                 titles.add(expenseString);
             }
         }
@@ -275,7 +277,8 @@ public class EventOverviewCtrl implements Initializable {
                         owner = expenseParticipant.getParticipant();
                     }
                 }
-                String expenseString = owner.getFirstName() +  " " + owner.getLastName() +  " " + paidLanguage() + " " + expense.getAmount() + " " + forLanguage() + " " + expense.getDescription();
+                String expenseString = owner.getFirstName() +  " " + owner.getLastName() +  " "
+                        + paidLanguage() + " " + expense.getAmount() + " " + forLanguage() + " " + expense.getDescription();
                 titles.add(expenseString);
             }
         }
