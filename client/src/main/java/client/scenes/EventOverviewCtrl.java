@@ -44,7 +44,7 @@ public class EventOverviewCtrl implements Initializable {
     private ComboBox<Label> languageBox;
     @FXML
     private Label totalCost;
-    public Event event;
+    private Event event;
     public boolean isAdmin = false;
 
     @FXML
@@ -178,7 +178,10 @@ public class EventOverviewCtrl implements Initializable {
             System.out.println("Delete Event");
             event.setId(server.getByInviteCode(event.getInviteCode()).getId());
             server.send("/app/deleted", event);
-            //server.deleteEvent(event);
+            if(!controller.getAdmin()) {
+                Config.get().removePastCode(event.getInviteCode());
+                Config.get().save();
+            }
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);

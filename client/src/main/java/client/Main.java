@@ -82,6 +82,7 @@ public class Main extends Application {
         var adminPopup = FXML.load(AdminPopupCtrl.class,"client", "scenes", "AdminPopup.fxml");
         var adminOverview = FXML.load(AdminOverviewCtrl.class, "client", "scenes", "AdminOverview.fxml");
         var settleDebts = FXML.load(SettleDebtsCtrl.class, "client", "scenes", "SettleDebts.fxml");
+        var setServer = FXML.load(SetServerCtrl.class, "client", "scenes", "SetServer.fxml");
         mainCtrl.initialize(primaryStage);
         mainCtrl.initAdminPopup(adminPopup);
         mainCtrl.initShowOverview(overview);
@@ -93,5 +94,6 @@ public class Main extends Application {
         mainCtrl.initAddParticipant(addParticipant);
         mainCtrl.initAdminOverview(adminOverview);
         mainCtrl.initSettleDebts(settleDebts);
+        mainCtrl.initSetServer(setServer);
     }
 }
