@@ -20,6 +20,7 @@ import javafx.stage.Modality;
 import javafx.util.Callback;
 
 //import java.math.RoundingMode;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -27,6 +28,9 @@ import java.util.*;
 public class EventOverviewCtrl implements Initializable {
     private final ServerUtilsEvent server;
     public Label inviteCode;
+    public Label paidLabel;
+    public Label participantsLabel;
+    public Label forLabel;
     private Participant expensePayer;
     private final SplittyCtrl controller;
     private List<Participant> participants;
@@ -84,7 +88,7 @@ public class EventOverviewCtrl implements Initializable {
                 namesString.append(", ");
             i++;
         }
-        part.setText(participantsLanguage());
+        part.setText(participantsLabel.getText());
         part.getItems().setAll(names);
         participantText.setEditable(false);
         participantText.setText(namesString.toString());
@@ -213,14 +217,14 @@ public class EventOverviewCtrl implements Initializable {
                     }
                 }
                 String expenseString = owner.getFirstName() + " " + owner.getLastName() + " "
-                        + paidLanguage() + " " + expense.getAmount() + " " + forLanguage() + " " + expense.getDescription();
+                        + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
                 titles.add(expenseString);
                 totalAmount += expense.getAmount();
             }
         }
 
         DecimalFormat df = new DecimalFormat("#.##");
-//        df.setRoundingMode(RoundingMode.HALF_UP);
+        df.setRoundingMode(RoundingMode.HALF_UP);
         String text = totalCost.getText().replaceAll("[0-9]", "").replace(".", "");
         if (text.charAt(text.length() - 1) == ' ')
             totalCost.setText(text + df.format(totalAmount));
@@ -246,7 +250,7 @@ public class EventOverviewCtrl implements Initializable {
             }
             for (Expense expense : expensesFromParticipant) {
                 String expenseString = participant.getFirstName() + " " + participant.getLastName() +
-                        " " + paidLanguage() + " " + expense.getAmount() + " " + forLanguage() + " " + expense.getDescription();
+                        " " + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
                 titles.add(expenseString);
             }
         }
@@ -278,7 +282,7 @@ public class EventOverviewCtrl implements Initializable {
                     }
                 }
                 String expenseString = owner.getFirstName() +  " " + owner.getLastName() +  " "
-                        + paidLanguage() + " " + expense.getAmount() + " " + forLanguage() + " " + expense.getDescription();
+                        + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
                 titles.add(expenseString);
             }
         }
@@ -293,35 +297,5 @@ public class EventOverviewCtrl implements Initializable {
     public void showTabPanes() {
         tabPane.getTabs().add(fromTab);
         tabPane.getTabs().add(includingTab);
-    }
-
-    public String paidLanguage(){
-        String paid = "paid";
-        if (languageBox.getSelectionModel().getSelectedItem().getText().equals("Nederlands")){
-            paid = "betaalde";
-        }else if(languageBox.getSelectionModel().getSelectedItem().getText().equals("Romanian")){
-            paid = "a plătit";
-        }
-        return paid;
-    }
-
-    public String forLanguage(){
-        String forr = "for";
-        if (languageBox.getSelectionModel().getSelectedItem().getText().equals("Nederlands")){
-            forr = "voor";
-        }else if(languageBox.getSelectionModel().getSelectedItem().getText().equals("Romanian")){
-            forr = "pentru";
-        }
-        return forr;
-    }
-
-    public String participantsLanguage(){
-        String participants = "Participants";
-        if (languageBox.getSelectionModel().getSelectedItem().getText().equals("Nederlands")){
-            participants = "Deelnemers";
-        }else if(languageBox.getSelectionModel().getSelectedItem().getText().equals("Romanian")){
-            participants = "Participanții";
-        }
-        return participants;
     }
 }
