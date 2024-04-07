@@ -73,6 +73,7 @@ public class Main extends Application {
 
     public static void reload(){
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
+        primaryStage.setOnCloseRequest(e -> overview.getKey().stop());
         var eventOverview = FXML.load(EventOverviewCtrl.class, "client", "scenes", "EventOverview.fxml");
         var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
         var partOverview = FXML.load(EditParticipantOverviewCtrl.class, "client", "scenes", "EditParticipantOverview.fxml");
