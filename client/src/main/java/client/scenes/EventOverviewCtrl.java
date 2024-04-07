@@ -84,7 +84,7 @@ public class EventOverviewCtrl implements Initializable {
                 namesString.append(", ");
             i++;
         }
-        part.setText("Participants");
+        part.setText(participantsLanguage());
         part.getItems().setAll(names);
         participantText.setEditable(false);
         participantText.setText(namesString.toString());
@@ -212,7 +212,7 @@ public class EventOverviewCtrl implements Initializable {
                         owner = expenseParticipant.getParticipant();
                     }
                 }
-                String expenseString = owner.getFirstName() + " " + owner.getLastName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
+                String expenseString = owner.getFirstName() + " " + owner.getLastName() + " " + paidLanguage() + " " + expense.getAmount() + " " + forLanguage() + " " + expense.getDescription();
                 titles.add(expenseString);
                 totalAmount += expense.getAmount();
             }
@@ -244,7 +244,7 @@ public class EventOverviewCtrl implements Initializable {
                 }
             }
             for (Expense expense : expensesFromParticipant) {
-                String expenseString = participant.getFirstName() + " " + participant.getLastName() + " paid " + expense.getAmount() + " for " + expense.getDescription();
+                String expenseString = participant.getFirstName() + " " + participant.getLastName() + " " + paidLanguage() + " " + expense.getAmount() + " " + forLanguage() + " " + expense.getDescription();
                 titles.add(expenseString);
             }
         }
@@ -275,7 +275,7 @@ public class EventOverviewCtrl implements Initializable {
                         owner = expenseParticipant.getParticipant();
                     }
                 }
-                String expenseString = owner.getFirstName() +  " " + owner.getLastName() +  " paid " + expense.getAmount() + " for " + expense.getDescription();
+                String expenseString = owner.getFirstName() +  " " + owner.getLastName() +  " " + paidLanguage() + " " + expense.getAmount() + " " + forLanguage() + " " + expense.getDescription();
                 titles.add(expenseString);
             }
         }
@@ -290,5 +290,35 @@ public class EventOverviewCtrl implements Initializable {
     public void showTabPanes() {
         tabPane.getTabs().add(fromTab);
         tabPane.getTabs().add(includingTab);
+    }
+
+    public String paidLanguage(){
+        String paid = "paid";
+        if (languageBox.getSelectionModel().getSelectedItem().getText().equals("Nederlands")){
+            paid = "betaalde";
+        }else if(languageBox.getSelectionModel().getSelectedItem().getText().equals("Romanian")){
+            paid = "a plătit";
+        }
+        return paid;
+    }
+
+    public String forLanguage(){
+        String forr = "for";
+        if (languageBox.getSelectionModel().getSelectedItem().getText().equals("Nederlands")){
+            forr = "voor";
+        }else if(languageBox.getSelectionModel().getSelectedItem().getText().equals("Romanian")){
+            forr = "pentru";
+        }
+        return forr;
+    }
+
+    public String participantsLanguage(){
+        String participants = "Participants";
+        if (languageBox.getSelectionModel().getSelectedItem().getText().equals("Nederlands")){
+            participants = "Deelnemers";
+        }else if(languageBox.getSelectionModel().getSelectedItem().getText().equals("Romanian")){
+            participants = "Participanții";
+        }
+        return participants;
     }
 }
