@@ -120,13 +120,15 @@ public class Event {
      */
 
     public Participant getParticipantByName(String name){
+        String[] nameInArray = name.split(" ");
+        String first = nameInArray[0];
+        String last = nameInArray[1];
         for(var x : participants){
-            if (x.getFirstName().equals(name)){
+            if (x.getFirstName().equals(first) && x.getLastName().equals(last)){
                 return x;
             }
         }
         return null;
-        //throw new NoSuchElementException("There is no participant with name: " + name);
     }
 
     /**

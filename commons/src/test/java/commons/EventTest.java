@@ -155,8 +155,8 @@ class EventTest {
     void getParticipantByName() {
         Participant test = new Participant("John", "Doe");
         event.addParticipant(test);
-        assertEquals(test, event.getParticipantByName("John"));
-        assertNull(event.getParticipantByName("Jack"));
+        assertEquals(test, event.getParticipantByName("John Doe"));
+        assertNull(event.getParticipantByName("Jack Doe"));
     }
 
     @Test
