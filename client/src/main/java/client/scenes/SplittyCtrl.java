@@ -15,7 +15,6 @@ public class SplittyCtrl {
     private Stage primaryStage;
     private StartScreenCtrl overviewCtrl;
     private Scene overview;
-    private Scene add;
     private Scene editParticipant;
     private EventOverviewCtrl eventCtrl;
     private Scene event;
@@ -24,7 +23,6 @@ public class SplittyCtrl {
     private Scene expense;
     private AddExpenseCtrl addExpenseCtrl;
     private EditParticipantOverviewCtrl editParticipantOverviewCtrl;
-    private Scene partOverview;
     private EditEventTitleCtrl editTitleCtrl;
     private Scene editTitle;
     private AddParticipantCtrl addParticipantCtrl;
@@ -36,6 +34,8 @@ public class SplittyCtrl {
     private boolean isAdmin;
     private SettleDebtsCtrl settleDebtsCtrl;
     private Scene settleDebts;
+    private SetServerCtrl setServerCtrl;
+    private Scene setServer;
 
     public void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -89,6 +89,7 @@ public class SplittyCtrl {
         overviewCtrl.refresh();
         primaryStage.setTitle("Splitty");
         primaryStage.setScene(overview);
+        overview.getWindow().centerOnScreen();
     }
 
     public void showEventOverview(Event selectedEvent){
@@ -96,6 +97,7 @@ public class SplittyCtrl {
         this.eventCtrl.setSelectedEvent(selectedEvent);
         this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
         primaryStage.setScene(event);
+        event.getWindow().centerOnScreen();
         eventCtrl.expensesNotSelectedPart();
         eventCtrl.expensesIncludingParticipant();
         eventCtrl.expensesNotSelectedPart();
@@ -107,6 +109,7 @@ public class SplittyCtrl {
         this.inviteCtrl.inviteCode.setText(selectedEvent.getInviteCode());
         this.inviteCtrl.event = selectedEvent;
         primaryStage.setScene(invite);
+        invite.getWindow().centerOnScreen();
         invite.setOnKeyPressed(e -> inviteCtrl.keyPressed(e));
     }
 
@@ -119,8 +122,9 @@ public class SplittyCtrl {
     }
 
     public void showExpOverview() {
-        primaryStage.setTitle("Add/Edit expense");
+        primaryStage.setTitle("Add/Edit Expense");
         primaryStage.setScene(expense);
+        expense.getWindow().centerOnScreen();
         expense.setOnKeyPressed(e -> addExpenseCtrl.keyPressed(e));
     }
 
@@ -131,22 +135,25 @@ public class SplittyCtrl {
     }
 
     public void showEditParticipantOverview() {
-        primaryStage.setTitle("Edit participant");
+        primaryStage.setTitle("Edit Participant");
         primaryStage.setScene(editParticipant);
+        editParticipant.getWindow().centerOnScreen();
         //editParticipant.setOnKeyPressed(e -> editParticipantOverviewCtrl.keyPressed(e));
     }
 
     public void showEditTitle(Event event) {
         primaryStage.setTitle("Edit Title");
         primaryStage.setScene(editTitle);
+        editTitle.getWindow().centerOnScreen();
         this.editTitleCtrl.setEvent(event);
         this.editTitleCtrl.oldTitle.setText(event.getTitle());
         editTitle.setOnKeyPressed(e -> editTitleCtrl.keyPressed(e));
     }
 
     public void showAddParticipant(Event event) {
-        primaryStage.setTitle("Add participant");
+        primaryStage.setTitle("Add Participant");
         primaryStage.setScene(addParticipant);
+        addParticipant.getWindow().centerOnScreen();
         this.addParticipantCtrl.setEvent(event);
         addParticipant.setOnKeyPressed(e -> addParticipantCtrl.keyPressed(e));
     }
@@ -154,14 +161,11 @@ public class SplittyCtrl {
     public void showSettleDebts(List<Debt> debts, Event selectedEvent) {
         primaryStage.setTitle("Settle Debts");
         primaryStage.setScene(settleDebts);
+        settleDebts.getWindow().centerOnScreen();
         settleDebtsCtrl.setDebts(debts);
         settleDebtsCtrl.setEvent(selectedEvent);
         settleDebtsCtrl.refresh();
         primaryStage.show();
-    }
-
-    public AddParticipantCtrl getAddParticipantCtrl() {
-        return addParticipantCtrl;
     }
 
     public Stage getPrimaryStage() {
@@ -192,12 +196,27 @@ public class SplittyCtrl {
         adminOverview.getWindow().centerOnScreen();
     }
 
-    public void setAdmin(boolean isAdmin){
-        this.isAdmin = isAdmin;
+    public void initSetServer(Pair<SetServerCtrl, Parent> setServer) {
+        this.setServerCtrl = setServer.getKey();
+        this.setServer = new Scene(setServer.getValue());
+    }
+
+    public void showSetServer() {
+        primaryStage.setTitle("Set Server");
+        primaryStage.setScene(setServer);
+        setServer.getWindow().centerOnScreen();
     }
 
     public boolean getAdmin()
     {
         return isAdmin;
+    }
+
+    public void setAdmin(boolean isAdmin){
+        this.isAdmin = isAdmin;
+    }
+
+    public AddParticipantCtrl getAddParticipantCtrl() {
+        return addParticipantCtrl;
     }
 }

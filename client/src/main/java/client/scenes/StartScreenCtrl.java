@@ -27,7 +27,7 @@ public class StartScreenCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
     private ObservableList<String> data;
-    private final SplittyCtrl eventCtrl;
+    private final SplittyCtrl controller;
     @FXML
     private ListView<String> eventList;
     @FXML
@@ -48,7 +48,7 @@ public class StartScreenCtrl implements Initializable {
     @Inject
     public StartScreenCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
         this.server = server;
-        this.eventCtrl = mainCtrl;
+        this.controller = mainCtrl;
     }
 
     @Override
@@ -186,6 +186,10 @@ public class StartScreenCtrl implements Initializable {
         codeField.clear();
     }
 
+    public void setServer() {
+        controller.showSetServer();
+    }
+
     public void createEvent() {
         var title = this.titleField.getText();
         if (title.isEmpty()) {
@@ -208,8 +212,7 @@ public class StartScreenCtrl implements Initializable {
             alert.showAndWait();
             return;
         }
-        eventCtrl.showEventOverview(event);
-
+        controller.showEventOverview(event);
     }
 
     public void stop() {
@@ -234,7 +237,7 @@ public class StartScreenCtrl implements Initializable {
                 Config.get().addPastCode(String.valueOf(event.getInviteCode()));
                 Config.get().save();
             }
-            eventCtrl.showEventOverview(event);
+            controller.showEventOverview(event);
         } else {
             emptyCode.setVisible(false);
             invalidCode.setVisible(true);
@@ -246,7 +249,7 @@ public class StartScreenCtrl implements Initializable {
         String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
         String inviteCode = eventTitleAndCode.split(": ")[1];
         Event event = server.getByInviteCode(inviteCode);
-        eventCtrl.showEventOverview(event);
+        controller.showEventOverview(event);
     }
 
     public Event getEvent() {
@@ -256,6 +259,6 @@ public class StartScreenCtrl implements Initializable {
     }
 
     public void showAdminLogin() {
-        eventCtrl.showAdminLogin();
+        controller.showAdminLogin();
     }
 }
