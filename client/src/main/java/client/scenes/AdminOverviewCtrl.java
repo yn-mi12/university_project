@@ -123,8 +123,30 @@ public class AdminOverviewCtrl implements Initializable {
     }
 
     public void launch(){
+        server.registerForMessages("/topic/titles", Event.class , q -> {
+            for(var x: data)
+            {
+                if(Objects.equals(x.getId(), q.getId())){
+                    data.remove(x);
+                    break;
+                }
+            }
+            data.add(q);
+            eventList.refresh();
+        });
         server.registerForMessages("/topic/events", Event.class , q -> {
             data.add(q);
+            eventList.refresh();
+        });
+        server.registerForMessages("/topic/deleted", Event.class , q -> {
+            for(var x: data)
+            {
+                if(Objects.equals(x.getId(), q.getId())){
+                    data.remove(x);
+                    break;
+                }
+            }
+            System.out.println("TEST");
             eventList.refresh();
         });
     }
@@ -136,7 +158,8 @@ public class AdminOverviewCtrl implements Initializable {
             showButtonD.setDisable(true);
             showButtonE.setDisable(true);
         }
-        eventList.setItems(FXCollections.observableList(events));
+        data = FXCollections.observableList(new ArrayList<>(events));
+        eventList.setItems(data);
     }
 
     public void goBack() {
