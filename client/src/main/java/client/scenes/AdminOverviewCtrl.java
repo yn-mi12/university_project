@@ -67,6 +67,7 @@ public class AdminOverviewCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         refresh();
+        eventList.getColumns().forEach(e -> e.setReorderable(false));
         eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Event>() {
             @Override
             public void changed(ObservableValue<? extends Event> observableValue, Event event, Event t1) {
