@@ -86,7 +86,6 @@ public class StartScreenCtrl implements Initializable {
                         super.updateItem(item, empty);
                         if (item == null || empty) {
                         } else {
-                            item.setTextFill(Color.color(0, 0, 0));
                             if(Main.isContrastMode())this.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;" +
                                     "-fx-font-weight: bolder;-fx-border-color: #836FFF");
                             setGraphic(item);
@@ -95,9 +94,17 @@ public class StartScreenCtrl implements Initializable {
                 };
             }
         });
-        String current = String.valueOf(Config.get().getCurrentLocaleName());
-        languageBox.setValue(languageBox.getItems().stream()
-                .filter(l -> String.valueOf(l.getText()).equals(current)).findFirst().orElse(null));
+        String current = Config.get().getCurrentLocaleName();
+        Image icon;
+        String iconPath = "client/images/" + Config.get().getCurrentLocale() + ".png";
+        icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
+        ImageView iconImageView = new ImageView(icon);
+        iconImageView.setFitHeight(25);
+        iconImageView.setPreserveRatio(true);
+        Label l = new Label(current, iconImageView);
+        l.setTextFill(Color.color(0, 0, 0));
+        if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+        languageBox.setValue(l);
         languageBox.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 Config.get().setCurrentLocale(newVal.getText());
@@ -112,7 +119,7 @@ public class StartScreenCtrl implements Initializable {
             }
         });
         Image highContrastIcon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("client/images/highContrast.png")));
-        ImageView iconImageView = new ImageView(highContrastIcon);
+        iconImageView = new ImageView(highContrastIcon);
         iconImageView.setFitHeight(25);
         iconImageView.setPreserveRatio(true);
         highContrastButton.setGraphic(new Label("", iconImageView));

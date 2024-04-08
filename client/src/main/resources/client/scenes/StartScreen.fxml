@@ -12,7 +12,6 @@
       <Text fx:id="eventJoin" layoutX="96.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%event_join" />
       <TextField fx:id="codeField" layoutX="96.0" layoutY="133.0" prefHeight="26.0" prefWidth="227.0" promptText="%code_field" />
       <Button fx:id="joinButton" layoutX="380.0" layoutY="133.0" minWidth="100" mnemonicParsing="false" onAction="#viewEvent" text="%join_button" />
-
       <Text fx:id="languageChoice" layoutX="381.0" layoutY="381.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%language_choice" />
       <Accordion layoutX="59.0" layoutY="218.0" />
       <Text fx:id="recentEvents" layoutX="96.0" layoutY="231.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%recent_events" />
