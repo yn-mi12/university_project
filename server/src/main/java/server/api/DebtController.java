@@ -47,7 +47,6 @@ public class DebtController {
     public ResponseEntity<List<Debt>> getAllByCreditorId(@PathVariable("creditor-id") long id) {
         if(id < 0)
             return ResponseEntity.badRequest().build();
-        eventRepo.findById(partRepo.findById(id).get().getEvent().getId()).get().updateDate();
 
         return ResponseEntity.ok(repo.findAllByCreditorId(id));
     }
@@ -56,7 +55,6 @@ public class DebtController {
     public ResponseEntity<List<Debt>> getAllByDebtorId(@PathVariable("debtor-id") long id) {
         if(id < 0)
             return ResponseEntity.badRequest().build();
-        eventRepo.findById(partRepo.findById(id).get().getEvent().getId()).get().updateDate();
 
         return ResponseEntity.ok(repo.findAllByDebtorId(id));
     }

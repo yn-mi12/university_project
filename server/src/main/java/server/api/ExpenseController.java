@@ -126,8 +126,8 @@ public class ExpenseController {
             return ResponseEntity.notFound().build();
         }
         Expense x = repo.findById(id).orElse(null);
-        repo.deleteById(id);
         eventRepository.findById(repo.findById(id).get().getEvent().getId()).get().updateDate();
+        repo.deleteById(id);
         return ResponseEntity.ok(x);
 
     }

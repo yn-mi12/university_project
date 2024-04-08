@@ -109,9 +109,8 @@ public class ParticipantController {
         //TODO: change behaviour to check for openBalance and/or debtOwnership
         if (!participant.getExpenses().isEmpty())
             return ResponseEntity.badRequest().build();
-        participantRepository.deleteById(id);
         eventRepository.findById(participantRepository.findById(id).get().getEvent().getId()).get().updateDate();
-
+        participantRepository.deleteById(id);
         return ResponseEntity.ok(participant);
     }
 
