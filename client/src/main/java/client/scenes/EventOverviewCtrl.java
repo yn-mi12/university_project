@@ -24,7 +24,6 @@ import javafx.util.Callback;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.time.ZoneId;
 import java.util.*;
 
 public class EventOverviewCtrl implements Initializable {
