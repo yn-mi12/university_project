@@ -118,7 +118,7 @@ public class StartScreenCtrl implements Initializable {
             List<String> removedCodes = new ArrayList<>();
 
             for (String code : codes) {
-                Event e = server.getByInviteCode(code);
+                Event e = server.getByID(code);
                 if (e != null) {
                     events.add(e);
                     titles.add(e.getTitle() + " : " + e.getId());
@@ -174,7 +174,7 @@ public class StartScreenCtrl implements Initializable {
             return;
         }
 
-        Event event = server.getByInviteCode(inviteCode);
+        Event event = server.getByID(inviteCode);
 
         if(event != null) {
             clearFields();
@@ -194,14 +194,14 @@ public class StartScreenCtrl implements Initializable {
     public void showEvent() {
         String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
         String inviteCode = eventTitleAndCode.split(": ")[1];
-        Event event = server.getByInviteCode(inviteCode);
+        Event event = server.getByID(inviteCode);
         eventCtrl.showEventOverview(event);
     }
 
     public Event getEvent() {
         String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
         String inviteCode = eventTitleAndCode.split(": ")[1];
-        return server.getByInviteCode(inviteCode);
+        return server.getByID(inviteCode);
     }
 
     public void showAdminLogin() {

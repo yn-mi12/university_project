@@ -109,7 +109,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
     public void editParticipant() {
         setParticipant();
         try {
-            event = server.getByInviteCode(event.getId());
+            event = server.getByID(event.getId());
             controller.showAddParticipant(event);
             AddParticipantCtrl addCtrl = controller.getAddParticipantCtrl();
             addCtrl.setParticipant(selectedParticipant);

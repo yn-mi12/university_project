@@ -17,6 +17,7 @@ import javafx.stage.Modality;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.sql.Date;
 import java.util.*;
 
 public class AddExpenseCtrl implements Initializable {
@@ -97,7 +98,7 @@ public class AddExpenseCtrl implements Initializable {
             var date = this.date.getValue();
             //var tags = this.tags.getText();
             this.expense = new Expense(description, currency,
-                    Double.parseDouble(amount), LocalDate.now());
+                    Double.parseDouble(amount), Date.valueOf(LocalDate.now()));
             System.out.println(expense);
             expense.setDebtors(getDebtors());
             expense.setEvent(event);
@@ -111,7 +112,7 @@ public class AddExpenseCtrl implements Initializable {
             return;
         }
         clearFields();
-        Event updated = server.getByInviteCode(ctrl.getSelectedEvent().getId());
+        Event updated = server.getByID(ctrl.getSelectedEvent().getId());
         controller.showEventOverview(updated);
     }
 

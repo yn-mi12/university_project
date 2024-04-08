@@ -81,7 +81,7 @@ public class AddParticipantCtrl {
             participantExists.visibleProperty().setValue(false);
             if (participant != null && !participantAlreadyExists()) {
                 server.addParticipant(participant, event);
-                Event updated = server.getByInviteCode(event.getId());
+                Event updated = server.getByID(event.getId());
                 clearFields();
                 mainCtrl.showEventOverview(updated);
             }else{
@@ -95,7 +95,7 @@ public class AddParticipantCtrl {
                 participantExists.visibleProperty().setValue(false);
                 if(participant.getFirstName() != null && participant.getLastName()!=null) {
                     server.updateParticipant(participant);
-                    event = server.getByInviteCode(event.getId());
+                    event = server.getByID(event.getId());
                     editPart = false;
                     mainCtrl.initEditParticipantOverview(event);
                     mainCtrl.showEditParticipantOverview();

@@ -158,13 +158,13 @@ public class AdminOverviewCtrl implements Initializable {
     public Event getEvent() {
         String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
         String inviteCode = eventTitleAndCode.split(": ")[1];
-        return server.getByInviteCode(inviteCode);
+        return server.getByID(inviteCode);
     }
 
     public void showEvent() {
         String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
         String inviteCode = eventTitleAndCode.split(": ")[1];
-        Event event = server.getByInviteCode(inviteCode);
+        Event event = server.getByID(inviteCode);
         controller.showEventOverview(event);
     }
     public void deleteEvent() {
@@ -185,7 +185,7 @@ public class AdminOverviewCtrl implements Initializable {
         var om = new ObjectMapper();
         String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
         String inviteCode = eventTitleAndCode.split(": ")[1];
-        Event event = server.getByInviteCode(inviteCode);
+        Event event = server.getByID(inviteCode);
 
         try {
             var jsonEvent = om.writeValueAsString(event);
@@ -220,7 +220,7 @@ public class AdminOverviewCtrl implements Initializable {
                 String json = jsonScanner.next();
                 var event = om.readValue(json, Event.class);
                 System.out.println("Imported event: " + event);
-                Event find = server.getByInviteCode(event.getId());
+                Event find = server.getByID(event.getId());
                 if(find == null) {
                     server.addEvent(event);
                 } else {

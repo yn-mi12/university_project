@@ -66,7 +66,7 @@ public class EditEventTitleCtrl {
             event.setTitle(editedTitle);
             System.out.println("Edit Title");
             System.out.println("Id:" + event.getId());
-            event.setId(server.getByInviteCode(event.getId()).getId());
+            event.setId(server.getByID(event.getId()).getId());
             event.setTitle(newTitle.getText());
             server.send("/app/titles", event);
             //server.editEventTitle(editedTitle, event);
