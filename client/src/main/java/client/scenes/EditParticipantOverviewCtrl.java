@@ -41,7 +41,7 @@ public class EditParticipantOverviewCtrl {
         List<Participant> participants = server.getEventParticipants(event);
         List<String> names = new ArrayList<>();
         for (Participant x : participants) {
-            names.add(x.getId() + ": " + x.getFirstName());
+            names.add(x.getId() + ": " + x.getFirstName() + " " + x.getLastName());
         }
         participantList.setItems(FXCollections.observableList(names));
     }
