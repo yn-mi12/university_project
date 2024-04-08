@@ -267,8 +267,6 @@ public class AdminOverviewCtrl implements Initializable {
     }
 
     private void formatTable() {
-        //Custom error message
-        eventList.setPlaceholder(new Label("No events currently in the server"));
         // Sets all columns not reorder-able
         eventList.getColumns().forEach(e -> e.setReorderable(false));
         // sets title column to fill remaining space
