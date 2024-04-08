@@ -37,6 +37,7 @@ public class ParticipantController {
         if (!participantRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
+        eventRepository.findById(participantRepository.findById(id).get().getEvent().getId()).get().updateDate();
         return ResponseEntity.ok(participantRepository.findById(id).get());
     }
 
@@ -50,6 +51,7 @@ public class ParticipantController {
     public ResponseEntity<List<Participant>> getByEventId(@PathVariable("eventId") String eventId) {
         if (!eventRepository.existsById(eventId))
             return ResponseEntity.notFound().build();
+        eventRepository.findById(eventId).get().updateDate();
         return ResponseEntity.ok(participantRepository.findByEventId(eventId));
     }
 
@@ -67,6 +69,7 @@ public class ParticipantController {
         if (!eventRepository.existsById(eventId))
             return ResponseEntity.notFound().build();
 
+        eventRepository.findById(eventId).get().updateDate();
         participant.setEvent(eventRepository.getReferenceById(eventId));
         Participant saved = participantRepository.save(participant);
         return ResponseEntity.ok(saved);
@@ -93,6 +96,8 @@ public class ParticipantController {
         participantOld.setIban(participant.getIban());
         participantOld.setBic(participant.getBic());
         participantRepository.save(participantOld);
+        eventRepository.findById(participantRepository.findById(id).get().getEvent().getId()).get().updateDate();
+
         return ResponseEntity.ok(participantOld);
     }
     @DeleteMapping("/{id}")
@@ -104,6 +109,7 @@ public class ParticipantController {
         //TODO: change behaviour to check for openBalance and/or debtOwnership
         if (!participant.getExpenses().isEmpty())
             return ResponseEntity.badRequest().build();
+        eventRepository.findById(participantRepository.findById(id).get().getEvent().getId()).get().updateDate();
         participantRepository.deleteById(id);
         return ResponseEntity.ok(participant);
     }

@@ -41,6 +41,7 @@ public class ExpenseController {
         if (!eventRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
+        eventRepository.findById(id).get().updateDate();
         return ResponseEntity.ok(repo.findByEventId(id));
     }
 
@@ -55,6 +56,7 @@ public class ExpenseController {
         if (id < 0 || !repo.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
+        eventRepository.findById(repo.findById(id).get().getEvent().getId()).get().updateDate();
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
@@ -67,6 +69,8 @@ public class ExpenseController {
         if (pid < 0 || !participantRepository.existsById(pid)) {
             return ResponseEntity.notFound().build();
         }
+        eventRepository.findById(participantRepository.findById(pid).get().getEvent().getId()).get().updateDate();
+
         return ResponseEntity.ok(repo.findByParticipantId(pid));
     }
 
@@ -107,6 +111,7 @@ public class ExpenseController {
             return ResponseEntity.badRequest().build();
         } //TODO: Add checks for Date
         Expense saved = repo.save(expense);
+        eventRepository.findById(eid).get().updateDate();
         return ResponseEntity.ok(saved);
     }
 
@@ -121,8 +126,10 @@ public class ExpenseController {
             return ResponseEntity.notFound().build();
         }
         Expense x = repo.findById(id).orElse(null);
+        eventRepository.findById(repo.findById(id).get().getEvent().getId()).get().updateDate();
         repo.deleteById(id);
         return ResponseEntity.ok(x);
+
     }
 
     /**

@@ -147,9 +147,9 @@ public class ParticipantControllerTest {
     void deleteParticipant() {
         partc.saveToEvent(e.getId(), p1).getBody();
         partc.saveToEvent(e.getId(), p2).getBody();
-        long count = repo.count();
+        assertEquals(2, repo.count());
         var req = partc.deleteById(p1.getId());
-        assertEquals(count-1, repo.count());
+        assertEquals(1, repo.count());
         assertEquals(List.of(p2), repo.findAll());
         assertEquals(OK, req.getStatusCode());
     }

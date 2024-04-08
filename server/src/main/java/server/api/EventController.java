@@ -120,6 +120,7 @@ public class EventController {
         if (!repo.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
+        repo.findById(id).get().updateDate();
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
@@ -136,6 +137,7 @@ public class EventController {
         }
         addListeners.forEach((key, listener) -> listener.accept(event));
         Event saved = repo.save(event);
+        saved.updateDate();
         return ResponseEntity.ok(saved);
     }
 
@@ -157,6 +159,7 @@ public class EventController {
         Event event = repo.findById(id).get();
         event.setTitle(newTitle);
         Event saved = repo.save(event);
+        saved.updateDate();
         return ResponseEntity.ok(saved);
     }
 
