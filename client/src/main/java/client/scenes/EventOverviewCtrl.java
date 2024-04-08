@@ -231,7 +231,7 @@ public class EventOverviewCtrl implements Initializable {
         expenseCtrl.setWhatForText(selected.getDescription());
         expenseCtrl.setHowMuchText(String.valueOf(selected.getAmount()));
         expenseCtrl.setCurrencyText(selected.getCurrency());
-        expenseCtrl.setDateText(selected.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        expenseCtrl.setDateText(selected.getDate().toLocalDate());
         expenseCtrl.setOldExpense(selected);
 
         expenseCtrl.getWhoPays().getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
