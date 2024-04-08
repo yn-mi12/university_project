@@ -30,13 +30,15 @@ public class Expense {
     private Event event;
 
     @SuppressWarnings("unused")
-    public Expense() {}
+    public Expense() {
+    }
 
-    public Expense(String description, String currency, double amount, Date date) {
+    public Expense(String description, String currency, double amount, Date date, Set<ExpenseParticipant> debtors) {
         this.description = description;
         this.currency = currency;
         this.amount = amount;
         this.date = date;
+        this.debtors = debtors;
     }
 
     public long getId() {

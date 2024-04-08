@@ -20,9 +20,10 @@ public class ExpenseParticipant {
     @Column(nullable = false)
     private double share;
     @Column(nullable = false)
-    private boolean owner = false;
+    private boolean owner;
 
-    public ExpenseParticipant () {}
+    public ExpenseParticipant() {
+    }
 
     public ExpenseParticipant(Expense expense, Participant participant, double share, boolean owner) {
         this.expense = expense;
@@ -36,7 +37,9 @@ public class ExpenseParticipant {
         return id;
     }
 
-    public void setId(long id) { this.id = id; }
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Expense getExpense() {
         return expense;

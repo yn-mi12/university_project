@@ -26,15 +26,12 @@ public class Event {
     private Timestamp lastUpdateDate;
 
     @SuppressWarnings("unused")
-    public Event() {}
+    public Event() {
+    }
 
-    /**
-     * Creates an Event object
-     * @param title the title of the Event
-     */
     public Event(String title) {
         this.title = title;
-        this.id = UUID.randomUUID().toString().substring(0,11).replace("-", "");
+        this.id = UUID.randomUUID().toString().substring(0, 11).replace("-", "");
         this.creationDate = Timestamp.valueOf(LocalDateTime.now());
         this.lastUpdateDate = (Timestamp) creationDate.clone();
     }
@@ -59,16 +56,18 @@ public class Event {
         return participants;
     }
 
-    public void addParticipant(Participant participant) { participants.add(participant); }
+    public void setParticipants(List<Participant> participants) {
+        this.participants = participants;
+    }
+
+    public void addParticipant(Participant participant) {
+        participant.setEvent(this);
+        participants.add(participant);
+    }
 
     public void deleteParticipant(Participant participant) {
         participants.remove(participant);
     }
-
-    public void setParticipants(List<Participant> participants) {
-        this.participants = participants;
-    }
-    public void addExpense(Expense newExpense){ expenses.add(newExpense); }
 
     public List<Expense> getExpenses() {
         return expenses;
@@ -78,14 +77,30 @@ public class Event {
         this.expenses = expenses;
     }
 
+    public void addExpense(Expense expense) {
+        expense.setEvent(this);
+        expenses.add(expense);
+    }
+
+    public void deleteExpense(Expense expense) {
+        expenses.remove(expense);
+    }
+
     public List<Tag> getTags() {
         return tags;
     }
 
-    public void addTag (Tag tag) { tags.add(tag); }
-
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    public void addTag(Tag tag) {
+        tag.setEvent(this);
+        tags.add(tag);
+    }
+
+    public void deleteTag(Tag tag) {
+        tags.remove(tag);
     }
 
     public Timestamp getCreationDate() {
@@ -112,37 +127,38 @@ public class Event {
         return debts;
     }
 
-    public void addDebt(Debt debt) {
-        this.debts.add(debt);
-    }
-
     public void setDebts(List<Debt> debts) {
         this.debts = debts;
     }
 
+    public void addDebt(Debt debt) {
+        debt.setEvent(this);
+        debts.add(debt);
+    }
+
+    public void deleteDebt(Debt debt) {
+        debts.remove(debt);
+    }
+
+
     /**
      * Returns the participant with the specified name
+     *
      * @param name the specified name
      * @return the participant with the specified name
      */
-
-    public Participant getParticipantByName(String name){
+    public Participant getParticipantByName(String name) {
         String[] nameInArray = name.split(" ");
         String first = nameInArray[0];
         String last = nameInArray[1];
-        for(var x : participants){
-            if (x.getFirstName().equals(first) && x.getLastName().equals(last)){
+        for (var x : participants) {
+            if (x.getFirstName().equals(first) && x.getLastName().equals(last)) {
                 return x;
             }
         }
         return null;
     }
 
-    /**
-     * Tests equality of two Events
-     * @param o the object to be tested with
-     * @return true if equal, false otherwise
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -151,19 +167,11 @@ public class Event {
         return Objects.equals(id, event.id);
     }
 
-    /**
-     * Hash code generator for an Event
-     * @return the hash code
-     */
     @Override
     public int hashCode() {
         return Objects.hash(id);
     }
 
-    /**
-     * Gives a human-friendly representation of an Event
-     * @return the human-friendly representation of the Event
-     */
     @Override
     public String toString() {
         return "Event{" +
@@ -177,5 +185,4 @@ public class Event {
                 ", lastUpdateDate=" + lastUpdateDate +
                 '}';
     }
-
 }

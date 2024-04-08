@@ -36,15 +36,11 @@ public class Participant {
     private List<Debt> debtsWhereCreditor = new ArrayList<>();
 
     @SuppressWarnings("unused")
-    public Participant() {}
+    public Participant() {
 
-    public Participant(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
     }
 
-    public Participant(String firstName, String lastName, String email, String accountName, String iban,
-                       String bic) {
+    public Participant(String firstName, String lastName, String email, String accountName, String iban, String bic) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -85,17 +81,29 @@ public class Participant {
         this.email = email;
     }
 
-    public String getAccountName() { return accountName; }
+    public String getAccountName() {
+        return accountName;
+    }
 
-    public void setAccountName(String accountName) { this.accountName = accountName; }
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
 
-    public String getIban() { return iban; }
+    public String getIban() {
+        return iban;
+    }
 
-    public void setIban(String iban) { this.iban = iban; }
+    public void setIban(String iban) {
+        this.iban = iban;
+    }
 
-    public String getBic() { return bic; }
+    public String getBic() {
+        return bic;
+    }
 
-    public void setBic(String bic) { this.bic = bic; }
+    public void setBic(String bic) {
+        this.bic = bic;
+    }
 
     public Set<ExpenseParticipant> getExpenses() {
         return expenses;
