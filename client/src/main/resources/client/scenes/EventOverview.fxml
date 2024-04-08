@@ -7,13 +7,12 @@
 <AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="580.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EventOverviewCtrl">
     <children>
     <Button fx:id="backButton" layoutX="15.0" layoutY="8.0" mnemonicParsing="false" onAction="#goBack" text="⬅" />
-    <Button fx:id="editTitleButton" layoutX="411.0" layoutY="10.0" minWidth="100" mnemonicParsing="false" onAction="#editTitle" text="%editTitle" />
+    <Button fx:id="editTitleButton" layoutX="411.0" layoutY="52.0" minWidth="100" mnemonicParsing="false" onAction="#editTitle" text="%editTitle" />
     <Button fx:id="copyCodeButton" layoutX="281.0" layoutY="51.0" minWidth="100" onAction="#copyCode" text="%copyCode">
         <font>
             <Font size="13.0" />
         </font>
     </Button>
-    <Button fx:id="inviteButton" layoutX="411.0" layoutY="52.0" minWidth="100" mnemonicParsing="false" onAction="#sendInvites" text="%invite_button" />
     <Button fx:id="editPartButton" layoutX="411.0" layoutY="107.0" minWidth="100" mnemonicParsing="false" onAction="#updateParticipant" text="%edit_button" />
     <Button fx:id="addPartButton" layoutX="411.0" layoutY="145.0" minWidth="100" mnemonicParsing="false" onAction="#addParticipant" text="%add_participant_button" />
     <ComboBox fx:id="part" layoutX="20.0" layoutY="221.0" prefHeight="25.0" prefWidth="231.0">

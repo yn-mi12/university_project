@@ -78,7 +78,6 @@ public class Main extends Application {
         var overview = FXML.load(StartScreenCtrl.class, "client", "scenes", "StartScreen.fxml");
         primaryStage.setOnCloseRequest(e -> overview.getKey().stop());
         var eventOverview = FXML.load(EventOverviewCtrl.class, "client", "scenes", "EventOverview.fxml");
-        var invite = FXML.load(InvitationCtrl.class, "client", "scenes", "Invitation.fxml");
         var partOverview = FXML.load(EditParticipantOverviewCtrl.class, "client", "scenes", "EditParticipantOverview.fxml");
         var addExp = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
         var editTitle = FXML.load(EditEventTitleCtrl.class,"client", "scenes", "EditTitle.fxml");
@@ -91,7 +90,6 @@ public class Main extends Application {
         mainCtrl.initShowOverview(overview);
         mainCtrl.initPartUpdate(partOverview);
         mainCtrl.initEventOverview(eventOverview);
-        mainCtrl.initInvitePage(invite);
         mainCtrl.initExp(addExp);
         mainCtrl.initEditTitle(editTitle);
         mainCtrl.initAddParticipant(addParticipant);

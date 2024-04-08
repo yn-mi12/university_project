@@ -24,7 +24,6 @@ public class SplittyCtrlTest {
     private SplittyCtrl splittyCtrl;
     private StartScreenCtrl startScreenCtrl;
     private EventOverviewCtrl eventOverviewCtrl;
-    private InvitationCtrl invitationCtrl;
     private AddExpenseCtrl addExpenseCtrl;
     private EditEventTitleCtrl editEventTitleCtrl;
     private AddParticipantCtrl addParticipantCtrl;
@@ -36,14 +35,12 @@ public class SplittyCtrlTest {
 
         startScreenCtrl = mock(StartScreenCtrl.class);
         eventOverviewCtrl = mock(EventOverviewCtrl.class);
-        invitationCtrl = mock(InvitationCtrl.class);
         addExpenseCtrl = mock(AddExpenseCtrl.class);
         editEventTitleCtrl = mock(EditEventTitleCtrl.class);
         addParticipantCtrl = mock(AddParticipantCtrl.class);
 
         splittyCtrl.initShowOverview(new Pair<>(startScreenCtrl, new StackPane()));
         splittyCtrl.initEventOverview(new Pair<>(eventOverviewCtrl, new StackPane()));
-        splittyCtrl.initInvitePage(new Pair<>(invitationCtrl, new StackPane()));
         splittyCtrl.initExp(new Pair<>(addExpenseCtrl, new StackPane()));
         splittyCtrl.initEditTitle(new Pair<>(editEventTitleCtrl, new StackPane()));
         splittyCtrl.initAddParticipant(new Pair<>(addParticipantCtrl, new StackPane()));
@@ -60,7 +57,7 @@ public class SplittyCtrlTest {
     
     @BeforeEach
     public void setUp() {
-        reset(startScreenCtrl, eventOverviewCtrl, invitationCtrl, addExpenseCtrl,
+        reset(startScreenCtrl, eventOverviewCtrl, addExpenseCtrl,
                 editEventTitleCtrl, addParticipantCtrl);
     }
 
@@ -93,17 +90,6 @@ public class SplittyCtrlTest {
         Platform.runLater(() -> {
             eventOverviewCtrl.eventTitle = new Label();
             splittyCtrl.showEventOverview(new Event("test"));
-            assertNotNull(splittyCtrl.getPrimaryStage().getScene());
-            assertEquals("Event: test", splittyCtrl.getPrimaryStage().getTitle());
-        });
-    }
-
-    @Test
-    public void testShowInvitePage() {
-        Platform.runLater(() -> {
-            invitationCtrl.eventInviteTitle = new Text();
-            invitationCtrl.inviteCode = new Text();
-            splittyCtrl.showInvitePage(new Event("test"));
             assertNotNull(splittyCtrl.getPrimaryStage().getScene());
             assertEquals("Event: test", splittyCtrl.getPrimaryStage().getTitle());
         });

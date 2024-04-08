@@ -35,7 +35,6 @@ public class EventOverviewCtrl implements Initializable {
     public Button backButton;
     public Button editTitleButton;
     public Button copyCodeButton;
-    public Button inviteButton;
     public Button editPartButton;
     public Button addPartButton;
     public Button addExpenseButton;
@@ -215,8 +214,6 @@ public class EventOverviewCtrl implements Initializable {
         Main.buttonFeedback(copyCodeButton);
         editTitleButton.setStyle(Main.changeUI(editTitleButton));
         Main.buttonFeedback(editTitleButton);
-        inviteButton.setStyle(Main.changeUI(inviteButton));
-        Main.buttonFeedback(inviteButton);
         settleDebtsButton.setStyle(Main.changeUI(settleDebtsButton));
         Main.buttonFeedback(settleDebtsButton);
         part.setStyle(Main.changeUI(part));
@@ -244,11 +241,6 @@ public class EventOverviewCtrl implements Initializable {
         List<Debt> allDebts = server.getDebtsByEvent(event);
         controller.showSettleDebts(allDebts, event);
     }
-
-    public void sendInvites() {
-        controller.showInvitePage(event);
-    }
-
     public void editTitle() {
         controller.showEditTitle(event);
     }
