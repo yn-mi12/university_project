@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SetServerCtrl">
+   <children>
+      <Text layoutX="18.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%server_url" wrappingWidth="232.296875">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
+      <TextField fx:id="serverUrl" layoutX="18.0" layoutY="79.0" prefHeight="25.0" prefWidth="244.0" />
+      <Button layoutX="213.0" layoutY="116.0" mnemonicParsing="false" onAction="#setServerUrl" text="%set">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Label fx:id="emptyLabel" layoutX="18.0" layoutY="118.0" prefHeight="20.0" prefWidth="179.0" text="%empty_url" textFill="RED" visible="false">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Button layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#goBack" text="⬅" />
+      <Label fx:id="setLabel" layoutX="18.0" layoutY="118.0" prefHeight="20.0" prefWidth="179.0" text="%set_url" textFill="#00794d" visible="false">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

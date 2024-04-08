@@ -116,7 +116,6 @@ public class AddExpenseCtrl implements Initializable {
     public void ok() {
         Event updated;
         try {
-
             System.out.println("Add expense");
             System.out.println("Id:" + event.getId());
             System.out.println("Get expense");
@@ -131,14 +130,14 @@ public class AddExpenseCtrl implements Initializable {
             expense.setDebtors(getDebtors());
             expense.setEvent(event);
             Expense saved = server.addExpense(expense, event);
-            updated = server.getByInviteCode(ctrl.getSelectedEvent().getInviteCode());
+            updated = server.getByID(ctrl.getSelectedEvent().getId());
 
             for(ExpenseParticipant ep : saved.getDebtors())
                 if(ep.isOwner())
                     expensePayer = ep.getParticipant();
             participants = server.getEventParticipants(updated);
             calculateDebts(saved, updated);
-            updated = server.getByInviteCode(ctrl.getSelectedEvent().getInviteCode());
+            updated = server.getByID(ctrl.getSelectedEvent().getId());
 
         } catch (WebApplicationException e) {
 
@@ -147,7 +146,6 @@ public class AddExpenseCtrl implements Initializable {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
             return;
-
         }
         clearFields();
         controller.showEventOverview(updated);

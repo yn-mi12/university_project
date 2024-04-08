@@ -17,9 +17,9 @@ public class DebtTest {
     @BeforeEach
     void setUp() {
         event = new Event("Test");
-        debtor = new Participant("John", "Doe");
+        debtor = new Participant("John", "Doe", null, null, null, null);
         debtor.setEvent(event);
-        creditor = new Participant("Jane", "Doe");
+        creditor = new Participant("Jane", "Doe", null, null, null, null);
         creditor.setEvent(event);
         debt = new Debt(debtor, creditor, 100);
         debt.setEvent(event);
@@ -28,7 +28,8 @@ public class DebtTest {
     @Test
     void constructorTest() {
         assertNotNull(debt);
-        assertNotNull(new Debt());
+        Debt x = new Debt();
+        assertNotNull(x);
     }
 
     @Test
@@ -39,14 +40,14 @@ public class DebtTest {
 
     @Test
     void getDebtor() {
-        Participant check = new Participant("John", "Doe");
+        Participant check = new Participant("John", "Doe", null, null, null, null);
         check.setEvent(event);
         assertEquals(check, debt.getDebtor());
     }
 
     @Test
     void setDebtor() {
-        Participant check = new Participant("a", "b");
+        Participant check = new Participant("a", "b", null, null, null, null);
         check.setEvent(event);
         debt.setDebtor(check);
         assertEquals(check, debt.getDebtor());
@@ -54,14 +55,14 @@ public class DebtTest {
 
     @Test
     void getCreditor() {
-        Participant check = new Participant("Jane", "Doe");
+        Participant check = new Participant("Jane", "Doe", null, null, null, null);
         check.setEvent(event);
         assertEquals(check, debt.getCreditor());
     }
 
     @Test
     void setCreditor() {
-        Participant check = new Participant("d", "e");
+        Participant check = new Participant("d", "e", null, null, null, null);
         check.setEvent(event);
         debt.setCreditor(check);
         assertEquals(check, debt.getCreditor());
@@ -92,12 +93,16 @@ public class DebtTest {
 
     @Test
     void testEquals() {
-        assertEquals(debt, debt);
         Debt d2 = new Debt(debtor, creditor, 20);
         assertNotEquals(d2, debt);
-        Debt d3 = new Debt(new Participant("a", "b"), new Participant("c", "d"), 100);
+        Debt d3 = new Debt(
+                new Participant("a", "b", null, null, null, null),
+                new Participant("c", "d", null, null, null, null),
+                100);
         assertNotEquals(d3, debt);
-        Debt d4 = new Debt(debtor, new Participant("c", "d"), 100);
+        Debt d4 = new Debt(debtor,
+                new Participant("c", "d", null, null, null, null),
+                100);
         assertNotEquals(d4, debt);
     }
 

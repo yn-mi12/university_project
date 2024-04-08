@@ -20,18 +20,23 @@
       <Label fx:id="invalidCode" layoutX="96.0" layoutY="167.0" text="%invalid_code" textFill="#da0404" visible="false" />
       <Label fx:id="emptyCode" layoutX="96.0" layoutY="167.0" text="%empty_code" textFill="#da0404" visible="false" />
       <Label fx:id="emptyTitle" layoutX="96.0" layoutY="85.0" text="%empty_title" textFill="#da0404" visible="false" />
-      <Text fx:id="isAdmin" layoutX="104.0" layoutY="464.0" text="%admin">
+      <Text fx:id="isAdmin" layoutX="96.0" layoutY="443.0" text="%admin">
          <font>
          <Font size="13" />
          </font>
       </Text>
       <ComboBox fx:id="languageBox" layoutX="380.0" layoutY="391.0" prefHeight="25.0" prefWidth="171.0" />
-      <Button fx:id="showAdminButton" layoutX="268.0" layoutY="445.0" minWidth="40" onAction="#showAdminLogin" text="%here">
+      <Button fx:id="showAdminButton" layoutX="245.0" layoutY="424.0" minWidth="40" onAction="#showAdminLogin" text="%here">
          <font>
          <Font size="13" />
-         </font>
+          </font>
       </Button>
       <ToggleButton fx:id="highContrastButton" layoutX="509.0" layoutY="438.0" mnemonicParsing="false" onAction="#changeContrast" />
       <Text layoutX="391.0" layoutY="463.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%highContrastMode" />
+      <Button fx:id="setServers" layoutX="128.0" layoutY="459.0" minWidth="40" onAction="#setServer" prefHeight="27.0" prefWidth="100.0" text="%set_server">
+      <font>
+         <Font size="13" />
+      </font>
+   </Button>
    </children>
 </AnchorPane>

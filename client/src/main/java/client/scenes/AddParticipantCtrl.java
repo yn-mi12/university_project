@@ -142,24 +142,23 @@ public class AddParticipantCtrl implements Initializable {
             if(!editPart){
             participant = getParticipant();
             participantExists.visibleProperty().setValue(false);
-                if (participant != null && !participantAlreadyExists()) {
-                    server.addParticipant(participant, event);
-                    Event updated = server.getByInviteCode(event.getInviteCode());
-                    clearFields();
-                    mainCtrl.showEventOverview(updated);
-                } else {
-                    participantExists.visibleProperty().setValue(true);
-                }
+            if (participant != null && !participantAlreadyExists()) {
+                server.addParticipant(participant, event);
+                Event updated = server.getByID(event.getId());
+                clearFields();
+                mainCtrl.showEventOverview(updated);
+            } else {
+                participantExists.visibleProperty().setValue(true);
+            }
             }
             else {
                 participant.setFirstName(getParticipant().getFirstName());
                 participant.setLastName(getParticipant().getLastName());
                 participant.setEmail(getParticipant().getEmail());
                 participantExists.visibleProperty().setValue(false);
-                if(participant.getFirstName() != null && participant.getLastName()!=null
-                    && !participantAlreadyExists()) {
+                if(participant.getFirstName() != null && participant.getLastName()!=null) {
                     server.updateParticipant(participant);
-                    event = server.getByInviteCode(event.getInviteCode());
+                    event = server.getByID(event.getId());
                     editPart = false;
                     mainCtrl.initEditParticipantOverview(event);
                     mainCtrl.showEditParticipantOverview();

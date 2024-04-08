@@ -13,7 +13,9 @@ public class Participant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(nullable = false)
     private String firstName;
+    @Column(nullable = false)
     private String lastName;
     private String email;
     private String accountName;
@@ -21,9 +23,10 @@ public class Participant {
     private String bic;
     @JsonIgnore
     @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
-    private Set<ExpenseParticipant> expenseWhereDebtor;
+    private Set<ExpenseParticipant> expenses;
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Event event;
     @JsonIgnore
     @OneToMany(mappedBy = "debtor", cascade = CascadeType.ALL)
@@ -33,16 +36,11 @@ public class Participant {
     private List<Debt> debtsWhereCreditor = new ArrayList<>();
 
     @SuppressWarnings("unused")
-    public Participant() {}
+    public Participant() {
 
-    //Only use for testing, the other constructor should be used for any actual use cases
-    public Participant(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
     }
 
-    public Participant(String firstName, String lastName, String email, String accountName, String iban,
-                       String bic) {
+    public Participant(String firstName, String lastName, String email, String accountName, String iban, String bic) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -83,24 +81,36 @@ public class Participant {
         this.email = email;
     }
 
-    public String getAccountName() { return accountName; }
-
-    public void setAccountName(String accountName) { this.accountName = accountName; }
-
-    public String getIban() { return iban; }
-
-    public void setIban(String iban) { this.iban = iban; }
-
-    public String getBic() { return bic; }
-
-    public void setBic(String bic) { this.bic = bic; }
-
-    public Set<ExpenseParticipant> getExpenseWhereDebtor() {
-        return expenseWhereDebtor;
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setExpenseWhereDebtor(Set<ExpenseParticipant> expenseWhereDebtor) {
-        this.expenseWhereDebtor = expenseWhereDebtor;
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public String getIban() {
+        return iban;
+    }
+
+    public void setIban(String iban) {
+        this.iban = iban;
+    }
+
+    public String getBic() {
+        return bic;
+    }
+
+    public void setBic(String bic) {
+        this.bic = bic;
+    }
+
+    public Set<ExpenseParticipant> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(Set<ExpenseParticipant> expenses) {
+        this.expenses = expenses;
     }
 
     public Event getEvent() {

@@ -2,11 +2,8 @@ package server.database;
 
 import commons.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-public interface EventRepository extends JpaRepository<Event, Long> {
-    List<Event> findByInviteCode(String inviteCode);
-
-    boolean existsByInviteCode(String inviteCode);
+@Repository
+public interface EventRepository extends JpaRepository<Event, String> {
 }

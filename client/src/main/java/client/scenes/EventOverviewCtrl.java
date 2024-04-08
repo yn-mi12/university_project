@@ -76,7 +76,7 @@ public class EventOverviewCtrl implements Initializable {
     private ComboBox<Label> languageBox;
     @FXML
     private Label totalCost;
-    public Event event;
+    private Event event;
     public boolean isAdmin = false;
 
     @FXML
@@ -106,7 +106,7 @@ public class EventOverviewCtrl implements Initializable {
     public void setSelectedEvent(Event selectedEvent) {
         hideTabPanes();
         this.event = selectedEvent;
-        this.event = server.getByInviteCode(selectedEvent.getInviteCode());
+        this.event = server.getByID(selectedEvent.getId());
         this.participants = event.getParticipants();
         ObservableList<Label> names = FXCollections.observableArrayList();
         StringBuilder namesString = new StringBuilder();
@@ -136,7 +136,7 @@ public class EventOverviewCtrl implements Initializable {
         part.getItems().setAll(names);
         participantText.setEditable(false);
         participantText.setText(namesString.toString());
-        inviteCode.setText(event.getInviteCode());
+        inviteCode.setText(event.getId());
     }
 
     @SuppressWarnings("java.lang.ClassCastException")
@@ -294,9 +294,12 @@ public class EventOverviewCtrl implements Initializable {
     public void deleteEvent() {
         try {
             System.out.println("Delete Event");
-            event.setId(server.getByInviteCode(event.getInviteCode()).getId());
+            event.setId(server.getByID(event.getId()).getId());
             server.send("/app/deleted", event);
-
+            if(!controller.getAdmin()) {
+                Config.get().removePastCode(event.getId());
+                Config.get().save();
+            }
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);

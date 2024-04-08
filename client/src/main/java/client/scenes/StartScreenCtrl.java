@@ -21,13 +21,16 @@ import javafx.stage.Modality;
 import javafx.util.Callback;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 
 public class StartScreenCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
+    @FXML
+    public Button setServers;
     private ObservableList<String> data;
-    private final SplittyCtrl eventCtrl;
+    private final SplittyCtrl controller;
     @FXML
     public ToggleButton highContrastButton;
     @FXML
@@ -67,7 +70,7 @@ public class StartScreenCtrl implements Initializable {
     @Inject
     public StartScreenCtrl(ServerUtilsEvent server, SplittyCtrl mainCtrl) {
         this.server = server;
-        this.eventCtrl = mainCtrl;
+        this.controller = mainCtrl;
     }
 
     @Override
@@ -145,9 +148,9 @@ public class StartScreenCtrl implements Initializable {
                 @Override
                 public void run() {
                     //refresh method loops in PastCodes
-                    Config.get().addPastCode(ev.getInviteCode());
+                    Config.get().addPastCode(ev.getId());
                     //System.out.println("adding event " + ev.getTitle() + " : " + ev.getInviteCode());
-                    data.add(ev.getTitle() + " : " + ev.getInviteCode());
+                    data.add(ev.getTitle() + " : " + ev.getId());
                     eventList.setItems(data);
                 }
             });
@@ -156,9 +159,9 @@ public class StartScreenCtrl implements Initializable {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    Config.get().removePastCode(ev.getInviteCode());
+                    Config.get().removePastCode(ev.getId());
                     //System.out.println("deleting event " + ev.getTitle() + " : " + ev.getInviteCode());
-                    data.remove(ev.getTitle() + " : " + ev.getInviteCode());
+                    data.remove(ev.getTitle() + " : " + ev.getId());
                     eventList.setItems(data);
                 }
             });
@@ -169,12 +172,12 @@ public class StartScreenCtrl implements Initializable {
                 public void run() {
                     int index=0;
                     for(String s : data){
-                        if(s.contains(ev.getInviteCode())){
+                        if(s.contains(ev.getId())){
                             index = data.indexOf(s);
                             break;
                         }
                     }
-                    data.set(index, ev.getTitle() + " : " + ev.getInviteCode());
+                    data.set(index, ev.getTitle() + " : " + ev.getId());
                     eventList.setItems(data);
                 }
             });
@@ -228,6 +231,8 @@ public class StartScreenCtrl implements Initializable {
         emptyTitle.setStyle(Main.changeUI(emptyTitle));
         languageChoice.setStyle(Main.changeUI(languageChoice));
         isAdmin.setStyle(Main.changeUI(isAdmin));
+        setServers.setStyle(Main.changeUI(setServers));
+        Main.buttonFeedback(setServers);
     }
 
         public void refresh() {
@@ -244,10 +249,10 @@ public class StartScreenCtrl implements Initializable {
             List<String> removedCodes = new ArrayList<>();
 
             for (String code : codes) {
-                Event e = server.getByInviteCode(code);
+                Event e = server.getByID(code);
                 if (e != null) {
                     events.add(e);
-                    titles.add(e.getTitle() + " : " + e.getInviteCode());
+                    titles.add(e.getTitle() + " : " + e.getId());
                 } else {
                     removedCodes.add(code);
                 }
@@ -269,6 +274,10 @@ public class StartScreenCtrl implements Initializable {
         codeField.clear();
     }
 
+    public void setServer() {
+        controller.showSetServer();
+    }
+
     public void createEvent() {
         var title = this.titleField.getText();
         if (title.isEmpty()) {
@@ -282,7 +291,7 @@ public class StartScreenCtrl implements Initializable {
             System.out.println("Add event");
             event = new Event(title);
             server.send("/app/events", event);
-            Config.get().addPastCode(String.valueOf(event.getInviteCode()));
+            Config.get().addPastCode(String.valueOf(event.getId()));
             Config.get().save();
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -291,8 +300,7 @@ public class StartScreenCtrl implements Initializable {
             alert.showAndWait();
             return;
         }
-        eventCtrl.showEventOverview(event);
-
+        controller.showEventOverview(event);
     }
 
     public void stop() {
@@ -308,16 +316,16 @@ public class StartScreenCtrl implements Initializable {
             return;
         }
 
-        Event event = server.getByInviteCode(inviteCode);
+        Event event = server.getByID(inviteCode);
 
         if (event != null) {
             clearFields();
             Set<String> codes = Config.get().getPastCodes();
-            if (!codes.contains(event.getInviteCode())) {
-                Config.get().addPastCode(String.valueOf(event.getInviteCode()));
+            if (!codes.contains(event.getId())) {
+                Config.get().addPastCode(String.valueOf(event.getId()));
                 Config.get().save();
             }
-            eventCtrl.showEventOverview(event);
+            controller.showEventOverview(event);
         } else {
             emptyCode.setVisible(false);
             invalidCode.setVisible(true);
@@ -328,18 +336,18 @@ public class StartScreenCtrl implements Initializable {
     public void showEvent() {
         String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
         String inviteCode = eventTitleAndCode.split(": ")[1];
-        Event event = server.getByInviteCode(inviteCode);
-        eventCtrl.showEventOverview(event);
+        Event event = server.getByID(inviteCode);
+        controller.showEventOverview(event);
     }
 
     public Event getEvent() {
         String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
         String inviteCode = eventTitleAndCode.split(": ")[1];
-        return server.getByInviteCode(inviteCode);
+        return server.getByID(inviteCode);
     }
 
     public void showAdminLogin() {
-        eventCtrl.showAdminLogin();
+        controller.showAdminLogin();
     }
 
     public void changeContrast() {
