@@ -26,11 +26,15 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class SettleDebtsCtrl implements Initializable {
-
+    @FXML
     public AnchorPane background;
+    @FXML
     public Label openDebtsLabel;
+    @FXML
     public Button backButton;
+    @FXML
     public AnchorPane innerPane1;
+    @FXML
     public AnchorPane innerPane2;
     private ServerUtilsEvent server;
     private final SplittyCtrl eventCtrl;

@@ -23,10 +23,15 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 public class EditParticipantOverviewCtrl implements Initializable {
+    @FXML
     public AnchorPane background;
+    @FXML
     public Button backButton;
+    @FXML
     public Button editButton;
+    @FXML
     public Button deleteButton;
+    @FXML
     public Label allParticipantsLabel;
     private Participant selectedParticipant;
     private final ServerUtilsEvent server;
@@ -34,6 +39,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
     private Event event;
     @FXML
     public ListView<String> participantList;
+    @FXML
     private Stage primaryStage;
 
     @FXML

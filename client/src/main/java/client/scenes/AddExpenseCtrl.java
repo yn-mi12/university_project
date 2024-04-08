@@ -20,16 +20,27 @@ import java.net.URL;
 import java.util.*;
 
 public class AddExpenseCtrl implements Initializable {
+    @FXML
     public ComboBox<Label> tagsComboBox;
+    @FXML
     public Label expenseType;
+    @FXML
     public Label howToSplitLabel;
+    @FXML
     public Label whenLabel;
+    @FXML
     public Label howMuchLabel;
+    @FXML
     public Label whatForLabel;
+    @FXML
     public Label whoPaidLabel;
+    @FXML
     public Label addExpenseLabel;
+    @FXML
     public Button addButton;
+    @FXML
     public Button cancelButton;
+    @FXML
     public AnchorPane background;
     private EventOverviewCtrl ctrl;
     private Event event;

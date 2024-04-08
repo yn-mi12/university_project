@@ -22,10 +22,15 @@ import java.util.ResourceBundle;
 public class EditEventTitleCtrl implements Initializable {
     private final ServerUtilsEvent server;
     private final SplittyCtrl mainCtrl;
+    @FXML
     public Label oldTitleLabel;
+    @FXML
     public Button okButton;
+    @FXML
     public Label newTitleText;
+    @FXML
     public Button cancelButton;
+    @FXML
     public AnchorPane background;
     private Event event;
 

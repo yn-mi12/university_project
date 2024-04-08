@@ -27,24 +27,43 @@ import java.util.*;
 
 public class EventOverviewCtrl implements Initializable {
     private final ServerUtilsEvent server;
+    @FXML
     public Label inviteCode;
+    @FXML
     public Label paidLabel;
+    @FXML
     public Label participantsLabel;
+    @FXML
     public Label forLabel;
+    @FXML
     public AnchorPane background;
+    @FXML
     public Button backButton;
+    @FXML
     public Button editTitleButton;
+    @FXML
     public Button copyCodeButton;
+    @FXML
     public Button editPartButton;
+    @FXML
     public Button addPartButton;
+    @FXML
     public Button addExpenseButton;
+    @FXML
     public Button settleDebtsButton;
+    @FXML
     public Button deleteEventButton;
+    @FXML
     public Text languageChoice;
+    @FXML
     public Label inviteCodeLabel;
+    @FXML
     public Label expenseLabel;
+    @FXML
     public Label participantsLabel2;
+
     private Participant expensePayer;
+
     private final SplittyCtrl controller;
     private List<Participant> participants;
     @FXML

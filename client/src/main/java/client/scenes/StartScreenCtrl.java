@@ -28,14 +28,23 @@ public class StartScreenCtrl implements Initializable {
     private final ServerUtilsEvent server;
     private ObservableList<String> data;
     private final SplittyCtrl eventCtrl;
+    @FXML
     public ToggleButton highContrastButton;
+    @FXML
     public AnchorPane background;
+    @FXML
     public Button showAdminButton;
+    @FXML
     public Button createButton;
+    @FXML
     public Button joinButton;
+    @FXML
     public Text eventCreate;
+    @FXML
     public Text eventJoin;
+    @FXML
     public Text languageChoice;
+    @FXML
     public Text recentEvents;
     public Text isAdmin;
     @FXML

@@ -22,15 +22,25 @@ import java.util.ResourceBundle;
 public class AddParticipantCtrl implements Initializable {
     private final ServerUtilsEvent server;
     private final SplittyCtrl mainCtrl;
+    @FXML
     public AnchorPane background;
+    @FXML
     public Button okButton;
+    @FXML
     public Button cancelButton;
+    @FXML
     public Label firstNameText;
+    @FXML
     public Label lastNameText;
+    @FXML
     public Label emailText;
+    @FXML
     public Label accountNameText;
+    @FXML
     public Label bankDetailsText;
+    @FXML
     public Label ibanText;
+    @FXML
     public Label bicText;
     private Event event;
     @FXML
