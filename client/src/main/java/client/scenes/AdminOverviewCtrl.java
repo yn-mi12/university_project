@@ -114,22 +114,22 @@ public class AdminOverviewCtrl implements Initializable {
         server.registerForMessages("/topic/titles", Event.class , q -> {
             for(var x: data)
             {
-                if(x.contains(q.getInviteCode())){
+                if(x.contains(q.getId())){
                     data.remove(x);
                     break;
                 }
             }
-            data.add(q.getTitle() + " : " + q.getInviteCode());
+            data.add(q.getTitle() + " : " + q.getId());
             eventList.refresh();
         });
         server.registerForMessages("/topic/events", Event.class , q -> {
-            data.add(q.getTitle() + " : " + q.getInviteCode());
+            data.add(q.getTitle() + " : " + q.getId());
             eventList.refresh();
         });
         server.registerForMessages("/topic/deleted", Event.class , q -> {
             for(var x: data)
             {
-                if(x.contains(q.getInviteCode())){
+                if(x.contains(q.getId())){
                     data.remove(x);
                     break;
                 }
@@ -149,7 +149,7 @@ public class AdminOverviewCtrl implements Initializable {
         List<String> titles = new ArrayList<>();
         for(Event x : events)
         {
-            titles.add(x.getTitle() + " : " + x.getInviteCode());
+            titles.add(x.getTitle() + " : " + x.getId());
         }
         data = FXCollections.observableList(titles);
         eventList.setItems(data);
@@ -163,13 +163,13 @@ public class AdminOverviewCtrl implements Initializable {
     public Event getEvent() {
         String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
         String inviteCode = eventTitleAndCode.split(": ")[1];
-        return server.getByInviteCode(inviteCode);
+        return server.getByID(inviteCode);
     }
 
     public void showEvent() {
         String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
         String inviteCode = eventTitleAndCode.split(": ")[1];
-        Event event = server.getByInviteCode(inviteCode);
+        Event event = server.getByID(inviteCode);
         controller.showEventOverview(event);
     }
     public void deleteEvent() {
@@ -190,7 +190,7 @@ public class AdminOverviewCtrl implements Initializable {
         var om = new ObjectMapper();
         String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
         String inviteCode = eventTitleAndCode.split(": ")[1];
-        Event event = server.getByInviteCode(inviteCode);
+        Event event = server.getByID(inviteCode);
 
         try {
             var jsonEvent = om.writeValueAsString(event);
@@ -235,7 +235,7 @@ public class AdminOverviewCtrl implements Initializable {
                 event.setExpenses(null);
                 event.setTags(null);
                 event.setDebts(null);
-                Event find = server.getByInviteCode(event.getInviteCode());
+                Event find = server.getByID(event.getId());
 
                 if(find == null) {
                     addJsonToServer(event, participants, expenses, debts);
@@ -256,7 +256,7 @@ public class AdminOverviewCtrl implements Initializable {
         for(Participant p : participants)
             server.addParticipant(p, saved);
 
-        saved = server.getByInviteCode(saved.getInviteCode());
+        saved = server.getByID(saved.getId());
         List<Participant> newParts = saved.getParticipants();
         Map<Long, Participant> idToNewPart = new HashMap<>();
         for(int i = 0; i < participants.size(); i++)
@@ -277,7 +277,7 @@ public class AdminOverviewCtrl implements Initializable {
             count++;
         }
 
-        saved = server.getByInviteCode(saved.getInviteCode());
+        saved = server.getByID(saved.getId());
         List<Debt> newDebts = new ArrayList<>();
         for(Debt d : debts) {
             Debt newDebt = new Debt(idToNewPart.get(d.getDebtor().getId()),

@@ -5,10 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,7 +17,7 @@ class ParticipantTest {
 
     @BeforeEach
     void setUp() {
-        x = new Participant("a", "b");
+        x = new Participant("a", "b", null, null, null, null);
     }
 
     @Test
@@ -27,7 +26,8 @@ class ParticipantTest {
         assertEquals("a",withEmail.getFirstName());
         assertEquals("b",withEmail.getLastName());
         assertEquals("c",withEmail.getEmail());
-        assertNotNull(new Participant());
+        Participant empty = new Participant();
+        assertNotNull(empty);
     }
 
     @Test
@@ -39,7 +39,7 @@ class ParticipantTest {
 
     @Test
     void setId() {
-        Participant y = new Participant("a","b");
+        Participant y = new Participant("a","b", null, null, null, null);
         x.setId(1);
         y.setId(1);
         assertEquals(x.getId(),y.getId());
@@ -101,8 +101,8 @@ class ParticipantTest {
         expenseWhereDebtor.add(ep1);
         expenseWhereDebtor.add(ep2);
 
-        x.setExpenseWhereDebtor(expenseWhereDebtor);
-        assertEquals(expenseWhereDebtor, x.getExpenseWhereDebtor());
+        x.setExpenses(expenseWhereDebtor);
+        assertEquals(expenseWhereDebtor, x.getExpenses());
     }
 
     @Test
@@ -114,7 +114,7 @@ class ParticipantTest {
 
     @Test
     void testEquals() {
-        Participant y = new Participant("a","b");
+        Participant y = new Participant("a","b", null, null, null, null);
         assertEquals(x,y);
         x.setLastName("abc");
         assertNotEquals(x,y);
@@ -127,7 +127,7 @@ class ParticipantTest {
 
     @Test
     void testHashCode() {
-        Participant y = new Participant("a","b");
+        Participant y = new Participant("a","b", null, null, null, null);
         assertEquals(x.hashCode(),y.hashCode());
         x.setLastName("z");
         assertNotEquals(x.hashCode(),y.hashCode());
@@ -145,16 +145,16 @@ class ParticipantTest {
 
     @Test
     void debtsWhereDebtorTest() {
-        Debt test = new Debt(new Participant("a", "b"), new Participant("c", "d"), 100);
-        Participant x = new Participant("John","Doe");
+        Debt test = new Debt(new Participant("a", "b", null, null, null, null), new Participant("c", "d", null, null, null, null), 100);
+        Participant x = new Participant("John","Doe", null, null, null, null);
         x.setDebtsWhereDebtor(List.of(test));
         assertEquals(List.of(test), x.getDebtsWhereDebtor());
     }
 
     @Test
     void debtsWhereCreditorTest() {
-        Debt test = new Debt(new Participant("a", "b"), new Participant("c", "d"), 100);
-        Participant x = new Participant("John","Doe");
+        Debt test = new Debt(new Participant("a", "b", null, null, null, null), new Participant("c", "d", null, null, null, null), 100);
+        Participant x = new Participant("John","Doe", null, null, null, null);
         x.setDebtsWhereCreditor(List.of(test));
         assertEquals(List.of(test), x.getDebtsWhereCreditor());
     }

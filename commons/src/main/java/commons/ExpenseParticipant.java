@@ -12,13 +12,18 @@ public class ExpenseParticipant {
     private long id;
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Expense expense;
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Participant participant;
+    @Column(nullable = false)
     private double share;
+    @Column(nullable = false)
     private boolean owner;
 
-    public ExpenseParticipant () {}
+    public ExpenseParticipant() {
+    }
 
     public ExpenseParticipant(Expense expense, Participant participant, double share, boolean owner) {
         this.expense = expense;
@@ -32,7 +37,9 @@ public class ExpenseParticipant {
         return id;
     }
 
-    public void setId(long id) { this.id = id; }
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Expense getExpense() {
         return expense;
@@ -71,13 +78,14 @@ public class ExpenseParticipant {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ExpenseParticipant that = (ExpenseParticipant) o;
-        return share == that.share && owner == that.owner && Objects.equals(expense, that.expense)
+        return Double.compare(share, that.share) == 0
+                && owner == that.owner
                 && Objects.equals(participant, that.participant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(expense, participant, share, owner);
+        return Objects.hash(participant, share, owner);
     }
 
     @Override

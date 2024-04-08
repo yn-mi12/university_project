@@ -101,7 +101,7 @@ public class EventOverviewCtrl implements Initializable {
                 expensesIncludingParticipant();
             });
         }
-        inviteCode.setText(event.getInviteCode());
+        inviteCode.setText(event.getId());
     }
 
     @SuppressWarnings("java.lang.ClassCastException")
@@ -176,10 +176,10 @@ public class EventOverviewCtrl implements Initializable {
     public void deleteEvent() {
         try {
             System.out.println("Delete Event");
-            event.setId(server.getByInviteCode(event.getInviteCode()).getId());
+            event.setId(server.getByID(event.getId()).getId());
             server.send("/app/deleted", event);
             if(!controller.getAdmin()) {
-                Config.get().removePastCode(event.getInviteCode());
+                Config.get().removePastCode(event.getId());
                 Config.get().save();
             }
         } catch (WebApplicationException e) {

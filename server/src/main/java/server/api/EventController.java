@@ -1,7 +1,6 @@
 package server.api;
 
 import commons.Event;
-import commons.Participant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -9,7 +8,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import server.database.EventRepository;
-import server.database.ParticipantRepository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,27 +19,16 @@ import java.util.function.Consumer;
 public class EventController {
 
     private final EventRepository repo;
-    private final ParticipantRepository partRepo;
 
     /**
      * The constructor for the EventController class
      *
      * @param repo - The Event repository
      */
-    public EventController(EventRepository repo, ParticipantRepository partRepo) {
+    public EventController(EventRepository repo){
         this.repo = repo;
-        this.partRepo = partRepo;
     }
 
-    /**
-     * Returns all the Events currently stored
-     *
-     * @return - All the Events
-     */
-    @GetMapping(path = {"", "/"})
-    public List<Event> getAll() {
-        return repo.findAll();
-    }
 
     @MessageMapping("/events")
     @SendTo("/topic/events")
@@ -113,30 +100,27 @@ public class EventController {
     }
 
     /**
+     * Returns all the Events currently stored
+     *
+     * @return - All the Events
+     */
+    @GetMapping(path = { "", "/" })
+    public ResponseEntity<List<Event> > getAll() {
+        return ResponseEntity.ok(repo.findAll());
+    }
+
+    /**
      * Return a specific Event from its id
      *
      * @param id - The id of the Event
      * @return - The Event with the id specified
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Event> getById(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<Event> getById(@PathVariable("id") String id) {
+        if (!repo.existsById(id)) {
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(repo.findById(id).get());
-    }
-
-    /**
-     * Return a specific Event from its invite code
-     *
-     * @param inviteCode - The invite code of the Event
-     * @return - The Event with the invite code specified
-     */
-    @GetMapping("/code={invite-code}")
-    public ResponseEntity<Event> getByInviteCode(@PathVariable("invite-code") String inviteCode) {
-        if (inviteCode == null || !repo.existsByInviteCode(inviteCode))
-            return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(repo.findByInviteCode(inviteCode).get(0));
     }
 
     /**
@@ -147,26 +131,12 @@ public class EventController {
      */
     @PostMapping(path = {"", "/"})
     public ResponseEntity<Event> save(@RequestBody Event event) {
-        if (isNullOrEmpty(event.getTitle()) || isNullOrEmpty(event.getInviteCode())) {
+        if (isNullOrEmpty(event.getTitle()) || isNullOrEmpty(event.getId())) {
             return ResponseEntity.badRequest().build();
         }
         addListeners.forEach((key, listener) -> listener.accept(event));
         Event saved = repo.save(event);
         return ResponseEntity.ok(saved);
-    }
-
-    @RequestMapping(value = "/{invite_code}/participants", method = RequestMethod.POST)
-    public ResponseEntity<Participant> saveParticipantToEvent(@RequestBody Participant participant,
-                                                              @PathVariable("invite_code") String id) {
-
-        if (participant == null || isNullOrEmpty(participant.getFirstName()) || isNullOrEmpty(participant.getLastName())
-                || !repo.existsByInviteCode(id)) {
-            return ResponseEntity.badRequest().build();
-        }
-        Event event = repo.findByInviteCode(id).getFirst();
-        participant.setEvent(event);
-        partRepo.save(participant);
-        return ResponseEntity.ok(participant);
     }
 
     /**
@@ -177,11 +147,14 @@ public class EventController {
      * @return - The updated Event
      */
     @PutMapping("/{id}/title")
-    public ResponseEntity<Event> updateTitle(@PathVariable Long id, @RequestBody String newTitle) {
-        Event event = repo.findById(id).orElse(null);
-        if (event == null) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<Event> updateTitle(@PathVariable String id, @RequestBody String newTitle) {
+        if (!repo.existsById(id)) {
+            return ResponseEntity.notFound().build();
         }
+        if(isNullOrEmpty(newTitle))
+            return ResponseEntity.badRequest().build();
+
+        Event event = repo.findById(id).get();
         event.setTitle(newTitle);
         Event saved = repo.save(event);
         return ResponseEntity.ok(saved);
@@ -194,9 +167,9 @@ public class EventController {
      * @return - the deleted event
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Event> deleteById(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<Event> deleteById(@PathVariable("id") String id){
+        if (!repo.existsById(id)) {
+            return ResponseEntity.notFound().build();
         }
         Event x = repo.findById(id).get();
         repo.deleteById(id);

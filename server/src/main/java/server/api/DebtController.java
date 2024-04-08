@@ -24,7 +24,7 @@ public class DebtController {
     }
 
     @PostMapping({"/event/{ev_id}"})
-    public ResponseEntity<Debt> save(@PathVariable("ev_id") long id, @RequestBody Debt debt) {
+    public ResponseEntity<Debt> save(@PathVariable("ev_id") String id, @RequestBody Debt debt) {
         if (!partRepo.existsById(debt.getCreditor().getId()) || !partRepo.existsById(debt.getDebtor().getId())
             || !eventRepo.existsById(id)) {
             return ResponseEntity.badRequest().build();
@@ -35,8 +35,8 @@ public class DebtController {
     }
 
     @GetMapping("/event/{id}")
-    public ResponseEntity<List<Debt>> getByEventId(@PathVariable("id") long id) {
-        if (id < 0 || !eventRepo.existsById(id))
+    public ResponseEntity<List<Debt>> getByEventId(@PathVariable("id") String id) {
+        if (!eventRepo.existsById(id))
             return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(repo.findByEventId(id));
     }

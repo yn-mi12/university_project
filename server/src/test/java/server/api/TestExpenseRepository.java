@@ -17,10 +17,10 @@ public class TestExpenseRepository implements ExpenseRepository {
     public final List<Expense> expenses = new ArrayList<>();
     public final List<String> calledMethods = new ArrayList<>();
 
-    @Override
-    public void flush() {
+    private void call(String name){ calledMethods.add(name);}
 
-    }
+    @Override
+    public void flush() {}
 
     @Override
     public <S extends Expense> S saveAndFlush(S entity) {
@@ -31,7 +31,6 @@ public class TestExpenseRepository implements ExpenseRepository {
     public <S extends Expense> List<S> saveAllAndFlush(Iterable<S> entities) {
         return null;
     }
-
 
     @Override
     public void deleteAllInBatch(Iterable<Expense> entities) {
@@ -54,13 +53,14 @@ public class TestExpenseRepository implements ExpenseRepository {
     }
 
     @Override
-    public Expense getById(Long aLong) {
+    public Expense getById(Long id) {
         return null;
     }
 
     @Override
-    public Expense getReferenceById(Long aLong) {
-        return null;
+    public Expense getReferenceById(Long id) {
+        call("getReferenceById");
+        return findById(id).orElse(null);
     }
 
     @Override
@@ -100,10 +100,14 @@ public class TestExpenseRepository implements ExpenseRepository {
 
     @Override
     public <S extends Expense> S save(S entity) {
-
-            entity.setId(expenses.size());
-            expenses.add(entity);
+        call("save");
+        if(entity.getId() != 0 && existsById(entity.getId())) {
+            expenses.replaceAll(e -> (e.getId() == entity.getId()) ? entity : e);
             return entity;
+        }
+        entity.setId(expenses.stream().mapToLong(Expense::getId).max().orElse(0L)+1);
+        expenses.add(entity);
+        return entity;
     }
 
     @Override
@@ -113,17 +117,20 @@ public class TestExpenseRepository implements ExpenseRepository {
 
     @Override
     public Optional<Expense> findById(Long aLong) {
-        return Optional.empty();
+        call("findById");
+        return expenses.stream().filter(e -> e.getId() == aLong).findFirst();
     }
 
     @Override
-    public boolean existsById(Long aLong) {
-        return false;
+    public boolean existsById(Long id) {
+        call("existsById");
+        return expenses.stream().anyMatch(e -> e.getId() == id);
     }
 
     @Override
     public List<Expense> findAll() {
-        return null;
+        calledMethods.add("findAll");
+        return expenses;
     }
 
     @Override
@@ -133,12 +140,13 @@ public class TestExpenseRepository implements ExpenseRepository {
 
     @Override
     public long count() {
-        return 0;
+        calledMethods.add("count");
+        return expenses.size();
     }
 
     @Override
     public void deleteById(Long aLong) {
-
+        expenses.removeIf(i -> i.getId() == aLong);
     }
 
     @Override
@@ -158,7 +166,8 @@ public class TestExpenseRepository implements ExpenseRepository {
 
     @Override
     public void deleteAll() {
-
+        calledMethods.add("deleteAll");
+        expenses.clear();
     }
 
     @Override
@@ -172,22 +181,12 @@ public class TestExpenseRepository implements ExpenseRepository {
     }
 
     @Override
-    public List<Expense> findAllByEventId(Long eventId) {
-        return null;
+    public List<Expense> findByEventId(String eventId) {
+        return expenses.stream().filter(p -> p.getEvent().getId().equals(eventId)).toList();
     }
 
     @Override
-    public List<Expense> findAllByParticipantId(Long participantId) {
-        return null;
-    }
-
-    @Override
-    public List<Expense> findAllByParticipantIdWhereOwner(Long participantId) {
-        return null;
-    }
-
-    @Override
-    public List<Expense> findAllByParticipantIdWhereDebt(Long participantId) {
-        return null;
+    public List<Expense> findByParticipantId(Long participantId) {
+        return expenses.stream().filter(e -> e.getDebtors().stream().anyMatch(ep -> ep.getParticipant().getId() == participantId)).toList();
     }
 }

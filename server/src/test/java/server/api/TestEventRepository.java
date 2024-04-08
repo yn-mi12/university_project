@@ -18,7 +18,10 @@ public class TestEventRepository implements EventRepository {
     public final List<Event> events = new ArrayList<>();
     public final List<String> calledMethods = new ArrayList<>();
 
-    private void call(String name){calledMethods.add(name);}
+    private void call(String name){
+        calledMethods.add(name);
+    }
+
     @Override
     public void flush() {
 
@@ -35,14 +38,20 @@ public class TestEventRepository implements EventRepository {
     }
 
     @Override
+    public void deleteInBatch(Iterable<Event> entities) {
+
+    }
+
+    @Override
     public void deleteAllInBatch(Iterable<Event> entities) {
 
     }
 
     @Override
-    public void deleteAllByIdInBatch(Iterable<Long> longs) {
+    public void deleteAllByIdInBatch(Iterable<String> strings) {
 
     }
+
 
     @Override
     public void deleteAllInBatch() {
@@ -50,18 +59,19 @@ public class TestEventRepository implements EventRepository {
     }
 
     @Override
-    public Event getOne(Long aLong) {
+    public Event getOne(String s) {
         return null;
     }
 
     @Override
-    public Event getById(Long aLong) {
+    public Event getById(String s) {
         return null;
     }
 
     @Override
-    public Event getReferenceById(Long aLong) {
-        return null;
+    public Event getReferenceById(String s) {
+        call("getReferenceById");
+        return findById(s).orElse(null);
     }
 
     @Override
@@ -102,7 +112,10 @@ public class TestEventRepository implements EventRepository {
     @Override
     public <S extends Event> S save(S entity) {
         call("save");
-        entity.setId(events.size());
+        if(existsById(entity.getId())) {
+            events.replaceAll(e -> (e.getId().equals(entity.getId())) ? entity : e);
+            return entity;
+        }
         events.add(entity);
         return entity;
     }
@@ -112,27 +125,16 @@ public class TestEventRepository implements EventRepository {
         return null;
     }
 
-    private Optional<Event> find(Long id){
-        return events.stream().filter(e -> e.getId() == id).findFirst();
-    }
-    private Event findI(Long id){
-        for(var x: events)
-        {
-            if(x.getId() == id) return x;
-        }
-        return null;
-    }
-
     @Override
-    public Optional<Event> findById(Long aLong) {
+    public Optional<Event> findById(String id) {
         call("findById");
-        return find(aLong);
+        return events.stream().filter(e -> e.getId().equals(id)).findFirst();
     }
 
     @Override
-    public boolean existsById(Long aLong) {
+    public boolean existsById(String id) {
         call("existsById");
-        return find(aLong).isPresent();
+        return events.stream().anyMatch(e -> e.getId().equals(id));
     }
 
     @Override
@@ -142,7 +144,7 @@ public class TestEventRepository implements EventRepository {
     }
 
     @Override
-    public List<Event> findAllById(Iterable<Long> longs) {
+    public List<Event> findAllById(Iterable<String> strings) {
         return null;
     }
 
@@ -153,10 +155,12 @@ public class TestEventRepository implements EventRepository {
     }
 
     @Override
-    public void deleteById(Long aLong) {
+    public void deleteById(String s) {
         call("deleteById");
-        events.remove(findI(aLong));
+        if(existsById(s))
+            delete(findById(s).get());
     }
+
 
     @Override
     public void delete(Event entity) {
@@ -164,9 +168,10 @@ public class TestEventRepository implements EventRepository {
     }
 
     @Override
-    public void deleteAllById(Iterable<? extends Long> longs) {
+    public void deleteAllById(Iterable<? extends String> strings) {
 
     }
+
 
     @Override
     public void deleteAll(Iterable<? extends Event> entities) {
@@ -175,6 +180,7 @@ public class TestEventRepository implements EventRepository {
 
     @Override
     public void deleteAll() {
+        call("deleteAll");
         events.clear();
     }
 
@@ -188,17 +194,4 @@ public class TestEventRepository implements EventRepository {
         return null;
     }
 
-    @Override
-    public List<Event> findByInviteCode(String inviteCode) {
-        Event event = events.stream().filter(e -> e.getInviteCode().equals(inviteCode)).findFirst().orElse(null);
-        if(event != null)
-            return List.of(event);
-        return null;
-    }
-
-    @Override
-    public boolean existsByInviteCode(String inviteCode) {
-        Event event = events.stream().filter(e -> e.getInviteCode().equals(inviteCode)).findFirst().orElse(null);
-        return event != null;
-    }
 }
