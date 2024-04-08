@@ -78,15 +78,14 @@ public class ExpenseParticipant {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ExpenseParticipant that = (ExpenseParticipant) o;
-        return id == that.id
-                && Double.compare(share, that.share) == 0
+        return Double.compare(share, that.share) == 0
                 && owner == that.owner
                 && Objects.equals(participant, that.participant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, participant, share, owner);
+        return Objects.hash(participant, share, owner);
     }
 
     @Override

@@ -108,7 +108,7 @@ class ExpenseParticipantTest {
         assertNotEquals(ep1.hashCode(), ep3.hashCode());
         assertNotEquals(ep2.hashCode(), ep3.hashCode());
         ExpenseParticipant ep4 = new ExpenseParticipant(e1, p1, 100, false);
-        assertNotEquals(ep1.hashCode(), ep4.hashCode());
+        assertEquals(ep1.hashCode(), ep4.hashCode());
     }
 
     @Test
