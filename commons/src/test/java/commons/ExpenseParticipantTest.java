@@ -11,9 +11,9 @@ class ExpenseParticipantTest {
     private ExpenseParticipant ep2;
     private ExpenseParticipant ep3;
     private final Expense e1 = new Expense();
-    private final Expense e2 = new Expense("Misc", "EUR", 100, null);
+    private final Expense e2 = new Expense("Misc", "EUR", 100, null, null);
     private final Participant p1 = new Participant();
-    private final Participant p2 = new Participant("A", "B");
+    private final Participant p2 = new Participant("A", "B", null, null, null, null);
 
     @BeforeEach
     void setUp() {

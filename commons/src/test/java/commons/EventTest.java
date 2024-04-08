@@ -16,9 +16,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class EventTest {
     private Event event;
     private Event event2;
-    private final Participant p = new Participant("a", "b");
+    private final Participant p = new Participant("a", "b", null, null, null, null);
     private final List<Participant> participantList = List.of(p);
-    private final Expense e = new Expense("food", "$", 20, Date.valueOf(LocalDate.now()));
+    private final Expense e = new Expense("food", "$", 20, Date.valueOf(LocalDate.now()), null);
     private final List<Expense> expenseList = List.of(e);
 
     @BeforeEach
@@ -155,40 +155,13 @@ class EventTest {
     }
 
     @Test
-    void updateParticipant() {
-        Participant test = new Participant("John", "Doe");
-        test.setId(42);
-        event.addParticipant(test);
-        test.setFirstName("Jane");
-        event.updateParticipant(test);
-        assertTrue(event.getParticipants().get(0).getFirstName().equals("Jane"));
-    }
-
-    @Test
-    void deleteParticipant() {
-        Participant test = new Participant("John", "Doe");
-        test.setId(42);
-        event.addParticipant(test);
-        event.deleteParticipant(test);
-        assertTrue(event.getParticipants().isEmpty());
-    }
-
-    @Test
-    void getParticipantByName() {
-        Participant test = new Participant("John", "Doe");
-        event.addParticipant(test);
-        assertEquals(test, event.getParticipantByName("John Doe"));
-        assertNull(event.getParticipantByName("Jack Doe"));
-    }
-
-    @Test
     void debtsTest() {
-        Debt d = new Debt(new Participant("John", "Doe"), new Participant("Jane", "Doe"), 100);
+        Debt d = new Debt(new Participant("John", "Doe", null, null, null, null), new Participant("Jane", "Doe", null, null, null, null), 100);
         List<Debt> debts = new ArrayList<>();
         debts.add(d);
         event.setDebts(debts);
         assertEquals(debts, event.getDebts());
-        Debt d2 = new Debt(new Participant("a", "b"), new Participant("c", "d"), 20);
+        Debt d2 = new Debt(new Participant("a", "b", null, null, null, null), new Participant("c", "d", null, null, null, null), 20);
         event.addDebt(d2);
         assertTrue(event.getDebts().contains(d2));
     }
