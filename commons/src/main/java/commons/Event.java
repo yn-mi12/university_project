@@ -12,11 +12,13 @@ public class Event {
     private String id;
     @Column(nullable = false)
     private String title;
-    @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
-    @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expenses = new ArrayList<>();
-    @OneToMany(mappedBy = "event", cascade=CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Debt> debts = new ArrayList<>();
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags = new ArrayList<>();
     @Column(nullable = false)
     private Timestamp creationDate;
@@ -106,6 +108,18 @@ public class Event {
         lastUpdateDate = Timestamp.valueOf(LocalDateTime.now());
     }
 
+    public List<Debt> getDebts() {
+        return debts;
+    }
+
+    public void addDebt(Debt debt) {
+        this.debts.add(debt);
+    }
+
+    public void setDebts(List<Debt> debts) {
+        this.debts = debts;
+    }
+
     /**
      * Returns the participant with the specified name
      * @param name the specified name
@@ -113,13 +127,15 @@ public class Event {
      */
 
     public Participant getParticipantByName(String name){
+        String[] nameInArray = name.split(" ");
+        String first = nameInArray[0];
+        String last = nameInArray[1];
         for(var x : participants){
-            if (x.getFirstName().equals(name)){
+            if (x.getFirstName().equals(first) && x.getLastName().equals(last)){
                 return x;
             }
         }
         return null;
-        //throw new NoSuchElementException("There is no participant with name: " + name);
     }
 
     /**
@@ -146,7 +162,6 @@ public class Event {
 
     /**
      * Gives a human-friendly representation of an Event
-     *
      * @return the human-friendly representation of the Event
      */
     @Override
@@ -156,6 +171,7 @@ public class Event {
                 ", inviteCode='" + id + '\'' +
                 ", participants=" + participants +
                 ", expenses=" + expenses +
+                ", debts=" + debts +
                 ", tags=" + tags +
                 ", creationDate=" + creationDate +
                 ", lastUpdateDate=" + lastUpdateDate +

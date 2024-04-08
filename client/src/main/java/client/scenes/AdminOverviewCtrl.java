@@ -5,7 +5,7 @@ import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
-import commons.Event;
+import commons.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.beans.value.ChangeListener;
@@ -141,6 +141,11 @@ public class AdminOverviewCtrl implements Initializable {
 
     public void refresh() {
         List<Event> events = server.getAllEvents();
+        if(events.isEmpty()) {
+            showButton.setDisable(true);
+            showButtonD.setDisable(true);
+            showButtonE.setDisable(true);
+        }
         List<String> titles = new ArrayList<>();
         for(Event x : events)
         {
@@ -171,7 +176,7 @@ public class AdminOverviewCtrl implements Initializable {
         try {
             System.out.println("Delete Event");
             server.deleteEvent(getEvent());
-            Main.refreshAdminOverview();
+            refresh();
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -217,21 +222,69 @@ public class AdminOverviewCtrl implements Initializable {
         if(file != null) {
             try {
                 Scanner jsonScanner = new Scanner(file);
+                jsonScanner.useDelimiter("\r?\n");
                 String json = jsonScanner.next();
                 var event = om.readValue(json, Event.class);
                 System.out.println("Imported event: " + event);
                 Event find = server.getByID(event.getId());
+
+                List<Participant> participants = event.getParticipants();;
+                List<Expense> expenses = event.getExpenses();
+                List<Tag> tags = event.getTags();
+                List<Debt> debts = event.getDebts();
+                event.setParticipants(null);
+                event.setExpenses(null);
+                event.setTags(null);
+                event.setDebts(null);
+                Event find = server.getByInviteCode(event.getInviteCode());
+
                 if(find == null) {
-                    server.addEvent(event);
+                    addJsonToServer(event, participants, expenses, debts);
                 } else {
                     server.deleteEvent(find);
-                    server.addEvent(event);
+                    addJsonToServer(event, participants, expenses, debts);
                 }
+                // TODO tags when we have a proper system for those
                 refresh();
             } catch (FileNotFoundException | JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
 
+    private void addJsonToServer(Event event, List<Participant> participants, List<Expense> expenses, List<Debt> debts) {
+        Event saved = server.addJsonEvent(event);
+        for(Participant p : participants)
+            server.addParticipant(p, saved);
+
+        saved = server.getByID(saved.getByID());
+        List<Participant> newParts = saved.getParticipants();
+        Map<Long, Participant> idToNewPart = new HashMap<>();
+        for(int i = 0; i < participants.size(); i++)
+            idToNewPart.put(participants.get(i).getId(), newParts.get(i));
+
+        Set<ExpenseParticipant> debtors = new HashSet<>();
+        int count = 0;
+        for(Expense e : expenses) {
+            Expense newExpense = new Expense(e.getDescription(), e.getCurrency(), e.getAmount(), e.getDate());
+            for(ExpenseParticipant ep : e.getDebtors()) {
+                ExpenseParticipant newExpensePart = new
+                        ExpenseParticipant(newExpense, newParts.get(count), ep.getShare(), ep.isOwner());
+                debtors.add(newExpensePart);
+            }
+            e.setDebtors(debtors);
+            e.setEvent(saved);
+            server.addExpense(e, saved);
+            count++;
+        }
+
+        saved = server.getByInviteCode(saved.getByID());
+        List<Debt> newDebts = new ArrayList<>();
+        for(Debt d : debts) {
+            Debt newDebt = new Debt(idToNewPart.get(d.getDebtor().getId()),
+                    idToNewPart.get(d.getCreditor().getId()), d.getAmount());
+            newDebts.add(newDebt);
+        }
+        server.addAllDebts(newDebts, saved);
     }
 }

@@ -7,6 +7,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -152,4 +153,44 @@ class EventTest {
         assertEquals(p, event.getParticipantByName("a"));
         assertNull(event.getParticipantByName("x"));
     }
+
+    @Test
+    void updateParticipant() {
+        Participant test = new Participant("John", "Doe");
+        test.setId(42);
+        event.addParticipant(test);
+        test.setFirstName("Jane");
+        event.updateParticipant(test);
+        assertTrue(event.getParticipants().get(0).getFirstName().equals("Jane"));
+    }
+
+    @Test
+    void deleteParticipant() {
+        Participant test = new Participant("John", "Doe");
+        test.setId(42);
+        event.addParticipant(test);
+        event.deleteParticipant(test);
+        assertTrue(event.getParticipants().isEmpty());
+    }
+
+    @Test
+    void getParticipantByName() {
+        Participant test = new Participant("John", "Doe");
+        event.addParticipant(test);
+        assertEquals(test, event.getParticipantByName("John Doe"));
+        assertNull(event.getParticipantByName("Jack Doe"));
+    }
+
+    @Test
+    void debtsTest() {
+        Debt d = new Debt(new Participant("John", "Doe"), new Participant("Jane", "Doe"), 100);
+        List<Debt> debts = new ArrayList<>();
+        debts.add(d);
+        event.setDebts(debts);
+        assertEquals(debts, event.getDebts());
+        Debt d2 = new Debt(new Participant("a", "b"), new Participant("c", "d"), 20);
+        event.addDebt(d2);
+        assertTrue(event.getDebts().contains(d2));
+    }
+
 }

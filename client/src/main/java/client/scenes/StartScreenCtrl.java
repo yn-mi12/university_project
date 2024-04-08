@@ -6,6 +6,7 @@ import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
 import jakarta.ws.rs.WebApplicationException;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -13,13 +14,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.util.Callback;
+
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -27,6 +27,7 @@ import java.util.List;
 public class StartScreenCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
+    private ObservableList<String> data;
     private final SplittyCtrl eventCtrl;
     @FXML
     private ListView<String> eventList;
@@ -55,8 +56,7 @@ public class StartScreenCtrl implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         ObservableList<Label> x = FXCollections.observableArrayList();
         List<Config.SupportedLocale> languages = Config.get().getSupportedLocales().stream().toList();
-        for(var item : languages)
-        {
+        for (var item : languages) {
             Image icon;
             String iconPath = "client/images/" + item.getCode() + ".png";
             icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
@@ -74,8 +74,7 @@ public class StartScreenCtrl implements Initializable {
                     protected void updateItem(Label item, boolean empty) {
                         super.updateItem(item, empty);
                         if (item == null || empty) {
-                        }
-                        else {
+                        } else {
                             item.setTextFill(Color.color(0, 0, 0));
                             setGraphic(item);
                         }
@@ -101,6 +100,51 @@ public class StartScreenCtrl implements Initializable {
                     showButton.setDisable(false);
                 }
             }
+        });
+
+
+        if (data == null)
+            data = FXCollections.observableArrayList();
+
+        server.registerForAddUpdates(ev -> {
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    //refresh method loops in PastCodes
+                    Config.get().addPastCode(ev.getInviteCode());
+                    //System.out.println("adding event " + ev.getTitle() + " : " + ev.getInviteCode());
+                    data.add(ev.getTitle() + " : " + ev.getInviteCode());
+                    eventList.setItems(data);
+                }
+            });
+        });
+        server.registerForDeleteUpdates(ev -> {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    Config.get().removePastCode(ev.getInviteCode());
+                    //System.out.println("deleting event " + ev.getTitle() + " : " + ev.getInviteCode());
+                    data.remove(ev.getTitle() + " : " + ev.getInviteCode());
+                    eventList.setItems(data);
+                }
+            });
+        });
+        server.registerForEditUpdates(ev -> {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    int index=0;
+                    for(String s : data){
+                        if(s.contains(ev.getInviteCode())){
+                            index = data.indexOf(s);
+                            break;
+                        }
+                    }
+                    data.set(index, ev.getTitle() + " : " + ev.getInviteCode());
+                    eventList.setItems(data);
+                }
+            });
         });
     }
 
@@ -129,10 +173,12 @@ public class StartScreenCtrl implements Initializable {
 
             for (String removed : removedCodes) {
                 Config.get().removePastCode(removed);
+                System.out.println("removed code " + removed);
             }
 
             Config.get().save();
-            eventList.setItems(FXCollections.observableList(titles));
+            data = FXCollections.observableList(titles);
+            eventList.setItems(data);
         }
     }
 
@@ -143,7 +189,7 @@ public class StartScreenCtrl implements Initializable {
 
     public void createEvent() {
         var title = this.titleField.getText();
-        if(title.isEmpty()) {
+        if (title.isEmpty()) {
             emptyTitle.setVisible(true);
             return;
         }
@@ -166,9 +212,14 @@ public class StartScreenCtrl implements Initializable {
         eventCtrl.showEventOverview(event);
     }
 
+    public void stop() {
+        server.stop();
+    }
+
+
     public void viewEvent() {
         var inviteCode = this.codeField.getText();
-        if(inviteCode.isEmpty()) {
+        if (inviteCode.isEmpty()) {
             invalidCode.setVisible(false);
             emptyCode.setVisible(true);
             return;
@@ -176,10 +227,10 @@ public class StartScreenCtrl implements Initializable {
 
         Event event = server.getByID(inviteCode);
 
-        if(event != null) {
+        if (event != null) {
             clearFields();
             Set<String> codes = Config.get().getPastCodes();
-            if(!codes.contains(event.getId())) {
+            if (!codes.contains(event.getId())) {
                 Config.get().addPastCode(String.valueOf(event.getId()));
                 Config.get().save();
             }

@@ -83,7 +83,7 @@ public class ExpenseParticipant {
 
     @Override
     public int hashCode() {
-        return Objects.hash(participant, share, owner);
+        return Objects.hash(id, participant, share, owner);
     }
 
     @Override

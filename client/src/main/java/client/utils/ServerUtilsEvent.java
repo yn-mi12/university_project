@@ -16,6 +16,7 @@
 package client.utils;
 
 import client.Config;
+import commons.Debt;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
@@ -24,6 +25,7 @@ import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -38,6 +40,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -58,22 +62,8 @@ public class ServerUtilsEvent {
                     .accept(APPLICATION_JSON) //
                     .get(new GenericType<>() {
                     });
-        } catch(NotFoundException e) {
+        } catch (NotFoundException e) {
             System.out.println("NOT_FOUND: Event with ID:" + id + " was not found");
-            return null;
-        }
-    }
-
-    public Expense getExpenseById(Long id) {
-        System.out.println("Getting Expense by ID: " + id);
-        try{
-            return ClientBuilder.newClient(new ClientConfig())
-                    .target(SERVER).path("api/expenses/" + id)
-                    .request(APPLICATION_JSON)
-                    .accept(APPLICATION_JSON)
-                    .get(new GenericType<>(){});
-        }catch (NotFoundException e){
-            System.out.println("NOT_FOUND: Expense with ID:" + id + " was not found");
             return null;
         }
     }
@@ -92,6 +82,7 @@ public class ServerUtilsEvent {
            return null;
        }
     }
+
     public Participant getParticipantByID(Long id) {
         System.out.println("Getting Participant by ID: " + id);
         try {
@@ -101,7 +92,7 @@ public class ServerUtilsEvent {
                     .accept(APPLICATION_JSON) //
                     .get(new GenericType<>() {
                     });
-        } catch(NotFoundException e) {
+        } catch (NotFoundException e) {
             System.out.println("NOT_FOUND: Participant with ID:" + id + " was not found");
             return null;
         }
@@ -117,6 +108,14 @@ public class ServerUtilsEvent {
 
         Config.get().addPastCode(String.valueOf(saved.getId()));
         return saved;
+    }
+
+    public Event addJsonEvent(Event event) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/events") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(event, APPLICATION_JSON), Event.class);
     }
 
     public Expense addExpense(Expense expense, Event event) {
@@ -170,14 +169,6 @@ public class ServerUtilsEvent {
         System.out.println("Event deleted:" + event);
     }
 
-    public Event updateEvent(Event updated) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(getServer()).path("/api/events/" + updated.getId())
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .put(Entity.entity(updated, APPLICATION_JSON), Event.class);
-    }
-
     public void deleteParticipant(Participant participant) {
         ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/participants/" + participant.getId()) //
@@ -195,19 +186,17 @@ public class ServerUtilsEvent {
                 .post(Entity.entity(token, APPLICATION_JSON), Boolean.class);
     }
 
-    public List<Event> getAllEvents()
-    {
+    public List<Event> getAllEvents() {
         List<Event> events;
         events = ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/events/") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                    .get(new GenericType<>() {
-                    });
+                .get(new GenericType<>() {
+                });
         return events;
     }
-    public List<Participant> getEventParticipants(Event event)
-    {
+    public List<Participant> getEventParticipants(Event event) {
         List<Participant> participants;
         participants = ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/participants/event/" + event.getId()) //
@@ -217,6 +206,7 @@ public class ServerUtilsEvent {
                 });
         return participants;
     }
+
     public void updateParticipant(Participant participant) {
         ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/participants/" + participant.getId()) //
@@ -225,25 +215,102 @@ public class ServerUtilsEvent {
                 .put(Entity.entity(participant, APPLICATION_JSON), Participant.class);
     }
 
+    public List<Debt> addAllDebts(List<Debt> debts, Event event) {
+        List<Debt> savedDebts = new ArrayList<>();
+        try {
+            for(Debt d : debts) {
+                Debt saved = ClientBuilder.newClient(new ClientConfig()) //
+                        .target(SERVER).path("api/debts/event/" + event.getId()) //
+                        .request(APPLICATION_JSON) //
+                        .accept(APPLICATION_JSON) //
+                        .post(Entity.entity(d, APPLICATION_JSON), Debt.class);
+                System.out.println("Add debt " + saved);
+                savedDebts.add(saved);
+            }
+        } catch(BadRequestException e) {
+            System.out.println("Failed to add all debts");
+        }
+        return savedDebts;
+    }
+
+    public List<Debt> getDebtsByEvent(Event event) {
+        List<Debt> debts = new ArrayList<>();
+
+        debts.addAll(ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/event/" + event.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                }));
+
+        return debts;
+    }
+
+    public List<Debt> getDebtsByCreditor(Participant creditor) {
+        List<Debt> debts = new ArrayList<>();
+
+        debts.addAll(ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/creditor/" + creditor.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                }));
+
+        return debts;
+    }
+
+    public List<Debt> getDebtsByDebtor(Participant debtor) {
+        List<Debt> debts = new ArrayList<>();
+
+        debts.addAll(ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/debtor/" + debtor.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                }));
+
+        return debts;
+    }
+
+    public void updateDebtAmount(double amount, Debt debt) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/" + debt.getId() + "/amount")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(amount, APPLICATION_JSON), Debt.class);
+    }
+
+    public void deleteDebt(Debt debt) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/debts/" + debt.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete();
+        System.out.println("Debt deleted:" + debt);
+    }
+
+    private @NotNull String getServer() {
+        return Config.get().getHost();
+    }
+
     private final StompSession session = connect("ws://localhost:8080/websocket");
 
-    private StompSession connect(String url)
-    {
+    private StompSession connect(String url) {
         var client = new StandardWebSocketClient();
         var stomp = new WebSocketStompClient(client);
         stomp.setMessageConverter(new MappingJackson2MessageConverter());
-        try{
+        try {
             return stomp.connectAsync(url, new StompSessionHandlerAdapter() {
             }).get();
-        } catch (InterruptedException e){
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch(ExecutionException e){
+        } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
         throw new IllegalStateException();
     }
 
-    public <T> void registerForMessages(String dest,Class <T> type,Consumer<T> consumer){
+    public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
         session.subscribe(dest, new StompFrameHandler() {
             @Override
             public @NotNull Type getPayloadType(@NotNull StompHeaders headers) {
@@ -258,7 +325,71 @@ public class ServerUtilsEvent {
         });
     }
 
-    public void send(String dest, Object o){
-        session.send(dest,o);
+    public void send(String dest, Object o) {
+        session.send(dest, o);
+    }
+
+    private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
+
+    public void registerForAddUpdates(Consumer<Event> consumer) {
+        EXEC.submit(() -> {
+            while (!Thread.interrupted()) {
+                var res = ClientBuilder.newClient(new ClientConfig()) //
+                        .target(SERVER).path("api/events/addUpdates") //
+                        .request(APPLICATION_JSON) //
+                        .accept(APPLICATION_JSON) //
+                        .get(Response.class);
+                if (res.getStatus() == 204) {
+                    continue;
+                }
+                var q = res.readEntity(Event.class);
+                consumer.accept(q);
+            }
+        });
+    }
+
+    private static final ExecutorService EXECdel = Executors.newSingleThreadExecutor();
+
+    public void registerForDeleteUpdates(Consumer<Event> consumer) {
+        EXECdel.submit(() -> {
+            while (!Thread.interrupted()) {
+                var res = ClientBuilder.newClient(new ClientConfig()) //
+                        .target(SERVER).path("api/events/deleteUpdates") //
+                        .request(APPLICATION_JSON) //
+                        .accept(APPLICATION_JSON) //
+                        .get(Response.class);
+                if (res.getStatus() == 204) {
+                    continue;
+                }
+                var q = res.readEntity(Event.class);
+                System.out.println(q);
+                consumer.accept(q);
+            }
+        });
+    }
+    private static final ExecutorService EXECed = Executors.newSingleThreadExecutor();
+
+    public void registerForEditUpdates(Consumer<Event> consumer) {
+        EXECed.submit(() -> {
+            while (!Thread.interrupted()) {
+                var res = ClientBuilder.newClient(new ClientConfig()) //
+                        .target(SERVER).path("api/events/editUpdates") //
+                        .request(APPLICATION_JSON) //
+                        .accept(APPLICATION_JSON) //
+                        .get(Response.class);
+                if (res.getStatus() == 204) {
+                    continue;
+                }
+                var q = res.readEntity(Event.class);
+                System.out.println(q);
+                consumer.accept(q);
+            }
+        });
+    }
+
+    public void stop() {
+        EXEC.shutdownNow();
+        EXECdel.shutdownNow();
+        EXECed.shutdownNow();
     }
 }

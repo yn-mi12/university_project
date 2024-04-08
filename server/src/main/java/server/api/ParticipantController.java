@@ -89,6 +89,9 @@ public class ParticipantController {
         participantOld.setFirstName(participant.getFirstName());
         participantOld.setLastName(participant.getLastName());
         participantOld.setEmail(participant.getEmail());
+        participantOld.setAccountName(participant.getAccountName());
+        participantOld.setIban(participant.getIban());
+        participantOld.setBic(participant.getBic());
         participantRepository.save(participantOld);
         return ResponseEntity.ok(participantOld);
     }

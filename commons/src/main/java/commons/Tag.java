@@ -14,11 +14,9 @@ public class Tag {
     @Column(nullable = false)
     private String label;
     private String color;
-
     @JsonIgnore
     @OneToMany(mappedBy = "tag")
     private Set<Expense> expenses;
-
     @JsonIgnore
     @ManyToOne
     @JoinColumn(nullable = false)

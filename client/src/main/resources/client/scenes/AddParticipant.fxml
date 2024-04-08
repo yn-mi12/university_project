@@ -6,19 +6,26 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="209.0" prefWidth="435.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddParticipantCtrl">
+<AnchorPane prefHeight="343.0" prefWidth="435.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddParticipantCtrl">
     <children>
-        <Button layoutX="306.0" layoutY="173.0" mnemonicParsing="false" onAction="#ok" prefHeight="25.0" prefWidth="39.0" text="%ok" />
-        <Button layoutX="361.0" layoutY="173.0" mnemonicParsing="false" onAction="#cancel" text="%cancel" />
-        <Label layoutX="34.0" layoutY="20.0" prefHeight="17.0" prefWidth="68.0" text="%firstname" />
-        <TextField fx:id="firstName" layoutX="34.0" layoutY="38.0" />
-        <Label layoutX="34.0" layoutY="80.0" prefHeight="17.0" prefWidth="68.0" text="%lastname" />
-        <TextField fx:id="lastName" layoutX="34.0" layoutY="97.0" />
-        <Label layoutX="34.0" layoutY="142.0" prefHeight="17.0" prefWidth="59.0" text="%email" />
-        <TextField fx:id="email" layoutX="34.0" layoutY="160.0" />
-      <Label fx:id="participantExists" layoutX="224.0" layoutY="19.0" prefHeight="69.0" prefWidth="164.0" text="%participantExists" textAlignment="CENTER" textFill="RED" visible="false" wrapText="true">
-         <font>
-            <Font size="14.0" />
-         </font></Label>
+        <Button layoutX="307.0" layoutY="303.0" mnemonicParsing="false" onAction="#ok" prefHeight="25.0" prefWidth="39.0" text="%ok" />
+        <Button layoutX="361.0" layoutY="303.0" mnemonicParsing="false" onAction="#cancel" text="%cancel" />
+        <Label layoutX="33.0" layoutY="20.0" prefHeight="17.0" prefWidth="68.0" text="%firstname" />
+        <TextField fx:id="firstName" layoutX="33.0" layoutY="38.0" prefHeight="26.0" prefWidth="166.0" />
+        <Label layoutX="231.0" layoutY="20.0" prefHeight="17.0" prefWidth="68.0" text="%lastname" />
+        <Label layoutX="33.0" layoutY="82.0" prefHeight="18.0" prefWidth="136.0" text="%email" />
+      <Label layoutX="33.0" layoutY="179.0" prefHeight="18.0" prefWidth="95.0" text="%account_name" />
+        <TextField fx:id="email" layoutX="33.0" layoutY="100.0" prefHeight="26.0" prefWidth="166.0" />
+      <Label layoutX="33.0" layoutY="143.0" prefHeight="18.0" prefWidth="345.0" text="%bank_details" />
+      <Label layoutX="33.0" layoutY="214.0" text="IBAN" />
+      <Label layoutX="33.0" layoutY="252.0" text="BIC" />
+      <TextField fx:id="lastName" layoutX="231.0" layoutY="38.0" prefHeight="26.0" prefWidth="166.0" />
+      <TextField fx:id="accountName" layoutX="148.0" layoutY="175.0" prefHeight="26.0" prefWidth="166.0" />
+      <TextField fx:id="iban" layoutX="148.0" layoutY="210.0" prefHeight="26.0" prefWidth="166.0" />
+      <TextField fx:id="bic" layoutX="148.0" layoutY="248.0" prefHeight="26.0" prefWidth="166.0" />
+    <Label fx:id="participantExists" layoutX="232.0" layoutY="65.0" prefHeight="69.0" prefWidth="164.0" text="%participantExists" textAlignment="CENTER" textFill="RED" visible="false" wrapText="true">
+       <font>
+           <Font size="14.0" />
+       </font></Label>
     </children>
 </AnchorPane>

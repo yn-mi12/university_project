@@ -2,15 +2,12 @@ package client.scenes;
 
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-import commons.Event;
-import commons.Expense;
-import commons.ExpenseParticipant;
-import commons.Participant;
+import commons.*;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -20,7 +17,7 @@ import java.time.LocalDate;
 import java.sql.Date;
 import java.util.*;
 
-public class AddExpenseCtrl implements Initializable {
+public class AddExpenseCtrl {
     private EventOverviewCtrl ctrl;
     private Event event;
     private final ServerUtilsEvent server;
@@ -61,12 +58,12 @@ public class AddExpenseCtrl implements Initializable {
         HashMap<MenuItem,Participant> map = new HashMap<>();
 
         for (Participant p : participants) {
-            MenuItem item = new MenuItem(p.getFirstName());
+            MenuItem item = new MenuItem(p.getFirstName() + " " + p.getLastName());
             names.add(item);
             map.put(item,p);
         }
         whoPaid.getItems().setAll(names);
-        whoPaid.setText(paid.getFirstName());
+        whoPaid.setText(paid.getFirstName() + " " + paid.getLastName());
         for (MenuItem mi : whoPaid.getItems()) {
             mi.setOnAction(e -> {
                 whoPaid.setText(mi.getText());
@@ -75,7 +72,7 @@ public class AddExpenseCtrl implements Initializable {
         }
         List<String> listOfParticipants = new ArrayList<>();
         for(Participant participant : event.getParticipants()){
-            listOfParticipants.add(participant.getFirstName());
+            listOfParticipants.add(participant.getFirstName() + " " + participant.getLastName());
         }
         whoPays.setItems(FXCollections.observableList(listOfParticipants));
         whoPays.refresh();
@@ -88,6 +85,7 @@ public class AddExpenseCtrl implements Initializable {
     }
 
     public void ok() {
+        Event updated;
         try {
             System.out.println("Add expense");
             System.out.println("Id:" + event.getId());
@@ -98,11 +96,20 @@ public class AddExpenseCtrl implements Initializable {
             var date = this.date.getValue();
             //var tags = this.tags.getText();
             this.expense = new Expense(description, currency,
-                    Double.parseDouble(amount), Date.valueOf(LocalDate.now()));
+                    Double.parseDouble(amount), java.sql.Date.valueOf(date));
             System.out.println(expense);
             expense.setDebtors(getDebtors());
             expense.setEvent(event);
-            server.addExpense(expense, event);
+            Expense saved = server.addExpense(expense, event);
+            updated = server.getByInviteCode(ctrl.getSelectedEvent().getInviteCode());
+
+            for(ExpenseParticipant ep : saved.getDebtors())
+                if(ep.isOwner())
+                    expensePayer = ep.getParticipant();
+            participants = server.getEventParticipants(updated);
+            calculateDebts(saved, updated);
+            updated = server.getByInviteCode(ctrl.getSelectedEvent().getInviteCode());
+
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -112,14 +119,77 @@ public class AddExpenseCtrl implements Initializable {
             return;
         }
         clearFields();
-        Event updated = server.getByID(ctrl.getSelectedEvent().getId());
         controller.showEventOverview(updated);
     }
 
+    public void calculateDebts(Expense saved, Event event) {
+        List<Debt> debtsCreditor = server.getDebtsByCreditor(expensePayer);
+        Map<Participant, Debt> debtorToDebt = new HashMap<>();
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        // Removed this because we don't need to have language switching in the Expense overview
+        if(debtsCreditor.isEmpty()) {
+            for(Participant p : participants) {
+                Debt d = new Debt(p, expensePayer, 0);
+                debtorToDebt.put(p, d);
+            }
+            debtorToDebt.remove(expensePayer);
+        } else {
+            List<Participant> debtParticipants = new ArrayList<>();
+            for(Debt d : debtsCreditor) {
+                debtParticipants.add(d.getDebtor());
+                debtorToDebt.put(d.getDebtor(), d);
+            }
+
+            for(Participant p : participants) {
+                if(!debtParticipants.contains(p) && !p.equals(expensePayer)) {
+                    Debt created = new Debt(p, expensePayer, 0);
+                    debtsCreditor.add(created);
+                    debtorToDebt.put(p, created);
+                }
+            }
+        }
+        setAndAddDebts(saved, event, debtorToDebt);
+    }
+
+    public void setAndAddDebts(Expense saved, Event event, Map<Participant, Debt> debtorToDebt) {
+        for (ExpenseParticipant ep : saved.getDebtors()) {
+            if (!ep.isOwner()) {
+                Debt d = debtorToDebt.get(ep.getParticipant());
+                d.setAmount(d.getAmount() + (ep.getShare() / 100 * saved.getAmount()));
+                debtorToDebt.replace(ep.getParticipant(), d);
+            }
+        }
+        List<Debt> debtsDebtor = server.getDebtsByDebtor(expensePayer);
+        try {
+            for (Debt debt : debtsDebtor) {
+                Participant p = debt.getCreditor();
+                Debt d = debtorToDebt.get(p);
+                if (debt.getAmount() > d.getAmount()) {
+                    debtorToDebt.remove(p);
+                    debt.setAmount(debt.getAmount() - d.getAmount());
+                    server.updateDebtAmount(debt.getAmount(), debt);
+                } else if (debt.getAmount() < d.getAmount()) {
+                    server.deleteDebt(debt);
+                    event.getDebts().remove(debt);
+                    d.setAmount(d.getAmount() - debt.getAmount());
+                    debtorToDebt.replace(p, d);
+                } else {
+                    server.deleteDebt(debt);
+                    debtorToDebt.remove(p);
+                }
+            }
+        } catch(BadRequestException e) {
+            System.out.println("Failed to add debts");
+            return;
+        }
+
+        List<Debt> finalDebts = new ArrayList<>();
+        for (Debt debt : debtorToDebt.values()) {
+            System.out.println(debt);
+            if (debt.getAmount() != 0)
+                finalDebts.add(debt);
+        }
+
+        server.addAllDebts(finalDebts, event);
     }
 
     @FXML
@@ -134,13 +204,14 @@ public class AddExpenseCtrl implements Initializable {
         }
     }
 
-
     public HashSet<ExpenseParticipant> getDebtors(){
         HashSet<ExpenseParticipant> debtors = new HashSet<>();
         if (allHaveToPay.isSelected()){
             double share = 100.0/event.getParticipants().size();
             for (int i = 0; i < event.getParticipants().size(); i++){
-                boolean isOwner = this.event.getParticipants().get(i).getFirstName().equals(whoPaid.getText());
+                String fullName = this.event.getParticipants().get(i).getFirstName() + " " +
+                        this.event.getParticipants().get(i).getLastName();
+                boolean isOwner = fullName.equals(whoPaid.getText());
                 ExpenseParticipant expenseParticipant =
                         new ExpenseParticipant(expense, event.getParticipants().get(i),share, isOwner);
                 debtors.add(expenseParticipant);
@@ -157,7 +228,6 @@ public class AddExpenseCtrl implements Initializable {
         }
         return debtors;
     }
-
 
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
