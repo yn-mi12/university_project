@@ -218,13 +218,18 @@ public class AddExpenseCtrl {
             return debtors;
         }
         ObservableList<String> selectedParticipants = whoPays.getSelectionModel().getSelectedItems();
+        boolean check = false;
         for (int i = 0; i < selectedParticipants.size(); i++){
             double share = 100.0/selectedParticipants.size();
             boolean isOwner = selectedParticipants.get(i).equals(whoPaid.getText());
+            if(isOwner)
+                check = true;
             ExpenseParticipant expenseParticipant = new
                     ExpenseParticipant(expense, event.getParticipantByName(selectedParticipants.get(i)), share, isOwner);
             debtors.add(expenseParticipant);
         }
+        if(!check)
+            debtors.add(new ExpenseParticipant(expense, expensePayer, 0, true));
         return debtors;
     }
 

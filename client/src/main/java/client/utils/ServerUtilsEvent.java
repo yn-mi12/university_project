@@ -335,6 +335,15 @@ public class ServerUtilsEvent {
         System.out.println("Debt deleted:" + debt);
     }
 
+    public void deleteExpense(Expense expense) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/expenses/" + expense.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete();
+        System.out.println("Expense deleted: " + expense);
+    }
+
     private @NotNull String getServer() {
         return Config.get().getHost();
     }
