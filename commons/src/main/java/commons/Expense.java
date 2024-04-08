@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ public class Expense {
     @Column(nullable = false)
     private String description;
     @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL)
-    private Set<ExpenseParticipant> debtors;
+    private Set<ExpenseParticipant> debtors = new HashSet<>();
     @Column(nullable = false)
     private String currency;
     @Column(nullable = false)
@@ -33,12 +34,11 @@ public class Expense {
     public Expense() {
     }
 
-    public Expense(String description, String currency, double amount, Date date, Set<ExpenseParticipant> debtors) {
+    public Expense(String description, String currency, double amount, Date date) {
         this.description = description;
         this.currency = currency;
         this.amount = amount;
         this.date = date;
-        this.debtors = debtors;
     }
 
     public long getId() {

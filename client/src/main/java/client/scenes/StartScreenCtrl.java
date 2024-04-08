@@ -112,9 +112,9 @@ public class StartScreenCtrl implements Initializable {
                 @Override
                 public void run() {
                     //refresh method loops in PastCodes
-                    Config.get().addPastCode(ev.getInviteCode());
+                    Config.get().addPastCode(ev.getId());
                     //System.out.println("adding event " + ev.getTitle() + " : " + ev.getInviteCode());
-                    data.add(ev.getTitle() + " : " + ev.getInviteCode());
+                    data.add(ev.getTitle() + " : " + ev.getId());
                     eventList.setItems(data);
                 }
             });
@@ -123,9 +123,9 @@ public class StartScreenCtrl implements Initializable {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    Config.get().removePastCode(ev.getInviteCode());
+                    Config.get().removePastCode(ev.getId());
                     //System.out.println("deleting event " + ev.getTitle() + " : " + ev.getInviteCode());
-                    data.remove(ev.getTitle() + " : " + ev.getInviteCode());
+                    data.remove(ev.getTitle() + " : " + ev.getId());
                     eventList.setItems(data);
                 }
             });
@@ -136,12 +136,12 @@ public class StartScreenCtrl implements Initializable {
                 public void run() {
                     int index=0;
                     for(String s : data){
-                        if(s.contains(ev.getInviteCode())){
+                        if(s.contains(ev.getId())){
                             index = data.indexOf(s);
                             break;
                         }
                     }
-                    data.set(index, ev.getTitle() + " : " + ev.getInviteCode());
+                    data.set(index, ev.getTitle() + " : " + ev.getId());
                     eventList.setItems(data);
                 }
             });
@@ -250,7 +250,7 @@ public class StartScreenCtrl implements Initializable {
         String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
         String inviteCode = eventTitleAndCode.split(": ")[1];
         Event event = server.getByID(inviteCode);
-        eventCtrl.showEventOverview(event);
+        controller.showEventOverview(event);
     }
 
     public Event getEvent() {

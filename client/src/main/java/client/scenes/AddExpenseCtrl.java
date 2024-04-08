@@ -12,9 +12,6 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 
-import java.net.URL;
-import java.time.LocalDate;
-import java.sql.Date;
 import java.util.*;
 
 public class AddExpenseCtrl {
@@ -101,14 +98,14 @@ public class AddExpenseCtrl {
             expense.setDebtors(getDebtors());
             expense.setEvent(event);
             Expense saved = server.addExpense(expense, event);
-            updated = server.getByInviteCode(ctrl.getSelectedEvent().getInviteCode());
+            updated = server.getByID(ctrl.getSelectedEvent().getId());
 
             for(ExpenseParticipant ep : saved.getDebtors())
                 if(ep.isOwner())
                     expensePayer = ep.getParticipant();
             participants = server.getEventParticipants(updated);
             calculateDebts(saved, updated);
-            updated = server.getByInviteCode(ctrl.getSelectedEvent().getInviteCode());
+            updated = server.getByID(ctrl.getSelectedEvent().getId());
 
         } catch (WebApplicationException e) {
 

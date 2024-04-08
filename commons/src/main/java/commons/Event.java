@@ -82,10 +82,6 @@ public class Event {
         expenses.add(expense);
     }
 
-    public void deleteExpense(Expense expense) {
-        expenses.remove(expense);
-    }
-
     public List<Tag> getTags() {
         return tags;
     }
@@ -97,10 +93,6 @@ public class Event {
     public void addTag(Tag tag) {
         tag.setEvent(this);
         tags.add(tag);
-    }
-
-    public void deleteTag(Tag tag) {
-        tags.remove(tag);
     }
 
     public Timestamp getCreationDate() {
@@ -135,11 +127,6 @@ public class Event {
         debt.setEvent(this);
         debts.add(debt);
     }
-
-    public void deleteDebt(Debt debt) {
-        debts.remove(debt);
-    }
-
 
     /**
      * Returns the participant with the specified name

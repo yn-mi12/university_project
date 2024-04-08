@@ -43,9 +43,9 @@ class ParticipantRepositoryTest {
 
     @Test
     void findByEventId() {
-        Participant p1 = new Participant("one", "pirm");
-        Participant p2 = new Participant("two", "antr");
-        Participant p3 = new Participant("g", "ds");
+        Participant p1 = new Participant("one", "pirm", null, null, null, null);
+        Participant p2 = new Participant("two", "antr", null, null, null, null);
+        Participant p3 = new Participant("g", "ds", null, null, null, null);
         p1.setEvent(e1);
         p2.setEvent(e1);
         p3.setEvent(e2);
@@ -65,7 +65,7 @@ class ParticipantRepositoryTest {
 
     @Test
     void noEvent() {
-        Participant p1 = new Participant("aewda", "Bdwa");
+        Participant p1 = new Participant("aewda", "Bdwa", null, null, null, null);
         p1.setEvent(e1);
         assertDoesNotThrow( () -> participantRepository.saveAndFlush(p1));
         p1.setEvent(null);
@@ -76,7 +76,7 @@ class ParticipantRepositoryTest {
 
     @Test
     void noFirstName () {
-        Participant p1 = new Participant("agrefw", "Betvrf");
+        Participant p1 = new Participant("agrefw", "Betvrf", null, null, null, null);
         p1.setEvent(e1);
         assertDoesNotThrow( () -> participantRepository.saveAndFlush(p1));
         p1.setFirstName(null);
@@ -87,7 +87,7 @@ class ParticipantRepositoryTest {
 
     @Test
     void noLastName () {
-        Participant p1 = new Participant("abevrfw", "B3refsd");
+        Participant p1 = new Participant("abevrfw", "B3refsd", null, null, null, null);
         p1.setEvent(e1);
         assertDoesNotThrow( () -> participantRepository.saveAndFlush(p1));
         p1.setLastName(null);

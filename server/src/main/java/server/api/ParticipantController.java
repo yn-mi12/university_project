@@ -43,14 +43,14 @@ public class ParticipantController {
     /**
      * Returns All participants from specified Event
      *
-     * @param event_id - The id of event
+     * @param eventId - The id of event
      * @return - all participants with specified event ID
      */
-    @GetMapping("/event/{event_id}")
-    public ResponseEntity<List<Participant>> getByEventId(@PathVariable("event_id") String event_id) {
-        if (!eventRepository.existsById(event_id))
+    @GetMapping("/event/{eventId}")
+    public ResponseEntity<List<Participant>> getByEventId(@PathVariable("eventId") String eventId) {
+        if (!eventRepository.existsById(eventId))
             return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(participantRepository.findByEventId(event_id));
+        return ResponseEntity.ok(participantRepository.findByEventId(eventId));
     }
 
     /**
@@ -59,15 +59,15 @@ public class ParticipantController {
      * @param participant - The Participant to be added
      * @return - The saved Participant
      */
-    @PostMapping(path = "/event/{event_id}")
-    public ResponseEntity<Participant> saveToEvent(@PathVariable("event_id") String event_id,
+    @PostMapping(path = "/event/{eventId}")
+    public ResponseEntity<Participant> saveToEvent(@PathVariable("eventId") String eventId,
                                                    @RequestBody Participant participant) {
         if (participant == null || isNullOrEmpty(participant.getFirstName()) || isNullOrEmpty(participant.getLastName()))
             return ResponseEntity.badRequest().build();
-        if (!eventRepository.existsById(event_id))
+        if (!eventRepository.existsById(eventId))
             return ResponseEntity.notFound().build();
 
-        participant.setEvent(eventRepository.getReferenceById(event_id));
+        participant.setEvent(eventRepository.getReferenceById(eventId));
         Participant saved = participantRepository.save(participant);
         return ResponseEntity.ok(saved);
     }

@@ -50,25 +50,25 @@ public class ExpenseControllerTest {
         e2.setParticipants(new ArrayList<>());
 
 
-        p1 = new Participant("pa", "pb");
+        p1 = new Participant("pa", "pb", null, null, null, null);
         p1.setEvent(e1);
         p1.setExpenses(new HashSet<>());
         participantRepo.save(p1);
         e1.addParticipant(p1);
 
-        p2 = new Participant("a", "b", "c");
+        p2 = new Participant("a", "b", "c", null, null, null);
         p2.setEvent(e1);
         p2.setExpenses(new HashSet<>());
         participantRepo.save(p2);
         e1.addParticipant(p2);
 
-        p3 = new Participant("d", "b");
+        p3 = new Participant("d", "b", null, null, null, null);
         p3.setEvent(e2);
         p3.setExpenses(new HashSet<>());
         participantRepo.save(p3);
         e2.addParticipant(p3);
 
-        p4 = new Participant("empty", "expenses");
+        p4 = new Participant("empty", "expenses", null, null, null, null);
         p4.setEvent(e2);
         p4.setExpenses(new HashSet<>());
         participantRepo.save(p4);
@@ -119,7 +119,7 @@ public class ExpenseControllerTest {
         ex2 = new Expense("Expense 2", "EUR", 40, Date.valueOf(LocalDate.now()));
         ex2.setDebtors(new HashSet<>());
 
-        d = new ExpenseParticipant(ex2, new Participant("dsa","dwa"), 100, true);
+        d = new ExpenseParticipant(ex2, new Participant("dsa","dwa", null, null, null, null), 100, true);
         d.setId(3);
         ex2.getDebtors().add(d);
 

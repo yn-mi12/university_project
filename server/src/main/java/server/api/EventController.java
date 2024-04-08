@@ -124,19 +124,6 @@ public class EventController {
     }
 
     /**
-     * Return a specific Event from its invite code
-     *
-     * @param inviteCode - The invite code of the Event
-     * @return - The Event with the invite code specified
-     */
-    @GetMapping("/code={invite-code}")
-    public ResponseEntity<Event> getByInviteCode(@PathVariable("invite-code") String inviteCode) {
-        if (inviteCode == null || !repo.existsByInviteCode(inviteCode))
-            return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(repo.findByInviteCode(inviteCode).get(0));
-    }
-
-    /**
      * Adds an Event to the repository
      *
      * @param event - The Event to be added

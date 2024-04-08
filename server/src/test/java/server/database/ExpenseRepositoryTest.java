@@ -50,12 +50,12 @@ class ExpenseRepositoryTest {
         eventRepository.save(ev2);
         eventRepository.flush();
 
-        p1 = new Participant("1name", "1st");
-        p2 = new Participant("2name", "2nd");
-        p3 = new Participant("3name", "3rd");
-        p4 = new Participant("4name", "4th");
-        p5 = new Participant("5name", "5th");
-        p6 = new Participant("6name", "6th");
+        p1 = new Participant("1name", "1st", null, null, null, null);
+        p2 = new Participant("2name", "2nd", null, null, null, null);
+        p3 = new Participant("3name", "3rd", null, null, null, null);
+        p4 = new Participant("4name", "4th", null, null, null, null);
+        p5 = new Participant("5name", "5th", null, null, null, null);
+        p6 = new Participant("6name", "6th", null, null, null, null);
         p1.setEvent(ev1);
         p2.setEvent(ev1);
         p3.setEvent(ev1);

@@ -29,8 +29,8 @@ public class ParticipantControllerTest {
         partc = new ParticipantController(repo, eventRepository);
         e = new Event("event");
         eventRepository.save(e);
-        p1 = new Participant("Tom", "Cruise");
-        p2 = new Participant("Ben", "Ten", "yo@ko.co");
+        p1 = new Participant("Tom", "Cruise", null, null, null, null);
+        p2 = new Participant("Ben", "Ten", "yo@ko.co", null, null, null);
         p1.setExpenses(new HashSet<>());
         p2.setExpenses(new HashSet<>());
         p2.getExpenses().add(new ExpenseParticipant());
@@ -38,9 +38,9 @@ public class ParticipantControllerTest {
 
     @Test
     void cannotAddNullPerson() {
-        var bad_req = partc.saveToEvent(e.getId(), new Participant(null,"a"));
+        var bad_req = partc.saveToEvent(e.getId(), new Participant(null,"a", null, null, null, null));
         assertEquals(BAD_REQUEST, bad_req.getStatusCode());
-        bad_req = partc.saveToEvent(e.getId(), new Participant("A", null));
+        bad_req = partc.saveToEvent(e.getId(), new Participant("A", null, null, null, null, null));
         assertEquals(BAD_REQUEST, bad_req.getStatusCode());
     }
 
@@ -82,7 +82,7 @@ public class ParticipantControllerTest {
     void getByEventId() {
         Event e2 = new Event("2");
         eventRepository.save(e2);
-        Participant p3 = new Participant("ds","jk");
+        Participant p3 = new Participant("ds","jk", null, null, null, null);
         p3.setEvent(e2);
         p3 = partc.saveToEvent(e2.getId(), p3).getBody();
         p1.setEvent(e);
@@ -110,7 +110,7 @@ public class ParticipantControllerTest {
         partc.saveToEvent(e.getId(), p1).getBody();
         partc.saveToEvent(e.getId(), p2).getBody();
         long count = repo.count();
-        Participant random = new Participant("John", "Deere","john@deer.co");
+        Participant random = new Participant("John", "Deere","john@deer.co", null, null, null);
         var actual = partc.updateParticipant(p1.getId(), random);
         assertEquals(count, repo.count());
         assertEquals(OK, actual.getStatusCode());
@@ -122,7 +122,7 @@ public class ParticipantControllerTest {
         partc.saveToEvent(e.getId(), p1).getBody();
         partc.saveToEvent(e.getId(), p2).getBody();
         long count = repo.count();
-        Participant random = new Participant("John", "Deere","john@deer.co");
+        Participant random = new Participant("John", "Deere","john@deer.co", null, null, null);
 
         var actual = partc.updateParticipant(-1L, random);
         assertEquals(count, repo.count());
@@ -135,7 +135,7 @@ public class ParticipantControllerTest {
         partc.saveToEvent(e.getId(), p1).getBody();
         partc.saveToEvent(e.getId(), p2).getBody();
         long count = repo.count();
-        Participant random = new Participant("John", "","john@deer.co");
+        Participant random = new Participant("John", "","john@deer.co", null, null, null);
 
         var actual = partc.updateParticipant(p1.getId(), random);
         assertEquals(count, repo.count());

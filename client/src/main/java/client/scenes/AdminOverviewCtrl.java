@@ -226,7 +226,6 @@ public class AdminOverviewCtrl implements Initializable {
                 String json = jsonScanner.next();
                 var event = om.readValue(json, Event.class);
                 System.out.println("Imported event: " + event);
-                Event find = server.getByID(event.getId());
 
                 List<Participant> participants = event.getParticipants();;
                 List<Expense> expenses = event.getExpenses();
@@ -236,7 +235,7 @@ public class AdminOverviewCtrl implements Initializable {
                 event.setExpenses(null);
                 event.setTags(null);
                 event.setDebts(null);
-                Event find = server.getByInviteCode(event.getInviteCode());
+                Event find = server.getByID(event.getId());
 
                 if(find == null) {
                     addJsonToServer(event, participants, expenses, debts);
@@ -257,7 +256,7 @@ public class AdminOverviewCtrl implements Initializable {
         for(Participant p : participants)
             server.addParticipant(p, saved);
 
-        saved = server.getByID(saved.getByID());
+        saved = server.getByID(saved.getId());
         List<Participant> newParts = saved.getParticipants();
         Map<Long, Participant> idToNewPart = new HashMap<>();
         for(int i = 0; i < participants.size(); i++)
@@ -278,7 +277,7 @@ public class AdminOverviewCtrl implements Initializable {
             count++;
         }
 
-        saved = server.getByInviteCode(saved.getByID());
+        saved = server.getByID(saved.getId());
         List<Debt> newDebts = new ArrayList<>();
         for(Debt d : debts) {
             Debt newDebt = new Debt(idToNewPart.get(d.getDebtor().getId()),

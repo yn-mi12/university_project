@@ -18,7 +18,7 @@ class EventTest {
     private Event event2;
     private final Participant p = new Participant("a", "b", null, null, null, null);
     private final List<Participant> participantList = List.of(p);
-    private final Expense e = new Expense("food", "$", 20, Date.valueOf(LocalDate.now()), null);
+    private final Expense e = new Expense("food", "$", 20, Date.valueOf(LocalDate.now()));
     private final List<Expense> expenseList = List.of(e);
 
     @BeforeEach
@@ -113,7 +113,7 @@ class EventTest {
     void testToString() {
         assertEquals("Event{title='Event1', " +
                 "inviteCode='"+ event.getId() +"', " +
-                "participants=[], expenses=[], tags=[], " +
+                "participants=[], expenses=[], debts=[], tags=[], " +
                 "creationDate=" + event.getCreationDate() + ", " +
                 "lastUpdateDate=" + event.getLastUpdateDate() + '}', event.toString());
     }
@@ -149,8 +149,9 @@ class EventTest {
 
     @Test
     void getParticipantByName() {
+        assertNull(event.getParticipantByName("a b"));
         event.setParticipants(participantList);
-        assertEquals(p, event.getParticipantByName("a"));
+        assertEquals(p, event.getParticipantByName("a b"));
         assertNull(event.getParticipantByName("x"));
     }
 

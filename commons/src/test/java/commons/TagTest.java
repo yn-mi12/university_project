@@ -75,8 +75,8 @@ public class TagTest {
 
     @Test
     void expensesTest() {
-        Expense e1 = new Expense("Food", "EUR", 10.0, Date.valueOf(LocalDate.now()), null);
-        Expense e2 = new Expense("Drinks", "EUR", 10.0, Date.valueOf(LocalDate.now()), null);
+        Expense e1 = new Expense("Food", "EUR", 10.0, Date.valueOf(LocalDate.now()));
+        Expense e2 = new Expense("Drinks", "EUR", 10.0, Date.valueOf(LocalDate.now()));
         Set<Expense> expenses = new HashSet<>();
         expenses.add(e1);
         expenses.add(e2);

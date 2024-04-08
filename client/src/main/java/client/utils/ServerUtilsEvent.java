@@ -289,10 +289,6 @@ public class ServerUtilsEvent {
         System.out.println("Debt deleted:" + debt);
     }
 
-    private @NotNull String getServer() {
-        return Config.get().getHost();
-    }
-
     private final StompSession session = connect("ws://localhost:8080/websocket");
 
     private StompSession connect(String url) {

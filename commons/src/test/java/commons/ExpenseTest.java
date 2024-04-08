@@ -94,15 +94,15 @@ public class ExpenseTest {
     @Test
     public void debtorsTest() {
         Set<ExpenseParticipant> debtors = new HashSet<>();
-        debtors.add(new ExpenseParticipant(e1, new Participant("Jane", "Doe"), 50, false));
-        debtors.add(new ExpenseParticipant(e1, new Participant("John", "Doe"), 50, true));
+        debtors.add(new ExpenseParticipant(e1, new Participant("Jane", "Doe", null, null, null, null), 50, false));
+        debtors.add(new ExpenseParticipant(e1, new Participant("John", "Doe", null, null, null, null), 50, true));
         e1.setDebtors(debtors);
         assertEquals(debtors, e1.getDebtors());
     }
 
     @Test
     public void toStringTest() {
-        assertEquals(e1.toString(), "Expense{id=0, description='item', debtors=null, currency='EUR', amount=20.0, date=" +
+        assertEquals(e1.toString(), "Expense{id=0, description='item', debtors=[], currency='EUR', amount=20.0, date=" +
                         Date.valueOf(LocalDate.now()) + ", tag=null}");
     }
 }

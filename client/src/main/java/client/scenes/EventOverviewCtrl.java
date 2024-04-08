@@ -179,7 +179,7 @@ public class EventOverviewCtrl implements Initializable {
             event.setId(server.getByID(event.getId()).getId());
             server.send("/app/deleted", event);
             if(!controller.getAdmin()) {
-                Config.get().removePastCode(event.getInviteCode());
+                Config.get().removePastCode(event.getId());
                 Config.get().save();
             }
         } catch (WebApplicationException e) {
