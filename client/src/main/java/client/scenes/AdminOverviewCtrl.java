@@ -30,14 +30,24 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class AdminOverviewCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
     @FXML
-    public ListView<String> eventList;
+    public TableView<Event> eventList;
+    @FXML
+    TableColumn<Event, String> eventIDColumn;
+    @FXML
+    TableColumn<Event, String> eventTitleColumn;
+    @FXML
+    TableColumn<Event, LocalDateTime> eventCreationDateColumn;
+    @FXML
+    TableColumn<Event, LocalDateTime> eventLastUpdateDateColumn;
     @FXML
     public Button showButton;
     @FXML
@@ -47,7 +57,7 @@ public class AdminOverviewCtrl implements Initializable {
     @FXML
     public Button showButtonE;
     private Stage primaryStage;
-    private ObservableList<String> data;
+    private ObservableList<Event> data;
 
     @Inject
     public AdminOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
@@ -57,9 +67,9 @@ public class AdminOverviewCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         refresh();
-        eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+        eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Event>() {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
+            public void changed(ObservableValue<? extends Event> observableValue, Event event, Event t1) {
                 if (eventList.getSelectionModel().getSelectedItem() != null) {
                     showButton.setDisable(false);
                     showButtonD.setDisable(false);
@@ -111,30 +121,8 @@ public class AdminOverviewCtrl implements Initializable {
     }
 
     public void launch(){
-        server.registerForMessages("/topic/titles", Event.class , q -> {
-            for(var x: data)
-            {
-                if(x.contains(q.getId())){
-                    data.remove(x);
-                    break;
-                }
-            }
-            data.add(q.getTitle() + " : " + q.getId());
-            eventList.refresh();
-        });
         server.registerForMessages("/topic/events", Event.class , q -> {
-            data.add(q.getTitle() + " : " + q.getId());
-            eventList.refresh();
-        });
-        server.registerForMessages("/topic/deleted", Event.class , q -> {
-            for(var x: data)
-            {
-                if(x.contains(q.getId())){
-                    data.remove(x);
-                    break;
-                }
-            }
-            System.out.println("TEST");
+            data.add(q);
             eventList.refresh();
         });
     }
@@ -146,13 +134,7 @@ public class AdminOverviewCtrl implements Initializable {
             showButtonD.setDisable(true);
             showButtonE.setDisable(true);
         }
-        List<String> titles = new ArrayList<>();
-        for(Event x : events)
-        {
-            titles.add(x.getTitle() + " : " + x.getId());
-        }
-        data = FXCollections.observableList(titles);
-        eventList.setItems(data);
+        eventList.setItems(FXCollections.observableList(events));
     }
 
     public void goBack() {
@@ -161,15 +143,11 @@ public class AdminOverviewCtrl implements Initializable {
     }
 
     public Event getEvent() {
-        String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
-        String inviteCode = eventTitleAndCode.split(": ")[1];
-        return server.getByID(inviteCode);
+        return server.getByID(eventList.getSelectionModel().getSelectedItem().getId());
     }
 
     public void showEvent() {
-        String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
-        String inviteCode = eventTitleAndCode.split(": ")[1];
-        Event event = server.getByID(inviteCode);
+        Event event = server.getByID(eventList.getSelectionModel().getSelectedItem().getId());
         controller.showEventOverview(event);
     }
     public void deleteEvent() {
@@ -188,9 +166,8 @@ public class AdminOverviewCtrl implements Initializable {
 
     public void exportEvent() {
         var om = new ObjectMapper();
-        String eventTitleAndCode = eventList.getSelectionModel().getSelectedItem();
-        String inviteCode = eventTitleAndCode.split(": ")[1];
-        Event event = server.getByID(inviteCode);
+
+        Event event = server.getByID(eventList.getSelectionModel().getSelectedItem().getId());
 
         try {
             var jsonEvent = om.writeValueAsString(event);
