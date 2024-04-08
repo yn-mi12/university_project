@@ -10,6 +10,7 @@ import server.database.DebtRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -50,10 +51,10 @@ public class TestDebtRepository implements DebtRepository {
     }
 
     @Override
-    public List<Debt> findByEventId(Long eventId) {
+    public List<Debt> findByEventId(String eventId) {
         List<Debt> result = new ArrayList<>();
         for(Debt d : debts) {
-            if(d.getEvent().getId() == eventId) {
+            if(Objects.equals(d.getEvent().getId(), eventId)) {
                 result.add(d);
             }
         }

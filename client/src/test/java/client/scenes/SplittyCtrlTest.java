@@ -159,7 +159,7 @@ public class SplittyCtrlTest {
     @Test
     public void testInitExpShowOverview() {
         Platform.runLater(() -> {
-            splittyCtrl.initExpShowOverview(new Event("test"), new Participant("a", "b"));
+            splittyCtrl.initExpShowOverview(new Event("test"), new Participant("a", "b", null, null, null, null));
             assertNotNull(splittyCtrl.getPrimaryStage().getScene());
             assertEquals("Add/Edit Expense", splittyCtrl.getPrimaryStage().getTitle());
         });

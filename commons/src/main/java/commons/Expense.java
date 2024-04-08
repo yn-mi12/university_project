@@ -3,7 +3,8 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.sql.Date;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -12,20 +13,26 @@ public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(nullable = false)
     private String description;
     @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL)
-    private Set<ExpenseParticipant> debtors;
+    private Set<ExpenseParticipant> debtors = new HashSet<>();
+    @Column(nullable = false)
     private String currency;
+    @Column(nullable = false)
     private double amount;
+    @Column(nullable = false)
     private Date date;
     @ManyToOne
     private Tag tag;
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Event event;
 
     @SuppressWarnings("unused")
-    public Expense() {}
+    public Expense() {
+    }
 
     public Expense(String description, String currency, double amount, Date date) {
         this.description = description;
@@ -120,6 +127,7 @@ public class Expense {
         return "Expense{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
+                ", debtors=" + debtors +
                 ", currency='" + currency + '\'' +
                 ", amount=" + amount +
                 ", date=" + date +

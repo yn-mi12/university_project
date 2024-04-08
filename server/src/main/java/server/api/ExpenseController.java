@@ -1,6 +1,7 @@
 package server.api;
 
 import java.util.List;
+import java.util.Objects;
 
 import commons.Expense;
 import org.springframework.http.ResponseEntity;
@@ -15,29 +16,33 @@ import server.database.ParticipantRepository;
 public class ExpenseController {
 
     private final ExpenseRepository repo;
-    private final EventRepository eventRepo;
-    private final ParticipantRepository partRepo;
+    private final EventRepository eventRepository;
+    private final ParticipantRepository participantRepository;
 
     /**
      * The constructor for the ExpenseController class
      * @param repo   - The Expense repository
-     * @param eventRepo - The Event repository
+     * @param eventRepository - The Event repository
+     * @param participantRepository - The Participant Repository
      */
-    public ExpenseController(ExpenseRepository repo, EventRepository eventRepo, ParticipantRepository partRepo) {
+    public ExpenseController(ExpenseRepository repo,
+                             EventRepository eventRepository,
+                             ParticipantRepository participantRepository) {
         this.repo = repo;
-        this.eventRepo = eventRepo;
-        this.partRepo = partRepo;
+        this.eventRepository = eventRepository;
+        this.participantRepository = participantRepository;
     }
 
     /**
      * @return - all the expenses currently stored for a specific event
      */
     @GetMapping("/event/{ev_id}")
-    public ResponseEntity<List<Expense>> findAddByEventID(@PathVariable("ev_id") long id) {
-        if (id < 0 || !eventRepo.existsById(id)) {
+    public ResponseEntity<List<Expense>> getByEventId(@PathVariable("ev_id") String id) {
+        if (!eventRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(repo.findAllByEventId(id));
+        eventRepository.findById(id).get().updateDate();
+        return ResponseEntity.ok(repo.findByEventId(id));
     }
 
     /**
@@ -49,8 +54,9 @@ public class ExpenseController {
     @GetMapping("/{ex_id}")
     public ResponseEntity<Expense> getById(@PathVariable("ex_id") long id) {
         if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
+        eventRepository.findById(repo.findById(id).get().getEvent().getId()).get().updateDate();
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
@@ -60,34 +66,12 @@ public class ExpenseController {
      */
     @GetMapping("/participant/{p_id}")
     public ResponseEntity<List<Expense>> findAllByParticipantId(@PathVariable("p_id") long pid) {
-        if (pid < 0 || !partRepo.existsById(pid)) {
+        if (pid < 0 || !participantRepository.existsById(pid)) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(repo.findAllByParticipantId(pid));
-    }
+        eventRepository.findById(participantRepository.findById(pid).get().getEvent().getId()).get().updateDate();
 
-    /**
-     * @param pid - The id of participant
-     * @return - all Expenses where specified participant
-     */
-    @GetMapping("/participant/{p_id}/owner")
-    public ResponseEntity<List<Expense>> findAllByParticipantIdWhereOwner(@PathVariable("p_id") long pid) {
-        if (pid < 0 || !partRepo.existsById(pid)) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(repo.findAllByParticipantIdWhereOwner(pid));
-    }
-
-    /**
-     * @param pid - The id of participant
-     * @return - all Expenses associated with specified participant
-     */
-    @GetMapping("/participant/{p_id}/debts")
-    public ResponseEntity<List<Expense>> findAllByParticipantIdWhereDebt(@PathVariable("p_id") long pid) {
-        if (pid < 0 || !partRepo.existsById(pid)) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(repo.findAllByParticipantIdWhereDebt(pid));
+        return ResponseEntity.ok(repo.findByParticipantId(pid));
     }
 
     /**
@@ -97,16 +81,37 @@ public class ExpenseController {
      * @return - The saved Expense
      */
     @PostMapping("/event/{ev_id}")
-    public ResponseEntity<Expense> save(@RequestBody Expense expense, @PathVariable("ev_id") long eid) {
-        if (eid < 0 || !eventRepo.existsById(eid)) {
+    public ResponseEntity<Expense> save(@RequestBody Expense expense, @PathVariable("ev_id") String eid) {
+        if (!eventRepository.existsById(eid)) {
             return ResponseEntity.notFound().build();
         } else {
-            expense.setEvent(eventRepo.getReferenceById(eid));
+            expense.setEvent(eventRepository.getReferenceById(eid));
         }
+        //Check if all Participants exist and are in the same event
+        //Check that there is 1 owner
+        //Check that shares add up to 100%
+        double shareSum = 0;
+        int ownerCount = 0;
         for(var i: expense.getDebtors()) {
             i.setExpense(expense);
-        }
+            shareSum += i.getShare();
+            if (i.isOwner()) ownerCount++;
+            if (participantRepository.findById(i.getParticipant().getId()).isEmpty())
+                return ResponseEntity.notFound().build();
+            if (!Objects.equals(participantRepository.findById(i.getParticipant().getId()).get().getEvent().getId(), eid)){
+                return ResponseEntity.badRequest().build();
+        }}
+        //TODO: this needs to be changed!!
+        if (!((shareSum > 98) && (shareSum < 102))
+                || ownerCount != 1
+                || isNullOrEmpty(expense.getDescription())
+                || isNullOrEmpty(expense.getCurrency())
+                || expense.getAmount() <= 0
+                || expense.getDate() == null) {
+            return ResponseEntity.badRequest().build();
+        } //TODO: Add checks for Date
         Expense saved = repo.save(expense);
+        eventRepository.findById(eid).get().updateDate();
         return ResponseEntity.ok(saved);
     }
 
@@ -121,8 +126,10 @@ public class ExpenseController {
             return ResponseEntity.notFound().build();
         }
         Expense x = repo.findById(id).orElse(null);
+        eventRepository.findById(repo.findById(id).get().getEvent().getId()).get().updateDate();
         repo.deleteById(id);
         return ResponseEntity.ok(x);
+
     }
 
     /**

@@ -20,7 +20,8 @@ public class TagTest {
     @Test
     void constructorTest() {
         assertNotNull(tag);
-        assertNotNull(new Tag());
+        Tag empty = new Tag();
+        assertNotNull(empty);
     }
 
     @Test

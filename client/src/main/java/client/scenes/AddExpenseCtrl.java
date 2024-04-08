@@ -95,12 +95,11 @@ public class AddExpenseCtrl {
                 System.out.println(server.getDebtsByEvent(event));
                 oldExpense = null;
             }
-            event = server.getByInviteCode(event.getInviteCode());
+            event = server.getByID(event.getId());
             if(delete) {
                 delete = false;
                 return;
             }
-
             System.out.println("Add expense");
             System.out.println("Id:" + event.getId());
             System.out.println("Get expense");
@@ -115,15 +114,15 @@ public class AddExpenseCtrl {
             expense.setDebtors(getDebtors());
             expense.setEvent(event);
             Expense saved = server.addExpense(expense, event);
-            updated = server.getByInviteCode(ctrl.getSelectedEvent().getInviteCode());
-            participants = server.getEventParticipants(updated);
+
+            updated = server.getByID(ctrl.getSelectedEvent().getId());
             participants = server.getEventParticipants(updated);
             for(ExpenseParticipant ep : saved.getDebtors())
                 if(ep.isOwner())
                     expensePayer = ep.getParticipant();
 
             calculateDebts(saved, updated);
-            updated = server.getByInviteCode(ctrl.getSelectedEvent().getInviteCode());
+            updated = server.getByID(ctrl.getSelectedEvent().getId());
 
         } catch (WebApplicationException e) {
 
@@ -132,7 +131,6 @@ public class AddExpenseCtrl {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
             return;
-
         }
         clearFields();
         controller.showEventOverview(updated);

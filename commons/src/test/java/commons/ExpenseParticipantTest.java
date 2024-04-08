@@ -13,25 +13,26 @@ class ExpenseParticipantTest {
     private final Expense e1 = new Expense();
     private final Expense e2 = new Expense("Misc", "EUR", 100, null);
     private final Participant p1 = new Participant();
-    private final Participant p2 = new Participant("A", "B");
+    private final Participant p2 = new Participant("A", "B", null, null, null, null);
 
     @BeforeEach
     void setUp() {
         ep1 = new ExpenseParticipant(e1, p1, 100, false);
         ep2 = new ExpenseParticipant(e2, p2, 0, true);
         ep3 = new ExpenseParticipant();
+        ep1.setId(1);
+        ep2.setId(2);
+        ep3.setId(3);
     }
 
     @Test
     void constructorTest() {
         assertNotNull(ep1);
-        assertNotNull(new ExpenseParticipant());
+        ExpenseParticipant empty = new ExpenseParticipant();
+        assertNotNull(empty);
     }
     @Test
     void getId() {
-        ep1.setId(1);
-        ep2.setId(2);
-        ep3.setId(3);
         assertEquals(1, ep1.getId());
         assertNotEquals(ep1.getId(), ep2.getId());
         assertNotEquals(ep1.getId(), ep3.getId());
@@ -96,6 +97,7 @@ class ExpenseParticipantTest {
         assertNotEquals(ep1, ep3);
         assertNotEquals(ep2, ep3);
         ExpenseParticipant ep4 = new ExpenseParticipant(e1, p1, 100, false);
+        ep4.setId(1);
         assertEquals(ep1, ep4);
     }
 

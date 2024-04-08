@@ -29,7 +29,8 @@ public class ExpenseTest {
     public void testConstructor() {
         assertNotNull(e1);
         assertNotNull(e2);
-        assertNotNull(new Expense());
+        Expense empty = new Expense();
+        assertNotNull(empty);
     }
 
     @Test
@@ -93,15 +94,15 @@ public class ExpenseTest {
     @Test
     public void debtorsTest() {
         Set<ExpenseParticipant> debtors = new HashSet<>();
-        debtors.add(new ExpenseParticipant(e1, new Participant("Jane", "Doe"), 50, false));
-        debtors.add(new ExpenseParticipant(e1, new Participant("John", "Doe"), 50, true));
+        debtors.add(new ExpenseParticipant(e1, new Participant("Jane", "Doe", null, null, null, null), 50, false));
+        debtors.add(new ExpenseParticipant(e1, new Participant("John", "Doe", null, null, null, null), 50, true));
         e1.setDebtors(debtors);
         assertEquals(debtors, e1.getDebtors());
     }
 
     @Test
     public void toStringTest() {
-        assertEquals("Expense{id=0, description='item', currency='EUR', amount=20.0, date=" +
-                        Date.valueOf(LocalDate.now()) + ", tag=null}", e1.toString());
+        assertEquals(e1.toString(), "Expense{id=0, description='item', debtors=[], currency='EUR', amount=20.0, date=" +
+                        Date.valueOf(LocalDate.now()) + ", tag=null}");
     }
 }

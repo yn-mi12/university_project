@@ -24,20 +24,22 @@ public class DebtController {
     }
 
     @PostMapping({"/event/{ev_id}"})
-    public ResponseEntity<Debt> save(@PathVariable("ev_id") long id, @RequestBody Debt debt) {
+    public ResponseEntity<Debt> save(@PathVariable("ev_id") String id, @RequestBody Debt debt) {
         if (!partRepo.existsById(debt.getCreditor().getId()) || !partRepo.existsById(debt.getDebtor().getId())
             || !eventRepo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
         debt.setEvent(eventRepo.getReferenceById(id));
         Debt saved = repo.save(debt);
+        eventRepo.findById(id).get().updateDate();
         return ResponseEntity.ok(saved);
     }
 
     @GetMapping("/event/{id}")
-    public ResponseEntity<List<Debt>> getByEventId(@PathVariable("id") long id) {
-        if (id < 0 || !eventRepo.existsById(id))
+    public ResponseEntity<List<Debt>> getByEventId(@PathVariable("id") String id) {
+        if (!eventRepo.existsById(id))
             return ResponseEntity.badRequest().build();
+        eventRepo.findById(id).get().updateDate();
         return ResponseEntity.ok(repo.findByEventId(id));
     }
 
@@ -63,6 +65,8 @@ public class DebtController {
         if (debt == null) {
             return ResponseEntity.badRequest().build();
         }
+        eventRepo.findById(repo.findById(id).get().getEvent().getId()).get().updateDate();
+
         debt.setAmount(amount);
         Debt saved = repo.save(debt);
         return ResponseEntity.ok(saved);
@@ -73,6 +77,7 @@ public class DebtController {
         if (id < 0 || !repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
+        eventRepo.findById(repo.findById(id).get().getEvent().getId()).get().updateDate();
         Debt debt = repo.findById(id).get();
         repo.deleteById(id);
         return ResponseEntity.ok(debt);

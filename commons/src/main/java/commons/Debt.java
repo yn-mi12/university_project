@@ -7,7 +7,6 @@ import java.util.Objects;
 
 @Entity
 public class Debt {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -23,7 +22,8 @@ public class Debt {
     private Event event;
 
     @SuppressWarnings("unused")
-    public Debt() {}
+    public Debt() {
+    }
 
     public Debt(Participant debtor, Participant creditor, double amount) {
         this.debtor = debtor;
@@ -76,8 +76,7 @@ public class Debt {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Debt debt = (Debt) o;
-        return Double.compare(amount, debt.amount) == 0 && Objects.equals(debtor, debt.debtor)
-                && Objects.equals(creditor, debt.creditor);
+        return Double.compare(amount, debt.amount) == 0 && Objects.equals(debtor, debt.debtor) && Objects.equals(creditor, debt.creditor);
     }
 
     @Override
@@ -87,11 +86,6 @@ public class Debt {
 
     @Override
     public String toString() {
-        return "Debt{" +
-                "id=" + id +
-                ", debtor=" + debtor +
-                ", creditor=" + creditor +
-                ", amount=" + amount +
-                '}';
+        return "Debt{" + "id=" + id + ", debtor=" + debtor + ", creditor=" + creditor + ", amount=" + amount + '}';
     }
 }
