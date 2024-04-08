@@ -66,8 +66,9 @@ public class AdminOverviewCtrl implements Initializable {
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        formatTable();
         refresh();
-        eventList.getColumns().forEach(e -> e.setReorderable(false));
+
         eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Event>() {
             @Override
             public void changed(ObservableValue<? extends Event> observableValue, Event event, Event t1) {
@@ -263,5 +264,15 @@ public class AdminOverviewCtrl implements Initializable {
             newDebts.add(newDebt);
         }
         server.addAllDebts(newDebts, saved);
+    }
+
+    private void formatTable() {
+        // Sets all columns not reorder-able
+        eventList.getColumns().forEach(e -> e.setReorderable(false));
+        // sets title column to fill remaining space
+        double w = eventIDColumn.widthProperty().get() +
+                eventCreationDateColumn.widthProperty().get() +
+                eventLastUpdateDateColumn.widthProperty().get();
+        eventTitleColumn.prefWidthProperty().bind(eventList.widthProperty().subtract(w));
     }
 }
