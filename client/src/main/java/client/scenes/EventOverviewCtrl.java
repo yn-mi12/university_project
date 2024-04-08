@@ -226,7 +226,6 @@ public class EventOverviewCtrl implements Initializable {
         Main.buttonFeedback(backButton);
         addExpenseButton.setStyle(Main.changeUI(addExpenseButton));
         Main.buttonFeedback(addExpenseButton);
-        Main.buttonFeedback(deleteEventButton);
         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
                 "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
                 "-fx-border-width: 1.5; -fx-border-insets: -1");

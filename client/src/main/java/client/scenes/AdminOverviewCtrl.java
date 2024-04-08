@@ -19,7 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -39,6 +39,16 @@ public class AdminOverviewCtrl implements Initializable {
     private final SplittyCtrl controller;
     @FXML
     public TableView<Event> eventList;
+    @FXML
+    public AnchorPane background;
+    @FXML
+    public Button backButton;
+    @FXML
+    public Button importButton;
+    @FXML
+    public Label adminOverviewLabel;
+    @FXML
+    public Label eventsLabel;
     @FXML
     TableColumn<Event, String> eventIDColumn;
     @FXML
@@ -78,18 +88,18 @@ public class AdminOverviewCtrl implements Initializable {
                 }
             }
         });
-
         ObservableList<Label> x = FXCollections.observableArrayList();
         List<Config.SupportedLocale> languages = Config.get().getSupportedLocales().stream().toList();
-        for(var item : languages)
-        {
+        for (var item : languages) {
             Image icon;
             String iconPath = "client/images/" + item.getCode() + ".png";
             icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
             ImageView iconImageView = new ImageView(icon);
             iconImageView.setFitHeight(25);
             iconImageView.setPreserveRatio(true);
-            x.add(new Label(item.getName(), iconImageView));
+            Label l = new Label(item.getName(), iconImageView);
+            if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+            x.add(l);
         }
         languageBox.setItems(x);
         languageBox.setCellFactory(new Callback<>() {
@@ -100,18 +110,26 @@ public class AdminOverviewCtrl implements Initializable {
                     protected void updateItem(Label item, boolean empty) {
                         super.updateItem(item, empty);
                         if (item == null || empty) {
-                        }
-                        else {
-                            item.setTextFill(Color.color(0, 0, 0));
+                        } else {
+                            if(Main.isContrastMode())this.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;" +
+                                    "-fx-font-weight: bolder;-fx-border-color: #836FFF");
                             setGraphic(item);
                         }
                     }
                 };
             }
         });
-        String current = String.valueOf(Config.get().getCurrentLocaleName());
-        languageBox.setValue(languageBox.getItems().stream()
-                .filter(l -> String.valueOf(l.getText()).equals(current)).findFirst().orElse(null));
+        String current = Config.get().getCurrentLocaleName();
+        Image icon;
+        String iconPath = "client/images/" + Config.get().getCurrentLocale() + ".png";
+        icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
+        ImageView iconImageView = new ImageView(icon);
+        iconImageView.setFitHeight(25);
+        iconImageView.setPreserveRatio(true);
+        Label l = new Label(current, iconImageView);
+        l.setStyle("-fx-text-fill: black");
+        if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+        languageBox.setValue(l);
         languageBox.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 Config.get().setCurrentLocale(newVal.getText());
@@ -119,6 +137,45 @@ public class AdminOverviewCtrl implements Initializable {
                 Main.refreshAdminOverview();
             }
         }));
+
+        if(Main.isContrastMode()){
+            Main.languageFeedback(languageBox);
+            languageBox.setStyle(Main.changeUI(languageBox));
+            adminOverviewLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+            eventsLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+            background.setStyle("-fx-background-color: #69e0ab;");
+            backButton.setStyle(Main.changeUI(backButton));
+            Main.buttonFeedback(backButton);
+            showButton.setStyle(Main.changeUI(showButton));
+            Main.buttonFeedback(showButton);
+            showButtonE.setStyle(Main.changeUI(showButtonE));
+            Main.buttonFeedback(showButtonE);
+            importButton.setStyle(Main.changeUI(importButton));
+            Main.buttonFeedback(importButton);
+            eventList.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
+                    "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
+                    "-fx-border-width: 2.5; -fx-border-insets: 2;-fx-control-inner-background:#836FFF");
+            showButtonD.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
+                    "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
+                    "-fx-border-width: 1.5; -fx-border-insets: -1");
+            showButtonD.setOnMouseEntered(e -> showButtonD.setStyle("-fx-background-color: #c70000; " +
+                    "-fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
+                    "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;"));
+            showButtonD.setOnMouseExited(e ->         showButtonD.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;" +
+                    "-fx-font-weight: bolder;"+
+                    "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
+                    "-fx-border-width: 1.5; -fx-border-insets: -1"));
+            showButtonD.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    showButtonD.setStyle("-fx-background-color: #c70000; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
+                            "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
+                            "-fx-border-width: 1.5; -fx-border-insets: -1;");
+                }
+                else         showButtonD.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
+                        "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
+                        "-fx-border-width: 1.5; -fx-border-insets: -1");
+            });
+        }
     }
 
     public void launch(){
