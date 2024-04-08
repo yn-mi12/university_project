@@ -60,6 +60,7 @@ public class EditParticipantOverviewCtrl {
         setParticipant();
         try {
             event = server.getByInviteCode(event.getInviteCode());
+            controller.showAddParticipant(event);
             AddParticipantCtrl addCtrl = controller.getAddParticipantCtrl();
             addCtrl.setParticipant(selectedParticipant);
             addCtrl.setEditPart(true);
@@ -74,7 +75,6 @@ public class EditParticipantOverviewCtrl {
                 addCtrl.setIban(selectedParticipant.getIban());
                 addCtrl.setBic(selectedParticipant.getBic());
             }
-            controller.showAddParticipant(event);
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);

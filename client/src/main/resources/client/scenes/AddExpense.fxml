@@ -21,7 +21,7 @@
             <children>
                 <Button layoutX="455.0" layoutY="512.0" mnemonicParsing="false" onAction="#cancel" prefHeight="28.0" prefWidth="70.0" text="%cancel" />
                 <Button layoutX="335.0" layoutY="512.0" mnemonicParsing="false" onAction="#ok" prefHeight="27.0" prefWidth="76.0" text="%save" />
-                <Label layoutX="29.0" layoutY="22.0" prefHeight="28.0" prefWidth="239.0" text="%add/editExpense">
+                <Label layoutX="29.0" layoutY="22.0" prefHeight="28.0" prefWidth="239.0" text="%expenseView">
                     <font>
                         <Font size="18.0" />
                     </font>

@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class AddExpenseCtrl {
@@ -22,6 +23,8 @@ public class AddExpenseCtrl {
     private List<Participant> participants;
     private Participant expensePayer;
     private Expense expense;
+    private Expense oldExpense;
+    private boolean delete;
     @FXML
     private SplitMenuButton whoPaid;
     @FXML
@@ -74,6 +77,7 @@ public class AddExpenseCtrl {
         whoPays.setItems(FXCollections.observableList(listOfParticipants));
         whoPays.refresh();
         whoPays.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
+        currency.setValue(null);
     }
 
     public void cancel() {
@@ -84,6 +88,18 @@ public class AddExpenseCtrl {
     public void ok() {
         Event updated;
         try {
+            if(oldExpense != null) {
+                oldExpense.setAmount(oldExpense.getAmount() * -1.0);
+                calculateDebts(oldExpense, event);
+                server.deleteExpense(oldExpense);
+                System.out.println(server.getDebtsByEvent(event));
+                oldExpense = null;
+            }
+            event = server.getByInviteCode(event.getInviteCode());
+            if(delete) {
+                delete = false;
+                return;
+            }
 
             System.out.println("Add expense");
             System.out.println("Id:" + event.getId());
@@ -100,11 +116,12 @@ public class AddExpenseCtrl {
             expense.setEvent(event);
             Expense saved = server.addExpense(expense, event);
             updated = server.getByInviteCode(ctrl.getSelectedEvent().getInviteCode());
-
+            participants = server.getEventParticipants(updated);
+            participants = server.getEventParticipants(updated);
             for(ExpenseParticipant ep : saved.getDebtors())
                 if(ep.isOwner())
                     expensePayer = ep.getParticipant();
-            participants = server.getEventParticipants(updated);
+
             calculateDebts(saved, updated);
             updated = server.getByInviteCode(ctrl.getSelectedEvent().getInviteCode());
 
@@ -146,10 +163,10 @@ public class AddExpenseCtrl {
                 }
             }
         }
-        setAndAddDebts(saved, event, debtorToDebt);
+        setDebts(saved, event, debtorToDebt);
     }
 
-    public void setAndAddDebts(Expense saved, Event event, Map<Participant, Debt> debtorToDebt) {
+    public void setDebts(Expense saved, Event event, Map<Participant, Debt> debtorToDebt) {
         for (ExpenseParticipant ep : saved.getDebtors()) {
             if (!ep.isOwner()) {
                 Debt d = debtorToDebt.get(ep.getParticipant());
@@ -157,6 +174,13 @@ public class AddExpenseCtrl {
                 debtorToDebt.replace(ep.getParticipant(), d);
             }
         }
+
+        if(oldExpense != null) {
+            for (Debt debt : debtorToDebt.values())
+                server.deleteDebt(debt);
+            return;
+        }
+
         List<Debt> debtsDebtor = server.getDebtsByDebtor(expensePayer);
         try {
             for (Debt debt : debtsDebtor) {
@@ -176,11 +200,14 @@ public class AddExpenseCtrl {
                     debtorToDebt.remove(p);
                 }
             }
-        } catch(BadRequestException e) {
+        } catch (BadRequestException e) {
             System.out.println("Failed to add debts");
             return;
         }
+        addDebts(event, debtorToDebt);
+    }
 
+    public void addDebts(Event event, Map<Participant, Debt> debtorToDebt) {
         List<Debt> finalDebts = new ArrayList<>();
         for (Debt debt : debtorToDebt.values()) {
             System.out.println(debt);
@@ -256,4 +283,39 @@ public class AddExpenseCtrl {
         whoPays.getSelectionModel().clearSelection();
     }
 
+    public void setWhatForText(String whatFor) {
+        this.whatFor.setText(whatFor);
+    }
+
+    public void setHowMuchText(String howMuch) {
+        this.howMuch.setText(howMuch);
+    }
+
+    public void setCurrencyText(String currency) {
+        this.currency.getSelectionModel().select(currency);
+    }
+
+    public void setDateText(LocalDate date) {
+        this.date.setValue(date);
+    }
+
+    public ListView<String> getWhoPays() {
+        return whoPays;
+    }
+
+    public CheckBox getAllHaveToPay() {
+        return allHaveToPay;
+    }
+
+    public CheckBox getSomeHaveToPay() {
+        return someHaveToPay;
+    }
+
+    public void setOldExpense(Expense oldExpense) {
+        this.oldExpense = oldExpense;
+    }
+
+    public void setDelete(boolean delete) {
+        this.delete = delete;
+    }
 }

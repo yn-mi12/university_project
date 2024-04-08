@@ -35,7 +35,7 @@
       <SplitMenuButton fx:id="part" focusTraversable="false" layoutX="20.0" layoutY="221.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="178.0" text="%participants_menu_button2" wrapText="true">
       </SplitMenuButton>
       <Button focusTraversable="false" layoutX="229.0" layoutY="107.0" minWidth="28.0" mnemonicParsing="false" onAction="#addParticipant" prefHeight="27.0" prefWidth="28.0" text="➕" />
-      <Button focusTraversable="false" layoutX="231.0" layoutY="221.0" minWidth="100" mnemonicParsing="false" onAction="#addExpense" text="%add_expense_button" wrapText="true" />
+      <Button fx:id="addButton" focusTraversable="false" layoutX="217.0" layoutY="221.0" minWidth="100" mnemonicParsing="false" onAction="#addExpense" text="%add_expense_button" wrapText="true" />
       <ComboBox fx:id="languageBox" focusTraversable="false" layoutX="364.0" layoutY="532.0" prefWidth="150" />
       <Text fontSmoothingType="LCD" layoutX="364.0" layoutY="525.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%language_choice">
          <font>
@@ -88,7 +88,7 @@
                <Font size="13.0" />
            </font>
        </Button>
-      <Button focusTraversable="false" layoutX="231.0" layoutY="266.0" minWidth="100" mnemonicParsing="false" onAction="#settleDebts" prefHeight="26.0" prefWidth="135.0" text="%settle_debts_button" wrapText="true" />
+      <Button focusTraversable="false" layoutX="217.0" layoutY="266.0" minWidth="100" mnemonicParsing="false" onAction="#settleDebts" prefHeight="26.0" prefWidth="135.0" text="%settle_debts_button" wrapText="true" />
       <Label fx:id="totalCost" layoutX="15.0" layoutY="270.0" prefHeight="18.0" prefWidth="139.0" text="%total_cost" />
        <Label fx:id="paidLabel" text="%paid" visible="false" />
        <Label fx:id="participantsLabel" text="%participants" visible="false" />
@@ -109,5 +109,7 @@
             <Font size="18.0" />
          </font>
       </Label>
+      <Button fx:id="viewButton" disable="true" focusTraversable="false" layoutX="369.0" layoutY="221.0" minWidth="100" mnemonicParsing="false" onAction="#viewExpense" text="%view_expense_button" wrapText="true" />
+      <Button fx:id="deleteButton" disable="true" focusTraversable="false" layoutX="373.0" layoutY="266.0" minWidth="100" mnemonicParsing="false" onAction="#deleteExpense" prefHeight="26.0" prefWidth="139.0" text="%delete_expense_button" wrapText="true" />
    </children>
 </AnchorPane>

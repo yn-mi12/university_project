@@ -48,7 +48,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtilsEvent {
     private static final String SERVER = Config.get().getHost();
-    private List<Event> events = new ArrayList<>();
 
     public Event getByInviteCode(String inviteCode) {
         Event event;
@@ -342,6 +341,15 @@ public class ServerUtilsEvent {
                 .accept(APPLICATION_JSON)
                 .delete();
         System.out.println("Expense deleted: " + expense);
+    }
+
+    public Expense getExpenseById(long id) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/expenses/" + id)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
     }
 
     private @NotNull String getServer() {

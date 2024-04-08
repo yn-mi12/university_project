@@ -270,11 +270,12 @@ public class AdminOverviewCtrl implements Initializable {
                 ExpenseParticipant newExpensePart = new
                         ExpenseParticipant(newExpense, newParts.get(count), ep.getShare(), ep.isOwner());
                 debtors.add(newExpensePart);
+                count++;
             }
             e.setDebtors(debtors);
             e.setEvent(saved);
             server.addExpense(e, saved);
-            count++;
+
         }
 
         saved = server.getByInviteCode(saved.getInviteCode());
