@@ -31,7 +31,7 @@ public class Main extends Application {
     private static final MyFXML FXML = new MyFXML(INJECTOR);
     private static Stage primaryStage;
     private static SplittyCtrl mainCtrl;
-    private static boolean contrastMode = false;
+    private static boolean contrastMode = Boolean.valueOf(Config.get().isContrastMode());
 
     public static void main(String[] args) {
         launch();
@@ -102,11 +102,12 @@ public class Main extends Application {
     public static void changeContrast()
     {
         contrastMode = (!contrastMode);
+        Config.get().setContrastMode(String.valueOf(contrastMode));
         reloadUI();
     }
 
     public static boolean isContrastMode() {
-        return contrastMode;
+        return Boolean.valueOf(Config.get().isContrastMode());
     }
     public static String changeUI(Object o)
     {
