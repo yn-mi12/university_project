@@ -31,6 +31,7 @@ public class DebtController {
         }
         debt.setEvent(eventRepo.getReferenceById(id));
         Debt saved = repo.save(debt);
+        eventRepo.findById(id).get().updateDate();
         return ResponseEntity.ok(saved);
     }
 
@@ -38,6 +39,7 @@ public class DebtController {
     public ResponseEntity<List<Debt>> getByEventId(@PathVariable("id") String id) {
         if (!eventRepo.existsById(id))
             return ResponseEntity.badRequest().build();
+        eventRepo.findById(id).get().updateDate();
         return ResponseEntity.ok(repo.findByEventId(id));
     }
 
@@ -45,6 +47,7 @@ public class DebtController {
     public ResponseEntity<List<Debt>> getAllByCreditorId(@PathVariable("creditor-id") long id) {
         if(id < 0)
             return ResponseEntity.badRequest().build();
+        eventRepo.findById(partRepo.findById(id).get().getEvent().getId()).get().updateDate();
 
         return ResponseEntity.ok(repo.findAllByCreditorId(id));
     }
@@ -53,6 +56,7 @@ public class DebtController {
     public ResponseEntity<List<Debt>> getAllByDebtorId(@PathVariable("debtor-id") long id) {
         if(id < 0)
             return ResponseEntity.badRequest().build();
+        eventRepo.findById(partRepo.findById(id).get().getEvent().getId()).get().updateDate();
 
         return ResponseEntity.ok(repo.findAllByDebtorId(id));
     }
@@ -63,6 +67,8 @@ public class DebtController {
         if (debt == null) {
             return ResponseEntity.badRequest().build();
         }
+        eventRepo.findById(repo.findById(id).get().getEvent().getId()).get().updateDate();
+
         debt.setAmount(amount);
         Debt saved = repo.save(debt);
         return ResponseEntity.ok(saved);
@@ -73,6 +79,7 @@ public class DebtController {
         if (id < 0 || !repo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
+        eventRepo.findById(repo.findById(id).get().getEvent().getId()).get().updateDate();
         Debt debt = repo.findById(id).get();
         repo.deleteById(id);
         return ResponseEntity.ok(debt);
