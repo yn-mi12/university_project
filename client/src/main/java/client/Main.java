@@ -116,7 +116,7 @@ public class Main extends Application {
         if(o.getClass() == TextField.class)
             return "-fx-background-color: #836FFF; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder; " +
                     "-fx-prompt-text-fill: #BDBDBD; -fx-border-color: #211951;";
-        if(o.getClass() == ComboBox.class || o.getClass() == ToggleButton.class|| o.getClass() == SplitMenuButton.class)
+        if(o.getClass() == ComboBox.class || o.getClass() == ToggleButton.class || o.getClass()== ChoiceBox.class)
             return "-fx-background-color: #211951; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
                     "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
                     "-fx-border-width: 2.5; -fx-border-insets: -2;-fx-control-inner-background:#211951";

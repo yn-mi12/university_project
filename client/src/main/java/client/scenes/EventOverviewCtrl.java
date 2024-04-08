@@ -196,6 +196,7 @@ public class EventOverviewCtrl implements Initializable {
                 };
             }
         });
+        expensePayer = null;
     }
 
     private void isContrast() {
@@ -206,8 +207,26 @@ public class EventOverviewCtrl implements Initializable {
         Main.buttonFeedback(backButton);
         addExpenseButton.setStyle(Main.changeUI(addExpenseButton));
         Main.buttonFeedback(addExpenseButton);
-        deleteEventButton.setStyle(Main.changeUI(deleteEventButton));
         Main.buttonFeedback(deleteEventButton);
+        deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
+                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
+                "-fx-border-width: 1.5; -fx-border-insets: -1");
+        deleteEventButton.setOnMouseEntered(e -> deleteEventButton.setStyle("-fx-background-color: #c70000; " +
+                "-fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
+                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;"));
+        deleteEventButton.setOnMouseExited(e ->         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;" +
+                "-fx-font-weight: bolder;"+
+                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
+                "-fx-border-width: 1.5; -fx-border-insets: -1"));
+        deleteEventButton.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                deleteEventButton.setStyle("-fx-background-color: #c70000; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
+                        "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;");
+            }
+            else         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
+                    "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
+                    "-fx-border-width: 1.5; -fx-border-insets: -1");
+        });
         addExpenseButton.setStyle(Main.changeUI(addExpenseButton));
         Main.buttonFeedback(addExpenseButton);
         copyCodeButton.setStyle(Main.changeUI(copyCodeButton));
@@ -234,7 +253,7 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void addExpense() {
-        controller.initExpShowOverview(event, expensePayer);
+        if(expensePayer!=null) controller.initExpShowOverview(event, expensePayer);
     }
 
     public void settleDebts() {

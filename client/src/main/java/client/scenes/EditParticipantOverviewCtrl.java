@@ -10,15 +10,24 @@ import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
 
-public class EditParticipantOverviewCtrl {
+public class EditParticipantOverviewCtrl implements Initializable {
+    public AnchorPane background;
+    public Button backButton;
+    public Button editButton;
+    public Button deleteButton;
+    public Label allParticipantsLabel;
     private Participant selectedParticipant;
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
@@ -133,6 +142,24 @@ public class EditParticipantOverviewCtrl {
 
     public void hideLabel() {
         noDeleteParticipant.visibleProperty().setValue(false);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        if(Main.isContrastMode())
+        {
+            background.setStyle("-fx-background-color: #69e0ab;");
+            backButton.setStyle(Main.changeUI(backButton));
+            Main.buttonFeedback(backButton);
+            editButton.setStyle(Main.changeUI(editButton));
+            Main.buttonFeedback(editButton);
+            deleteButton.setStyle(Main.changeUI(deleteButton));
+            Main.buttonFeedback(deleteButton);
+            participantList.setStyle("-fx-background-color: #836FFF;-fx-font-weight: bolder; " +
+                    "-fx-border-color: #211951; -fx-control-inner-background: #836FFF; " +
+                    "-fx-control-inner-background-alt: derive(-fx-control-inner-background, 15%);" +
+                    "-fx-color-label-visible: #F0F3FF");
+        }
     }
 }
 
