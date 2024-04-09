@@ -21,6 +21,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.util.Callback;
+import javafx.util.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.RoundingMode;
 import java.net.URL;
@@ -121,7 +123,7 @@ public class EventOverviewCtrl implements Initializable {
     public void setSelectedEvent(Event selectedEvent) {
         hideTabPanes();
         this.event = selectedEvent;
-        this.event = server.getByID(selectedEvent.getId());
+        //this.event = server.getByID(selectedEvent.getId());
         this.participants = event.getParticipants();
         ObservableList<Label> names = FXCollections.observableArrayList();
         StringBuilder namesString = new StringBuilder();
@@ -264,7 +266,6 @@ public class EventOverviewCtrl implements Initializable {
                 };
             }
         });
-        expensePayer = null;
     }
 
     private void isContrast() {
@@ -326,7 +327,7 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void addExpense() {
-        if(expensePayer!=null) controller.initExpShowOverview(event, expensePayer);
+        controller.initExpShowOverview(event, expensePayer);
     }
 
     public Expense getExpense() {
@@ -408,9 +409,72 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void settleDebts() {
-        List<Debt> allDebts = server.getDebtsByEvent(event);
-        controller.showSettleDebts(allDebts, event);
+
+        Map<Participant, Double> partToAmount = mapParticipantToAmount();
+
+        List<Pair<Participant, Double>> more = new ArrayList<>();
+        List<Pair<Participant, Double>> less = new ArrayList<>();
+        for(Participant p : partToAmount.keySet()) {
+            if(partToAmount.get(p) > 0) {
+                more.add(new Pair<>(p, partToAmount.get(p)));
+            } else if(partToAmount.get(p) < 0) {
+                less.add(new Pair<>(p, partToAmount.get(p) * -1));
+            }
+        }
+
+        more.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
+        less.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
+
+        List<Debt> minDebts = new ArrayList<>();
+
+        while(!more.isEmpty() && !less.isEmpty()) {
+            Pair<Participant, Double> from = less.getFirst();
+            Pair<Participant, Double> to = more.getFirst();
+            double amount;
+
+            if(Objects.equals(from.getValue(), to.getValue())) {
+                amount = from.getValue();
+                more.removeFirst();
+                less.removeFirst();
+            } else if(from.getValue() < to.getValue()) {
+                amount = from.getValue();
+                more.set(0, new Pair<>(to.getKey(), to.getValue() - from.getValue()));
+                less.removeFirst();
+            } else {
+                amount = to.getValue();
+                less.set(0, new Pair<>(from.getKey(), from.getValue() - to.getValue()));
+                more.removeFirst();
+            }
+
+            Debt newDebt = new Debt(from.getKey(), to.getKey(), amount);
+            minDebts.add(newDebt);
+        }
+
+        for(Debt d : server.getDebtsByEvent(event))
+            server.deleteDebt(d);
+        server.addAllDebts(minDebts, event);
+
+        controller.showSettleDebts(minDebts, event);
     }
+
+    private @NotNull Map<Participant, Double> mapParticipantToAmount() {
+        Map<Participant, Double> partToAmount = new HashMap<>();
+        for(Participant p : participants) {
+            List<Debt> credits = server.getDebtsByCreditor(p);
+            double creditAmount = 0;
+            for(Debt d : credits) {
+                creditAmount += d.getAmount();
+            }
+            List<Debt> debits = server.getDebtsByDebtor(p);
+            double debitAmount = 0;
+            for(Debt d : debits) {
+                debitAmount += d.getAmount();
+            }
+            partToAmount.put(p, creditAmount - debitAmount);
+        }
+        return partToAmount;
+    }
+
     public void editTitle() {
         controller.showEditTitle(event);
     }

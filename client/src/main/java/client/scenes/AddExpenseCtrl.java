@@ -126,12 +126,12 @@ public class AddExpenseCtrl implements Initializable {
                 server.deleteExpense(oldExpense);
                 System.out.println(server.getDebtsByEvent(event));
                 oldExpense = null;
+                if(delete) {
+                    delete = false;
+                    return;
+                }
             }
             event = server.getByID(event.getId());
-            if(delete) {
-                delete = false;
-                return;
-            }
             System.out.println("Add expense");
             System.out.println("Id:" + event.getId());
             System.out.println("Get expense");
@@ -267,7 +267,7 @@ public class AddExpenseCtrl implements Initializable {
             for (int i = 0; i < event.getParticipants().size(); i++){
                 String fullName = this.event.getParticipants().get(i).getFirstName() + " " +
                         this.event.getParticipants().get(i).getLastName();
-                boolean isOwner = fullName.equals(whoPaid.getValue().getText());
+                boolean isOwner = fullName.equals(whoPaid.getPromptText());
                 ExpenseParticipant expenseParticipant =
                         new ExpenseParticipant(expense, event.getParticipants().get(i),share, isOwner);
                 debtors.add(expenseParticipant);
