@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.*;
@@ -8,14 +9,40 @@ import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
+import javafx.util.Callback;
 
 import java.time.LocalDate;
+import java.net.URL;
 import java.util.*;
 
-public class AddExpenseCtrl {
+public class AddExpenseCtrl implements Initializable {
+    @FXML
+    public ComboBox<Label> tagsComboBox;
+    @FXML
+    public Label expenseType;
+    @FXML
+    public Label howToSplitLabel;
+    @FXML
+    public Label whenLabel;
+    @FXML
+    public Label howMuchLabel;
+    @FXML
+    public Label whatForLabel;
+    @FXML
+    public Label whoPaidLabel;
+    @FXML
+    public Label addExpenseLabel;
+    @FXML
+    public Button addButton;
+    @FXML
+    public Button cancelButton;
+    @FXML
+    public AnchorPane background;
     private EventOverviewCtrl ctrl;
     private Event event;
     private final ServerUtilsEvent server;
@@ -26,13 +53,13 @@ public class AddExpenseCtrl {
     private Expense oldExpense;
     private boolean delete;
     @FXML
-    private SplitMenuButton whoPaid;
+    private ComboBox<Label> whoPaid;
     @FXML
     private TextField whatFor = new TextField();
     @FXML
     private TextField howMuch = new TextField();
     @FXML
-    private ChoiceBox<String> currency = new ChoiceBox<>();
+    private ComboBox<Label> currency;
     @FXML
     private DatePicker date = new DatePicker();
     @FXML
@@ -54,22 +81,26 @@ public class AddExpenseCtrl {
         this.ctrl = ctrl;
         this.event = ctrl.getSelectedEvent();
         this.participants = event.getParticipants();
-        ObservableList<MenuItem> names = FXCollections.observableArrayList();
-        HashMap<MenuItem,Participant> map = new HashMap<>();
+        ObservableList<Label> names = FXCollections.observableArrayList();
+        HashMap<Label,Participant> map = new HashMap<>();
 
         for (Participant p : participants) {
-            MenuItem item = new MenuItem(p.getFirstName() + " " + p.getLastName());
+            Label item = new Label(p.getFirstName() + " " + p.getLastName());
             names.add(item);
             map.put(item,p);
         }
         whoPaid.getItems().setAll(names);
-        whoPaid.setText(paid.getFirstName() + " " + paid.getLastName());
-        for (MenuItem mi : whoPaid.getItems()) {
-            mi.setOnAction(e -> {
-                whoPaid.setText(mi.getText());
-                expensePayer = map.get(mi);
-            });
-        }
+        whoPaid.setValue(new Label(paid.getFirstName() + " " + paid.getLastName()));
+        whoPaid.getValue().setStyle("-fx-text-fill: #000000");
+        if(Main.isContrastMode())whoPaid.getValue().setStyle("-fx-text-fill: #F0F3FF");
+        whoPaid.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                newVal.setStyle("-fx-text-fill: #000000");
+                if(Main.isContrastMode())newVal.setStyle("-fx-text-fill: #F0F3FF");
+                whoPaid.setValue(newVal);
+                expensePayer = map.get(newVal);
+            }
+        }));
         List<String> listOfParticipants = new ArrayList<>();
         for(Participant participant : event.getParticipants()){
             listOfParticipants.add(participant.getFirstName() + " " + participant.getLastName());
@@ -82,6 +113,7 @@ public class AddExpenseCtrl {
 
     public void cancel() {
         clearFields();
+        Main.reloadUIEvent(event);
         controller.showEventOverview(ctrl.getSelectedEvent());
     }
 
@@ -105,7 +137,7 @@ public class AddExpenseCtrl {
             System.out.println("Get expense");
             var description = this.whatFor.getText();
             var amount = howMuch.getText();
-            var currency = this.currency.getValue();
+            var currency = this.currency.getValue().getText();
             var date = this.date.getValue();
             //var tags = this.tags.getText();
             this.expense = new Expense(description, currency,
@@ -235,7 +267,7 @@ public class AddExpenseCtrl {
             for (int i = 0; i < event.getParticipants().size(); i++){
                 String fullName = this.event.getParticipants().get(i).getFirstName() + " " +
                         this.event.getParticipants().get(i).getLastName();
-                boolean isOwner = fullName.equals(whoPaid.getText());
+                boolean isOwner = fullName.equals(whoPaid.getValue().getText());
                 ExpenseParticipant expenseParticipant =
                         new ExpenseParticipant(expense, event.getParticipants().get(i),share, isOwner);
                 debtors.add(expenseParticipant);
@@ -246,7 +278,7 @@ public class AddExpenseCtrl {
         boolean check = false;
         for (int i = 0; i < selectedParticipants.size(); i++){
             double share = 100.0/selectedParticipants.size();
-            boolean isOwner = selectedParticipants.get(i).equals(whoPaid.getText());
+            boolean isOwner = selectedParticipants.get(i).equals(whoPaid.getValue().getText());
             if(isOwner)
                 check = true;
             ExpenseParticipant expenseParticipant = new
@@ -275,7 +307,7 @@ public class AddExpenseCtrl {
         howMuch.clear();
         whatFor.clear();
         date.setValue(null);
-        currency.setValue(null);
+        currency.setValue(new Label());
         allHaveToPay.setSelected(false);
         someHaveToPay.setSelected(false);
         whoPays.getSelectionModel().clearSelection();
@@ -290,7 +322,7 @@ public class AddExpenseCtrl {
     }
 
     public void setCurrencyText(String currency) {
-        this.currency.getSelectionModel().select(currency);
+        this.currency.getSelectionModel().select(new Label(currency));
     }
 
     public void setDateText(LocalDate date) {
@@ -315,5 +347,112 @@ public class AddExpenseCtrl {
 
     public void setDelete(boolean delete) {
         this.delete = delete;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        List<Label> currencies = new ArrayList<>();
+        currencies.add(new Label("USD"));
+        currencies.add(new Label("EUR"));
+        currencies.add(new Label("CHF"));
+        currency.setItems(FXCollections.observableList(currencies));
+        tagsComboBox.setCellFactory(new Callback<>() {
+            @Override
+            public ListCell<Label> call(ListView<Label> param) {
+                return new ListCell<>() {
+                    @Override
+                    protected void updateItem(Label item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                        } else {
+                            setItem(item);
+                            if(Main.isContrastMode())this.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;" +
+                                    "-fx-font-weight: bolder;-fx-border-color: #836FFF");
+                            setText(item.getText());
+                        }
+                    }
+                };
+            }
+        });
+        whoPaid.setCellFactory(new Callback<>() {
+            @Override
+            public ListCell<Label> call(ListView<Label> param) {
+                return new ListCell<>() {
+                    @Override
+                    protected void updateItem(Label item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                        } else {
+                            setItem(item);
+                            if(Main.isContrastMode())this.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;" +
+                                    "-fx-font-weight: bolder;-fx-border-color: #836FFF");
+                            setText(item.getText());
+                        }
+                    }
+                };
+            }
+        });
+        currency.setCellFactory(new Callback<>() {
+            @Override
+            public ListCell<Label> call(ListView<Label> param) {
+                return new ListCell<>() {
+                    @Override
+                    protected void updateItem(Label item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                        } else {
+                            setItem(item);
+                            if(Main.isContrastMode())this.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;" +
+                                    "-fx-font-weight: bolder;-fx-border-color: #836FFF");
+                            setText(item.getText());
+                        }
+                    }
+                };
+            }
+        });
+        if(Main.isContrastMode())
+        {
+            background.setStyle("-fx-background-color: #69e0ab;");
+            addButton.setStyle(Main.changeUI(addButton));
+            Main.buttonFeedback(addButton);
+            cancelButton.setStyle(Main.changeUI(cancelButton));
+            Main.buttonFeedback(cancelButton);
+            addExpenseLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+            howMuchLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+            whenLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+            howToSplitLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+            whoPaidLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+            whatForLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+            whoPaid.setStyle(Main.changeUI(whoPaid));
+            whatFor.setStyle(Main.changeUI(whatFor));
+            howMuch.setStyle(Main.changeUI(howMuch));
+            currency.setStyle(Main.changeUI(currency));
+            tagsComboBox.setStyle(Main.changeUI(tagsComboBox));
+            date.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
+                    "-fx-border-color: #836FFF;" +
+                    "-fx-border-width: 2.5; -fx-border-insets: -2;-fx-control-inner-background:#211951");
+            expenseType.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+            allHaveToPay.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+            someHaveToPay.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+            whoPays.setStyle("-fx-background-color: #836FFF;-fx-font-weight: bolder; " +
+                    "-fx-border-color: #211951; -fx-control-inner-background: #836FFF; " +
+                    "-fx-control-inner-background-alt: derive(-fx-control-inner-background, 15%);" +
+                    "-fx-color-label-visible: #F0F3FF");
+            currency.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                if(Main.isContrastMode())newVal.setStyle(("-fx-text-fill: #F0F3FF"));
+                currency.setValue(newVal);
+            }
+            }));
+            tagsComboBox.getSelectionModel().selectedItemProperty().addListener(((obs1, oldVal1, newVal1) -> {
+                if (newVal1 != null) {
+                    if(Main.isContrastMode())newVal1.setStyle(("-fx-text-fill: #F0F3FF"));
+                    currency.setValue(newVal1);
+                }
+        }));
+            Main.languageFeedback(tagsComboBox);
+            Main.languageFeedback(currency);
+            Main.languageFeedback(whoPaid);
+        }
     }
 }

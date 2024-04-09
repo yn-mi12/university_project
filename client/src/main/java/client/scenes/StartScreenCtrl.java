@@ -7,8 +7,6 @@ import com.google.inject.Inject;
 import commons.Event;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,19 +14,42 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.util.Callback;
-
 import java.net.URL;
 import java.util.*;
 import java.util.List;
 
+
 public class StartScreenCtrl implements Initializable {
 
     private final ServerUtilsEvent server;
+    @FXML
+    public Button setServers;
     private ObservableList<String> data;
     private final SplittyCtrl controller;
+    @FXML
+    public ToggleButton highContrastButton;
+    @FXML
+    public AnchorPane background;
+    @FXML
+    public Button showAdminButton;
+    @FXML
+    public Button createButton;
+    @FXML
+    public Button joinButton;
+    @FXML
+    public Text eventCreate;
+    @FXML
+    public Text eventJoin;
+    @FXML
+    public Text languageChoice;
+    @FXML
+    public Text recentEvents;
+    public Text isAdmin;
     @FXML
     private ListView<String> eventList;
     @FXML
@@ -63,7 +84,9 @@ public class StartScreenCtrl implements Initializable {
             ImageView iconImageView = new ImageView(icon);
             iconImageView.setFitHeight(25);
             iconImageView.setPreserveRatio(true);
-            x.add(new Label(item.getName(), iconImageView));
+            Label l = new Label(item.getName(), iconImageView);
+            if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+            x.add(l);
         }
         languageBox.setItems(x);
         languageBox.setCellFactory(new Callback<>() {
@@ -75,16 +98,25 @@ public class StartScreenCtrl implements Initializable {
                         super.updateItem(item, empty);
                         if (item == null || empty) {
                         } else {
-                            item.setTextFill(Color.color(0, 0, 0));
+                            if(Main.isContrastMode())this.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;" +
+                                    "-fx-font-weight: bolder;-fx-border-color: #836FFF");
                             setGraphic(item);
                         }
                     }
                 };
             }
         });
-        String current = String.valueOf(Config.get().getCurrentLocaleName());
-        languageBox.setValue(languageBox.getItems().stream()
-                .filter(l -> String.valueOf(l.getText()).equals(current)).findFirst().orElse(null));
+        String current = Config.get().getCurrentLocaleName();
+        Image icon;
+        String iconPath = "client/images/" + Config.get().getCurrentLocale() + ".png";
+        icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
+        ImageView iconImageView = new ImageView(icon);
+        iconImageView.setFitHeight(25);
+        iconImageView.setPreserveRatio(true);
+        Label l = new Label(current, iconImageView);
+        l.setTextFill(Color.color(0, 0, 0));
+        if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+        languageBox.setValue(l);
         languageBox.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 Config.get().setCurrentLocale(newVal.getText());
@@ -93,16 +125,20 @@ public class StartScreenCtrl implements Initializable {
             }
         }));
 
-        eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (eventList.getSelectionModel().getSelectedItem() != null) {
-                    showButton.setDisable(false);
-                }
+        eventList.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            if (eventList.getSelectionModel().getSelectedItem() != null) {
+                showButton.setDisable(false);
             }
         });
-
-
+        Image highContrastIcon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("client/images/highContrast.png")));
+        iconImageView = new ImageView(highContrastIcon);
+        iconImageView.setFitHeight(25);
+        iconImageView.setPreserveRatio(true);
+        highContrastButton.setGraphic(new Label("", iconImageView));
+        if(Main.isContrastMode())isContrast();
+        else {
+            highContrastButton = new ToggleButton();
+        }
         if (data == null)
             data = FXCollections.observableArrayList();
 
@@ -148,7 +184,58 @@ public class StartScreenCtrl implements Initializable {
         });
     }
 
-    public void refresh() {
+    private void isContrast() {
+        ImageView iconImageView;
+        Image highContrastIcon;
+        background.setStyle("-fx-background-color: #69e0ab;");
+        joinButton.setStyle(Main.changeUI(joinButton));
+        Main.buttonFeedback(joinButton);
+        createButton.setStyle(Main.changeUI(createButton));
+        Main.buttonFeedback(createButton);
+        showAdminButton.setStyle(Main.changeUI(showAdminButton));
+        Main.buttonFeedback(showAdminButton);
+        showButton.setStyle(Main.changeUI(showButton));
+        Main.buttonFeedback(showButton);
+        eventList.setStyle("-fx-background-color: #836FFF;-fx-font-weight: bolder; " +
+                "-fx-border-color: #211951; -fx-control-inner-background: #836FFF; " +
+                "-fx-control-inner-background-alt: derive(-fx-control-inner-background, 15%);" +
+                "-fx-color-label-visible: #F0F3FF");
+        highContrastButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
+                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 2.5; -fx-border-insets: -2");
+        highContrastIcon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("client/images/highContrastInvert.png")));
+        iconImageView = new ImageView(highContrastIcon);
+        iconImageView.setFitHeight(25);
+        iconImageView.setPreserveRatio(true);
+        highContrastButton.setGraphic(new Label("", iconImageView));
+        highContrastButton.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                highContrastButton.setStyle("-fx-background-color: #836FFF; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
+                        "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 2.5; -fx-border-insets: -2");
+                highContrastButton.getGraphic().setStyle("-fx-background-color: #836FFF; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
+                        "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 2.5; -fx-border-insets: -2");
+
+            } else {
+                highContrastButton.setStyle(Main.changeUI(highContrastButton));
+                highContrastButton.setGraphic((new Label("", iconImageView)));
+            }
+        });
+        Main.languageFeedback(languageBox);
+        titleField.setStyle(Main.changeUI(titleField));
+        codeField.setStyle(Main.changeUI(codeField));
+        languageBox.setStyle(Main.changeUI(languageBox));
+        eventCreate.setStyle(Main.changeUI(eventCreate));
+        eventJoin.setStyle(Main.changeUI(eventJoin));
+        recentEvents.setStyle(Main.changeUI(recentEvents));
+        invalidCode.setStyle(Main.changeUI(invalidCode));
+        emptyCode.setStyle(Main.changeUI(emptyCode));
+        emptyTitle.setStyle(Main.changeUI(emptyTitle));
+        languageChoice.setStyle(Main.changeUI(languageChoice));
+        isAdmin.setStyle(Main.changeUI(isAdmin));
+        setServers.setStyle(Main.changeUI(setServers));
+        Main.buttonFeedback(setServers);
+    }
+
+        public void refresh() {
         emptyTitle.setVisible(false);
         emptyCode.setVisible(false);
         invalidCode.setVisible(false);
@@ -261,5 +348,9 @@ public class StartScreenCtrl implements Initializable {
 
     public void showAdminLogin() {
         controller.showAdminLogin();
+    }
+
+    public void changeContrast() {
+        Main.changeContrast();
     }
 }
