@@ -6,7 +6,7 @@
 | Time:        | 15:45 - 16:30                                                                                                                              |
 | Location:    | DW PC1 Cubicle 13                                                                                                                          |
 | Chair        | Kasparas Savickis                                                                                                                          |
-| Minute Taker | Yana Mihaylova                                                                                                                                        |
+| Minute Taker | Maria Zmpainou                                                                                                                                        |
 | Attendees:   | Ioana-Lisandra Draganescu, TA<br/> Daniel Dumitru</br> Yana Mihaylova<br/> Ipshit Raychaudhuri<br/> Kasparas Savickis<br/>  Maria Zmpainou |
 
 
