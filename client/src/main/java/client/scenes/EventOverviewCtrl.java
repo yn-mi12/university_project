@@ -15,11 +15,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 
-//import java.math.RoundingMode;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -27,17 +27,49 @@ import java.util.*;
 
 public class EventOverviewCtrl implements Initializable {
     private final ServerUtilsEvent server;
+    @FXML
     public Label inviteCode;
+    @FXML
     public Label paidLabel;
+    @FXML
     public Label participantsLabel;
+    @FXML
     public Label forLabel;
+    @FXML
+    public AnchorPane background;
+    @FXML
+    public Button backButton;
+    @FXML
+    public Button editTitleButton;
+    @FXML
+    public Button copyCodeButton;
+    @FXML
+    public Button editPartButton;
+    @FXML
+    public Button addPartButton;
+    @FXML
+    public Button addExpenseButton;
+    @FXML
+    public Button settleDebtsButton;
+    @FXML
+    public Button deleteEventButton;
+    @FXML
+    public Text languageChoice;
+    @FXML
+    public Label inviteCodeLabel;
+    @FXML
+    public Label expenseLabel;
+    @FXML
+    public Label participantsLabel2;
+
     private Participant expensePayer;
+
     private final SplittyCtrl controller;
     private List<Participant> participants;
     @FXML
-    private TextArea participantText = new TextArea();
+    private TextArea participantText;
     @FXML
-    private SplitMenuButton part;
+    private ComboBox<Label> part;
     @FXML
     public Label eventTitle;
     @FXML
@@ -74,13 +106,15 @@ public class EventOverviewCtrl implements Initializable {
     public void setSelectedEvent(Event selectedEvent) {
         hideTabPanes();
         this.event = selectedEvent;
+        this.event = server.getByID(selectedEvent.getId());
         this.participants = event.getParticipants();
-        ObservableList<MenuItem> names = FXCollections.observableArrayList();
+        ObservableList<Label> names = FXCollections.observableArrayList();
         StringBuilder namesString = new StringBuilder();
-        HashMap<MenuItem, Participant> map = new HashMap<>();
+        HashMap<Label, Participant> map = new HashMap<>();
         int i = 0;
         for (Participant p : participants) {
-            MenuItem item = new MenuItem(p.getFirstName() + " " + p.getLastName());
+            Label item = new Label(p.getFirstName() + " " + p.getLastName());
+            item.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
             names.add(item);
             map.put(item, p);
             namesString.append(p.getFirstName() + " " + p.getLastName());
@@ -88,25 +122,30 @@ public class EventOverviewCtrl implements Initializable {
                 namesString.append(", ");
             i++;
         }
-        part.setText(participantsLabel.getText());
-        part.getItems().setAll(names);
-        participantText.setEditable(false);
-        participantText.setText(namesString.toString());
-        for (MenuItem mi : part.getItems()) {
-            mi.setOnAction(e -> {
-                part.setText(mi.getText());
-                expensePayer = map.get(mi);
+        part.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                newVal.setStyle("-fx-text-fill: #000000");
+                if(Main.isContrastMode())newVal.setStyle("-fx-text-fill: #F0F3FF");
+                part.setValue(newVal);
+                expensePayer = map.get(newVal);
                 showTabPanes();
                 expensesFromParticipant();
                 expensesIncludingParticipant();
-            });
-        }
+            }
+        }));
+        part.getItems().setAll(names);
+        participantText.setEditable(false);
+        participantText.setText(namesString.toString());
         inviteCode.setText(event.getId());
     }
 
     @SuppressWarnings("java.lang.ClassCastException")
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        Label t = new Label(participantsLabel.getText());
+        t.setStyle("-fx-text-fill: black");
+        if(Main.isContrastMode()) t.setStyle("-fx-text-fill:  #F0F3FF");
+        part.setValue(t);
         ObservableList<Label> x = FXCollections.observableArrayList();
         List<Config.SupportedLocale> languages = Config.get().getSupportedLocales().stream().toList();
         for (var item : languages) {
@@ -116,7 +155,9 @@ public class EventOverviewCtrl implements Initializable {
             ImageView iconImageView = new ImageView(icon);
             iconImageView.setFitHeight(25);
             iconImageView.setPreserveRatio(true);
-            x.add(new Label(item.getName(), iconImageView));
+            Label l = new Label(item.getName(), iconImageView);
+            if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+            x.add(l);
         }
         languageBox.setItems(x);
         languageBox.setCellFactory(new Callback<>() {
@@ -128,16 +169,25 @@ public class EventOverviewCtrl implements Initializable {
                         super.updateItem(item, empty);
                         if (item == null || empty) {
                         } else {
-                            item.setTextFill(Color.color(0, 0, 0));
+                            if(Main.isContrastMode())this.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;" +
+                                    "-fx-font-weight: bolder;-fx-border-color: #836FFF");
                             setGraphic(item);
                         }
                     }
                 };
             }
         });
-        String current = String.valueOf(Config.get().getCurrentLocaleName());
-        languageBox.setValue(languageBox.getItems().stream()
-                .filter(l -> String.valueOf(l.getText()).equals(current)).findFirst().orElse(null));
+        String current = Config.get().getCurrentLocaleName();
+        Image icon;
+        String iconPath = "client/images/" + Config.get().getCurrentLocale() + ".png";
+        icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
+        ImageView iconImageView = new ImageView(icon);
+        iconImageView.setFitHeight(25);
+        iconImageView.setPreserveRatio(true);
+        Label l = new Label(current, iconImageView);
+        l.setStyle("-fx-text-fill: black");
+        if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+        languageBox.setValue(l);
         languageBox.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 Config.get().setCurrentLocale(newVal.getText());
@@ -146,21 +196,88 @@ public class EventOverviewCtrl implements Initializable {
                 controller.showEventOverview(event);
             }
         }));
+        if(Main.isContrastMode())isContrast();
+        part.setCellFactory(new Callback<>() {
+            @Override
+            public ListCell<Label> call(ListView<Label> param) {
+                return new ListCell<>() {
+                    @Override
+                    protected void updateItem(Label item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                        } else {
+                            setItem(item);
+                            if(Main.isContrastMode())this.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;" +
+                                    "-fx-font-weight: bolder;-fx-border-color: #836FFF");
+                            setText(item.getText());
+                        }
+                    }
+                };
+            }
+        });
+        expensePayer = null;
+    }
+
+    private void isContrast() {
+        background.setStyle("-fx-background-color: #69e0ab;");
+        Main.languageFeedback(languageBox);
+        languageBox.setStyle(Main.changeUI(languageBox));
+        backButton.setStyle(Main.changeUI(backButton));
+        Main.buttonFeedback(backButton);
+        addExpenseButton.setStyle(Main.changeUI(addExpenseButton));
+        Main.buttonFeedback(addExpenseButton);
+        deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
+                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
+                "-fx-border-width: 1.5; -fx-border-insets: -1");
+        deleteEventButton.setOnMouseEntered(e -> deleteEventButton.setStyle("-fx-background-color: #c70000; " +
+                "-fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
+                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;"));
+        deleteEventButton.setOnMouseExited(e ->         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;" +
+                "-fx-font-weight: bolder;"+
+                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
+                "-fx-border-width: 1.5; -fx-border-insets: -1"));
+        deleteEventButton.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                deleteEventButton.setStyle("-fx-background-color: #c70000; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
+                        "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;");
+            }
+            else         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
+                    "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
+                    "-fx-border-width: 1.5; -fx-border-insets: -1");
+        });
+        addExpenseButton.setStyle(Main.changeUI(addExpenseButton));
+        Main.buttonFeedback(addExpenseButton);
+        copyCodeButton.setStyle(Main.changeUI(copyCodeButton));
+        Main.buttonFeedback(copyCodeButton);
+        editTitleButton.setStyle(Main.changeUI(editTitleButton));
+        Main.buttonFeedback(editTitleButton);
+        settleDebtsButton.setStyle(Main.changeUI(settleDebtsButton));
+        Main.buttonFeedback(settleDebtsButton);
+        part.setStyle(Main.changeUI(part));
+        Main.languageFeedback(part);
+        editPartButton.setStyle(Main.changeUI(editPartButton));
+        Main.buttonFeedback(editPartButton);
+        addPartButton.setStyle(Main.changeUI(addPartButton));
+        Main.buttonFeedback(addPartButton);
+        participantText.setStyle(Main.changeUI(participantText));
+        tabPane.setStyle("-fx-control-inner-background:#836FFF;-fx-font-weight: bolder; " +
+                "-fx-border-color: black;-fx-border-width: 3;-fx-border-radius: 5;");
+        inviteCodeLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+        languageChoice.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+        totalCost.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+        eventTitle.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+        participantsLabel2.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+        expenseLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
     }
 
     public void addExpense() {
-        controller.initExpShowOverview(event, expensePayer);
+        if(expensePayer!=null) controller.initExpShowOverview(event, expensePayer);
     }
 
     public void settleDebts() {
         List<Debt> allDebts = server.getDebtsByEvent(event);
         controller.showSettleDebts(allDebts, event);
     }
-
-    public void sendInvites() {
-        controller.showInvitePage(event);
-    }
-
     public void editTitle() {
         controller.showEditTitle(event);
     }
@@ -200,7 +317,7 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void goBack() {
-        part.setText("Participants");
+        part.setValue(new Label("Participants"));
         if (controller.getAdmin()) controller.showAdminOverview();
         else controller.showOverview();
     }
@@ -237,7 +354,7 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void expensesFromParticipant() {
-        String participantsName = part.getText();
+        String participantsName = part.getValue().getText();
         Participant participant = event.getParticipantByName(participantsName);
         List<Expense> expenses = server.getExpensesByEventId(event);
         List<Expense> expensesFromParticipant = new ArrayList<>();
@@ -261,7 +378,7 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void expensesIncludingParticipant() {
-        String participantsName = part.getText();
+        String participantsName = part.getValue().getText();
         Participant participant = event.getParticipantByName(participantsName);
         List<Expense> expenses = server.getExpensesByEventId(event);
         List<Expense> expensesIncludingParticipant = new ArrayList<>();

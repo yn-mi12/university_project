@@ -1,28 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="343.0" prefWidth="435.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddParticipantCtrl">
+<AnchorPane fx:id="background" prefHeight="343.0" prefWidth="435.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddParticipantCtrl">
     <children>
-        <Button layoutX="307.0" layoutY="303.0" mnemonicParsing="false" onAction="#ok" prefHeight="25.0" prefWidth="39.0" text="%ok" />
-        <Button layoutX="361.0" layoutY="303.0" mnemonicParsing="false" onAction="#cancel" text="%cancel" />
-        <Label layoutX="33.0" layoutY="20.0" prefHeight="17.0" prefWidth="68.0" text="%firstname" />
         <TextField fx:id="firstName" layoutX="33.0" layoutY="38.0" prefHeight="26.0" prefWidth="166.0" />
-        <Label layoutX="231.0" layoutY="20.0" prefHeight="17.0" prefWidth="68.0" text="%lastname" />
-        <Label layoutX="33.0" layoutY="82.0" prefHeight="18.0" prefWidth="136.0" text="%email" />
-      <Label layoutX="33.0" layoutY="179.0" prefHeight="18.0" prefWidth="95.0" text="%account_name" />
-        <TextField fx:id="email" layoutX="33.0" layoutY="100.0" prefHeight="26.0" prefWidth="166.0" />
-      <Label layoutX="33.0" layoutY="143.0" prefHeight="18.0" prefWidth="345.0" text="%bank_details" />
-      <Label layoutX="33.0" layoutY="214.0" text="IBAN" />
-      <Label layoutX="33.0" layoutY="252.0" text="BIC" />
       <TextField fx:id="lastName" layoutX="231.0" layoutY="38.0" prefHeight="26.0" prefWidth="166.0" />
+        <TextField fx:id="email" layoutX="33.0" layoutY="100.0" prefHeight="26.0" prefWidth="166.0" />
       <TextField fx:id="accountName" layoutX="148.0" layoutY="175.0" prefHeight="26.0" prefWidth="166.0" />
       <TextField fx:id="iban" layoutX="148.0" layoutY="210.0" prefHeight="26.0" prefWidth="166.0" />
       <TextField fx:id="bic" layoutX="148.0" layoutY="248.0" prefHeight="26.0" prefWidth="166.0" />
+        <Button fx:id="okButton" layoutX="307.0" layoutY="303.0" mnemonicParsing="false" onAction="#ok" prefHeight="25.0" prefWidth="39.0" text="%ok" />
+        <Button fx:id="cancelButton" layoutX="361.0" layoutY="303.0" mnemonicParsing="false" onAction="#cancel" text="%cancel" />
+        <Label fx:id="firstNameText" layoutX="33.0" layoutY="20.0" prefHeight="17.0" prefWidth="68.0" text="%firstname" />
+        <Label fx:id="lastNameText" layoutX="231.0" layoutY="20.0" prefHeight="17.0" prefWidth="68.0" text="%lastname" />
+        <Label fx:id="emailText" layoutX="33.0" layoutY="82.0" prefHeight="18.0" prefWidth="136.0" text="%email" />
+      <Label fx:id="accountNameText" layoutX="33.0" layoutY="179.0" prefHeight="18.0" prefWidth="95.0" text="%account_name" />
+      <Label fx:id="bankDetailsText" layoutX="33.0" layoutY="143.0" prefHeight="18.0" prefWidth="345.0" text="%bank_details" />
+      <Label fx:id="ibanText" layoutX="33.0" layoutY="214.0" text="IBAN" />
+      <Label fx:id="bicText" layoutX="33.0" layoutY="252.0" text="BIC" />
     <Label fx:id="participantExists" layoutX="232.0" layoutY="65.0" prefHeight="69.0" prefWidth="164.0" text="%participantExists" textAlignment="CENTER" textFill="RED" visible="false" wrapText="true">
        <font>
            <Font size="14.0" />

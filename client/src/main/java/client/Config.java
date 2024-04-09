@@ -37,6 +37,10 @@ public final class Config {
     private String host;
 
     @Required
+    @Setting("contrastMode")
+    private String contrastMode;
+
+    @Required
     @Setting("current-locale")
     private String currentLocale;
 
@@ -290,4 +294,11 @@ public final class Config {
         return Objects.requireNonNull(instance);
     }
 
+    public String isContrastMode() {
+        return contrastMode;
+    }
+
+    public void setContrastMode(String contrastMode) {
+        this.contrastMode = contrastMode;
+    }
 }

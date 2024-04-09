@@ -1,6 +1,9 @@
 # The backend server address to connect to
 host: "http://localhost:8080/"
 
+#The contrast mode of the app
+contrastMode: "false"
+
 # The current locale
 current-locale: "English"
 

@@ -30,7 +30,6 @@ public class MyModule implements Module {
         binder.bind(AddExpenseCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AddParticipantCtrl.class).in(Scopes.SINGLETON);
         binder.bind(EditEventTitleCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(InvitationCtrl.class).in(Scopes.SINGLETON);
         binder.bind(EditParticipantOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AdminOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AdminPopupCtrl.class).in(Scopes.SINGLETON);
