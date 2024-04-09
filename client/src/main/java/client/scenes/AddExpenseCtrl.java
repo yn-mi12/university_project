@@ -81,34 +81,36 @@ public class AddExpenseCtrl implements Initializable {
         this.ctrl = ctrl;
         this.event = ctrl.getSelectedEvent();
         this.participants = event.getParticipants();
-        ObservableList<Label> names = FXCollections.observableArrayList();
-        HashMap<Label,Participant> map = new HashMap<>();
+        if(!delete) {
+            ObservableList<Label> names = FXCollections.observableArrayList();
+            HashMap<Label, Participant> map = new HashMap<>();
 
-        for (Participant p : participants) {
-            Label item = new Label(p.getFirstName() + " " + p.getLastName());
-            names.add(item);
-            map.put(item,p);
-        }
-        whoPaid.getItems().setAll(names);
-        whoPaid.setValue(new Label(paid.getFirstName() + " " + paid.getLastName()));
-        whoPaid.getValue().setStyle("-fx-text-fill: #000000");
-        if(Main.isContrastMode())whoPaid.getValue().setStyle("-fx-text-fill: #F0F3FF");
-        whoPaid.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                newVal.setStyle("-fx-text-fill: #000000");
-                if(Main.isContrastMode())newVal.setStyle("-fx-text-fill: #F0F3FF");
-                whoPaid.setValue(newVal);
-                expensePayer = map.get(newVal);
+            for (Participant p : participants) {
+                Label item = new Label(p.getFirstName() + " " + p.getLastName());
+                names.add(item);
+                map.put(item, p);
             }
-        }));
-        List<String> listOfParticipants = new ArrayList<>();
-        for(Participant participant : event.getParticipants()){
-            listOfParticipants.add(participant.getFirstName() + " " + participant.getLastName());
+            whoPaid.getItems().setAll(names);
+            whoPaid.setValue(new Label(paid.getFirstName() + " " + paid.getLastName()));
+            whoPaid.getValue().setStyle("-fx-text-fill: #000000");
+            if (Main.isContrastMode()) whoPaid.getValue().setStyle("-fx-text-fill: #F0F3FF");
+            whoPaid.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
+                if (newVal != null) {
+                    newVal.setStyle("-fx-text-fill: #000000");
+                    if (Main.isContrastMode()) newVal.setStyle("-fx-text-fill: #F0F3FF");
+                    whoPaid.setValue(newVal);
+                    expensePayer = map.get(newVal);
+                }
+            }));
+            List<String> listOfParticipants = new ArrayList<>();
+            for (Participant participant : event.getParticipants()) {
+                listOfParticipants.add(participant.getFirstName() + " " + participant.getLastName());
+            }
+            whoPays.setItems(FXCollections.observableList(listOfParticipants));
+            whoPays.refresh();
+            whoPays.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
+            currency.setValue(null);
         }
-        whoPays.setItems(FXCollections.observableList(listOfParticipants));
-        whoPays.refresh();
-        whoPays.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
-        currency.setValue(null);
     }
 
     public void cancel() {
@@ -267,15 +269,15 @@ public class AddExpenseCtrl implements Initializable {
             for (int i = 0; i < event.getParticipants().size(); i++){
                 String fullName = this.event.getParticipants().get(i).getFirstName() + " " +
                         this.event.getParticipants().get(i).getLastName();
-                boolean isOwner = fullName.equals(whoPaid.getPromptText());
+                boolean isOwner = fullName.equals(whoPaid.getValue().getText());
                 ExpenseParticipant expenseParticipant =
                         new ExpenseParticipant(expense, event.getParticipants().get(i),share, isOwner);
                 debtors.add(expenseParticipant);
             }
             return debtors;
         }
-        ObservableList<String> selectedParticipants = whoPays.getSelectionModel().getSelectedItems();
         boolean check = false;
+        ObservableList<String> selectedParticipants = whoPays.getSelectionModel().getSelectedItems();
         for (int i = 0; i < selectedParticipants.size(); i++){
             double share = 100.0/selectedParticipants.size();
             boolean isOwner = selectedParticipants.get(i).equals(whoPaid.getValue().getText());
@@ -286,7 +288,7 @@ public class AddExpenseCtrl implements Initializable {
             debtors.add(expenseParticipant);
         }
         if(!check)
-            debtors.add(new ExpenseParticipant(expense, expensePayer, 0, true));
+            debtors.add(new ExpenseParticipant(expense, event.getParticipantByName(whoPaid.getValue().getText()), 0, true));
         return debtors;
     }
 
@@ -347,6 +349,10 @@ public class AddExpenseCtrl implements Initializable {
 
     public void setDelete(boolean delete) {
         this.delete = delete;
+    }
+
+    public void setExpensePayer(Participant expensePayer) {
+        this.expensePayer = expensePayer;
     }
 
     @Override

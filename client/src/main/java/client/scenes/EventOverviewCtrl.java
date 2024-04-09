@@ -123,7 +123,7 @@ public class EventOverviewCtrl implements Initializable {
     public void setSelectedEvent(Event selectedEvent) {
         hideTabPanes();
         this.event = selectedEvent;
-        //this.event = server.getByID(selectedEvent.getId());
+//        this.event = server.getByID(selectedEvent.getId());
         this.participants = event.getParticipants();
         ObservableList<Label> names = FXCollections.observableArrayList();
         StringBuilder namesString = new StringBuilder();
@@ -362,6 +362,7 @@ public class EventOverviewCtrl implements Initializable {
             }
         }
         controller.initExpShowOverview(event, owner);
+        expenseCtrl.setExpensePayer(owner);
         expenseCtrl.setWhatForText(selected.getDescription());
         expenseCtrl.setHowMuchText(String.valueOf(selected.getAmount()));
         expenseCtrl.setCurrencyText(selected.getCurrency());
@@ -397,6 +398,7 @@ public class EventOverviewCtrl implements Initializable {
                 owner = ep.getParticipant();
         }
         expenseCtrl.setEvent(owner, this);
+        expenseCtrl.setExpensePayer(owner);
         expenseCtrl.setOldExpense(selected);
         expenseCtrl.ok();
 
@@ -450,9 +452,13 @@ public class EventOverviewCtrl implements Initializable {
             minDebts.add(newDebt);
         }
 
-        for(Debt d : server.getDebtsByEvent(event))
+        for(Debt d : server.getDebtsByEvent(event)) {
+            event.getDebts().remove(d);
             server.deleteDebt(d);
+        }
+
         server.addAllDebts(minDebts, event);
+        event = server.getByID(event.getId());
 
         controller.showSettleDebts(minDebts, event);
     }
