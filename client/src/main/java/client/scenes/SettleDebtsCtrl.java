@@ -96,10 +96,11 @@ public class SettleDebtsCtrl implements Initializable {
     private void setOpenDebts(DecimalFormat df) {
         double groupAmount = 0;
         for(Debt d : debts) {
-            String dString = d.getDebtor().getFirstName() + " " + give.getText() + " " + d.getCreditor().getFirstName()
+            String dString = d.getDebtor().getFirstName() + " " + d.getDebtor().getLastName() + " " + give.getText()
+                    + " " + d.getCreditor().getFirstName() + " " + d.getCreditor().getLastName()
                     + " " + df.format(d.getAmount());
             HBox row = new HBox();
-            row.setSpacing(100);
+            row.setSpacing(130);
             Button receivedButton = new Button(received.getText());
             receivedButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -133,10 +134,11 @@ public class SettleDebtsCtrl implements Initializable {
 
     private void setRemovedDebts(DecimalFormat df) {
         for(Debt d : removed) {
-            String dString = d.getDebtor().getFirstName() + " " + give.getText() + " " + d.getCreditor().getFirstName()
+            String dString = d.getDebtor().getFirstName() + " " + d.getDebtor().getLastName() + " " + give.getText()
+                    + " " + d.getCreditor().getFirstName() + " " + d.getCreditor().getLastName()
                     + " " + df.format(d.getAmount());
             HBox row = new HBox();
-            row.setSpacing(150);
+            row.setSpacing(170);
             Button undoButton = new Button(undo.getText());
 
             undoButton.setOnAction(new EventHandler<ActionEvent>() {
