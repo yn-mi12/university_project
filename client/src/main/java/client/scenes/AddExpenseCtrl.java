@@ -4,7 +4,6 @@ import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.*;
-import jakarta.servlet.http.Part;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
