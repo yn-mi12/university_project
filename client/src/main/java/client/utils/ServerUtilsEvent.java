@@ -228,6 +228,7 @@ public class ServerUtilsEvent {
                         .request(APPLICATION_JSON) //
                         .accept(APPLICATION_JSON) //
                         .post(Entity.entity(d, APPLICATION_JSON), Debt.class);
+                saved.setEvent(event);
                 savedDebts.add(saved);
             }
         } catch(BadRequestException e) {

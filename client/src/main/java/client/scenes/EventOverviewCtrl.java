@@ -66,6 +66,8 @@ public class EventOverviewCtrl implements Initializable {
     public Label expenseLabel;
     @FXML
     public Label participantsLabel2;
+    @FXML
+    public Tab allTab;
 
     private Participant expensePayer;
 
@@ -124,7 +126,6 @@ public class EventOverviewCtrl implements Initializable {
     public void setSelectedEvent(Event selectedEvent) {
         hideTabPanes();
         this.event = selectedEvent;
-//        this.event = server.getByID(selectedEvent.getId());
         this.participants = event.getParticipants();
         ObservableList<Label> names = FXCollections.observableArrayList();
         StringBuilder namesString = new StringBuilder();
@@ -155,6 +156,10 @@ public class EventOverviewCtrl implements Initializable {
         participantText.setEditable(false);
         participantText.setText(namesString.toString());
         inviteCode.setText(event.getId());
+        expensesNotSelectedPart();
+        allExpenses.refresh();
+        fromExpenses.refresh();
+        includingExpenses.refresh();
     }
 
     @SuppressWarnings("java.lang.ClassCastException")
@@ -655,6 +660,7 @@ public class EventOverviewCtrl implements Initializable {
     public void launch() {
         server.registerForMessages("/topic/updated", Event.class , q -> {
             if(q!=null && q.getId().equals(event.getId())) {
+                System.out.println(event);
                 event = q;
                 setSelectedEvent(event);
                 Platform.runLater(() -> {
@@ -665,7 +671,16 @@ public class EventOverviewCtrl implements Initializable {
                             controller.showOverview();
                             break;
                         case "eventScreen":
+
                             Main.reloadUIEvent(event);
+                            break;
+                        case "editParticipantScreen":
+                            //Main.reloadUIEvent(event);
+                            controller.initEditParticipantOverview(event);
+                            break;
+                        case "editTitleScreen":
+                            //Main.reloadUIEvent(event);
+                            controller.showEditTitle(event);
                             break;
                     }
                 });

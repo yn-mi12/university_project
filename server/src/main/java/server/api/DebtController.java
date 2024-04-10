@@ -65,7 +65,7 @@ public class DebtController {
         if (debt == null) {
             return ResponseEntity.badRequest().build();
         }
-        eventRepo.findById(repo.findById(id).get().getEvent().getId()).get().updateDate();
+        //eventRepo.findById(repo.findById(id).get().getEvent().getId()).get().updateDate();
 
         debt.setAmount(amount);
         Debt saved = repo.save(debt);
