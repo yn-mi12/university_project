@@ -16,6 +16,9 @@
 package client.utils;
 
 import client.Config;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Debt;
 import commons.Event;
 import commons.Expense;
@@ -29,6 +32,7 @@ import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -311,7 +315,10 @@ public class ServerUtilsEvent {
     private StompSession connect(String url) {
         var client = new StandardWebSocketClient();
         var stomp = new WebSocketStompClient(client);
-        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+        MappingJackson2MessageConverter x = new MappingJackson2MessageConverter();
+
+        x.getObjectMapper().configure(MapperFeature.USE_ANNOTATIONS, false);
+        stomp.setMessageConverter(x);
         try {
             return stomp.connectAsync(url, new StompSessionHandlerAdapter() {
             }).get();

@@ -142,6 +142,7 @@ public class EventController {
             return ResponseEntity.badRequest().build();
         }
         addListeners.forEach((key, listener) -> listener.accept(event));
+        for(var x:event.getParticipants()) x.setEvent(event);
         Event saved = repo.save(event);
         saved.updateDate();
         return ResponseEntity.ok(saved);

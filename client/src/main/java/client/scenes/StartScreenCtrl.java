@@ -129,12 +129,12 @@ public class StartScreenCtrl implements Initializable {
         else {
             highContrastButton = new ToggleButton();
         }
-        if (data == null)
-            data = FXCollections.observableArrayList();
         server.registerForDeleteUpdates(ev -> {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
+                    if (data == null)
+                        data = FXCollections.observableArrayList();
                     Config.get().removePastCode(ev.getId());
                     //System.out.println("deleting event " + ev.getTitle() + " : " + ev.getInviteCode());
                     data.remove(ev.getTitle() + " : " + ev.getId());
@@ -146,15 +146,17 @@ public class StartScreenCtrl implements Initializable {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    int index=0;
-                    for(String s : data){
-                        if(s.contains(ev.getId())){
-                            index = data.indexOf(s);
-                            break;
+                    if (data != null) {
+                        int index = 0;
+                        for (String s : data) {
+                            if (s.contains(ev.getId())) {
+                                index = data.indexOf(s);
+                                break;
+                            }
                         }
+                        data.set(index, ev.getTitle() + " : " + ev.getId());
+                        eventList.setItems(data);
                     }
-                    data.set(index, ev.getTitle() + " : " + ev.getId());
-                    eventList.setItems(data);
                 }
             });
         });

@@ -147,6 +147,9 @@ public class AddParticipantCtrl implements Initializable {
                 Event updated = server.getByID(event.getId());
                 clearFields();
                 mainCtrl.showEventOverview(updated);
+                System.out.println(updated);
+                //for(var x: updated.getParticipants())x.setEvent(updated);
+                server.send("/app/updated",updated);
             } else {
                 participantExists.visibleProperty().setValue(true);
             }
@@ -162,6 +165,7 @@ public class AddParticipantCtrl implements Initializable {
                     editPart = false;
                     mainCtrl.initEditParticipantOverview(event);
                     mainCtrl.showEditParticipantOverview();
+                    server.send("/app/updated",event);
                 }
                 participantExists.visibleProperty().setValue(true);
                 clearFields();
