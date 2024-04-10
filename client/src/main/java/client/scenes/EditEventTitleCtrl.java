@@ -86,6 +86,7 @@ public class EditEventTitleCtrl implements Initializable {
             event.setId(server.getByID(event.getId()).getId());
             event.setTitle(newTitle.getText());
             server.send("/app/titles", event);
+            server.send("/app/updated", event);
             //server.editEventTitle(editedTitle, event);
         } catch (WebApplicationException e) {
 

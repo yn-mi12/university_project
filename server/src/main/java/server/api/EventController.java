@@ -52,6 +52,12 @@ public class EventController {
         return e;
     }
 
+    @MessageMapping("/updated")
+    @SendTo("/topic/updated")
+    public Event updateEvent(Event e) {
+        return save(e).getBody();
+    }
+
     private Map<Object, Consumer<Event>> addListeners = new HashMap<>();
 
     @GetMapping(path = {"", "/addUpdates"})

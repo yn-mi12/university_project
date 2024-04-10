@@ -6,6 +6,7 @@ import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.*;
 import jakarta.ws.rs.WebApplicationException;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -649,5 +650,26 @@ public class EventOverviewCtrl implements Initializable {
     public void showTabPanes() {
         tabPane.getTabs().add(fromTab);
         tabPane.getTabs().add(includingTab);
+    }
+
+    public void launch() {
+        server.registerForMessages("/topic/updated", Event.class , q -> {
+            if(q!=null && q.getId().equals(event.getId())) {
+                event = q;
+                setSelectedEvent(event);
+                Platform.runLater(() -> {
+                    System.out.println(Main.getPosition());
+                    switch (Main.getPosition()){
+                        case "startScreen":
+                            Main.reloadUI();
+                            controller.showOverview();
+                            break;
+                        case "eventScreen":
+                            Main.reloadUIEvent(event);
+                            break;
+                    }
+                });
+            }
+        });
     }
 }

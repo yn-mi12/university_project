@@ -229,7 +229,6 @@ public class AdminOverviewCtrl implements Initializable {
                     break;
                 }
             }
-            System.out.println("TEST");
             eventList.refresh();
         });
     }

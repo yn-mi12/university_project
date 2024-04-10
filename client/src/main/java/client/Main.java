@@ -32,6 +32,7 @@ public class Main extends Application {
     private static Stage primaryStage;
     private static SplittyCtrl mainCtrl;
     private static boolean contrastMode = Boolean.valueOf(Config.get().isContrastMode());
+    private static String position = "startScreen";
 
     public static void main(String[] args) {
         launch();
@@ -57,7 +58,7 @@ public class Main extends Application {
      * @param selectedEvent - The event that is currently being viewed
      */
     public static void reloadUIEvent(Event selectedEvent) {
-    reload();
+        reload();
         mainCtrl.showEventOverview(selectedEvent);
     }
 
@@ -68,9 +69,11 @@ public class Main extends Application {
     }
 
     public static void start(){
-        reload();
         var adminOverview =FXML.load(AdminOverviewCtrl.class, "client", "scenes", "AdminOverview.fxml");
         adminOverview.getKey().launch();
+        var eventOverview = FXML.load(EventOverviewCtrl.class, "client", "scenes", "EventOverview.fxml");
+        eventOverview.getKey().launch();
+        reload();
         mainCtrl.display();
     }
 
@@ -156,5 +159,13 @@ public class Main extends Application {
             }
             else o.setStyle(Main.changeUI(o));
         });
+    }
+
+    public static void setPosition(String position) {
+        Main.position = position;
+    }
+
+    public static String getPosition() {
+        return position;
     }
 }

@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import commons.Debt;
 import commons.Event;
 import commons.Participant;
@@ -83,6 +84,7 @@ public class SplittyCtrl {
         primaryStage.setTitle("Splitty");
         primaryStage.setScene(overview);
         overview.getWindow().centerOnScreen();
+        Main.setPosition("startScreen");
     }
 
     public void showEventOverview(Event selectedEvent){
@@ -94,6 +96,7 @@ public class SplittyCtrl {
         eventCtrl.expensesNotSelectedPart();
         eventCtrl.expensesIncludingParticipant();
         eventCtrl.expensesNotSelectedPart();
+        Main.setPosition("eventScreen");
     }
 
     public void initExpShowOverview(Event event,

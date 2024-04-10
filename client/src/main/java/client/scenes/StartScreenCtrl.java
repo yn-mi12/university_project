@@ -131,20 +131,6 @@ public class StartScreenCtrl implements Initializable {
         }
         if (data == null)
             data = FXCollections.observableArrayList();
-
-        server.registerForAddUpdates(ev -> {
-
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    //refresh method loops in PastCodes
-                    Config.get().addPastCode(ev.getId());
-                    //System.out.println("adding event " + ev.getTitle() + " : " + ev.getInviteCode());
-                    data.add(ev.getTitle() + " : " + ev.getId());
-                    eventList.setItems(data);
-                }
-            });
-        });
         server.registerForDeleteUpdates(ev -> {
             Platform.runLater(new Runnable() {
                 @Override
@@ -278,7 +264,7 @@ public class StartScreenCtrl implements Initializable {
 
             for (String code : codes) {
                 Event e = server.getByID(code);
-                if (e != null) {
+                if (e != null && !events.contains(e)) {
                     events.add(e);
                     titles.add(e.getTitle() + " : " + e.getId());
                 } else {
