@@ -362,6 +362,7 @@ public class EventOverviewCtrl implements Initializable {
             }
         }
         controller.initExpShowOverview(event, owner);
+        expenseCtrl.setOldExpensePayer(owner);
         expenseCtrl.setExpensePayer(owner);
         expenseCtrl.setWhatForText(selected.getDescription());
         expenseCtrl.setHowMuchText(String.valueOf(selected.getAmount()));
@@ -411,7 +412,6 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void settleDebts() {
-
         Map<Participant, Double> partToAmount = mapParticipantToAmount();
 
         List<Pair<Participant, Double>> more = new ArrayList<>();
@@ -460,6 +460,7 @@ public class EventOverviewCtrl implements Initializable {
         server.addAllDebts(minDebts, event);
         event = server.getByID(event.getId());
 
+        minDebts = server.getDebtsByEvent(event);
         controller.showSettleDebts(minDebts, event);
     }
 

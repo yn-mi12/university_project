@@ -74,6 +74,7 @@ public class SettleDebtsCtrl implements Initializable {
         openDebtPane.setFitToWidth(true);
         settledPane.setFitToWidth(true);
         openDebtPane.setVisible(true);
+        settledPane.setVisible(true);
         settledDebtsLabel.setVisible(true);
         settledLabel.setVisible(false);
         if(debts.isEmpty() && removed.isEmpty()) {
@@ -169,6 +170,8 @@ public class SettleDebtsCtrl implements Initializable {
     public void goBack() {
         for(Debt d : removed)
             server.deleteDebt(d);
+
+        event = server.getByID(event.getId());
         removed = new ArrayList<>();
         settledBox.getChildren().clear();
         openDebtBox.getChildren().clear();

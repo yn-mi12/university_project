@@ -4,6 +4,7 @@ import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.*;
+import jakarta.servlet.http.Part;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
@@ -51,6 +52,7 @@ public class AddExpenseCtrl implements Initializable {
     private Participant expensePayer;
     private Expense expense;
     private Expense oldExpense;
+    private Participant oldExpensePayer;
     private boolean delete;
     @FXML
     private ComboBox<Label> whoPaid;
@@ -81,6 +83,8 @@ public class AddExpenseCtrl implements Initializable {
         this.ctrl = ctrl;
         this.event = ctrl.getSelectedEvent();
         this.participants = event.getParticipants();
+        whoPaid.setValue(new Label(paid.getFirstName() + " " + paid.getLastName()));
+        whoPaid.setPromptText(paid.getFirstName() + " " + paid.getLastName());
         if(!delete) {
             ObservableList<Label> names = FXCollections.observableArrayList();
             HashMap<Label, Participant> map = new HashMap<>();
@@ -91,7 +95,6 @@ public class AddExpenseCtrl implements Initializable {
                 map.put(item, p);
             }
             whoPaid.getItems().setAll(names);
-            whoPaid.setValue(new Label(paid.getFirstName() + " " + paid.getLastName()));
             whoPaid.getValue().setStyle("-fx-text-fill: #000000");
             if (Main.isContrastMode()) whoPaid.getValue().setStyle("-fx-text-fill: #F0F3FF");
             whoPaid.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
@@ -114,6 +117,8 @@ public class AddExpenseCtrl implements Initializable {
     }
 
     public void cancel() {
+        oldExpense = null;
+        oldExpensePayer = null;
         clearFields();
         Main.reloadUIEvent(event);
         controller.showEventOverview(ctrl.getSelectedEvent());
@@ -126,6 +131,7 @@ public class AddExpenseCtrl implements Initializable {
                 oldExpense.setAmount(oldExpense.getAmount() * -1.0);
                 calculateDebts(oldExpense, event);
                 server.deleteExpense(oldExpense);
+                oldExpensePayer = null;
                 System.out.println(server.getDebtsByEvent(event));
                 oldExpense = null;
                 if(delete) {
@@ -133,6 +139,7 @@ public class AddExpenseCtrl implements Initializable {
                     return;
                 }
             }
+            expensePayer = event.getParticipantByName(whoPaid.getValue().getText());
             event = server.getByID(event.getId());
             System.out.println("Add expense");
             System.out.println("Id:" + event.getId());
@@ -173,13 +180,16 @@ public class AddExpenseCtrl implements Initializable {
     public void calculateDebts(Expense saved, Event event) {
         List<Debt> debtsCreditor = server.getDebtsByCreditor(expensePayer);
         Map<Participant, Debt> debtorToDebt = new HashMap<>();
+        Participant payer = expensePayer;
+        if(oldExpensePayer != null)
+            payer = oldExpensePayer;
 
         if(debtsCreditor.isEmpty()) {
             for(Participant p : participants) {
-                Debt d = new Debt(p, expensePayer, 0);
+                Debt d = new Debt(p, payer, 0);
                 debtorToDebt.put(p, d);
             }
-            debtorToDebt.remove(expensePayer);
+            debtorToDebt.remove(payer);
         } else {
             List<Participant> debtParticipants = new ArrayList<>();
             for(Debt d : debtsCreditor) {
@@ -188,13 +198,14 @@ public class AddExpenseCtrl implements Initializable {
             }
 
             for(Participant p : participants) {
-                if(!debtParticipants.contains(p) && !p.equals(expensePayer)) {
-                    Debt created = new Debt(p, expensePayer, 0);
+                if(!debtParticipants.contains(p) && !p.equals(payer)) {
+                    Debt created = new Debt(p, payer, 0);
                     debtsCreditor.add(created);
                     debtorToDebt.put(p, created);
                 }
             }
         }
+        oldExpensePayer = null;
         setDebts(saved, event, debtorToDebt);
     }
 
@@ -210,6 +221,8 @@ public class AddExpenseCtrl implements Initializable {
         if(oldExpense != null) {
             for (Debt debt : debtorToDebt.values())
                 server.deleteDebt(debt);
+
+            ctrl.setSelectedEvent(server.getByID(event.getId()));
             return;
         }
 
@@ -353,6 +366,14 @@ public class AddExpenseCtrl implements Initializable {
 
     public void setExpensePayer(Participant expensePayer) {
         this.expensePayer = expensePayer;
+    }
+
+    public void setOldExpensePayer(Participant oldExpensePayer) {
+        this.oldExpensePayer = oldExpensePayer;
+    }
+
+    public void setWhoPaid(String fullName) {
+        this.whoPaid.setValue(new Label(fullName));
     }
 
     @Override

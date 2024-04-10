@@ -99,7 +99,6 @@ public class SplittyCtrl {
     public void initExpShowOverview(Event event,
                                     Participant paid) {
         addExpenseCtrl.setEvent(paid,eventCtrl);
-
         showExpOverview();
         primaryStage.show();
     }
