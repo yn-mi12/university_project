@@ -76,6 +76,8 @@ public class StartScreenCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ObservableList<Label> x = FXCollections.observableArrayList();
+        List<Label> perm = new ArrayList<>();
+        boolean ok = false;
         List<Config.SupportedLocale> languages = Config.get().getSupportedLocales().stream().toList();
         for (var item : languages) {
             Image icon;
@@ -86,6 +88,21 @@ public class StartScreenCtrl implements Initializable {
             iconImageView.setPreserveRatio(true);
             Label l = new Label(item.getName(), iconImageView);
             if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+            if(ok) x.add(l);
+            if(l.getText().equals(Config.get().getCurrentLocaleName()))ok = true;
+        }
+        ok = false;
+        for (var item : languages) {
+            Image icon;
+            String iconPath = "client/images/" + item.getCode() + ".png";
+            icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
+            ImageView iconImageView = new ImageView(icon);
+            iconImageView.setFitHeight(25);
+            iconImageView.setPreserveRatio(true);
+            Label l = new Label(item.getName(), iconImageView);
+            if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+            if(ok) break;
+            if(l.getText().equals(Config.get().getCurrentLocaleName()))ok = true;
             x.add(l);
         }
         languageBox.setItems(x);

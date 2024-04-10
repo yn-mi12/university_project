@@ -82,8 +82,6 @@ public class AddExpenseCtrl implements Initializable {
         this.ctrl = ctrl;
         this.event = ctrl.getSelectedEvent();
         this.participants = event.getParticipants();
-        whoPaid.setValue(new Label(paid.getFirstName() + " " + paid.getLastName()));
-        whoPaid.setPromptText(paid.getFirstName() + " " + paid.getLastName());
         if(!delete) {
             ObservableList<Label> names = FXCollections.observableArrayList();
             HashMap<Label, Participant> map = new HashMap<>();
@@ -94,6 +92,7 @@ public class AddExpenseCtrl implements Initializable {
                 map.put(item, p);
             }
             whoPaid.getItems().setAll(names);
+            whoPaid.setValue(new Label(paid.getFirstName() + " " + paid.getLastName()));
             whoPaid.getValue().setStyle("-fx-text-fill: #000000");
             if (Main.isContrastMode()) whoPaid.getValue().setStyle("-fx-text-fill: #F0F3FF");
             whoPaid.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
@@ -102,6 +101,7 @@ public class AddExpenseCtrl implements Initializable {
                     if (Main.isContrastMode()) newVal.setStyle("-fx-text-fill: #F0F3FF");
                     whoPaid.setValue(newVal);
                     expensePayer = map.get(newVal);
+                    controller.showExpOverview();
                 }
             }));
             List<String> listOfParticipants = new ArrayList<>();
@@ -177,12 +177,11 @@ public class AddExpenseCtrl implements Initializable {
     }
 
     public void calculateDebts(Expense saved, Event event) {
-        List<Debt> debtsCreditor = server.getDebtsByCreditor(expensePayer);
-        Map<Participant, Debt> debtorToDebt = new HashMap<>();
         Participant payer = expensePayer;
         if(oldExpensePayer != null)
             payer = oldExpensePayer;
-
+        List<Debt> debtsCreditor = server.getDebtsByCreditor(payer);
+        Map<Participant, Debt> debtorToDebt = new HashMap<>();
         if(debtsCreditor.isEmpty()) {
             for(Participant p : participants) {
                 Debt d = new Debt(p, payer, 0);
@@ -324,6 +323,7 @@ public class AddExpenseCtrl implements Initializable {
         currency.setValue(new Label());
         allHaveToPay.setSelected(false);
         someHaveToPay.setSelected(false);
+        whoPaid.getSelectionModel().clearSelection();
         whoPays.getSelectionModel().clearSelection();
     }
 

@@ -20,11 +20,12 @@
         </font>
     </Button>
     <Button fx:id="editTitleButton" layoutX="411.0" layoutY="52.0" minWidth="100" mnemonicParsing="false" onAction="#editTitle" text="%editTitle" />
+    <Button fx:id="addPartButton" layoutX="411.0" layoutY="107.0" minWidth="100" mnemonicParsing="false" onAction="#addParticipant" text="➕" />
     <Button fx:id="editPartButton" layoutX="411.0" layoutY="156.0" minWidth="100" mnemonicParsing="false" onAction="#updateParticipant" prefHeight="26.0" prefWidth="100.0">
          <font>
             <Font size="10.0" />
-         </font></Button>
-    <Button fx:id="addPartButton" layoutX="411.0" layoutY="107.0" minWidth="100" mnemonicParsing="false" onAction="#addParticipant" text="➕" />
+         </font>
+      </Button>
     <ComboBox fx:id="part" layoutX="20.0" layoutY="221.0" prefHeight="25.0" prefWidth="231.0">
     </ComboBox>
     <Button fx:id="addExpenseButton" layoutX="281.0" layoutY="221.0" minWidth="100" mnemonicParsing="false" onAction="#addExpense" prefHeight="26.0" prefWidth="100.0" text="%add_expense_button" wrapText="true" />
