@@ -56,7 +56,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
         List<Participant> participants = server.getEventParticipants(event);
         List<String> names = new ArrayList<>();
         for (Participant x : participants) {
-            names.add(x.getId() + ": " + x.getFirstName());
+            names.add(x.getId() + ": " + x.getFirstName() + " " + x.getLastName());
         }
         participantList.setItems(FXCollections.observableList(names));
     }
@@ -90,7 +90,6 @@ public class EditParticipantOverviewCtrl implements Initializable {
                 addCtrl.setIban(selectedParticipant.getIban());
                 addCtrl.setBic(selectedParticipant.getBic());
             }
-            controller.showAddParticipant(event);
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);

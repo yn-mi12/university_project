@@ -19,6 +19,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.util.Callback;
+import org.jetbrains.annotations.NotNull;
+
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -75,19 +77,7 @@ public class StartScreenCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ObservableList<Label> x = FXCollections.observableArrayList();
-        List<Config.SupportedLocale> languages = Config.get().getSupportedLocales().stream().toList();
-        for (var item : languages) {
-            Image icon;
-            String iconPath = "client/images/" + item.getCode() + ".png";
-            icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
-            ImageView iconImageView = new ImageView(icon);
-            iconImageView.setFitHeight(25);
-            iconImageView.setPreserveRatio(true);
-            Label l = new Label(item.getName(), iconImageView);
-            if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
-            x.add(l);
-        }
+        ObservableList<Label> x = setLanguage();
         languageBox.setItems(x);
         languageBox.setCellFactory(new Callback<>() {
             @Override
@@ -182,6 +172,44 @@ public class StartScreenCtrl implements Initializable {
                 }
             });
         });
+    }
+
+    private @NotNull ObservableList<Label> setLanguage() {
+        ObservableList<Label> x = FXCollections.observableArrayList();
+        List<Label> perm = new ArrayList<>();
+        boolean ok = false;
+        List<Config.SupportedLocale> languages = Config.get().getSupportedLocales().stream().toList();
+        for (var item : languages) {
+            Image icon;
+            String iconPath = "client/images/" + item.getCode() + ".png";
+            icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
+            ImageView iconImageView = new ImageView(icon);
+            iconImageView.setFitHeight(25);
+            iconImageView.setPreserveRatio(true);
+            Label l = new Label(item.getName(), iconImageView);
+            if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+            if(ok) x.add(l);
+            if(l.getText().equals(Config.get().getCurrentLocaleName()))ok = true;
+        }
+        ok = false;
+        setLanguageHelper(languages, ok, x);
+        return x;
+    }
+
+    private void setLanguageHelper(List<Config.SupportedLocale> languages, boolean ok, ObservableList<Label> x) {
+        for (var item : languages) {
+            Image icon;
+            String iconPath = "client/images/" + item.getCode() + ".png";
+            icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
+            ImageView iconImageView = new ImageView(icon);
+            iconImageView.setFitHeight(25);
+            iconImageView.setPreserveRatio(true);
+            Label l = new Label(item.getName(), iconImageView);
+            if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+            if(ok) break;
+            if(l.getText().equals(Config.get().getCurrentLocaleName())) ok = true;
+            x.add(l);
+        }
     }
 
     private void isContrast() {

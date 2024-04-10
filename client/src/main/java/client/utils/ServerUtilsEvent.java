@@ -224,7 +224,6 @@ public class ServerUtilsEvent {
                         .request(APPLICATION_JSON) //
                         .accept(APPLICATION_JSON) //
                         .post(Entity.entity(d, APPLICATION_JSON), Debt.class);
-                System.out.println("Add debt " + saved);
                 savedDebts.add(saved);
             }
         } catch(BadRequestException e) {
@@ -287,6 +286,24 @@ public class ServerUtilsEvent {
                 .accept(APPLICATION_JSON)
                 .delete();
         System.out.println("Debt deleted:" + debt);
+    }
+
+    public void deleteExpense(Expense expense) {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/expenses/" + expense.getId())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete();
+        System.out.println("Expense deleted: " + expense);
+    }
+
+    public Expense getExpenseById(long id) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/expenses/" + id)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
     }
 
     private final StompSession session = connect("ws://localhost:8080/websocket");

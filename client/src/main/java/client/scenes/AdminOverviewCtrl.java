@@ -24,6 +24,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -88,19 +89,7 @@ public class AdminOverviewCtrl implements Initializable {
                 }
             }
         });
-        ObservableList<Label> x = FXCollections.observableArrayList();
-        List<Config.SupportedLocale> languages = Config.get().getSupportedLocales().stream().toList();
-        for (var item : languages) {
-            Image icon;
-            String iconPath = "client/images/" + item.getCode() + ".png";
-            icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
-            ImageView iconImageView = new ImageView(icon);
-            iconImageView.setFitHeight(25);
-            iconImageView.setPreserveRatio(true);
-            Label l = new Label(item.getName(), iconImageView);
-            if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
-            x.add(l);
-        }
+        ObservableList<Label> x = setLanguage();
         languageBox.setItems(x);
         languageBox.setCellFactory(new Callback<>() {
             @Override
@@ -175,6 +164,44 @@ public class AdminOverviewCtrl implements Initializable {
                         "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
                         "-fx-border-width: 1.5; -fx-border-insets: -1");
             });
+        }
+    }
+
+    private @NotNull ObservableList<Label> setLanguage() {
+        ObservableList<Label> x = FXCollections.observableArrayList();
+        List<Label> perm = new ArrayList<>();
+        boolean ok = false;
+        List<Config.SupportedLocale> languages = Config.get().getSupportedLocales().stream().toList();
+        for (var item : languages) {
+            Image icon;
+            String iconPath = "client/images/" + item.getCode() + ".png";
+            icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
+            ImageView iconImageView = new ImageView(icon);
+            iconImageView.setFitHeight(25);
+            iconImageView.setPreserveRatio(true);
+            Label l = new Label(item.getName(), iconImageView);
+            if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+            if(ok) x.add(l);
+            if(l.getText().equals(Config.get().getCurrentLocaleName()))ok = true;
+        }
+        ok = false;
+        setLanguageHelper(languages, ok, x);
+        return x;
+    }
+
+    private void setLanguageHelper(List<Config.SupportedLocale> languages, boolean ok, ObservableList<Label> x) {
+        for (var item : languages) {
+            Image icon;
+            String iconPath = "client/images/" + item.getCode() + ".png";
+            icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
+            ImageView iconImageView = new ImageView(icon);
+            iconImageView.setFitHeight(25);
+            iconImageView.setPreserveRatio(true);
+            Label l = new Label(item.getName(), iconImageView);
+            if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+            if(ok) break;
+            if(l.getText().equals(Config.get().getCurrentLocaleName())) ok = true;
+            x.add(l);
         }
     }
 
@@ -328,11 +355,12 @@ public class AdminOverviewCtrl implements Initializable {
                 ExpenseParticipant newExpensePart = new
                         ExpenseParticipant(newExpense, newParts.get(count), ep.getShare(), ep.isOwner());
                 debtors.add(newExpensePart);
+                count++;
             }
             e.setDebtors(debtors);
             e.setEvent(saved);
             server.addExpense(e, saved);
-            count++;
+
         }
 
         saved = server.getByID(saved.getId());

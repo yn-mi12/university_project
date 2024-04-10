@@ -6,6 +6,8 @@ import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.*;
 import jakarta.ws.rs.WebApplicationException;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,6 +21,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.util.Callback;
+import javafx.util.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.RoundingMode;
 import java.net.URL;
@@ -65,6 +69,7 @@ public class EventOverviewCtrl implements Initializable {
     private Participant expensePayer;
 
     private final SplittyCtrl controller;
+    private final AddExpenseCtrl expenseCtrl;
     private List<Participant> participants;
     @FXML
     private TextArea participantText;
@@ -76,6 +81,10 @@ public class EventOverviewCtrl implements Initializable {
     private ComboBox<Label> languageBox;
     @FXML
     private Label totalCost;
+    @FXML
+    private Label editPencil;
+    @FXML
+    private Label trash;
     private Event event;
     public boolean isAdmin = false;
 
@@ -92,11 +101,19 @@ public class EventOverviewCtrl implements Initializable {
     private Tab fromTab;
     @FXML
     private Tab includingTab;
+    @FXML
+    private Button viewButton;
+    @FXML
+    private Button addButton;
+    @FXML
+    private Button deleteButton;
+    private String viewChoice;
 
     @Inject
-    public EventOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
+    public EventOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl, AddExpenseCtrl expenseCtrl) {
         this.server = server;
         this.controller = eventCtrl;
+        this.expenseCtrl = expenseCtrl;
     }
 
     public Event getSelectedEvent() {
@@ -106,7 +123,7 @@ public class EventOverviewCtrl implements Initializable {
     public void setSelectedEvent(Event selectedEvent) {
         hideTabPanes();
         this.event = selectedEvent;
-        this.event = server.getByID(selectedEvent.getId());
+//        this.event = server.getByID(selectedEvent.getId());
         this.participants = event.getParticipants();
         ObservableList<Label> names = FXCollections.observableArrayList();
         StringBuilder namesString = new StringBuilder();
@@ -146,19 +163,7 @@ public class EventOverviewCtrl implements Initializable {
         t.setStyle("-fx-text-fill: black");
         if(Main.isContrastMode()) t.setStyle("-fx-text-fill:  #F0F3FF");
         part.setValue(t);
-        ObservableList<Label> x = FXCollections.observableArrayList();
-        List<Config.SupportedLocale> languages = Config.get().getSupportedLocales().stream().toList();
-        for (var item : languages) {
-            Image icon;
-            String iconPath = "client/images/" + item.getCode() + ".png";
-            icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
-            ImageView iconImageView = new ImageView(icon);
-            iconImageView.setFitHeight(25);
-            iconImageView.setPreserveRatio(true);
-            Label l = new Label(item.getName(), iconImageView);
-            if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
-            x.add(l);
-        }
+        ObservableList<Label> x = setLanguage();
         languageBox.setItems(x);
         languageBox.setCellFactory(new Callback<>() {
             @Override
@@ -196,6 +201,40 @@ public class EventOverviewCtrl implements Initializable {
                 controller.showEventOverview(event);
             }
         }));
+
+        allExpenses.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
+                if (allExpenses.getSelectionModel().getSelectedItem() != null) {
+                    viewButton.setDisable(false);
+                    deleteButton.setDisable(false);
+                    viewChoice = "all";
+                }
+            }
+        });
+
+        fromExpenses.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
+                if (fromExpenses.getSelectionModel().getSelectedItem() != null) {
+                    viewButton.setDisable(false);
+                    deleteButton.setDisable(false);
+                    viewChoice = "from";
+                }
+            }
+        });
+
+        includingExpenses.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
+                if (includingExpenses.getSelectionModel().getSelectedItem() != null) {
+                    viewButton.setDisable(false);
+                    deleteButton.setDisable(false);
+                    viewChoice = "include";
+                }
+            }
+        });
+
         if(Main.isContrastMode())isContrast();
         part.setCellFactory(new Callback<>() {
             @Override
@@ -215,7 +254,44 @@ public class EventOverviewCtrl implements Initializable {
                 };
             }
         });
-        expensePayer = null;
+    }
+
+    private @NotNull ObservableList<Label> setLanguage() {
+        ObservableList<Label> x = FXCollections.observableArrayList();
+        List<Label> perm = new ArrayList<>();
+        boolean ok = false;
+        List<Config.SupportedLocale> languages = Config.get().getSupportedLocales().stream().toList();
+        for (var item : languages) {
+            Image icon;
+            String iconPath = "client/images/" + item.getCode() + ".png";
+            icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
+            ImageView iconImageView = new ImageView(icon);
+            iconImageView.setFitHeight(25);
+            iconImageView.setPreserveRatio(true);
+            Label l = new Label(item.getName(), iconImageView);
+            if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+            if(ok) x.add(l);
+            if(l.getText().equals(Config.get().getCurrentLocaleName()))ok = true;
+        }
+        ok = false;
+        setLanguageHelper(languages, ok, x);
+        return x;
+    }
+
+    private void setLanguageHelper(List<Config.SupportedLocale> languages, boolean ok, ObservableList<Label> x) {
+        for (var item : languages) {
+            Image icon;
+            String iconPath = "client/images/" + item.getCode() + ".png";
+            icon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(iconPath)));
+            ImageView iconImageView = new ImageView(icon);
+            iconImageView.setFitHeight(25);
+            iconImageView.setPreserveRatio(true);
+            Label l = new Label(item.getName(), iconImageView);
+            if(Main.isContrastMode())l.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
+            if(ok) break;
+            if(l.getText().equals(Config.get().getCurrentLocaleName())) ok = true;
+            x.add(l);
+        }
     }
 
     private void isContrast() {
@@ -247,6 +323,10 @@ public class EventOverviewCtrl implements Initializable {
         });
         addExpenseButton.setStyle(Main.changeUI(addExpenseButton));
         Main.buttonFeedback(addExpenseButton);
+        viewButton.setStyle(Main.changeUI(viewButton));
+        Main.buttonFeedback(viewButton);
+        deleteButton.setStyle(Main.changeUI(deleteButton));
+        Main.buttonFeedback(deleteButton);
         copyCodeButton.setStyle(Main.changeUI(copyCodeButton));
         Main.buttonFeedback(copyCodeButton);
         editTitleButton.setStyle(Main.changeUI(editTitleButton));
@@ -260,6 +340,8 @@ public class EventOverviewCtrl implements Initializable {
         addPartButton.setStyle(Main.changeUI(addPartButton));
         Main.buttonFeedback(addPartButton);
         participantText.setStyle(Main.changeUI(participantText));
+        trash.setStyle(Main.changeUI(trash));
+        editPencil.setStyle("-fx-text-fill: white;-fx-font-weight: bolder;");
         tabPane.setStyle("-fx-control-inner-background:#836FFF;-fx-font-weight: bolder; " +
                 "-fx-border-color: black;-fx-border-width: 3;-fx-border-radius: 5;");
         inviteCodeLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
@@ -271,13 +353,161 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void addExpense() {
-        if(expensePayer!=null) controller.initExpShowOverview(event, expensePayer);
+        controller.initExpShowOverview(event, expensePayer);
+    }
+
+    public Expense getExpense() {
+        long id = 0;
+        switch(viewChoice) {
+            case "all" -> {
+                id = Long.valueOf(allExpenses.getSelectionModel().getSelectedItem().split(":")[0]);
+                allExpenses.getSelectionModel().clearSelection();
+            }
+            case "from" -> {
+                id = Long.valueOf(fromExpenses.getSelectionModel().getSelectedItem().split(":")[0]);
+                fromExpenses.getSelectionModel().clearSelection();
+            }
+            case "include" -> {
+                id = Long.valueOf(includingExpenses.getSelectionModel().getSelectedItem().split(":")[0]);
+                includingExpenses.getSelectionModel().clearSelection();
+            }
+        }
+        return server.getExpenseById(id);
+    }
+
+    public void viewExpense() {
+        viewButton.setDisable(true);
+        deleteButton.setDisable(true);
+        Expense selected = getExpense();
+
+        Participant owner = null;
+        for(ExpenseParticipant ep : selected.getDebtors()) {
+            if(ep.isOwner()) {
+                owner = ep.getParticipant();
+                break;
+            }
+        }
+        controller.initExpShowOverview(event, owner);
+        expenseCtrl.setOldExpensePayer(owner);
+        expenseCtrl.setExpensePayer(owner);
+        expenseCtrl.setWhatForText(selected.getDescription());
+        expenseCtrl.setHowMuchText(String.valueOf(selected.getAmount()));
+        expenseCtrl.setCurrencyText(selected.getCurrency());
+        expenseCtrl.setDateText(selected.getDate().toLocalDate());
+        expenseCtrl.setOldExpense(selected);
+
+        expenseCtrl.getWhoPays().getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        int count = 0;
+        for(ExpenseParticipant ep : selected.getDebtors()) {
+            if(ep.getShare() != 0) {
+                Participant p = ep.getParticipant();
+                expenseCtrl.getWhoPays().getSelectionModel().select(p.getFirstName() + " " + p.getLastName());
+                count++;
+            }
+        }
+        if(count == participants.size()) {
+            expenseCtrl.getWhoPays().getSelectionModel().clearSelection();
+            expenseCtrl.getAllHaveToPay().setSelected(true);
+        } else {
+            expenseCtrl.getSomeHaveToPay().setSelected(true);
+        }
+    }
+
+    public void deleteExpense() {
+        deleteButton.setDisable(true);
+        viewButton.setDisable(true);
+        expenseCtrl.setDelete(true);
+        Expense selected = getExpense();
+
+        Participant owner = null;
+        for(ExpenseParticipant ep : selected.getDebtors()) {
+            if(ep.isOwner())
+                owner = ep.getParticipant();
+        }
+        expenseCtrl.setEvent(owner, this);
+        expenseCtrl.setExpensePayer(owner);
+        expenseCtrl.setOldExpense(selected);
+        expenseCtrl.ok();
+
+        server.deleteExpense(selected);
+        event = server.getByID(event.getId());
+
+        expensesNotSelectedPart();
+        expensesIncludingParticipant();
+        expensesNotSelectedPart();
     }
 
     public void settleDebts() {
-        List<Debt> allDebts = server.getDebtsByEvent(event);
-        controller.showSettleDebts(allDebts, event);
+        Map<Participant, Double> partToAmount = mapParticipantToAmount();
+
+        List<Pair<Participant, Double>> more = new ArrayList<>();
+        List<Pair<Participant, Double>> less = new ArrayList<>();
+        for(Participant p : partToAmount.keySet()) {
+            if(partToAmount.get(p) > 0) {
+                more.add(new Pair<>(p, partToAmount.get(p)));
+            } else if(partToAmount.get(p) < 0) {
+                less.add(new Pair<>(p, partToAmount.get(p) * -1));
+            }
+        }
+
+        more.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
+        less.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
+
+        List<Debt> minDebts = new ArrayList<>();
+
+        while(!more.isEmpty() && !less.isEmpty()) {
+            Pair<Participant, Double> from = less.getFirst();
+            Pair<Participant, Double> to = more.getFirst();
+            double amount;
+
+            if(Objects.equals(from.getValue(), to.getValue())) {
+                amount = from.getValue();
+                more.removeFirst();
+                less.removeFirst();
+            } else if(from.getValue() < to.getValue()) {
+                amount = from.getValue();
+                more.set(0, new Pair<>(to.getKey(), to.getValue() - from.getValue()));
+                less.removeFirst();
+            } else {
+                amount = to.getValue();
+                less.set(0, new Pair<>(from.getKey(), from.getValue() - to.getValue()));
+                more.removeFirst();
+            }
+
+            Debt newDebt = new Debt(from.getKey(), to.getKey(), amount);
+            minDebts.add(newDebt);
+        }
+
+        for(Debt d : server.getDebtsByEvent(event)) {
+            event.getDebts().remove(d);
+            server.deleteDebt(d);
+        }
+
+        server.addAllDebts(minDebts, event);
+        event = server.getByID(event.getId());
+
+        minDebts = server.getDebtsByEvent(event);
+        controller.showSettleDebts(minDebts, event);
     }
+
+    private @NotNull Map<Participant, Double> mapParticipantToAmount() {
+        Map<Participant, Double> partToAmount = new HashMap<>();
+        for(Participant p : participants) {
+            List<Debt> credits = server.getDebtsByCreditor(p);
+            double creditAmount = 0;
+            for(Debt d : credits) {
+                creditAmount += d.getAmount();
+            }
+            List<Debt> debits = server.getDebtsByDebtor(p);
+            double debitAmount = 0;
+            for(Debt d : debits) {
+                debitAmount += d.getAmount();
+            }
+            partToAmount.put(p, creditAmount - debitAmount);
+        }
+        return partToAmount;
+    }
+
     public void editTitle() {
         controller.showEditTitle(event);
     }
@@ -317,6 +547,8 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void goBack() {
+        viewButton.setDisable(true);
+        deleteButton.setDisable(true);
         part.setValue(new Label("Participants"));
         if (controller.getAdmin()) controller.showAdminOverview();
         else controller.showOverview();
@@ -336,7 +568,7 @@ public class EventOverviewCtrl implements Initializable {
                         owner = expenseParticipant.getParticipant();
                     }
                 }
-                String expenseString = owner.getFirstName() + " " + owner.getLastName() + " "
+                String expenseString = expense.getId() + ": " + owner.getFirstName() + " " + owner.getLastName() + " "
                         + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
                 titles.add(expenseString);
                 totalAmount += expense.getAmount();
@@ -369,7 +601,7 @@ public class EventOverviewCtrl implements Initializable {
                 }
             }
             for (Expense expense : expensesFromParticipant) {
-                String expenseString = participant.getFirstName() + " " + participant.getLastName() +
+                String expenseString = expense.getId() + ": " +participant.getFirstName() + " " + participant.getLastName() +
                         " " + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
                 titles.add(expenseString);
             }
@@ -401,7 +633,7 @@ public class EventOverviewCtrl implements Initializable {
                         owner = expenseParticipant.getParticipant();
                     }
                 }
-                String expenseString = owner.getFirstName() +  " " + owner.getLastName() +  " "
+                String expenseString = expense.getId() + ": " + owner.getFirstName() +  " " + owner.getLastName() +  " "
                         + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
                 titles.add(expenseString);
             }
