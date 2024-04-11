@@ -231,6 +231,17 @@ public class AdminOverviewCtrl implements Initializable {
             }
             eventList.refresh();
         });
+        server.registerForMessages("/topic/updated", Event.class , q -> {
+            for(var x: data)
+            {
+                if(Objects.equals(x.getId(), q.getId())){
+                    data.remove(x);
+                    break;
+                }
+            }
+            data.add(q);
+            eventList.refresh();
+        });
     }
 
     public void refresh() {
