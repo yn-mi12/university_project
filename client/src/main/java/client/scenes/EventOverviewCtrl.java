@@ -151,7 +151,7 @@ public class EventOverviewCtrl implements Initializable {
                 expensesIncludingParticipant();
             }
         }));
-        part.getItems().setAll();
+        part.getItems().setAll(names);
         participantList.setItems(FXCollections.observableList(participantsArrayList));
         inviteCode.setText(event.getId());
         expensesNotSelectedPart();
