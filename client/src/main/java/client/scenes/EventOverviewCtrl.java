@@ -457,6 +457,34 @@ public class EventOverviewCtrl implements Initializable {
         more.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
         less.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
 
+        calculateAndShowMinDebts(more, less);
+    }
+
+    private @NotNull Map<Participant, Double> mapParticipantToAmount() {
+        Map<Participant, Double> partToAmount = new HashMap<>();
+        List<Expense> expenses = server.getExpensesByEventId(event);
+        for(Expense e : expenses) {
+            for(ExpenseParticipant ep : e.getDebtors()) {
+                if(ep.isOwner()) {
+                    partToAmount.put(ep.getParticipant(), e.getAmount());
+                } else {
+                    partToAmount.put(ep.getParticipant(), -100.0 * e.getAmount()/ep.getShare());
+                }
+            }
+        }
+        for(Participant p : participants) {
+            if(partToAmount.get(p) == null)
+                continue;
+            List<Debt> paid = server.getDebtsByCreditor(p);
+            for(Debt d : paid) {
+                double initial = partToAmount.get(p);
+                partToAmount.put(p, initial + d.getAmount());
+            }
+        }
+        return partToAmount;
+    }
+
+    private void calculateAndShowMinDebts(List<Pair<Participant, Double>> more, List<Pair<Participant, Double>> less) {
         List<Debt> minDebts = new ArrayList<>();
 
         while(!more.isEmpty() && !less.isEmpty()) {
@@ -481,25 +509,12 @@ public class EventOverviewCtrl implements Initializable {
             Debt newDebt = new Debt(from.getKey(), to.getKey(), amount);
             minDebts.add(newDebt);
         }
-        controller.showSettleDebts(minDebts, event);
-    }
-
-    private @NotNull Map<Participant, Double> mapParticipantToAmount() {
-        Map<Participant, Double> partToAmount = new HashMap<>();
-        for(Participant p : participants) {
-            List<Debt> credits = server.getDebtsByCreditor(p);
-            double creditAmount = 0;
-            for(Debt d : credits) {
-                creditAmount += d.getAmount();
-            }
-            List<Debt> debits = server.getDebtsByDebtor(p);
-            double debitAmount = 0;
-            for(Debt d : debits) {
-                debitAmount += d.getAmount();
-            }
-            partToAmount.put(p, creditAmount - debitAmount);
+        List<Debt> finalDebts = new ArrayList<>();
+        for(Debt debt : minDebts) {
+            if(debt.getAmount() != 0)
+                finalDebts.add(debt);
         }
-        return partToAmount;
+        controller.showSettleDebts(finalDebts, event);
     }
 
     public void editTitle() {

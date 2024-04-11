@@ -29,39 +29,6 @@ public class TestDebtRepository implements DebtRepository {
     }
 
     @Override
-    public List<Debt> findAllByCreditorId(Long creditorId) {
-        call("getAllByCreditorId");
-        List<Debt> creditorDebts = new ArrayList<>();
-        for(Debt d : debts) {
-            if(d.getCreditor().getId() == creditorId)
-                creditorDebts.add(d);
-        }
-        return creditorDebts;
-    }
-
-    @Override
-    public List<Debt> findAllByDebtorId(Long debtorId) {
-        call("getAllByDebtorId");
-        List<Debt> debtorDebts = new ArrayList<>();
-        for(Debt d : debts) {
-            if(d.getDebtor().getId() == debtorId)
-                debtorDebts.add(d);
-        }
-        return debtorDebts;
-    }
-
-    @Override
-    public List<Debt> findByEventId(String eventId) {
-        List<Debt> result = new ArrayList<>();
-        for(Debt d : debts) {
-            if(Objects.equals(d.getEvent().getId(), eventId)) {
-                result.add(d);
-            }
-        }
-        return result;
-    }
-
-    @Override
     public void flush() {
 
     }

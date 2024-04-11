@@ -252,35 +252,6 @@ public class ServerUtilsEvent {
         return debts;
     }
 
-    public List<Debt> getDebtsByDebtor(Participant debtor) {
-        List<Debt> debts = new ArrayList<>();
-
-        debts.addAll(ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/debts/debtor/" + debtor.getId())
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(new GenericType<>() {
-                }));
-
-        return debts;
-    }
-
-    public void updateDebtAmount(double amount, Debt debt) {
-        ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/debts/" + debt.getId() + "/amount")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .put(Entity.entity(amount, APPLICATION_JSON), Debt.class);
-    }
-
-    public void deleteDebt(Debt debt) {
-        ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/debts/" + debt.getId())
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .delete();
-    }
-
     public void deleteExpense(Expense expense) {
         ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/expenses/" + expense.getId())
