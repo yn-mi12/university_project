@@ -495,7 +495,7 @@ public class AddExpenseCtrl implements Initializable {
             tagsComboBox.getSelectionModel().selectedItemProperty().addListener(((obs1, oldVal1, newVal1) -> {
                 if (newVal1 != null) {
                     if(Main.isContrastMode())newVal1.setStyle(("-fx-text-fill: #F0F3FF"));
-                    currency.setValue(newVal1);
+                    tagsComboBox.setValue(newVal1);
                 }
         }));
             Main.languageFeedback(tagsComboBox);

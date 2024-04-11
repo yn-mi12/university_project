@@ -305,15 +305,6 @@ public class StartScreenCtrl implements Initializable {
         try {
             event = new Event(title);
             server.send("/app/events", event);
-            Tag food = new Tag("food","green");
-            Tag entranceFees = new Tag("entrance fees", "blue");
-            Tag travel = new Tag("travel", "red");
-            event.addTag(food);
-            event.addTag(entranceFees);
-            event.addTag(travel);
-            server.addTag(food, event);
-            server.addTag(entranceFees, event);
-            server.addTag(travel, event);
             Config.get().addPastCode(String.valueOf(event.getId()));
             Config.get().save();
         } catch (WebApplicationException e) {
@@ -324,6 +315,19 @@ public class StartScreenCtrl implements Initializable {
             return;
         }
         controller.showEventOverview(event);
+        addTags(event);
+    }
+
+    private void addTags(Event event) {
+        Tag food = new Tag("food","green");
+        Tag entranceFees = new Tag("entrance fees", "blue");
+        Tag travel = new Tag("travel", "red");
+        event.addTag(food);
+        event.addTag(entranceFees);
+        event.addTag(travel);
+        server.addTag(food, event);
+        server.addTag(entranceFees, event);
+        server.addTag(travel, event);
     }
 
     public void stop() {
