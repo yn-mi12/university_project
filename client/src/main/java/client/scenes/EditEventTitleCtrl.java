@@ -78,11 +78,8 @@ public class EditEventTitleCtrl implements Initializable {
 
     public void ok() {
         try {
-            System.out.println("Edit Title");
             String editedTitle = newTitle.getText();
             event.setTitle(editedTitle);
-            System.out.println("Edit Title");
-            System.out.println("Id:" + event.getId());
             event.setId(server.getByID(event.getId()).getId());
             event.setTitle(newTitle.getText());
             server.send("/app/titles", event);

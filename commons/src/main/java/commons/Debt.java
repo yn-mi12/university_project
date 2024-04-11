@@ -19,6 +19,7 @@ public class Debt {
     private double amount;
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Event event;
 
     @SuppressWarnings("unused")

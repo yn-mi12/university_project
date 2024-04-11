@@ -16,9 +16,7 @@
 package client.utils;
 
 import client.Config;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Debt;
 import commons.Event;
 import commons.Expense;
@@ -32,7 +30,6 @@ import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -58,7 +55,6 @@ public class ServerUtilsEvent {
     }
 
     public Event getByID(String id) {
-        System.out.println("Getting Event by ID: " + id);
         try {
             return ClientBuilder.newClient(new ClientConfig()) //
                     .target(SERVER).path("api/events/" + id) //
@@ -73,7 +69,6 @@ public class ServerUtilsEvent {
     }
 
     public List<Expense> getExpensesByEventId(Event event){
-        System.out.println("Getting Expenses by EventID: " + event.getId());
         try{
            return ClientBuilder.newClient(new ClientConfig())
                    .target(SERVER).path("api/expenses/event/" + event.getId())
@@ -88,7 +83,6 @@ public class ServerUtilsEvent {
     }
 
     public Participant getParticipantByID(Long id) {
-        System.out.println("Getting Participant by ID: " + id);
         try {
             return ClientBuilder.newClient(new ClientConfig()) //
                     .target(SERVER).path("api/participants/" + id) //
@@ -108,7 +102,6 @@ public class ServerUtilsEvent {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(event, APPLICATION_JSON), Event.class);
-        System.out.println("Added Event with ID: " + saved.getId());
 
         Config.get().addPastCode(String.valueOf(saved.getId()));
         return saved;
@@ -123,7 +116,6 @@ public class ServerUtilsEvent {
     }
 
     public Expense addExpense(Expense expense, Event event) {
-        System.out.println("Added Expense for Event: " + event.getId() + '\n' + expense);
         try {
             return ClientBuilder.newClient(new ClientConfig()) //
                     .target(getServer()).path("/api/expenses/event/" + event.getId()) //
@@ -137,7 +129,6 @@ public class ServerUtilsEvent {
     }
 
     public Event editEventTitle(String editedTitle, Event event) {
-        System.out.println("Changing title to: " + editedTitle + " at Event: " + event.getId());
         try {
             return ClientBuilder.newClient(new ClientConfig())
                     .target(getServer()).path("/api/events/" + event.getId()+ "/title")
@@ -151,7 +142,6 @@ public class ServerUtilsEvent {
     }
 
     public Participant addParticipant(Participant participant, Event event) {
-        System.out.println("Added Participant for Event: " + event.getId() + '\n' + participant);
         try {
             return ClientBuilder.newClient(new ClientConfig()) //
                     .target(getServer()).path("/api/participants/event/" + event.getId()) //
@@ -170,7 +160,6 @@ public class ServerUtilsEvent {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .delete();
-        System.out.println("Event deleted:" + event);
     }
 
     public void deleteParticipant(Participant participant) {
@@ -179,7 +168,6 @@ public class ServerUtilsEvent {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .delete();
-        System.out.println("Participant deleted:" + participant);
     }
 
     public boolean checkToken(String token) {
@@ -223,6 +211,7 @@ public class ServerUtilsEvent {
         List<Debt> savedDebts = new ArrayList<>();
         try {
             for(Debt d : debts) {
+                d.setEvent(event);
                 Debt saved = ClientBuilder.newClient(new ClientConfig()) //
                         .target(SERVER).path("api/debts/event/" + event.getId()) //
                         .request(APPLICATION_JSON) //
@@ -290,7 +279,6 @@ public class ServerUtilsEvent {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .delete();
-        System.out.println("Debt deleted:" + debt);
     }
 
     public void deleteExpense(Expense expense) {
@@ -299,7 +287,6 @@ public class ServerUtilsEvent {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .delete();
-        System.out.println("Expense deleted: " + expense);
     }
 
     public Expense getExpenseById(long id) {

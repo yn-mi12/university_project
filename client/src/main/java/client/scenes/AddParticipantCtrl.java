@@ -147,8 +147,6 @@ public class AddParticipantCtrl implements Initializable {
                 Event updated = server.getByID(event.getId());
                 clearFields();
                 mainCtrl.showEventOverview(updated);
-                System.out.println(updated);
-                //for(var x: updated.getParticipants())x.setEvent(updated);
                 server.send("/app/updated",updated);
             } else {
                 participantExists.visibleProperty().setValue(true);

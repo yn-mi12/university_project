@@ -136,7 +136,6 @@ public class StartScreenCtrl implements Initializable {
                     if (data == null)
                         data = FXCollections.observableArrayList();
                     Config.get().removePastCode(ev.getId());
-                    //System.out.println("deleting event " + ev.getTitle() + " : " + ev.getInviteCode());
                     data.remove(ev.getTitle() + " : " + ev.getId());
                     eventList.setItems(data);
                 }
@@ -276,7 +275,6 @@ public class StartScreenCtrl implements Initializable {
 
             for (String removed : removedCodes) {
                 Config.get().removePastCode(removed);
-                System.out.println("removed code " + removed);
             }
 
             Config.get().save();
@@ -304,7 +302,6 @@ public class StartScreenCtrl implements Initializable {
         clearFields();
         Event event;
         try {
-            System.out.println("Add event");
             event = new Event(title);
             server.send("/app/events", event);
             Config.get().addPastCode(String.valueOf(event.getId()));

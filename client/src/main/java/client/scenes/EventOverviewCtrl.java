@@ -437,7 +437,7 @@ public class EventOverviewCtrl implements Initializable {
 
         server.deleteExpense(selected);
         event = server.getByID(event.getId());
-
+        server.send("/app/updated",event);
         expensesNotSelectedPart();
         expensesIncludingParticipant();
         expensesNotSelectedPart();
@@ -528,7 +528,6 @@ public class EventOverviewCtrl implements Initializable {
 
     public void deleteEvent() {
         try {
-            System.out.println("Delete Event");
             event.setId(server.getByID(event.getId()).getId());
             server.send("/app/deleted", event);
             if(!controller.getAdmin()) {
@@ -660,11 +659,9 @@ public class EventOverviewCtrl implements Initializable {
     public void launch() {
         server.registerForMessages("/topic/updated", Event.class , q -> {
             if(q!=null && q.getId().equals(event.getId())) {
-                System.out.println(event);
                 event = q;
                 setSelectedEvent(event);
                 Platform.runLater(() -> {
-                    System.out.println(Main.getPosition());
                     switch (Main.getPosition()){
                         case "startScreen":
                             Main.reloadUI();

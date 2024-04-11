@@ -170,10 +170,11 @@ public class SettleDebtsCtrl implements Initializable {
     }
 
     public void goBack() {
-        for(Debt d : removed)
+        for(Debt d : removed) {
             server.deleteDebt(d);
-
+        }
         event = server.getByID(event.getId());
+        server.send("/app/updated",event);
         removed = new ArrayList<>();
         settledBox.getChildren().clear();
         openDebtBox.getChildren().clear();
