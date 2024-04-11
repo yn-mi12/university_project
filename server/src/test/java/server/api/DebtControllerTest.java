@@ -6,6 +6,8 @@ import commons.Participant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -51,4 +53,15 @@ public class DebtControllerTest {
         assertEquals(BAD_REQUEST, br2.getStatusCode());
         assertEquals(BAD_REQUEST, br3.getStatusCode());
     }
+
+    @Test
+    void getAllByCreditorIdTest() {
+        var br = debtc.getAllByCreditorId( -1L);
+        assertEquals(BAD_REQUEST, br.getStatusCode());
+
+        List<Debt> creditorDebts = debtc.getAllByCreditorId(creditor.getId()).getBody();
+        assertTrue(repo.calledMethods.contains("getAllByCreditorId"));
+        assertEquals(List.of(d), creditorDebts);
+    }
+
 }

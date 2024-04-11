@@ -444,20 +444,20 @@ public class EventOverviewCtrl implements Initializable {
     public void settleDebts() {
         Map<Participant, Double> partToAmount = mapParticipantToAmount();
 
-        List<Pair<Participant, Double>> more = new ArrayList<>();
-        List<Pair<Participant, Double>> less = new ArrayList<>();
+        List<Pair<Participant, Double>> morePaid = new ArrayList<>();
+        List<Pair<Participant, Double>> lessPaid = new ArrayList<>();
         for(Participant p : partToAmount.keySet()) {
             if(partToAmount.get(p) > 0) {
-                more.add(new Pair<>(p, partToAmount.get(p)));
+                morePaid.add(new Pair<>(p, partToAmount.get(p)));
             } else if(partToAmount.get(p) < 0) {
-                less.add(new Pair<>(p, partToAmount.get(p) * -1));
+                lessPaid.add(new Pair<>(p, partToAmount.get(p) * -1));
             }
         }
 
-        more.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
-        less.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
+        morePaid.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
+        lessPaid.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
 
-        calculateAndShowMinDebts(more, less);
+        calculateAndShowMinDebts(morePaid, lessPaid);
     }
 
     private @NotNull Map<Participant, Double> mapParticipantToAmount() {
@@ -484,26 +484,26 @@ public class EventOverviewCtrl implements Initializable {
         return partToAmount;
     }
 
-    private void calculateAndShowMinDebts(List<Pair<Participant, Double>> more, List<Pair<Participant, Double>> less) {
+    private void calculateAndShowMinDebts(List<Pair<Participant, Double>> morePaid, List<Pair<Participant, Double>> lessPaid) {
         List<Debt> minDebts = new ArrayList<>();
 
-        while(!more.isEmpty() && !less.isEmpty()) {
-            Pair<Participant, Double> from = less.getFirst();
-            Pair<Participant, Double> to = more.getFirst();
+        while(!morePaid.isEmpty() && !lessPaid.isEmpty()) {
+            Pair<Participant, Double> from = lessPaid.getFirst();
+            Pair<Participant, Double> to = morePaid.getFirst();
             double amount;
 
             if(Objects.equals(from.getValue(), to.getValue())) {
                 amount = from.getValue();
-                more.removeFirst();
-                less.removeFirst();
+                morePaid.removeFirst();
+                lessPaid.removeFirst();
             } else if(from.getValue() < to.getValue()) {
                 amount = from.getValue();
-                more.set(0, new Pair<>(to.getKey(), to.getValue() - from.getValue()));
-                less.removeFirst();
+                morePaid.set(0, new Pair<>(to.getKey(), to.getValue() - from.getValue()));
+                lessPaid.removeFirst();
             } else {
                 amount = to.getValue();
-                less.set(0, new Pair<>(from.getKey(), from.getValue() - to.getValue()));
-                more.removeFirst();
+                lessPaid.set(0, new Pair<>(from.getKey(), from.getValue() - to.getValue()));
+                morePaid.removeFirst();
             }
 
             Debt newDebt = new Debt(from.getKey(), to.getKey(), amount);

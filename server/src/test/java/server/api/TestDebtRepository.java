@@ -28,6 +28,18 @@ public class TestDebtRepository implements DebtRepository {
     }
 
     @Override
+    public List<Debt> findAllByCreditorId(Long creditorId) {
+        call("getAllByCreditorId");
+        List<Debt> creditorDebts = new ArrayList<>();
+        for(Debt d : debts) {
+            if(d.getCreditor().getId() == creditorId)
+                creditorDebts.add(d);
+        }
+        return creditorDebts;
+    }
+
+
+    @Override
     public void flush() {
 
     }

@@ -241,14 +241,16 @@ public class ServerUtilsEvent {
 
     public List<Debt> getDebtsByCreditor(Participant creditor) {
         List<Debt> debts = new ArrayList<>();
-
-        debts.addAll(ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/debts/creditor/" + creditor.getId())
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(new GenericType<>() {
-                }));
-
+        try {
+            debts.addAll(ClientBuilder.newClient(new ClientConfig())
+                    .target(SERVER).path("api/debts/creditor/" + creditor.getId())
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get(new GenericType<>() {
+                    }));
+        } catch(NotFoundException e) {
+            System.out.println("This participant does not have any debts where they are the creditor");
+        }
         return debts;
     }
 

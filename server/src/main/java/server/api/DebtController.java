@@ -35,6 +35,14 @@ public class DebtController {
         return ResponseEntity.ok(saved);
     }
 
+    @GetMapping("/creditor/{creditor-id}")
+    public ResponseEntity<List<Debt>> getAllByCreditorId(@PathVariable("creditor-id") long id) {
+        if(id < 0)
+            return ResponseEntity.badRequest().build();
+
+        return ResponseEntity.ok(repo.findAllByCreditorId(id));
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<Debt>> getAll() {
         return ResponseEntity.ok(repo.findAll());
