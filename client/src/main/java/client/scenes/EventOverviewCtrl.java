@@ -683,5 +683,27 @@ public class EventOverviewCtrl implements Initializable {
                 });
             }
         });
+        server.registerForMessages("/topic/deleted", Event.class , q -> {
+            if(q!=null && q.getId().equals(event.getId())) {
+                Platform.runLater(() -> {
+                    switch (Main.getPosition()){
+                        case "eventScreen":
+                        case "editParticipantScreen":
+                        case "editTitleScreen":
+                        case "settleDebtsScreen":
+                        case "addParticipantScreen":
+                        case "expenseOverview":
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Event missing");
+                            alert.setHeaderText(null);
+                            alert.setContentText("The event you are viewing has been deleted!");
+                            alert.showAndWait();
+                            Main.reloadUI();
+                            goBack();
+                            break;
+                    }
+                });
+            }
+        });
     }
 }
