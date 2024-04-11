@@ -431,11 +431,11 @@ public class EventOverviewCtrl implements Initializable {
                 owner = ep.getParticipant();
         }
         expenseCtrl.setEvent(owner, this);
-        expenseCtrl.setExpensePayer(owner);
         expenseCtrl.setOldExpense(selected);
+        expenseCtrl.setOldExpensePayer(owner);
         expenseCtrl.ok();
-
         server.deleteExpense(selected);
+
         event = server.getByID(event.getId());
         server.send("/app/updated",event);
         expensesNotSelectedPart();

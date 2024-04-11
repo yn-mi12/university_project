@@ -129,9 +129,9 @@ public class AddExpenseCtrl implements Initializable {
             if(oldExpense != null) {
                 oldExpense.setAmount(oldExpense.getAmount() * -1.0);
                 calculateDebts(oldExpense, event);
-                server.deleteExpense(oldExpense);
-                oldExpensePayer = null;
                 oldExpense = null;
+                oldExpensePayer = null;
+                System.out.println(server.getDebtsByEvent(event));
                 if(delete) {
                     delete = false;
                     return;
@@ -211,20 +211,15 @@ public class AddExpenseCtrl implements Initializable {
             }
         }
 
-        if(oldExpense != null) {
-            for (Debt debt : debtorToDebt.values())
-                server.deleteDebt(debt);
+        Participant payer = expensePayer;
+        if(oldExpensePayer != null)
+            payer = oldExpensePayer;
 
-            ctrl.setSelectedEvent(server.getByID(event.getId()));
-            return;
-        }
-
-        List<Debt> debtsDebtor = server.getDebtsByDebtor(expensePayer);
+        List<Debt> debtsDebtor = server.getDebtsByDebtor(payer);
         try {
             for (Debt debt : debtsDebtor) {
                 Participant p = debt.getCreditor();
                 Debt d = debtorToDebt.get(p);
-                debt.setEvent(event);
                 if (debt.getAmount() > d.getAmount()) {
                     debtorToDebt.remove(p);
                     debt.setAmount(debt.getAmount() - d.getAmount());
