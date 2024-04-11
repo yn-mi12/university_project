@@ -69,6 +69,15 @@ public class AddExpenseCtrl implements Initializable {
     private CheckBox someHaveToPay = new CheckBox();
     @FXML
     private ListView<String> whoPays;
+    private List<Tag> tags;
+    @FXML
+    private Label foodLabel;
+    @FXML
+    private Label entranceFeesLabel;
+    @FXML
+    private Label travelLabel;
+    private Tag selectedTag;
+
 
 
     @Inject
@@ -82,6 +91,7 @@ public class AddExpenseCtrl implements Initializable {
         this.ctrl = ctrl;
         this.event = ctrl.getSelectedEvent();
         this.participants = event.getParticipants();
+        this.tags = event.getTags();
         if(!delete) {
             ObservableList<Label> names = FXCollections.observableArrayList();
             HashMap<Label, Participant> map = new HashMap<>();
@@ -101,6 +111,24 @@ public class AddExpenseCtrl implements Initializable {
                     if (Main.isContrastMode()) newVal.setStyle("-fx-text-fill: #F0F3FF");
                     whoPaid.setValue(newVal);
                     expensePayer = map.get(newVal);
+                    controller.showExpOverview();
+                }
+            }));
+            ObservableList<Label> tagNames = FXCollections.observableArrayList();
+            HashMap<Label, Tag> tagsMap = new HashMap<>();
+            for(Tag tag : tags){
+                Label item = new Label(tag.getLabel());
+                tagNames.add(item);
+                tagsMap.put(item, tag);
+            }
+            tagsComboBox.getItems().setAll(tagNames);
+//            if (Main.isContrastMode()) tagsComboBox.getValue().setStyle("-fx-text-fill: #F0F3FF");
+            tagsComboBox.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
+                if (newVal != null) {
+                    newVal.setStyle("-fx-text-fill: #000000");
+                    if(Main.isContrastMode()) newVal.setStyle("-fx-text-fill: #F0F3FF");
+                    tagsComboBox.setValue(newVal);
+                    selectedTag = tagsMap.get(newVal);
                     controller.showExpOverview();
                 }
             }));

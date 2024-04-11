@@ -143,6 +143,7 @@ public class EventController {
         }
         addListeners.forEach((key, listener) -> listener.accept(event));
         for(var x:event.getParticipants()) x.setEvent(event);
+        for(var x:event.getTags()) x.setEvent(event);
         for(var x:event.getExpenses()) x.setEvent(event);
         for(var x:event.getExpenses())
             for(var y:x.getDebtors())y.setExpense(x);

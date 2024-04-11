@@ -17,10 +17,7 @@ package client.utils;
 
 import client.Config;
 import com.fasterxml.jackson.databind.MapperFeature;
-import commons.Debt;
-import commons.Event;
-import commons.Expense;
-import commons.Participant;
+import commons.*;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -82,6 +79,8 @@ public class ServerUtilsEvent {
        }
     }
 
+
+
     public Participant getParticipantByID(Long id) {
         try {
             return ClientBuilder.newClient(new ClientConfig()) //
@@ -124,6 +123,19 @@ public class ServerUtilsEvent {
                     .post(Entity.entity(expense, APPLICATION_JSON), Expense.class);
         } catch (BadRequestException | NotFoundException e) {
             System.out.println("NOT_FOUND || BAD_REQUEST: while adding Expense for Event: " + event.getId() + '\n' + expense);
+            return null;
+        }
+    }
+
+    public Tag addTag(Tag food, Event event) {
+        try{
+            return ClientBuilder.newClient(new ClientConfig())
+                    .target(getServer()).path("/api/tags/event/" + event.getId())
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .post(Entity.entity(food, APPLICATION_JSON), Tag.class);
+        }catch (BadRequestException | NotFoundException e){
+            System.out.println("NOT_FOUND || BAD_REQUEST: while adding Tag for Event: " + event.getId());
             return null;
         }
     }
@@ -400,4 +412,5 @@ public class ServerUtilsEvent {
         EXECdel.shutdownNow();
         EXECed.shutdownNow();
     }
+
 }
