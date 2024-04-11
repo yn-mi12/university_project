@@ -394,13 +394,12 @@ public class EventOverviewCtrl implements Initializable {
             }
         }
         controller.initExpShowOverview(event, owner);
+        expenseCtrl.setOldExpense(selected);
         expenseCtrl.setOldExpensePayer(owner);
-        expenseCtrl.setExpensePayer(owner);
         expenseCtrl.setWhatForText(selected.getDescription());
         expenseCtrl.setHowMuchText(String.valueOf(selected.getAmount()));
         expenseCtrl.setCurrencyText(selected.getCurrency());
         expenseCtrl.setDateText(selected.getDate().toLocalDate());
-        expenseCtrl.setOldExpense(selected);
 
         expenseCtrl.getWhoPays().getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         int count = 0;
@@ -434,7 +433,6 @@ public class EventOverviewCtrl implements Initializable {
         expenseCtrl.setOldExpense(selected);
         expenseCtrl.setOldExpensePayer(owner);
         expenseCtrl.ok();
-        server.deleteExpense(selected);
 
         event = server.getByID(event.getId());
         server.send("/app/updated",event);
@@ -483,16 +481,6 @@ public class EventOverviewCtrl implements Initializable {
             Debt newDebt = new Debt(from.getKey(), to.getKey(), amount);
             minDebts.add(newDebt);
         }
-
-        for(Debt d : server.getDebtsByEvent(event)) {
-            event.getDebts().remove(d);
-            server.deleteDebt(d);
-        }
-
-        server.addAllDebts(minDebts, event);
-        event = server.getByID(event.getId());
-
-        minDebts = server.getDebtsByEvent(event);
         controller.showSettleDebts(minDebts, event);
     }
 

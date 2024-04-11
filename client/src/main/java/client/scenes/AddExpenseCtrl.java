@@ -4,7 +4,6 @@ import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.*;
-import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -129,6 +128,7 @@ public class AddExpenseCtrl implements Initializable {
             if(oldExpense != null) {
                 oldExpense.setAmount(oldExpense.getAmount() * -1.0);
                 calculateDebts(oldExpense, event);
+                server.deleteExpense(oldExpense);
                 oldExpense = null;
                 oldExpensePayer = null;
                 System.out.println(server.getDebtsByEvent(event));
@@ -175,79 +175,12 @@ public class AddExpenseCtrl implements Initializable {
         Participant payer = expensePayer;
         if(oldExpensePayer != null)
             payer = oldExpensePayer;
-        List<Debt> debtsCreditor = server.getDebtsByCreditor(payer);
-        Map<Participant, Debt> debtorToDebt = new HashMap<>();
-        if(debtsCreditor.isEmpty()) {
-            for(Participant p : participants) {
-                Debt d = new Debt(p, payer, 0);
-                debtorToDebt.put(p, d);
-            }
-            debtorToDebt.remove(payer);
-        } else {
-            List<Participant> debtParticipants = new ArrayList<>();
-            for(Debt d : debtsCreditor) {
-                debtParticipants.add(d.getDebtor());
-                debtorToDebt.put(d.getDebtor(), d);
-            }
 
-            for(Participant p : participants) {
-                if(!debtParticipants.contains(p) && !p.equals(payer)) {
-                    Debt created = new Debt(p, payer, 0);
-                    debtsCreditor.add(created);
-                    debtorToDebt.put(p, created);
-                }
-            }
+        List<Debt> expenseDebts = new ArrayList<>();
+        for(ExpenseParticipant ep : saved.getDebtors()) {
+            expenseDebts.add(new Debt(ep.getParticipant(), payer, ep.getShare()/100 * saved.getAmount()));
         }
-        oldExpensePayer = null;
-        setDebts(saved, event, debtorToDebt);
-    }
-
-    public void setDebts(Expense saved, Event event, Map<Participant, Debt> debtorToDebt) {
-        for (ExpenseParticipant ep : saved.getDebtors()) {
-            if (!ep.isOwner()) {
-                Debt d = debtorToDebt.get(ep.getParticipant());
-                d.setAmount(d.getAmount() + (ep.getShare() / 100 * saved.getAmount()));
-                debtorToDebt.replace(ep.getParticipant(), d);
-            }
-        }
-
-        Participant payer = expensePayer;
-        if(oldExpensePayer != null)
-            payer = oldExpensePayer;
-
-        List<Debt> debtsDebtor = server.getDebtsByDebtor(payer);
-        try {
-            for (Debt debt : debtsDebtor) {
-                Participant p = debt.getCreditor();
-                Debt d = debtorToDebt.get(p);
-                if (debt.getAmount() > d.getAmount()) {
-                    debtorToDebt.remove(p);
-                    debt.setAmount(debt.getAmount() - d.getAmount());
-                    server.updateDebtAmount(debt.getAmount(), debt);
-                } else if (debt.getAmount() < d.getAmount()) {
-                    server.deleteDebt(debt);
-                    event.getDebts().remove(debt);
-                    d.setAmount(d.getAmount() - debt.getAmount());
-                    debtorToDebt.replace(p, d);
-                } else {
-                    server.deleteDebt(debt);
-                    debtorToDebt.remove(p);
-                }
-            }
-        } catch (BadRequestException e) {
-            System.out.println("Failed to add debts");
-            return;
-        }
-        addDebts(event, debtorToDebt);
-    }
-
-    public void addDebts(Event event, Map<Participant, Debt> debtorToDebt) {
-        List<Debt> finalDebts = new ArrayList<>();
-        for (Debt debt : debtorToDebt.values()) {
-            if (debt.getAmount() != 0)
-                finalDebts.add(debt);
-        }
-        server.addAllDebts(finalDebts, event);
+        server.addAllDebts(expenseDebts, event);
     }
 
     @FXML

@@ -170,9 +170,11 @@ public class SettleDebtsCtrl implements Initializable {
     }
 
     public void goBack() {
+        List<Debt> paid = new ArrayList<>();
         for(Debt d : removed) {
-            server.deleteDebt(d);
+            paid.add(new Debt(d.getCreditor(), d.getDebtor(), d.getAmount()));
         }
+        server.addAllDebts(paid, event);
         event = server.getByID(event.getId());
         server.send("/app/updated",event);
         removed = new ArrayList<>();
