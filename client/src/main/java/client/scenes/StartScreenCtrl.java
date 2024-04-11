@@ -129,28 +129,13 @@ public class StartScreenCtrl implements Initializable {
         else {
             highContrastButton = new ToggleButton();
         }
-        if (data == null)
-            data = FXCollections.observableArrayList();
-
-        server.registerForAddUpdates(ev -> {
-
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    //refresh method loops in PastCodes
-                    Config.get().addPastCode(ev.getId());
-                    //System.out.println("adding event " + ev.getTitle() + " : " + ev.getInviteCode());
-                    data.add(ev.getTitle() + " : " + ev.getId());
-                    eventList.setItems(data);
-                }
-            });
-        });
         server.registerForDeleteUpdates(ev -> {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
+                    if (data == null)
+                        data = FXCollections.observableArrayList();
                     Config.get().removePastCode(ev.getId());
-                    //System.out.println("deleting event " + ev.getTitle() + " : " + ev.getInviteCode());
                     data.remove(ev.getTitle() + " : " + ev.getId());
                     eventList.setItems(data);
                 }
@@ -160,15 +145,17 @@ public class StartScreenCtrl implements Initializable {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    int index=0;
-                    for(String s : data){
-                        if(s.contains(ev.getId())){
-                            index = data.indexOf(s);
-                            break;
+                    if (data != null) {
+                        int index = 0;
+                        for (String s : data) {
+                            if (s.contains(ev.getId())) {
+                                index = data.indexOf(s);
+                                break;
+                            }
                         }
+                        data.set(index, ev.getTitle() + " : " + ev.getId());
+                        eventList.setItems(data);
                     }
-                    data.set(index, ev.getTitle() + " : " + ev.getId());
-                    eventList.setItems(data);
                 }
             });
         });
@@ -278,7 +265,7 @@ public class StartScreenCtrl implements Initializable {
 
             for (String code : codes) {
                 Event e = server.getByID(code);
-                if (e != null) {
+                if (e != null && !events.contains(e)) {
                     events.add(e);
                     titles.add(e.getTitle() + " : " + e.getId());
                 } else {
@@ -288,7 +275,6 @@ public class StartScreenCtrl implements Initializable {
 
             for (String removed : removedCodes) {
                 Config.get().removePastCode(removed);
-                System.out.println("removed code " + removed);
             }
 
             Config.get().save();
@@ -316,7 +302,6 @@ public class StartScreenCtrl implements Initializable {
         clearFields();
         Event event;
         try {
-            System.out.println("Add event");
             event = new Event(title);
             server.send("/app/events", event);
             Config.get().addPastCode(String.valueOf(event.getId()));

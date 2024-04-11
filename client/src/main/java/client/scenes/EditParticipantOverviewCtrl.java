@@ -110,10 +110,10 @@ public class EditParticipantOverviewCtrl implements Initializable {
     public void deleteParticipant() {
         setParticipant();
         try {
-            System.out.println("Delete Participant");
             if (!checkParticipantInExpenses()){
                 server.deleteParticipant(server.getParticipantByID(selectedParticipant.getId()));
                 event.deleteParticipant(selectedParticipant);
+                server.send("/app/updated",event);
                 noDeleteParticipant.visibleProperty().setValue(false);
                 cancel();
             }else{

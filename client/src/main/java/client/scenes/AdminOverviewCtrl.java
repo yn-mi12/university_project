@@ -229,7 +229,17 @@ public class AdminOverviewCtrl implements Initializable {
                     break;
                 }
             }
-            System.out.println("TEST");
+            eventList.refresh();
+        });
+        server.registerForMessages("/topic/updated", Event.class , q -> {
+            for(var x: data)
+            {
+                if(Objects.equals(x.getId(), q.getId())){
+                    data.remove(x);
+                    break;
+                }
+            }
+            data.add(q);
             eventList.refresh();
         });
     }
@@ -260,7 +270,6 @@ public class AdminOverviewCtrl implements Initializable {
     }
     public void deleteEvent() {
         try {
-            System.out.println("Delete Event");
             server.deleteEvent(getEvent());
             refresh();
         } catch (WebApplicationException e) {
@@ -279,7 +288,6 @@ public class AdminOverviewCtrl implements Initializable {
 
         try {
             var jsonEvent = om.writeValueAsString(event);
-            System.out.println(jsonEvent);
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Save Event as JSON");
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
@@ -310,7 +318,6 @@ public class AdminOverviewCtrl implements Initializable {
                 jsonScanner.useDelimiter("\r?\n");
                 String json = jsonScanner.next();
                 var event = om.readValue(json, Event.class);
-                System.out.println("Imported event: " + event);
 
                 List<Participant> participants = event.getParticipants();;
                 List<Expense> expenses = event.getExpenses();

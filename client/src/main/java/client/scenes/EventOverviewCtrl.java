@@ -6,6 +6,7 @@ import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.*;
 import jakarta.ws.rs.WebApplicationException;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -65,6 +66,8 @@ public class EventOverviewCtrl implements Initializable {
     public Label expenseLabel;
     @FXML
     public Label participantsLabel2;
+    @FXML
+    public Tab allTab;
 
     private Participant expensePayer;
 
@@ -123,7 +126,6 @@ public class EventOverviewCtrl implements Initializable {
     public void setSelectedEvent(Event selectedEvent) {
         hideTabPanes();
         this.event = selectedEvent;
-//        this.event = server.getByID(selectedEvent.getId());
         this.participants = event.getParticipants();
         ObservableList<Label> names = FXCollections.observableArrayList();
         StringBuilder namesString = new StringBuilder();
@@ -154,6 +156,10 @@ public class EventOverviewCtrl implements Initializable {
         participantText.setEditable(false);
         participantText.setText(namesString.toString());
         inviteCode.setText(event.getId());
+        expensesNotSelectedPart();
+        allExpenses.refresh();
+        fromExpenses.refresh();
+        includingExpenses.refresh();
     }
 
     @SuppressWarnings("java.lang.ClassCastException")
@@ -431,7 +437,7 @@ public class EventOverviewCtrl implements Initializable {
 
         server.deleteExpense(selected);
         event = server.getByID(event.getId());
-
+        server.send("/app/updated",event);
         expensesNotSelectedPart();
         expensesIncludingParticipant();
         expensesNotSelectedPart();
@@ -522,7 +528,6 @@ public class EventOverviewCtrl implements Initializable {
 
     public void deleteEvent() {
         try {
-            System.out.println("Delete Event");
             event.setId(server.getByID(event.getId()).getId());
             server.send("/app/deleted", event);
             if(!controller.getAdmin()) {
@@ -649,5 +654,56 @@ public class EventOverviewCtrl implements Initializable {
     public void showTabPanes() {
         tabPane.getTabs().add(fromTab);
         tabPane.getTabs().add(includingTab);
+    }
+
+    public void launch() {
+        server.registerForMessages("/topic/updated", Event.class , q -> {
+            if(q!=null && q.getId().equals(event.getId())) {
+                event = q;
+                setSelectedEvent(event);
+                Platform.runLater(() -> {
+                    switch (Main.getPosition()){
+                        case "startScreen":
+                            Main.reloadUI();
+                            controller.showOverview();
+                            break;
+                        case "eventScreen":
+
+                            Main.reloadUIEvent(event);
+                            break;
+                        case "editParticipantScreen":
+                            //Main.reloadUIEvent(event);
+                            controller.initEditParticipantOverview(event);
+                            break;
+                        case "editTitleScreen":
+                            //Main.reloadUIEvent(event);
+                            controller.showEditTitle(event);
+                            break;
+                    }
+                });
+            }
+        });
+        server.registerForMessages("/topic/deleted", Event.class , q -> {
+            if(q!=null && q.getId().equals(event.getId())) {
+                Platform.runLater(() -> {
+                    switch (Main.getPosition()){
+                        case "eventScreen":
+                        case "editParticipantScreen":
+                        case "editTitleScreen":
+                        case "settleDebtsScreen":
+                        case "addParticipantScreen":
+                        case "expenseOverview":
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Event missing");
+                            alert.setHeaderText(null);
+                            alert.setContentText("The event you are viewing has been deleted!");
+                            alert.showAndWait();
+                            Main.reloadUI();
+                            goBack();
+                            break;
+                    }
+                });
+            }
+        });
     }
 }

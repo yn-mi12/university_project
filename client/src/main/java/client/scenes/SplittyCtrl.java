@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import commons.Debt;
 import commons.Event;
 import commons.Participant;
@@ -83,6 +84,7 @@ public class SplittyCtrl {
         primaryStage.setTitle("Splitty");
         primaryStage.setScene(overview);
         overview.getWindow().centerOnScreen();
+        Main.setPosition("startScreen");
     }
 
     public void showEventOverview(Event selectedEvent){
@@ -94,6 +96,7 @@ public class SplittyCtrl {
         eventCtrl.expensesNotSelectedPart();
         eventCtrl.expensesIncludingParticipant();
         eventCtrl.expensesNotSelectedPart();
+        Main.setPosition("eventScreen");
     }
 
     public void initExpShowOverview(Event event,
@@ -108,6 +111,7 @@ public class SplittyCtrl {
         primaryStage.setScene(expense);
         expense.getWindow().centerOnScreen();
         expense.setOnKeyPressed(e -> addExpenseCtrl.keyPressed(e));
+        Main.setPosition("expenseOverview");
     }
 
     public void initEditParticipantOverview(Event event) {
@@ -121,6 +125,7 @@ public class SplittyCtrl {
         primaryStage.setScene(editParticipant);
         editParticipant.getWindow().centerOnScreen();
         //editParticipant.setOnKeyPressed(e -> editParticipantOverviewCtrl.keyPressed(e));
+        Main.setPosition("editParticipantScreen");
     }
 
     public void showEditTitle(Event event) {
@@ -130,6 +135,7 @@ public class SplittyCtrl {
         this.editTitleCtrl.setEvent(event);
         this.editTitleCtrl.oldTitle.setText(event.getTitle());
         editTitle.setOnKeyPressed(e -> editTitleCtrl.keyPressed(e));
+        Main.setPosition("editTitleScreen");
     }
 
     public void showAddParticipant(Event event) {
@@ -138,6 +144,7 @@ public class SplittyCtrl {
         addParticipant.getWindow().centerOnScreen();
         this.addParticipantCtrl.setEvent(event);
         addParticipant.setOnKeyPressed(e -> addParticipantCtrl.keyPressed(e));
+        Main.setPosition("addParticipantScreen");
     }
 
     public void showSettleDebts(List<Debt> debts, Event selectedEvent) {
@@ -148,6 +155,7 @@ public class SplittyCtrl {
         settleDebtsCtrl.setEvent(selectedEvent);
         settleDebtsCtrl.refresh();
         primaryStage.show();
+        Main.setPosition("settleDebtsScreen");
     }
 
     public Stage getPrimaryStage() {
@@ -164,6 +172,7 @@ public class SplittyCtrl {
         primaryStage.setScene(adminPopup);
         adminPopup.getWindow().centerOnScreen();
         //adminPopup.setOnKeyPressed(e -> adminPopupCtrl.keyPressed(e));
+        Main.setPosition("adminLoginScreen");
     }
 
     public void initAdminOverview(Pair<AdminOverviewCtrl, Parent> adminOverview) {
@@ -176,6 +185,7 @@ public class SplittyCtrl {
         primaryStage.setScene(adminOverview);
         adminOverviewCtrl.refresh();
         adminOverview.getWindow().centerOnScreen();
+        Main.setPosition("adminOverviewScreen");
     }
 
     public void initSetServer(Pair<SetServerCtrl, Parent> setServer) {

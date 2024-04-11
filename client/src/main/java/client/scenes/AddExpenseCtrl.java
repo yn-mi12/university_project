@@ -131,7 +131,6 @@ public class AddExpenseCtrl implements Initializable {
                 calculateDebts(oldExpense, event);
                 server.deleteExpense(oldExpense);
                 oldExpensePayer = null;
-                System.out.println(server.getDebtsByEvent(event));
                 oldExpense = null;
                 if(delete) {
                     delete = false;
@@ -140,17 +139,12 @@ public class AddExpenseCtrl implements Initializable {
             }
             expensePayer = event.getParticipantByName(whoPaid.getValue().getText());
             event = server.getByID(event.getId());
-            System.out.println("Add expense");
-            System.out.println("Id:" + event.getId());
-            System.out.println("Get expense");
             var description = this.whatFor.getText();
             var amount = howMuch.getText();
             var currency = this.currency.getValue().getText();
             var date = this.date.getValue();
-            //var tags = this.tags.getText();
             this.expense = new Expense(description, currency,
                     Double.parseDouble(amount), java.sql.Date.valueOf(date));
-            System.out.println(expense);
             expense.setDebtors(getDebtors());
             expense.setEvent(event);
             Expense saved = server.addExpense(expense, event);
@@ -174,6 +168,7 @@ public class AddExpenseCtrl implements Initializable {
         }
         clearFields();
         controller.showEventOverview(updated);
+        server.send("/app/updated",updated);
     }
 
     public void calculateDebts(Expense saved, Event event) {
@@ -229,6 +224,7 @@ public class AddExpenseCtrl implements Initializable {
             for (Debt debt : debtsDebtor) {
                 Participant p = debt.getCreditor();
                 Debt d = debtorToDebt.get(p);
+                debt.setEvent(event);
                 if (debt.getAmount() > d.getAmount()) {
                     debtorToDebt.remove(p);
                     debt.setAmount(debt.getAmount() - d.getAmount());
@@ -253,11 +249,9 @@ public class AddExpenseCtrl implements Initializable {
     public void addDebts(Event event, Map<Participant, Debt> debtorToDebt) {
         List<Debt> finalDebts = new ArrayList<>();
         for (Debt debt : debtorToDebt.values()) {
-            System.out.println(debt);
             if (debt.getAmount() != 0)
                 finalDebts.add(debt);
         }
-
         server.addAllDebts(finalDebts, event);
     }
 

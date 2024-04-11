@@ -52,6 +52,12 @@ public class EventController {
         return e;
     }
 
+    @MessageMapping("/updated")
+    @SendTo("/topic/updated")
+    public Event updateEvent(Event e) {
+        return save(e).getBody();
+    }
+
     private Map<Object, Consumer<Event>> addListeners = new HashMap<>();
 
     @GetMapping(path = {"", "/addUpdates"})
@@ -136,6 +142,11 @@ public class EventController {
             return ResponseEntity.badRequest().build();
         }
         addListeners.forEach((key, listener) -> listener.accept(event));
+        for(var x:event.getParticipants()) x.setEvent(event);
+        for(var x:event.getExpenses()) x.setEvent(event);
+        for(var x:event.getExpenses())
+            for(var y:x.getDebtors())y.setExpense(x);
+        for(var x:event.getDebts())x.setEvent(event);
         Event saved = repo.save(event);
         saved.updateDate();
         return ResponseEntity.ok(saved);
