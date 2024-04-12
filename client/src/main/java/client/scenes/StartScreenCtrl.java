@@ -18,11 +18,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 
@@ -32,6 +38,8 @@ public class StartScreenCtrl implements Initializable {
     private final ServerUtilsEvent server;
     @FXML
     public Button setServers;
+    @FXML
+    public Button downloadTemplateButton;
     private ObservableList<String> data;
     private final SplittyCtrl controller;
     @FXML
@@ -249,6 +257,8 @@ public class StartScreenCtrl implements Initializable {
         isAdmin.setStyle(Main.changeUI(isAdmin));
         setServers.setStyle(Main.changeUI(setServers));
         Main.buttonFeedback(setServers);
+        downloadTemplateButton.setStyle(Main.changeUI(downloadTemplateButton));
+        Main.buttonFeedback(downloadTemplateButton);
     }
 
         public void refresh() {
@@ -382,5 +392,25 @@ public class StartScreenCtrl implements Initializable {
 
     public void changeContrast() {
         Main.changeContrast();
+    }
+
+    public void downloadTemplate() throws IOException {
+        String template = "";
+        try {
+
+            Path x = Paths.get("client\\src\\main\\resources\\client\\resources\\Messages.properties");
+            for (var y : Files.readAllLines(x)) template += y + '\n';
+        }
+        catch (NoSuchFileException e){
+            Path x = Paths.get("src\\main\\resources\\client\\resources\\Messages.properties");
+            for (var y : Files.readAllLines(x)) template += y + '\n';
+        }
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Download Language Template");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Properties files (*.properties)", "*.properties"));
+        File file = fileChooser.showSaveDialog(controller.getPrimaryStage());
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.write(template);
+        fileWriter.close();
     }
 }
