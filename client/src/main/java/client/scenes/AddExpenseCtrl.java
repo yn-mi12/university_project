@@ -68,6 +68,15 @@ public class AddExpenseCtrl implements Initializable {
     private CheckBox someHaveToPay = new CheckBox();
     @FXML
     private ListView<String> whoPays;
+    private List<Tag> eventsTags;
+    @FXML
+    private Label foodLabel;
+    @FXML
+    private Label entranceFeesLabel;
+    @FXML
+    private Label travelLabel;
+    private Tag selectedTag;
+
 
 
     @Inject
@@ -81,6 +90,7 @@ public class AddExpenseCtrl implements Initializable {
         this.ctrl = ctrl;
         this.event = ctrl.getSelectedEvent();
         this.participants = event.getParticipants();
+        this.eventsTags = event.getTags();
         if(!delete) {
             ObservableList<Label> names = FXCollections.observableArrayList();
             HashMap<Label, Participant> map = new HashMap<>();
@@ -90,19 +100,7 @@ public class AddExpenseCtrl implements Initializable {
                 names.add(item);
                 map.put(item, p);
             }
-            whoPaid.getItems().setAll(names);
-            whoPaid.setValue(new Label(paid.getFirstName() + " " + paid.getLastName()));
-            whoPaid.getValue().setStyle("-fx-text-fill: #000000");
-            if (Main.isContrastMode()) whoPaid.getValue().setStyle("-fx-text-fill: #F0F3FF");
-            whoPaid.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
-                if (newVal != null) {
-                    newVal.setStyle("-fx-text-fill: #000000");
-                    if (Main.isContrastMode()) newVal.setStyle("-fx-text-fill: #F0F3FF");
-                    whoPaid.setValue(newVal);
-                    expensePayer = map.get(newVal);
-                    controller.showExpOverview();
-                }
-            }));
+            configureComboBox(paid, names, map);
             List<String> listOfParticipants = new ArrayList<>();
             for (Participant participant : event.getParticipants()) {
                 listOfParticipants.add(participant.getFirstName() + " " + participant.getLastName());
@@ -112,6 +110,40 @@ public class AddExpenseCtrl implements Initializable {
             whoPays.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
             currency.setValue(null);
         }
+    }
+
+    private void configureComboBox(Participant paid, ObservableList<Label> names, HashMap<Label, Participant> map) {
+        whoPaid.getItems().setAll(names);
+        whoPaid.setValue(new Label(paid.getFirstName() + " " + paid.getLastName()));
+        whoPaid.getValue().setStyle("-fx-text-fill: #000000");
+        if (Main.isContrastMode()) whoPaid.getValue().setStyle("-fx-text-fill: #F0F3FF");
+        whoPaid.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                newVal.setStyle("-fx-text-fill: #000000");
+                if (Main.isContrastMode()) newVal.setStyle("-fx-text-fill: #F0F3FF");
+                whoPaid.setValue(newVal);
+                expensePayer = map.get(newVal);
+                controller.showExpOverview();
+            }
+        }));
+        ObservableList<Label> tagNames = FXCollections.observableArrayList();
+        HashMap<Label, Tag> tagsMap = new HashMap<>();
+        for(Tag tag : eventsTags){
+            Label item = new Label(tag.getLabel());
+            tagNames.add(item);
+            tagsMap.put(item, tag);
+        }
+        tagsComboBox.getItems().setAll(tagNames);
+//            if (Main.isContrastMode()) tagsComboBox.getValue().setStyle("-fx-text-fill: #F0F3FF");
+        tagsComboBox.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                newVal.setStyle("-fx-text-fill: #000000");
+                if(Main.isContrastMode()) newVal.setStyle("-fx-text-fill: #F0F3FF");
+                tagsComboBox.setValue(newVal);
+                selectedTag = tagsMap.get(newVal);
+                controller.showExpOverview();
+            }
+        }));
     }
 
     public void cancel() {
@@ -147,6 +179,7 @@ public class AddExpenseCtrl implements Initializable {
                     Double.parseDouble(amount), java.sql.Date.valueOf(date));
             expense.setDebtors(getDebtors());
             expense.setEvent(event);
+            expense.setTag(selectedTag);
             Expense saved = server.addExpense(expense, event);
 
             updated = server.getByID(ctrl.getSelectedEvent().getId());
@@ -326,6 +359,44 @@ public class AddExpenseCtrl implements Initializable {
                 };
             }
         });
+        tagsComboBox.setCellFactory(new Callback<>() {
+            @Override
+            public ListCell<Label> call(ListView<Label> param) {
+                return new ListCell<>() {
+                    @Override
+                    protected void updateItem(Label item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                            setText(null);
+                            setGraphic(null);
+                        } else {
+                            setText(item.getText());
+                            String color = event.getTagByLabel(item.getText()).getColor();
+                            this.setStyle("-fx-background-color:" + color + "; -fx-text-fill: #F0F3FF;" +
+                                    "-fx-font-weight: bolder;-fx-border-color: #FFD6D6");
+                        }
+                    }
+                };
+            }
+        });
+        tagsComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                String color = event.getTagByLabel(newValue.getText()).getColor();
+                if(Main.isContrastMode()){
+                    tagsComboBox.setOnMouseEntered(e -> tagsComboBox.setStyle("-fx-background-color:" + color +
+                            "; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
+                            "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20;"+
+                            " -fx-border-width: 2.5; -fx-border-insets: -2"));
+                    tagsComboBox.setStyle("-fx-background-color:" + color + "; -fx-text-fill: #F0F3FF;" +
+                            "-fx-font-weight: bolder;-fx-border-color: #FFD6D6; -fx-border-radius: 20;"+
+                            " -fx-background-radius:20; -fx-border-width: 2.5; -fx-border-insets: -2");
+                }else{
+                    tagsComboBox.setStyle("-fx-background-color:" + color + "; -fx-text-fill: #F0F3FF;" +
+                            "-fx-font-weight: bolder;-fx-border-color: #FFD6D6;");
+                }
+            }
+        });
+
         currency.setCellFactory(new Callback<>() {
             @Override
             public ListCell<Label> call(ListView<Label> param) {
@@ -378,13 +449,6 @@ public class AddExpenseCtrl implements Initializable {
                 currency.setValue(newVal);
             }
             }));
-            tagsComboBox.getSelectionModel().selectedItemProperty().addListener(((obs1, oldVal1, newVal1) -> {
-                if (newVal1 != null) {
-                    if(Main.isContrastMode())newVal1.setStyle(("-fx-text-fill: #F0F3FF"));
-                    currency.setValue(newVal1);
-                }
-        }));
-            Main.languageFeedback(tagsComboBox);
             Main.languageFeedback(currency);
             Main.languageFeedback(whoPaid);
         }
