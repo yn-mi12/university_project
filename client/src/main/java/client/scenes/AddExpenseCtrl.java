@@ -101,37 +101,7 @@ public class AddExpenseCtrl implements Initializable {
                 names.add(item);
                 map.put(item, p);
             }
-            whoPaid.getItems().setAll(names);
-            whoPaid.setValue(new Label(paid.getFirstName() + " " + paid.getLastName()));
-            whoPaid.getValue().setStyle("-fx-text-fill: #000000");
-            if (Main.isContrastMode()) whoPaid.getValue().setStyle("-fx-text-fill: #F0F3FF");
-            whoPaid.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
-                if (newVal != null) {
-                    newVal.setStyle("-fx-text-fill: #000000");
-                    if (Main.isContrastMode()) newVal.setStyle("-fx-text-fill: #F0F3FF");
-                    whoPaid.setValue(newVal);
-                    expensePayer = map.get(newVal);
-                    controller.showExpOverview();
-                }
-            }));
-            ObservableList<Label> tagNames = FXCollections.observableArrayList();
-            HashMap<Label, Tag> tagsMap = new HashMap<>();
-            for(Tag tag : tags){
-                Label item = new Label(tag.getLabel());
-                tagNames.add(item);
-                tagsMap.put(item, tag);
-            }
-            tagsComboBox.getItems().setAll(tagNames);
-//            if (Main.isContrastMode()) tagsComboBox.getValue().setStyle("-fx-text-fill: #F0F3FF");
-            tagsComboBox.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
-                if (newVal != null) {
-                    newVal.setStyle("-fx-text-fill: #000000");
-                    if(Main.isContrastMode()) newVal.setStyle("-fx-text-fill: #F0F3FF");
-                    tagsComboBox.setValue(newVal);
-                    selectedTag = tagsMap.get(newVal);
-                    controller.showExpOverview();
-                }
-            }));
+            configureComboBox(paid, names, map);
             List<String> listOfParticipants = new ArrayList<>();
             for (Participant participant : event.getParticipants()) {
                 listOfParticipants.add(participant.getFirstName() + " " + participant.getLastName());
@@ -141,6 +111,40 @@ public class AddExpenseCtrl implements Initializable {
             whoPays.getSelectionModel().setSelectionMode(javafx.scene.control.SelectionMode.MULTIPLE);
             currency.setValue(null);
         }
+    }
+
+    private void configureComboBox(Participant paid, ObservableList<Label> names, HashMap<Label, Participant> map) {
+        whoPaid.getItems().setAll(names);
+        whoPaid.setValue(new Label(paid.getFirstName() + " " + paid.getLastName()));
+        whoPaid.getValue().setStyle("-fx-text-fill: #000000");
+        if (Main.isContrastMode()) whoPaid.getValue().setStyle("-fx-text-fill: #F0F3FF");
+        whoPaid.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                newVal.setStyle("-fx-text-fill: #000000");
+                if (Main.isContrastMode()) newVal.setStyle("-fx-text-fill: #F0F3FF");
+                whoPaid.setValue(newVal);
+                expensePayer = map.get(newVal);
+                controller.showExpOverview();
+            }
+        }));
+        ObservableList<Label> tagNames = FXCollections.observableArrayList();
+        HashMap<Label, Tag> tagsMap = new HashMap<>();
+        for(Tag tag : tags){
+            Label item = new Label(tag.getLabel());
+            tagNames.add(item);
+            tagsMap.put(item, tag);
+        }
+        tagsComboBox.getItems().setAll(tagNames);
+//            if (Main.isContrastMode()) tagsComboBox.getValue().setStyle("-fx-text-fill: #F0F3FF");
+        tagsComboBox.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                newVal.setStyle("-fx-text-fill: #000000");
+                if(Main.isContrastMode()) newVal.setStyle("-fx-text-fill: #F0F3FF");
+                tagsComboBox.setValue(newVal);
+                selectedTag = tagsMap.get(newVal);
+                controller.showExpOverview();
+            }
+        }));
     }
 
     public void cancel() {
