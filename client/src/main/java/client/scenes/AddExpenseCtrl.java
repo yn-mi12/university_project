@@ -444,6 +444,44 @@ public class AddExpenseCtrl implements Initializable {
                 };
             }
         });
+        tagsComboBox.setCellFactory(new Callback<>() {
+            @Override
+            public ListCell<Label> call(ListView<Label> param) {
+                return new ListCell<>() {
+                    @Override
+                    protected void updateItem(Label item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                            setText(null);
+                            setGraphic(null);
+                        } else {
+                            setText(item.getText());
+                            String color = event.getTagByLabel(item.getText()).getColor();
+                            this.setStyle("-fx-background-color:" + color + "; -fx-text-fill: #F0F3FF;" +
+                                    "-fx-font-weight: bolder;-fx-border-color: #FFD6D6");
+                        }
+                    }
+                };
+            }
+        });
+        tagsComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                String color = event.getTagByLabel(newValue.getText()).getColor();
+                if(Main.isContrastMode()){
+                    tagsComboBox.setOnMouseEntered(e -> tagsComboBox.setStyle("-fx-background-color:" + color +
+                            "; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
+                            "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20;"+
+                            " -fx-border-width: 2.5; -fx-border-insets: -2"));
+                    tagsComboBox.setStyle("-fx-background-color:" + color + "; -fx-text-fill: #F0F3FF;" +
+                            "-fx-font-weight: bolder;-fx-border-color: #FFD6D6; -fx-border-radius: 20;"+
+                            " -fx-background-radius:20; -fx-border-width: 2.5; -fx-border-insets: -2");
+                }else{
+                    tagsComboBox.setStyle("-fx-background-color:" + color + "; -fx-text-fill: #F0F3FF;" +
+                            "-fx-font-weight: bolder;-fx-border-color: #FFD6D6;");
+                }
+            }
+        });
+
         currency.setCellFactory(new Callback<>() {
             @Override
             public ListCell<Label> call(ListView<Label> param) {
@@ -496,13 +534,6 @@ public class AddExpenseCtrl implements Initializable {
                 currency.setValue(newVal);
             }
             }));
-            tagsComboBox.getSelectionModel().selectedItemProperty().addListener(((obs1, oldVal1, newVal1) -> {
-                if (newVal1 != null) {
-                    if(Main.isContrastMode())newVal1.setStyle(("-fx-text-fill: #F0F3FF"));
-                    tagsComboBox.setValue(newVal1);
-                }
-        }));
-            Main.languageFeedback(tagsComboBox);
             Main.languageFeedback(currency);
             Main.languageFeedback(whoPaid);
         }

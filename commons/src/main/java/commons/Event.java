@@ -148,6 +148,15 @@ public class Event {
         return null;
     }
 
+    public Tag getTagByLabel(String label){
+        for(var x: tags){
+            if(x.getLabel().equals(label)){
+                return x;
+            }
+        }
+        return null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
