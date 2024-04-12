@@ -141,20 +141,24 @@ public class EventController {
         if (isNullOrEmpty(event.getTitle()) || isNullOrEmpty(event.getId())) {
             return ResponseEntity.badRequest().build();
         }
+        setEventDetails(event);
+        if(event.getDebts() != null)
+            for(var x: event.getDebts())x.setEvent(event);
+        Event saved = repo.save(event);
+        saved.updateDate();
+        return ResponseEntity.ok(saved);
+    }
+
+    private void setEventDetails(Event event) {
         addListeners.forEach((key, listener) -> listener.accept(event));
         if(event.getParticipants() != null)
-            for(var x:event.getParticipants()) x.setEvent(event);
+            for(var x: event.getParticipants()) x.setEvent(event);
         if(event.getExpenses() != null) {
             for (var x : event.getExpenses()) x.setEvent(event);
             for (var x : event.getExpenses())
                 if(x.getDebtors() != null)
                     for (var y : x.getDebtors()) y.setExpense(x);
         }
-        if(event.getDebts() != null)
-            for(var x:event.getDebts())x.setEvent(event);
-        Event saved = repo.save(event);
-        saved.updateDate();
-        return ResponseEntity.ok(saved);
     }
 
     /**

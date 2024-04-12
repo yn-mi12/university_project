@@ -635,31 +635,36 @@ public class EventOverviewCtrl implements Initializable {
         List<Expense> expensesIncludingParticipant = new ArrayList<>();
         List<String> titles = new ArrayList<>();
         if (expenses != null) {
-            for (Expense expense : expenses) {
-                if(expense.getAmount() > 0) {
-                    List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
-                    for (int i = 0; i < debtors.size(); i++) {
-                        if (debtors.get(i).getParticipant().equals(participant)) {
-                            expensesIncludingParticipant.add(expense);
-                        }
-                    }
-                }
-            }
-
-            Participant owner = new Participant();
-            for (Expense expense : expensesIncludingParticipant) {
-                List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
-                for (ExpenseParticipant expenseParticipant : debtors) {
-                    if (expenseParticipant.isOwner()) {
-                        owner = expenseParticipant.getParticipant();
-                    }
-                }
-                String expenseString = expense.getId() + ": " + owner.getFirstName() +  " " + owner.getLastName() +  " "
-                        + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
-                titles.add(expenseString);
-            }
+            setIncludingExpenses(expenses, participant, expensesIncludingParticipant, titles);
         }
         includingExpenses.setItems(FXCollections.observableList(titles));
+    }
+
+    private void setIncludingExpenses(List<Expense> expenses, Participant participant,
+                                      List<Expense> expensesIncludingParticipant, List<String> titles) {
+        for (Expense expense : expenses) {
+            if(expense.getAmount() > 0) {
+                List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
+                for (int i = 0; i < debtors.size(); i++) {
+                    if (debtors.get(i).getParticipant().equals(participant)) {
+                        expensesIncludingParticipant.add(expense);
+                    }
+                }
+            }
+        }
+
+        Participant owner = new Participant();
+        for (Expense expense : expensesIncludingParticipant) {
+            List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
+            for (ExpenseParticipant expenseParticipant : debtors) {
+                if (expenseParticipant.isOwner()) {
+                    owner = expenseParticipant.getParticipant();
+                }
+            }
+            String expenseString = expense.getId() + ": " + owner.getFirstName() +  " " + owner.getLastName() +  " "
+                    + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
+            titles.add(expenseString);
+        }
     }
 
     public void hideTabPanes() {
