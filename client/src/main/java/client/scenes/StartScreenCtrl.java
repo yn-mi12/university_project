@@ -322,12 +322,15 @@ public class StartScreenCtrl implements Initializable {
         Tag food = new Tag("food","green");
         Tag entranceFees = new Tag("entrance fees", "blue");
         Tag travel = new Tag("travel", "red");
+        Tag other = new Tag("other", "grey");
         event.addTag(food);
         event.addTag(entranceFees);
         event.addTag(travel);
+        event.addTag(other);
         server.addTag(food, event);
         server.addTag(entranceFees, event);
         server.addTag(travel, event);
+        server.addTag(other, event);
     }
 
     public void stop() {
