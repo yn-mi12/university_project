@@ -141,8 +141,7 @@ public class EventController {
         if (isNullOrEmpty(event.getTitle()) || isNullOrEmpty(event.getId())) {
             return ResponseEntity.badRequest().build();
         }
-        addListeners.forEach((key, listener) -> listener.accept(event));
-        setEvent(event);
+        setEventDetails(event);
         if(event.getDebts() != null)
             for(var x: event.getDebts())x.setEvent(event);
         Event saved = repo.save(event);
@@ -171,6 +170,7 @@ public class EventController {
                     for (var y : x.getDebtors()) y.setExpense(x);
         }
     }
+
 
     /**
      * Updates an Event
