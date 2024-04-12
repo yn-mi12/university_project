@@ -35,8 +35,8 @@ public class DebtController {
         return ResponseEntity.ok(saved);
     }
 
-    @GetMapping("/creditor/{creditor-id}")
-    public ResponseEntity<List<Debt>> getAllByCreditorId(@PathVariable("creditor-id") long id) {
+    @GetMapping("/paid/{part-id}")
+    public ResponseEntity<List<Debt>> getAllPaidDebts(@PathVariable("part-id") long id) {
         if(id < 0)
             return ResponseEntity.badRequest().build();
 

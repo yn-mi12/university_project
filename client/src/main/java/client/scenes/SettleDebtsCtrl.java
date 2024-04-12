@@ -100,7 +100,7 @@ public class SettleDebtsCtrl implements Initializable {
                     + " " + d.getCreditor().getFirstName() + " " + d.getCreditor().getLastName()
                     + " " + df.format(d.getAmount());
             HBox row = new HBox();
-            row.setSpacing(130);
+            row.setSpacing(87);
             Button receivedButton = new Button(received.getText());
             receivedButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -138,7 +138,7 @@ public class SettleDebtsCtrl implements Initializable {
                     + " " + d.getCreditor().getFirstName() + " " + d.getCreditor().getLastName()
                     + " " + df.format(d.getAmount());
             HBox row = new HBox();
-            row.setSpacing(170);
+            row.setSpacing(150);
             Button undoButton = new Button(undo.getText());
 
             undoButton.setOnAction(new EventHandler<ActionEvent>() {

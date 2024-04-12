@@ -55,11 +55,11 @@ public class DebtControllerTest {
     }
 
     @Test
-    void getAllByCreditorIdTest() {
-        var br = debtc.getAllByCreditorId( -1L);
+    void getAllPaidDebtsTest() {
+        var br = debtc.getAllPaidDebts(-1L);
         assertEquals(BAD_REQUEST, br.getStatusCode());
 
-        List<Debt> creditorDebts = debtc.getAllByCreditorId(creditor.getId()).getBody();
+        List<Debt> creditorDebts = debtc.getAllPaidDebts(creditor.getId()).getBody();
         assertTrue(repo.calledMethods.contains("getAllByCreditorId"));
         assertEquals(List.of(d), creditorDebts);
     }

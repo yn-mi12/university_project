@@ -38,7 +38,6 @@ public class TestDebtRepository implements DebtRepository {
         return creditorDebts;
     }
 
-
     @Override
     public void flush() {
 

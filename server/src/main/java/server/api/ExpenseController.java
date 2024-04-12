@@ -87,9 +87,6 @@ public class ExpenseController {
         } else {
             expense.setEvent(eventRepository.getReferenceById(eid));
         }
-        //Check if all Participants exist and are in the same event
-        //Check that there is 1 owner
-        //Check that shares add up to 100%
         double shareSum = 0;
         int ownerCount = 0;
         for(var i: expense.getDebtors()) {
@@ -100,8 +97,7 @@ public class ExpenseController {
                 return ResponseEntity.notFound().build();
             if (!Objects.equals(participantRepository.findById(i.getParticipant().getId()).get().getEvent().getId(), eid)){
                 return ResponseEntity.badRequest().build();
-        }}
-        //TODO: this needs to be changed!!
+            }}
         if (!((shareSum > 98) && (shareSum < 102))
                 || ownerCount != 1
                 || isNullOrEmpty(expense.getDescription())
@@ -109,9 +105,20 @@ public class ExpenseController {
                 || expense.getAmount() <= 0
                 || expense.getDate() == null) {
             return ResponseEntity.badRequest().build();
-        } //TODO: Add checks for Date
+        }
         Expense saved = repo.save(expense);
         eventRepository.findById(eid).get().updateDate();
+        return ResponseEntity.ok(saved);
+
+    }
+
+    @PutMapping("/{id}/amount")
+    public ResponseEntity<Expense> updateAmount(@RequestBody Double newAmount, @PathVariable("id") long id) {
+        if(!repo.existsById(id))
+            return ResponseEntity.notFound().build();
+        Expense saved = repo.findById(id).get();
+        saved.setAmount(newAmount);
+        repo.save(saved);
         return ResponseEntity.ok(saved);
     }
 

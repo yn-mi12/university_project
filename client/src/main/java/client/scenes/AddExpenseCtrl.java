@@ -126,17 +126,17 @@ public class AddExpenseCtrl implements Initializable {
         Event updated;
         try {
             if(oldExpense != null) {
-                oldExpense.setAmount(oldExpense.getAmount() * -1.0);
-                calculateDebts(oldExpense, event);
-                server.deleteExpense(oldExpense);
-                oldExpense = null;
-                oldExpensePayer = null;
-                System.out.println(server.getDebtsByEvent(event));
                 if(delete) {
                     delete = false;
+                    server.deleteExpense(oldExpense);
                     return;
                 }
+                server.updateExpenseAmount(oldExpense.getAmount() * -1.0, oldExpense);
+                event = server.getByID(event.getId());
+                oldExpense = null;
+                oldExpensePayer = null;
             }
+
             expensePayer = event.getParticipantByName(whoPaid.getValue().getText());
             event = server.getByID(event.getId());
             var description = this.whatFor.getText();
@@ -155,9 +155,7 @@ public class AddExpenseCtrl implements Initializable {
                 if(ep.isOwner())
                     expensePayer = ep.getParticipant();
 
-            calculateDebts(saved, updated);
             updated = server.getByID(ctrl.getSelectedEvent().getId());
-
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -169,18 +167,6 @@ public class AddExpenseCtrl implements Initializable {
         clearFields();
         controller.showEventOverview(updated);
         server.send("/app/updated",updated);
-    }
-
-    public void calculateDebts(Expense saved, Event event) {
-        Participant payer = expensePayer;
-        if(oldExpensePayer != null)
-            payer = oldExpensePayer;
-
-        List<Debt> expenseDebts = new ArrayList<>();
-        for(ExpenseParticipant ep : saved.getDebtors()) {
-            expenseDebts.add(new Debt(ep.getParticipant(), payer, ep.getShare()/100 * saved.getAmount()));
-        }
-        server.addAllDebts(expenseDebts, event);
     }
 
     @FXML

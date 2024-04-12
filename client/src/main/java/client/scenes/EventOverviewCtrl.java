@@ -442,20 +442,20 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void settleDebts() {
-        Map<Participant, Double> partToAmount = mapParticipantToAmount();
+        Map<Participant, Double> amountForEachPart = mapParticipantToAmount();
 
         List<Pair<Participant, Double>> morePaid = new ArrayList<>();
         List<Pair<Participant, Double>> lessPaid = new ArrayList<>();
-        for(Participant p : partToAmount.keySet()) {
-            if(partToAmount.get(p) > 0) {
-                morePaid.add(new Pair<>(p, partToAmount.get(p)));
-            } else if(partToAmount.get(p) < 0) {
-                lessPaid.add(new Pair<>(p, partToAmount.get(p) * -1));
+        for(Participant p : amountForEachPart.keySet()) {
+            if(amountForEachPart.get(p) > 0.000001) {
+                morePaid.add(new Pair<>(p, amountForEachPart.get(p)));
+            } else if(amountForEachPart.get(p) < -0.000001) {
+                lessPaid.add(new Pair<>(p, amountForEachPart.get(p) * -1.0));
             }
         }
 
-        morePaid.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
-        lessPaid.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
+        morePaid.sort(Comparator.comparing(k -> k.getKey().getId(), Comparator.reverseOrder()));
+        lessPaid.sort(Comparator.comparing(k -> k.getKey().getId(), Comparator.reverseOrder()));
 
         calculateAndShowMinDebts(morePaid, lessPaid);
     }
@@ -463,19 +463,26 @@ public class EventOverviewCtrl implements Initializable {
     private @NotNull Map<Participant, Double> mapParticipantToAmount() {
         Map<Participant, Double> partToAmount = new HashMap<>();
         List<Expense> expenses = server.getExpensesByEventId(event);
+
+        for(Participant p : participants) {
+            partToAmount.put(p, 0.0);
+        }
+
         for(Expense e : expenses) {
             for(ExpenseParticipant ep : e.getDebtors()) {
-                if(ep.isOwner()) {
-                    partToAmount.put(ep.getParticipant(), e.getAmount());
+                double initial;
+                if(!ep.isOwner()) {
+                    initial = partToAmount.get(ep.getParticipant());
+                    partToAmount.put(ep.getParticipant(), initial - (ep.getShare()/ 100.0 * e.getAmount()));
                 } else {
-                    partToAmount.put(ep.getParticipant(), -100.0 * e.getAmount()/ep.getShare());
+                    initial = partToAmount.get(ep.getParticipant());
+                    partToAmount.put(ep.getParticipant(), initial + ((1.0 - (ep.getShare()) / 100.0) * e.getAmount()));
                 }
             }
         }
+
         for(Participant p : participants) {
-            if(partToAmount.get(p) == null)
-                continue;
-            List<Debt> paid = server.getDebtsByCreditor(p);
+            List<Debt> paid = server.getDebtsPaid(p);
             for(Debt d : paid) {
                 double initial = partToAmount.get(p);
                 partToAmount.put(p, initial + d.getAmount());
@@ -511,7 +518,7 @@ public class EventOverviewCtrl implements Initializable {
         }
         List<Debt> finalDebts = new ArrayList<>();
         for(Debt debt : minDebts) {
-            if(debt.getAmount() != 0)
+            if(!(Math.abs(debt.getAmount()) < 0.000001))
                 finalDebts.add(debt);
         }
         controller.showSettleDebts(finalDebts, event);
@@ -569,17 +576,19 @@ public class EventOverviewCtrl implements Initializable {
 
         if (expenses != null) {
             for (Expense expense : expenses) {
-                Participant owner = new Participant();
-                Set<ExpenseParticipant> expenseParticipants = expense.getDebtors();
-                for (ExpenseParticipant expenseParticipant : expenseParticipants) {
-                    if (expenseParticipant.isOwner()) {
-                        owner = expenseParticipant.getParticipant();
+                if(expense.getAmount() > 0) {
+                    Participant owner = new Participant();
+                    Set<ExpenseParticipant> expenseParticipants = expense.getDebtors();
+                    for (ExpenseParticipant expenseParticipant : expenseParticipants) {
+                        if (expenseParticipant.isOwner()) {
+                            owner = expenseParticipant.getParticipant();
+                        }
                     }
+                    String expenseString = expense.getId() + ": " + owner.getFirstName() + " " + owner.getLastName() + " "
+                            + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
+                    titles.add(expenseString);
+                    totalAmount += expense.getAmount();
                 }
-                String expenseString = expense.getId() + ": " + owner.getFirstName() + " " + owner.getLastName() + " "
-                        + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
-                titles.add(expenseString);
-                totalAmount += expense.getAmount();
             }
         }
 
@@ -601,10 +610,12 @@ public class EventOverviewCtrl implements Initializable {
         List<String> titles = new ArrayList<>();
         if (expenses != null) {
             for (Expense expense : expenses) {
-                List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
-                for (int i = 0; i < debtors.size(); i++) {
-                    if (debtors.get(i).isOwner() && debtors.get(i).getParticipant().equals(participant)) {
-                        expensesFromParticipant.add(expense);
+                if(expense.getAmount() > 0) {
+                    List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
+                    for (int i = 0; i < debtors.size(); i++) {
+                        if (debtors.get(i).isOwner() && debtors.get(i).getParticipant().equals(participant)) {
+                            expensesFromParticipant.add(expense);
+                        }
                     }
                 }
             }
@@ -625,10 +636,12 @@ public class EventOverviewCtrl implements Initializable {
         List<String> titles = new ArrayList<>();
         if (expenses != null) {
             for (Expense expense : expenses) {
-                List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
-                for (int i = 0; i < debtors.size(); i++) {
-                    if (debtors.get(i).getParticipant().equals(participant)) {
-                        expensesIncludingParticipant.add(expense);
+                if(expense.getAmount() > 0) {
+                    List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
+                    for (int i = 0; i < debtors.size(); i++) {
+                        if (debtors.get(i).getParticipant().equals(participant)) {
+                            expensesIncludingParticipant.add(expense);
+                        }
                     }
                 }
             }
