@@ -149,6 +149,16 @@ public class EventController {
         return ResponseEntity.ok(saved);
     }
 
+    public void setEvent(Event event){
+        for(var x:event.getParticipants()) x.setEvent(event);
+        for(var x:event.getTags()) x.setEvent(event);
+        for(var x:event.getExpenses()) x.setEvent(event);
+        for(var x:event.getExpenses())
+            for(var y:x.getDebtors())y.setExpense(x);
+        for(var x:event.getDebts())x.setEvent(event);
+        setEventDetails(event);
+    }
+
     private void setEventDetails(Event event) {
         addListeners.forEach((key, listener) -> listener.accept(event));
         if(event.getParticipants() != null)
@@ -160,6 +170,7 @@ public class EventController {
                     for (var y : x.getDebtors()) y.setExpense(x);
         }
     }
+
 
     /**
      * Updates an Event

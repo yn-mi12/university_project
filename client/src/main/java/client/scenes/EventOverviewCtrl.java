@@ -18,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -25,7 +26,7 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.math.RoundingMode;
+//import java.math.RoundingMode;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -75,7 +76,7 @@ public class EventOverviewCtrl implements Initializable {
     private final AddExpenseCtrl expenseCtrl;
     private List<Participant> participants;
     @FXML
-    private TextArea participantText;
+    private ListView<String> participantList;
     @FXML
     private ComboBox<Label> part;
     @FXML
@@ -124,22 +125,20 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void setSelectedEvent(Event selectedEvent) {
+        participantList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        participantList.addEventFilter(MouseEvent.MOUSE_PRESSED, javafx.event.Event::consume);
         hideTabPanes();
         this.event = selectedEvent;
         this.participants = event.getParticipants();
         ObservableList<Label> names = FXCollections.observableArrayList();
-        StringBuilder namesString = new StringBuilder();
         HashMap<Label, Participant> map = new HashMap<>();
-        int i = 0;
+        List<String> participantsArrayList = new ArrayList<>();
         for (Participant p : participants) {
             Label item = new Label(p.getFirstName() + " " + p.getLastName());
             item.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
             names.add(item);
             map.put(item, p);
-            namesString.append(p.getFirstName() + " " + p.getLastName());
-            if (i < participants.size() - 1)
-                namesString.append(", ");
-            i++;
+            participantsArrayList.add(p.getFirstName() + " " + p.getLastName());
         }
         part.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -153,8 +152,7 @@ public class EventOverviewCtrl implements Initializable {
             }
         }));
         part.getItems().setAll(names);
-        participantText.setEditable(false);
-        participantText.setText(namesString.toString());
+        participantList.setItems(FXCollections.observableList(participantsArrayList));
         inviteCode.setText(event.getId());
         expensesNotSelectedPart();
         allExpenses.refresh();
@@ -345,7 +343,6 @@ public class EventOverviewCtrl implements Initializable {
         Main.buttonFeedback(editPartButton);
         addPartButton.setStyle(Main.changeUI(addPartButton));
         Main.buttonFeedback(addPartButton);
-        participantText.setStyle(Main.changeUI(participantText));
         trash.setStyle(Main.changeUI(trash));
         editPencil.setStyle("-fx-text-fill: white;-fx-font-weight: bolder;");
         tabPane.setStyle("-fx-control-inner-background:#836FFF;-fx-font-weight: bolder; " +
@@ -356,6 +353,10 @@ public class EventOverviewCtrl implements Initializable {
         eventTitle.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
         participantsLabel2.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
         expenseLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+        participantList.setStyle("-fx-background-color: #836FFF;-fx-font-weight: bolder; " +
+                "-fx-border-color: #211951; -fx-control-inner-background: #836FFF; " +
+                "-fx-control-inner-background-alt: derive(-fx-control-inner-background, 15%);" +
+                "-fx-color-label-visible: #F0F3FF");
     }
 
     public void addExpense() {
@@ -593,7 +594,7 @@ public class EventOverviewCtrl implements Initializable {
         }
 
         DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.HALF_UP);
+//        df.setRoundingMode(RoundingMode.HALF_UP);
         String text = totalCost.getText().replaceAll("[0-9]", "").replace(".", "");
         if (text.charAt(text.length() - 1) == ' ')
             totalCost.setText(text + df.format(totalAmount));

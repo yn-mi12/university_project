@@ -18,7 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.math.RoundingMode;
+//import java.math.RoundingMode;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class SettleDebtsCtrl implements Initializable {
         }
 
         DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.HALF_UP);
+//        df.setRoundingMode(RoundingMode.HALF_UP);
 
         setOpenDebts(df);
         setRemovedDebts(df);
