@@ -10,7 +10,6 @@ import server.database.DebtRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -37,28 +36,6 @@ public class TestDebtRepository implements DebtRepository {
                 creditorDebts.add(d);
         }
         return creditorDebts;
-    }
-
-    @Override
-    public List<Debt> findAllByDebtorId(Long debtorId) {
-        call("getAllByDebtorId");
-        List<Debt> debtorDebts = new ArrayList<>();
-        for(Debt d : debts) {
-            if(d.getDebtor().getId() == debtorId)
-                debtorDebts.add(d);
-        }
-        return debtorDebts;
-    }
-
-    @Override
-    public List<Debt> findByEventId(String eventId) {
-        List<Debt> result = new ArrayList<>();
-        for(Debt d : debts) {
-            if(Objects.equals(d.getEvent().getId(), eventId)) {
-                result.add(d);
-            }
-        }
-        return result;
     }
 
     @Override

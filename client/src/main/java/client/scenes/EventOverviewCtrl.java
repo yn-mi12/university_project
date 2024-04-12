@@ -394,13 +394,12 @@ public class EventOverviewCtrl implements Initializable {
             }
         }
         controller.initExpShowOverview(event, owner);
+        expenseCtrl.setOldExpense(selected);
         expenseCtrl.setOldExpensePayer(owner);
-        expenseCtrl.setExpensePayer(owner);
         expenseCtrl.setWhatForText(selected.getDescription());
         expenseCtrl.setHowMuchText(String.valueOf(selected.getAmount()));
         expenseCtrl.setCurrencyText(selected.getCurrency());
         expenseCtrl.setDateText(selected.getDate().toLocalDate());
-        expenseCtrl.setOldExpense(selected);
 
         expenseCtrl.getWhoPays().getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         int count = 0;
@@ -431,11 +430,10 @@ public class EventOverviewCtrl implements Initializable {
                 owner = ep.getParticipant();
         }
         expenseCtrl.setEvent(owner, this);
-        expenseCtrl.setExpensePayer(owner);
         expenseCtrl.setOldExpense(selected);
+        expenseCtrl.setOldExpensePayer(owner);
         expenseCtrl.ok();
 
-        server.deleteExpense(selected);
         event = server.getByID(event.getId());
         server.send("/app/updated",event);
         expensesNotSelectedPart();
@@ -444,74 +442,86 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void settleDebts() {
-        Map<Participant, Double> partToAmount = mapParticipantToAmount();
+        Map<Participant, Double> amountForEachPart = mapParticipantToAmount();
 
-        List<Pair<Participant, Double>> more = new ArrayList<>();
-        List<Pair<Participant, Double>> less = new ArrayList<>();
-        for(Participant p : partToAmount.keySet()) {
-            if(partToAmount.get(p) > 0) {
-                more.add(new Pair<>(p, partToAmount.get(p)));
-            } else if(partToAmount.get(p) < 0) {
-                less.add(new Pair<>(p, partToAmount.get(p) * -1));
+        List<Pair<Participant, Double>> morePaid = new ArrayList<>();
+        List<Pair<Participant, Double>> lessPaid = new ArrayList<>();
+        for(Participant p : amountForEachPart.keySet()) {
+            if(amountForEachPart.get(p) > 0.000001) {
+                morePaid.add(new Pair<>(p, amountForEachPart.get(p)));
+            } else if(amountForEachPart.get(p) < -0.000001) {
+                lessPaid.add(new Pair<>(p, amountForEachPart.get(p) * -1.0));
             }
         }
 
-        more.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
-        less.sort(Comparator.comparing(Pair<Participant, Double>::getValue, Comparator.reverseOrder()));
+        morePaid.sort(Comparator.comparing(k -> k.getKey().getId(), Comparator.reverseOrder()));
+        lessPaid.sort(Comparator.comparing(k -> k.getKey().getId(), Comparator.reverseOrder()));
 
+        calculateAndShowMinDebts(morePaid, lessPaid);
+    }
+
+    private @NotNull Map<Participant, Double> mapParticipantToAmount() {
+        Map<Participant, Double> partToAmount = new HashMap<>();
+        List<Expense> expenses = server.getExpensesByEventId(event);
+
+        for(Participant p : participants) {
+            partToAmount.put(p, 0.0);
+        }
+
+        for(Expense e : expenses) {
+            for(ExpenseParticipant ep : e.getDebtors()) {
+                double initial;
+                if(!ep.isOwner()) {
+                    initial = partToAmount.get(ep.getParticipant());
+                    partToAmount.put(ep.getParticipant(), initial - (ep.getShare()/ 100.0 * e.getAmount()));
+                } else {
+                    initial = partToAmount.get(ep.getParticipant());
+                    partToAmount.put(ep.getParticipant(), initial + ((1.0 - (ep.getShare()) / 100.0) * e.getAmount()));
+                }
+            }
+        }
+
+        for(Participant p : participants) {
+            List<Debt> paid = server.getDebtsPaid(p);
+            for(Debt d : paid) {
+                double initial = partToAmount.get(p);
+                partToAmount.put(p, initial + d.getAmount());
+            }
+        }
+        return partToAmount;
+    }
+
+    private void calculateAndShowMinDebts(List<Pair<Participant, Double>> morePaid, List<Pair<Participant, Double>> lessPaid) {
         List<Debt> minDebts = new ArrayList<>();
 
-        while(!more.isEmpty() && !less.isEmpty()) {
-            Pair<Participant, Double> from = less.getFirst();
-            Pair<Participant, Double> to = more.getFirst();
+        while(!morePaid.isEmpty() && !lessPaid.isEmpty()) {
+            Pair<Participant, Double> from = lessPaid.getFirst();
+            Pair<Participant, Double> to = morePaid.getFirst();
             double amount;
 
             if(Objects.equals(from.getValue(), to.getValue())) {
                 amount = from.getValue();
-                more.removeFirst();
-                less.removeFirst();
+                morePaid.removeFirst();
+                lessPaid.removeFirst();
             } else if(from.getValue() < to.getValue()) {
                 amount = from.getValue();
-                more.set(0, new Pair<>(to.getKey(), to.getValue() - from.getValue()));
-                less.removeFirst();
+                morePaid.set(0, new Pair<>(to.getKey(), to.getValue() - from.getValue()));
+                lessPaid.removeFirst();
             } else {
                 amount = to.getValue();
-                less.set(0, new Pair<>(from.getKey(), from.getValue() - to.getValue()));
-                more.removeFirst();
+                lessPaid.set(0, new Pair<>(from.getKey(), from.getValue() - to.getValue()));
+                morePaid.removeFirst();
             }
 
             Debt newDebt = new Debt(from.getKey(), to.getKey(), amount);
             minDebts.add(newDebt);
         }
-
-        for(Debt d : server.getDebtsByEvent(event)) {
-            event.getDebts().remove(d);
-            server.deleteDebt(d);
+        List<Debt> finalDebts = new ArrayList<>();
+        for(Debt debt : minDebts) {
+            if(!(Math.abs(debt.getAmount()) < 0.000001))
+                finalDebts.add(debt);
         }
-
-        server.addAllDebts(minDebts, event);
-        event = server.getByID(event.getId());
-
-        minDebts = server.getDebtsByEvent(event);
-        controller.showSettleDebts(minDebts, event);
-    }
-
-    private @NotNull Map<Participant, Double> mapParticipantToAmount() {
-        Map<Participant, Double> partToAmount = new HashMap<>();
-        for(Participant p : participants) {
-            List<Debt> credits = server.getDebtsByCreditor(p);
-            double creditAmount = 0;
-            for(Debt d : credits) {
-                creditAmount += d.getAmount();
-            }
-            List<Debt> debits = server.getDebtsByDebtor(p);
-            double debitAmount = 0;
-            for(Debt d : debits) {
-                debitAmount += d.getAmount();
-            }
-            partToAmount.put(p, creditAmount - debitAmount);
-        }
-        return partToAmount;
+        controller.showSettleDebts(finalDebts, event);
     }
 
     public void editTitle() {
@@ -566,17 +576,19 @@ public class EventOverviewCtrl implements Initializable {
 
         if (expenses != null) {
             for (Expense expense : expenses) {
-                Participant owner = new Participant();
-                Set<ExpenseParticipant> expenseParticipants = expense.getDebtors();
-                for (ExpenseParticipant expenseParticipant : expenseParticipants) {
-                    if (expenseParticipant.isOwner()) {
-                        owner = expenseParticipant.getParticipant();
+                if(expense.getAmount() > 0) {
+                    Participant owner = new Participant();
+                    Set<ExpenseParticipant> expenseParticipants = expense.getDebtors();
+                    for (ExpenseParticipant expenseParticipant : expenseParticipants) {
+                        if (expenseParticipant.isOwner()) {
+                            owner = expenseParticipant.getParticipant();
+                        }
                     }
+                    String expenseString = expense.getId() + ": " + owner.getFirstName() + " " + owner.getLastName() + " "
+                            + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
+                    titles.add(expenseString);
+                    totalAmount += expense.getAmount();
                 }
-                String expenseString = expense.getId() + ": " + owner.getFirstName() + " " + owner.getLastName() + " "
-                        + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
-                titles.add(expenseString);
-                totalAmount += expense.getAmount();
             }
         }
 
@@ -598,10 +610,12 @@ public class EventOverviewCtrl implements Initializable {
         List<String> titles = new ArrayList<>();
         if (expenses != null) {
             for (Expense expense : expenses) {
-                List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
-                for (int i = 0; i < debtors.size(); i++) {
-                    if (debtors.get(i).isOwner() && debtors.get(i).getParticipant().equals(participant)) {
-                        expensesFromParticipant.add(expense);
+                if(expense.getAmount() > 0) {
+                    List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
+                    for (int i = 0; i < debtors.size(); i++) {
+                        if (debtors.get(i).isOwner() && debtors.get(i).getParticipant().equals(participant)) {
+                            expensesFromParticipant.add(expense);
+                        }
                     }
                 }
             }
@@ -621,7 +635,15 @@ public class EventOverviewCtrl implements Initializable {
         List<Expense> expensesIncludingParticipant = new ArrayList<>();
         List<String> titles = new ArrayList<>();
         if (expenses != null) {
-            for (Expense expense : expenses) {
+            setIncludingExpenses(expenses, participant, expensesIncludingParticipant, titles);
+        }
+        includingExpenses.setItems(FXCollections.observableList(titles));
+    }
+
+    private void setIncludingExpenses(List<Expense> expenses, Participant participant,
+                                      List<Expense> expensesIncludingParticipant, List<String> titles) {
+        for (Expense expense : expenses) {
+            if(expense.getAmount() > 0) {
                 List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
                 for (int i = 0; i < debtors.size(); i++) {
                     if (debtors.get(i).getParticipant().equals(participant)) {
@@ -629,21 +651,20 @@ public class EventOverviewCtrl implements Initializable {
                     }
                 }
             }
-
-            Participant owner = new Participant();
-            for (Expense expense : expensesIncludingParticipant) {
-                List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
-                for (ExpenseParticipant expenseParticipant : debtors) {
-                    if (expenseParticipant.isOwner()) {
-                        owner = expenseParticipant.getParticipant();
-                    }
-                }
-                String expenseString = expense.getId() + ": " + owner.getFirstName() +  " " + owner.getLastName() +  " "
-                        + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
-                titles.add(expenseString);
-            }
         }
-        includingExpenses.setItems(FXCollections.observableList(titles));
+
+        Participant owner = new Participant();
+        for (Expense expense : expensesIncludingParticipant) {
+            List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
+            for (ExpenseParticipant expenseParticipant : debtors) {
+                if (expenseParticipant.isOwner()) {
+                    owner = expenseParticipant.getParticipant();
+                }
+            }
+            String expenseString = expense.getId() + ": " + owner.getFirstName() +  " " + owner.getLastName() +  " "
+                    + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
+            titles.add(expenseString);
+        }
     }
 
     public void hideTabPanes() {

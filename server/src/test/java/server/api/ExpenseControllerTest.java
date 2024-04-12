@@ -49,7 +49,6 @@ public class ExpenseControllerTest {
         e1.setParticipants(new ArrayList<>());
         e2.setParticipants(new ArrayList<>());
 
-
         p1 = new Participant("pa", "pb", null, null, null, null);
         p1.setEvent(e1);
         p1.setExpenses(new HashSet<>());
@@ -253,6 +252,18 @@ public class ExpenseControllerTest {
         assertEquals(OK, req1.getStatusCode());
         assertEquals(List.of(), req1.getBody());
 
+    }
+
+    @Test
+    void updateAmountTest() {
+        ex1.setId(42);
+        ex1.setAmount(200);
+        ec.save(ex1, e1.getId());
+        var expense = ec.updateAmount(100.0, ex1.getId()).getBody();
+        assertEquals(100.0, expense.getAmount());
+
+        var nf = ec.updateAmount(100.0, -42L).getStatusCode();
+        assertEquals(NOT_FOUND, nf);
     }
 
 }
