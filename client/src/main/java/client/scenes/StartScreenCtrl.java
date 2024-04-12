@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -394,14 +395,21 @@ public class StartScreenCtrl implements Initializable {
     }
 
     public void downloadTemplate() throws IOException {
-        Path x = Paths.get("src\\main\\resources\\client\\resources\\Messages.properties");
+        String template = "";
+        try {
+
+            Path x = Paths.get("client\\src\\main\\resources\\client\\resources\\Messages.properties");
+            for (var y : Files.readAllLines(x)) template += y + '\n';
+        }
+        catch (NoSuchFileException e){
+            Path x = Paths.get("src\\main\\resources\\client\\resources\\Messages.properties");
+            for (var y : Files.readAllLines(x)) template += y + '\n';
+        }
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Download Language Template");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Properties files (*.properties)", "*.properties"));
         File file = fileChooser.showSaveDialog(controller.getPrimaryStage());
         FileWriter fileWriter = new FileWriter(file);
-        String template = "";
-        for(var y:Files.readAllLines(x))template+=y + '\n';
         fileWriter.write(template);
         fileWriter.close();
     }
