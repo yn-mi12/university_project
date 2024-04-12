@@ -69,7 +69,7 @@ public class AddExpenseCtrl implements Initializable {
     private CheckBox someHaveToPay = new CheckBox();
     @FXML
     private ListView<String> whoPays;
-    private List<Tag> tags;
+    private List<Tag> eventsTags;
     @FXML
     private Label foodLabel;
     @FXML
@@ -91,7 +91,7 @@ public class AddExpenseCtrl implements Initializable {
         this.ctrl = ctrl;
         this.event = ctrl.getSelectedEvent();
         this.participants = event.getParticipants();
-        this.tags = event.getTags();
+        this.eventsTags = event.getTags();
         if(!delete) {
             ObservableList<Label> names = FXCollections.observableArrayList();
             HashMap<Label, Participant> map = new HashMap<>();
@@ -129,7 +129,7 @@ public class AddExpenseCtrl implements Initializable {
         }));
         ObservableList<Label> tagNames = FXCollections.observableArrayList();
         HashMap<Label, Tag> tagsMap = new HashMap<>();
-        for(Tag tag : tags){
+        for(Tag tag : eventsTags){
             Label item = new Label(tag.getLabel());
             tagNames.add(item);
             tagsMap.put(item, tag);
@@ -179,6 +179,7 @@ public class AddExpenseCtrl implements Initializable {
                     Double.parseDouble(amount), java.sql.Date.valueOf(date));
             expense.setDebtors(getDebtors());
             expense.setEvent(event);
+            expense.setTag(selectedTag);
             Expense saved = server.addExpense(expense, event);
 
             updated = server.getByID(ctrl.getSelectedEvent().getId());
