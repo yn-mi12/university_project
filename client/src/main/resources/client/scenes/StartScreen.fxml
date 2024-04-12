@@ -26,6 +26,7 @@
          </font>
       </Text>
       <ComboBox fx:id="languageBox" layoutX="380.0" layoutY="391.0" prefHeight="25.0" prefWidth="171.0" />
+      <Button fx:id="downloadTemplateButton" layoutX="558.0" layoutY="391.0" mnemonicParsing="false" onAction="#downloadTemplate" text="➕" minWidth="32" minHeight="32"/>
       <Button fx:id="showAdminButton" layoutX="245.0" layoutY="424.0" minWidth="40" onAction="#showAdminLogin" text="%here">
          <font>
          <Font size="13" />
