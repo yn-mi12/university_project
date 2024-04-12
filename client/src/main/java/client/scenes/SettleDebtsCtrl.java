@@ -100,7 +100,7 @@ public class SettleDebtsCtrl implements Initializable {
                     + " " + d.getCreditor().getFirstName() + " " + d.getCreditor().getLastName()
                     + " " + df.format(d.getAmount());
             HBox row = new HBox();
-            row.setSpacing(87);
+            row.setSpacing(40);
             Button receivedButton = new Button(received.getText());
             receivedButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -122,12 +122,13 @@ public class SettleDebtsCtrl implements Initializable {
             } else {
                 bankDetails = new Label(bankUnavail.getText());
             }
-
+            bankDetails.setMinHeight(100);
+            bankDetails.setMinWidth(200);
             TitledPane creditorDetails = new TitledPane(dString, bankDetails);
+            creditorDetails.setMinWidth(300);
             creditorDetails.setExpanded(false);
             row.getChildren().addAll(creditorDetails, receivedButton);
             openDebtBox.getChildren().add(row);
-
             groupAmount += d.getAmount();
         }
     }
@@ -138,7 +139,7 @@ public class SettleDebtsCtrl implements Initializable {
                     + " " + d.getCreditor().getFirstName() + " " + d.getCreditor().getLastName()
                     + " " + df.format(d.getAmount());
             HBox row = new HBox();
-            row.setSpacing(150);
+            row.setSpacing(50);
             Button undoButton = new Button(undo.getText());
 
             undoButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -161,8 +162,10 @@ public class SettleDebtsCtrl implements Initializable {
             } else {
                 bankDetails = new Label(bankUnavail.getText());
             }
-
+            bankDetails.setMinHeight(100);
+            bankDetails.setMinWidth(200);
             TitledPane creditorDetails = new TitledPane(dString, bankDetails);
+            creditorDetails.setMinWidth(300);
             creditorDetails.setExpanded(false);
             row.getChildren().addAll(creditorDetails, undoButton);
             settledBox.getChildren().add(row);
