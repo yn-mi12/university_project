@@ -4,16 +4,16 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="280.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SetServerCtrl">
+<AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="332.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SetServerCtrl">
    <children>
       <Button fx:id="backButton" layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#goBack" text="⬅" />
-      <Text fx:id="serverUrlLabel" layoutX="18.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%server_url" wrappingWidth="232.296875">
+      <Text fx:id="serverUrlLabel" layoutX="18.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%server_url" >
          <font>
             <Font size="14.0" />
          </font>
       </Text>
-      <TextField fx:id="serverUrl" layoutX="18.0" layoutY="79.0" prefHeight="25.0" prefWidth="244.0" />
-      <Button fx:id="setButton" layoutX="213.0" layoutY="116.0" mnemonicParsing="false" onAction="#setServerUrl" text="%set">
+      <TextField fx:id="serverUrl" layoutX="18.0" layoutY="79.0" prefHeight="25.0" prefWidth="290.0" />
+      <Button fx:id="setButton" layoutX="250.0" layoutY="113.0" mnemonicParsing="false" onAction="#setServerUrl" text="%set">
          <font>
             <Font size="14.0" />
          </font>
@@ -23,7 +23,7 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="setLabel" layoutX="18.0" layoutY="118.0" prefHeight="20.0" prefWidth="179.0" text="%set_url" textFill="#00794d" visible="false">
+      <Label fx:id="setLabel" layoutX="18.0" layoutY="118.0" prefHeight="20.0" text="%set_url" textFill="#00794d" visible="false">
          <font>
             <Font size="14.0" />
          </font>
