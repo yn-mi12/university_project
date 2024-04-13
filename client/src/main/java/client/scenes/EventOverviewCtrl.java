@@ -687,21 +687,16 @@ public class EventOverviewCtrl implements Initializable {
                 setSelectedEvent(event);
                 Platform.runLater(() -> {
                     switch (Main.getPosition()){
-                        case "startScreen":
-                            Main.reloadUI();
-                            controller.showOverview();
-                            break;
                         case "eventScreen":
-
                             Main.reloadUIEvent(event);
                             break;
                         case "editParticipantScreen":
-                            //Main.reloadUIEvent(event);
                             controller.initEditParticipantOverview(event);
                             break;
                         case "editTitleScreen":
-                            //Main.reloadUIEvent(event);
                             controller.showEditTitle(event);
+                            break;
+                        default:
                             break;
                     }
                 });
