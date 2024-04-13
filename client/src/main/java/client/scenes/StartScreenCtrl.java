@@ -5,7 +5,6 @@ import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
 import commons.Event;
-import commons.Tag;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -325,22 +324,6 @@ public class StartScreenCtrl implements Initializable {
             return;
         }
         controller.showEventOverview(event);
-        addTags(event);
-    }
-
-    private void addTags(Event event) {
-        Tag food = new Tag("food","green");
-        Tag entranceFees = new Tag("entrance fees", "blue");
-        Tag travel = new Tag("travel", "red");
-        Tag other = new Tag("other", "grey");
-        event.addTag(food);
-        event.addTag(entranceFees);
-        event.addTag(travel);
-        event.addTag(other);
-        server.addTag(food, event);
-        server.addTag(entranceFees, event);
-        server.addTag(travel, event);
-        server.addTag(other, event);
     }
 
     public void stop() {

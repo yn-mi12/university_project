@@ -18,8 +18,6 @@ public class Event {
     private List<Expense> expenses = new ArrayList<>();
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Debt> debts = new ArrayList<>();
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tag> tags = new ArrayList<>();
     @Column(nullable = false)
     private Timestamp creationDate;
     @Column(nullable = false)
@@ -82,19 +80,6 @@ public class Event {
         expenses.add(expense);
     }
 
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
-
-    public void addTag(Tag tag) {
-        tag.setEvent(this);
-        tags.add(tag);
-    }
-
     public Timestamp getCreationDate() {
         return creationDate;
     }
@@ -148,15 +133,6 @@ public class Event {
         return null;
     }
 
-    public Tag getTagByLabel(String label){
-        for(var x: tags){
-            if(x.getLabel().equals(label)){
-                return x;
-            }
-        }
-        return null;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -178,7 +154,6 @@ public class Event {
                 ", participants=" + participants +
                 ", expenses=" + expenses +
                 ", debts=" + debts +
-                ", tags=" + tags +
                 ", creationDate=" + creationDate +
                 ", lastUpdateDate=" + lastUpdateDate +
                 '}';

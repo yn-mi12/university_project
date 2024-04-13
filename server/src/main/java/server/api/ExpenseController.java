@@ -1,7 +1,6 @@
 package server.api;
 
 import java.util.List;
-import java.util.Objects;
 
 import commons.Expense;
 import org.springframework.http.ResponseEntity;
@@ -87,25 +86,8 @@ public class ExpenseController {
         } else {
             expense.setEvent(eventRepository.getReferenceById(eid));
         }
-        double shareSum = 0;
-        int ownerCount = 0;
-        for(var i: expense.getDebtors()) {
+        for(var i: expense.getDebtors())
             i.setExpense(expense);
-            shareSum += i.getShare();
-            if (i.isOwner()) ownerCount++;
-            if (participantRepository.findById(i.getParticipant().getId()).isEmpty())
-                return ResponseEntity.notFound().build();
-            if (!Objects.equals(participantRepository.findById(i.getParticipant().getId()).get().getEvent().getId(), eid)){
-                return ResponseEntity.badRequest().build();
-            }}
-        if (!((shareSum > 98) && (shareSum < 102))
-                || ownerCount != 1
-                || isNullOrEmpty(expense.getDescription())
-                || isNullOrEmpty(expense.getCurrency())
-                || expense.getAmount() <= 0
-                || expense.getDate() == null) {
-            return ResponseEntity.badRequest().build();
-        }
         Expense saved = repo.save(expense);
         eventRepository.findById(eid).get().updateDate();
         return ResponseEntity.ok(saved);

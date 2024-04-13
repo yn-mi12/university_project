@@ -79,13 +79,6 @@ public class ExpenseTest {
     }
 
     @Test
-    public void tagTest() {
-        Tag t = new Tag("Food", "Red");
-        e1.setTag(t);
-        assertEquals(t, e1.getTag());
-    }
-
-    @Test
     public void eventTest() {
         e1.setEvent(event);
         assertEquals(event, e1.getEvent());
@@ -103,6 +96,6 @@ public class ExpenseTest {
     @Test
     public void toStringTest() {
         assertEquals(e1.toString(), "Expense{id=0, description='item', debtors=[], currency='EUR', amount=20.0, date=" +
-                        Date.valueOf(LocalDate.now()) + ", tag=null}");
+                        Date.valueOf(LocalDate.now()) + "}");
     }
 }
