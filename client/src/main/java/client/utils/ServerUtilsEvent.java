@@ -95,17 +95,6 @@ public class ServerUtilsEvent {
         }
     }
 
-    public Event addEvent(Event event) {
-        Event saved = ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/events") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(event, APPLICATION_JSON), Event.class);
-
-        Config.get().addPastCode(String.valueOf(saved.getId()));
-        return saved;
-    }
-
     public Event addJsonEvent(Event event) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/events") //

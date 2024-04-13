@@ -270,7 +270,8 @@ public class AdminOverviewCtrl implements Initializable {
     }
     public void deleteEvent() {
         try {
-            server.deleteEvent(getEvent());
+            //server.deleteEvent(getEvent());
+            server.send("/app/deleted",getEvent());
             refresh();
         } catch (WebApplicationException e) {
 
@@ -376,6 +377,7 @@ public class AdminOverviewCtrl implements Initializable {
             newDebts.add(newDebt);
         }
         server.addAllDebts(newDebts, saved);
+        server.send("/app/updated",saved);
     }
 
     private void formatTable() {
