@@ -112,7 +112,7 @@ class EventTest {
     void testToString() {
         assertEquals("Event{title='Event1', " +
                 "inviteCode='"+ event.getId() +"', " +
-                "participants=[], expenses=[], debts=[], tags=[], " +
+                "participants=[], expenses=[], debts=[], " +
                 "creationDate=" + event.getCreationDate() + ", " +
                 "lastUpdateDate=" + event.getLastUpdateDate() + '}', event.toString());
     }

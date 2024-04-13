@@ -96,6 +96,6 @@ public class ExpenseTest {
     @Test
     public void toStringTest() {
         assertEquals(e1.toString(), "Expense{id=0, description='item', debtors=[], currency='EUR', amount=20.0, date=" +
-                        Date.valueOf(LocalDate.now()) + ", tag=null}");
+                        Date.valueOf(LocalDate.now()) + "}");
     }
 }
