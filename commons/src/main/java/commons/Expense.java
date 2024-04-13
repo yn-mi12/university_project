@@ -23,8 +23,6 @@ public class Expense {
     private double amount;
     @Column(nullable = false)
     private Date date;
-    @ManyToOne
-    private Tag tag;
     @JsonIgnore
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -89,14 +87,6 @@ public class Expense {
         this.date = date;
     }
 
-    public Tag getTag() {
-        return tag;
-    }
-
-    public void setTag(Tag tag) {
-        this.tag = tag;
-    }
-
     public Event getEvent() {
         return event;
     }
@@ -113,13 +103,12 @@ public class Expense {
         return Double.compare(amount, expense.amount) == 0 &&
                 Objects.equals(description, expense.description) &&
                 Objects.equals(currency, expense.currency) &&
-                Objects.equals(date, expense.date) &&
-                Objects.equals(tag, expense.tag);
+                Objects.equals(date, expense.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(description, currency, amount, date, tag);
+        return Objects.hash(description, currency, amount, date);
     }
 
     @Override
@@ -131,7 +120,6 @@ public class Expense {
                 ", currency='" + currency + '\'' +
                 ", amount=" + amount +
                 ", date=" + date +
-                ", tag=" + tag +
                 '}';
     }
 }

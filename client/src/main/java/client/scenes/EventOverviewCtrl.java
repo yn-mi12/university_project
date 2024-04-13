@@ -440,6 +440,8 @@ public class EventOverviewCtrl implements Initializable {
         expensesNotSelectedPart();
         expensesIncludingParticipant();
         expensesNotSelectedPart();
+        expenseCtrl.setOldExpense(null);
+        expenseCtrl.setOldExpensePayer(null);
     }
 
     public void settleDebts() {

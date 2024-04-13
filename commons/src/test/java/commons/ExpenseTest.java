@@ -79,13 +79,6 @@ public class ExpenseTest {
     }
 
     @Test
-    public void tagTest() {
-        Tag t = new Tag("Food", "Red");
-        e1.setTag(t);
-        assertEquals(t, e1.getTag());
-    }
-
-    @Test
     public void eventTest() {
         e1.setEvent(event);
         assertEquals(event, e1.getEvent());

@@ -36,7 +36,6 @@ class EventTest {
         assertNotNull(event.getLastUpdateDate());
         assertEquals(List.of(), event.getExpenses());
         assertEquals(List.of(), event.getParticipants());
-        assertEquals(List.of(), event.getTags());
         Event empty = new Event();
         assertNotNull(empty);
     }
@@ -116,18 +115,6 @@ class EventTest {
                 "participants=[], expenses=[], debts=[], tags=[], " +
                 "creationDate=" + event.getCreationDate() + ", " +
                 "lastUpdateDate=" + event.getLastUpdateDate() + '}', event.toString());
-    }
-
-    @Test
-    void tagsTest() {
-        Tag t1 = new Tag("Food", "Red");
-        Tag t2 = new Tag("Drinks", "Blue");
-
-        event.addTag(t1);
-        assertEquals(List.of(t1), event.getTags());
-
-        event.setTags(List.of(t1, t2));
-        assertEquals(List.of(t1, t2), event.getTags());
     }
 
     @Test

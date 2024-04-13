@@ -321,11 +321,9 @@ public class AdminOverviewCtrl implements Initializable {
 
                 List<Participant> participants = event.getParticipants();;
                 List<Expense> expenses = event.getExpenses();
-                List<Tag> tags = event.getTags();
                 List<Debt> debts = event.getDebts();
                 event.setParticipants(null);
                 event.setExpenses(null);
-                event.setTags(null);
                 event.setDebts(null);
                 Event find = server.getByID(event.getId());
 

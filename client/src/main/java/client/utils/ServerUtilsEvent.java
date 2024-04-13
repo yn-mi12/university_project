@@ -127,19 +127,6 @@ public class ServerUtilsEvent {
         }
     }
 
-    public Tag addTag(Tag food, Event event) {
-        try{
-            return ClientBuilder.newClient(new ClientConfig())
-                    .target(getServer()).path("/api/tags/event/" + event.getId())
-                    .request(APPLICATION_JSON)
-                    .accept(APPLICATION_JSON)
-                    .post(Entity.entity(food, APPLICATION_JSON), Tag.class);
-        }catch (BadRequestException | NotFoundException e){
-            System.out.println("NOT_FOUND || BAD_REQUEST: while adding Tag for Event: " + event.getId());
-            return null;
-        }
-    }
-
     public Event editEventTitle(String editedTitle, Event event) {
         try {
             return ClientBuilder.newClient(new ClientConfig())
