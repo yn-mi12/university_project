@@ -130,7 +130,8 @@ public class AddExpenseCtrl implements Initializable {
                     server.deleteExpense(oldExpense);
                     return;
                 }
-                server.updateExpenseAmount(oldExpense.getAmount() * -1.0, oldExpense);
+                //server.updateExpenseAmount(oldExpense.getAmount() * -1.0, oldExpense);
+                server.deleteExpense(oldExpense);
                 event = server.getByID(event.getId());
                 oldExpense = null;
                 oldExpensePayer = null;
