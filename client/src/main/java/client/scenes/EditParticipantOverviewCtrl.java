@@ -111,15 +111,26 @@ public class EditParticipantOverviewCtrl implements Initializable {
         setParticipant();
         try {
             if (!checkParticipantInExpenses()){
-                server.deleteParticipant(server.getParticipantByID(selectedParticipant.getId()));
-                event.deleteParticipant(selectedParticipant);
-                server.send("/app/updated",event);
-                noDeleteParticipant.visibleProperty().setValue(false);
-                cancel();
+                Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmationDialog.setTitle("Confirmation");
+                confirmationDialog.setHeaderText("Delete Expense");
+                confirmationDialog.setContentText("Are you sure you want to delete the participant: " +
+                        selectedParticipant.getFirstName() + " " + selectedParticipant.getLastName() + "?");
+                confirmationDialog.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.OK){
+                        System.out.println("Deleting participant: " + selectedParticipant.getId());
+                        server.deleteParticipant(server.getParticipantByID(selectedParticipant.getId()));
+                        event.deleteParticipant(selectedParticipant);
+                        server.send("/app/updated",event);
+                        noDeleteParticipant.visibleProperty().setValue(false);
+                        cancel();
+                    }else{
+                        controller.showEditParticipantOverview();
+                    }
+                });
             }else{
                 noDeleteParticipant.visibleProperty().setValue(true);
             }
-
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);

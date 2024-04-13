@@ -424,24 +424,36 @@ public class EventOverviewCtrl implements Initializable {
         viewButton.setDisable(true);
         expenseCtrl.setDelete(true);
         Expense selected = getExpense();
+        //HERE
+        Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationDialog.setTitle("Confirmation");
+        confirmationDialog.setHeaderText("Delete Expense");
+        confirmationDialog.setContentText("Are you sure you want to delete the expense?");
+        confirmationDialog.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK){
+                System.out.println("Deleting expense: " + selected.getId());
+                Participant owner = null;
+                for(ExpenseParticipant ep : selected.getDebtors()) {
+                    if(ep.isOwner())
+                        owner = ep.getParticipant();
+                }
+                expenseCtrl.setEvent(owner, this);
+                expenseCtrl.setOldExpense(selected);
+                expenseCtrl.setOldExpensePayer(owner);
+                expenseCtrl.ok();
 
-        Participant owner = null;
-        for(ExpenseParticipant ep : selected.getDebtors()) {
-            if(ep.isOwner())
-                owner = ep.getParticipant();
-        }
-        expenseCtrl.setEvent(owner, this);
-        expenseCtrl.setOldExpense(selected);
-        expenseCtrl.setOldExpensePayer(owner);
-        expenseCtrl.ok();
+                event = server.getByID(event.getId());
+                server.send("/app/updated",event);
+                expensesNotSelectedPart();
+                expensesIncludingParticipant();
+                expensesNotSelectedPart();
+                expenseCtrl.setOldExpense(null);
+                expenseCtrl.setOldExpensePayer(null);
+            }else{
+                controller.showEventOverview(event);
+            }
+        });
 
-        event = server.getByID(event.getId());
-        server.send("/app/updated",event);
-        expensesNotSelectedPart();
-        expensesIncludingParticipant();
-        expensesNotSelectedPart();
-        expenseCtrl.setOldExpense(null);
-        expenseCtrl.setOldExpensePayer(null);
     }
 
     public void settleDebts() {
@@ -541,21 +553,31 @@ public class EventOverviewCtrl implements Initializable {
 
     public void deleteEvent() {
         try {
-            event.setId(server.getByID(event.getId()).getId());
-            server.send("/app/deleted", event);
-            if(!controller.getAdmin()) {
-                Config.get().removePastCode(event.getId());
-                Config.get().save();
-            }
+            Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationDialog.setTitle("Confirmation");
+            confirmationDialog.setHeaderText("Delete Event");
+            confirmationDialog.setContentText("Are you sure you want to delete the " + event.getTitle() + " event?");
+            confirmationDialog.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK){
+                    System.out.println("Deleting event: " + event.getId());
+                    event.setId(server.getByID(event.getId()).getId());
+                    server.send("/app/deleted", event);
+                    if(!controller.getAdmin()) {
+                        Config.get().removePastCode(event.getId());
+                        Config.get().save();
+                    }
+                    goBack();
+                }else{
+                    controller.showEventOverview(event);
+                }
+            });
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
-            return;
         }
-        goBack();
     }
 
     public void copyCode() {
