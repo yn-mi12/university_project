@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.Config;
 import client.Main;
+import client.utils.ServerUtilsEvent;
 import jakarta.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +18,7 @@ import java.util.ResourceBundle;
 public class SetServerCtrl implements Initializable {
 
     private final SplittyCtrl controller;
+    private final ServerUtilsEvent server;
     @FXML
     public AnchorPane background;
     @FXML
@@ -33,11 +35,13 @@ public class SetServerCtrl implements Initializable {
     private Label setLabel;
 
     @Inject
-    public SetServerCtrl(SplittyCtrl controller) {
+    public SetServerCtrl(ServerUtilsEvent server, SplittyCtrl controller) {
+        this.server = server;
         this.controller = controller;
     }
 
     public void setServerUrl() {
+        String oldurl = Config.get().getHost();
         String url = serverUrl.getText();
         if(url.isEmpty()) {
             emptyLabel.setVisible(true);
@@ -45,8 +49,10 @@ public class SetServerCtrl implements Initializable {
         }
         emptyLabel.setVisible(false);
         setLabel.setVisible(true);
-        Config.get().setHost(url);
-        Config.get().save();
+        server.setServer(url);
+        if(Config.get().getHost().equals(oldurl) && !oldurl.equals(url)) {
+
+        }
     }
 
     public void goBack() {

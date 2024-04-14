@@ -26,7 +26,7 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
-//import java.math.RoundingMode;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -68,6 +68,8 @@ public class EventOverviewCtrl implements Initializable {
     @FXML
     public Label participantsLabel2;
     @FXML
+    public Label shareLabel;
+    @FXML
     public Tab allTab;
 
     private Participant expensePayer;
@@ -91,6 +93,7 @@ public class EventOverviewCtrl implements Initializable {
     private Label trash;
     private Event event;
     public boolean isAdmin = false;
+    private double totalAmount = 0;
 
     @FXML
     private ListView<String> allExpenses;
@@ -133,12 +136,17 @@ public class EventOverviewCtrl implements Initializable {
         ObservableList<Label> names = FXCollections.observableArrayList();
         HashMap<Label, Participant> map = new HashMap<>();
         List<String> participantsArrayList = new ArrayList<>();
+        expensesNotSelectedPart();
+        allExpenses.refresh();
+        fromExpenses.refresh();
+        includingExpenses.refresh();
         for (Participant p : participants) {
             Label item = new Label(p.getFirstName() + " " + p.getLastName());
             item.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
             names.add(item);
             map.put(item, p);
-            participantsArrayList.add(p.getFirstName() + " " + p.getLastName());
+            participantsArrayList.add(p.getFirstName() + " " + p.getLastName() + ", " + shareLabel.getText()
+                    + " " + getShare(p));
         }
         part.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -154,10 +162,27 @@ public class EventOverviewCtrl implements Initializable {
         part.getItems().setAll(names);
         participantList.setItems(FXCollections.observableList(participantsArrayList));
         inviteCode.setText(event.getId());
-        expensesNotSelectedPart();
-        allExpenses.refresh();
-        fromExpenses.refresh();
-        includingExpenses.refresh();
+    }
+
+    private String getShare(Participant p) {
+        double share = 0.0;
+        List<Expense> expenses = server.getExpensesByEventId(event);
+        for(Expense e : expenses) {
+            for(ExpenseParticipant ep : e.getDebtors()) {
+                if(ep.isOwner() && ep.getParticipant().equals(p)) {
+                    share += e.getAmount();
+                }
+            }
+        }
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        String returned = "";
+        if(this.totalAmount != 0) {
+            returned = df.format(100.0 * share/this.totalAmount) + "%";
+        } else {
+            returned = "0.00%";
+        }
+        return returned;
     }
 
     @SuppressWarnings("java.lang.ClassCastException")
@@ -439,7 +464,7 @@ public class EventOverviewCtrl implements Initializable {
         server.send("/app/updated",event);
         expensesNotSelectedPart();
         expensesIncludingParticipant();
-        expensesNotSelectedPart();
+        expensesFromParticipant();
         expenseCtrl.setOldExpense(null);
         expenseCtrl.setOldExpensePayer(null);
     }
@@ -594,9 +619,9 @@ public class EventOverviewCtrl implements Initializable {
                 }
             }
         }
-
+        this.totalAmount = totalAmount;
         DecimalFormat df = new DecimalFormat("#.##");
-//        df.setRoundingMode(RoundingMode.HALF_UP);
+        df.setRoundingMode(RoundingMode.HALF_UP);
         String text = totalCost.getText().replaceAll("[0-9]", "").replace(".", "");
         if (text.charAt(text.length() - 1) == ' ')
             totalCost.setText(text + df.format(totalAmount));

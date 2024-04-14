@@ -333,7 +333,6 @@ public class AdminOverviewCtrl implements Initializable {
                     server.deleteEvent(find);
                     addJsonToServer(event, participants, expenses, debts);
                 }
-                // TODO tags when we have a proper system for those
                 refresh();
             } catch (FileNotFoundException | JsonProcessingException e) {
                 throw new RuntimeException(e);

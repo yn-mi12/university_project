@@ -260,7 +260,7 @@ public class StartScreenCtrl implements Initializable {
         Main.buttonFeedback(downloadTemplateButton);
     }
 
-        public void refresh() {
+    public void refresh() {
         emptyTitle.setVisible(false);
         emptyCode.setVisible(false);
         invalidCode.setVisible(false);

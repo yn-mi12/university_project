@@ -19,18 +19,19 @@
         </font>
     </Button>
     <Button fx:id="editTitleButton" layoutX="411.0" layoutY="52.0" minWidth="100" mnemonicParsing="false" onAction="#editTitle" prefHeight="26.0" prefWidth="127.0" text="%editTitle" />
-    <Button fx:id="addPartButton" layoutX="336.0" layoutY="126.0" minWidth="100" mnemonicParsing="false" onAction="#addParticipant" prefHeight="26.0" prefWidth="127.0" text="➕" />
-    <Button fx:id="editPartButton" layoutX="336.0" layoutY="169.0" minWidth="100" mnemonicParsing="false" onAction="#updateParticipant" prefHeight="26.0" prefWidth="127.0">
+      <ListView fx:id="participantList" layoutX="21.0" layoutY="107.0" prefHeight="119.0" prefWidth="204.0" />
+    <Button fx:id="addPartButton" layoutX="254.0" layoutY="120.0" minWidth="100" mnemonicParsing="false" onAction="#addParticipant" prefHeight="26.0" prefWidth="127.0" text="➕" />
+    <Button fx:id="editPartButton" layoutX="254.0" layoutY="186.0" minWidth="100" mnemonicParsing="false" onAction="#updateParticipant" prefHeight="26.0" prefWidth="127.0">
          <font>
             <Font size="10.0" />
          </font>
       </Button>
-    <ComboBox fx:id="part" layoutX="19.0" layoutY="260.0" prefHeight="26.0" prefWidth="201.0">
+    <ComboBox fx:id="part" layoutX="19.0" layoutY="260.0" prefHeight="26.0" prefWidth="204.0">
     </ComboBox>
     <Button fx:id="addExpenseButton" layoutX="254.0" layoutY="260.0" minWidth="100" mnemonicParsing="false" onAction="#addExpense" prefHeight="26.0" prefWidth="127.0" text="%add_expense_button" wrapText="true" />
         <Button fx:id="settleDebtsButton" layoutX="411.0" layoutY="260.0" minWidth="100" mnemonicParsing="false" onAction="#settleDebts" prefHeight="26.0" prefWidth="127.0" text="%settle_debts_button" wrapText="true" />
         <Button fx:id="viewButton" disable="true" focusTraversable="false" layoutX="19.0" layoutY="299.0" minWidth="100" mnemonicParsing="false" onAction="#viewExpense" prefHeight="26.0" prefWidth="127.0" text="%view_expense_button" wrapText="true" />
-        <Button fx:id="deleteButton" disable="true" focusTraversable="false" layoutX="180.0" layoutY="299.0" minWidth="100" mnemonicParsing="false" onAction="#deleteExpense" prefHeight="26.0" prefWidth="127.0" text="%delete_expense_button" wrapText="true" />
+        <Button fx:id="deleteButton" disable="true" focusTraversable="false" layoutX="177.0" layoutY="299.0" minWidth="100" mnemonicParsing="false" onAction="#deleteExpense" prefHeight="26.0" prefWidth="127.0" text="%delete_expense_button" wrapText="true" />
     <TabPane fx:id="tabPane" focusTraversable="false" layoutX="15.0" layoutY="333.0" prefHeight="191.0" prefWidth="550.0" tabClosingPolicy="UNAVAILABLE">
       <tabs>
           <Tab fx:id="allTab" text="%all">
@@ -64,7 +65,7 @@
           <Font name="System Bold" size="16.0" />
         </font>
     </Label>
-    <Label fx:id="participantsLabel2" layoutX="25.0" layoutY="88.0" prefHeight="17.0" prefWidth="73.0" text="%participants">
+    <Label fx:id="participantsLabel2" layoutX="23.0" layoutY="88.0" prefHeight="17.0" prefWidth="73.0" text="%participants">
         <font>
           <Font size="13.0" />
         </font>
@@ -96,16 +97,16 @@
     <Label fx:id="paidLabel" text="%paid" visible="false" />
     <Label fx:id="participantsLabel" text="%participants" visible="false" />
     <Label fx:id="forLabel" text="%for" visible="false" />
-        <Label fx:id="trash" layoutX="23.0" layoutY="537.0" mouseTransparent="true" prefHeight="30.0" prefWidth="26.0" text="🗑" textFill="#da0404">
+        <Label fx:id="trash" layoutX="24.0" layoutY="537.0" mouseTransparent="true" prefHeight="30.0" prefWidth="26.0" text="🗑" textFill="#da0404">
             <font>
                 <Font size="35.0" />
             </font>
         </Label>
-        <Label fx:id="editPencil" layoutX="386.0" layoutY="164.0" mouseTransparent="true" prefHeight="27.0" prefWidth="28.0" text="✎">
+        <Label fx:id="editPencil" layoutX="305.0" layoutY="182.0" mouseTransparent="true" prefHeight="27.0" prefWidth="28.0" text="✎">
             <font>
                 <Font size="24.0" />
             </font>
         </Label>
-      <ListView fx:id="participantList" layoutX="25.0" layoutY="107.0" prefHeight="119.0" prefWidth="262.0" />
+      <Label fx:id="shareLabel" layoutX="1.0" layoutY="1.0" mouseTransparent="true" prefHeight="18.0" prefWidth="17.0" text="%share" visible="false" />
     </children>
 </AnchorPane>

@@ -24,6 +24,8 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+import javafx.scene.control.Alert;
+import javafx.stage.Modality;
 import org.glassfish.jersey.client.ClientConfig;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -35,6 +37,7 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.lang.reflect.Type;
+import java.nio.channels.UnresolvedAddressException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -45,10 +48,21 @@ import java.util.function.Consumer;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtilsEvent {
-    private static final String SERVER = Config.get().getHost();
+    private static String SERVER = Config.get().getHost();
 
     private @NotNull String getServer() {
         return Config.get().getHost();
+    }
+    public void setServer(@NotNull String server) {
+        session = connect("ws://" + server + "websocket");
+        if(session != null) {
+            Config.get().setHost(server);
+            Config.get().save();
+            SERVER = server;
+            return;
+        }
+        session = connect("ws://" + Config.get().getHost().substring(7) + "websocket");
+
     }
 
     public Event getByID(String id) {
@@ -266,7 +280,7 @@ public class ServerUtilsEvent {
                 .put(Entity.entity(newAmount, APPLICATION_JSON), Expense.class);
     }
 
-    private final StompSession session = connect("ws://localhost:8080/websocket");
+    private StompSession session = connect("ws://" + Config.get().getHost().substring(7) + "websocket");
 
     private StompSession connect(String url) {
         var client = new StandardWebSocketClient();
@@ -278,12 +292,9 @@ public class ServerUtilsEvent {
         try {
             return stomp.connectAsync(url, new StompSessionHandlerAdapter() {
             }).get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+        } catch (InterruptedException | ExecutionException e) {
+            return null;
         }
-        throw new IllegalStateException();
     }
 
     public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
