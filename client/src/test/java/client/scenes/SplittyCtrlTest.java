@@ -110,7 +110,7 @@ public class SplittyCtrlTest {
             eventOverviewCtrl.eventTitle = new Label();
             splittyCtrl.showEventOverview(new Event("test"));
             assertNotNull(splittyCtrl.getPrimaryStage().getScene());
-            assertEquals("Event: test", splittyCtrl.getPrimaryStage().getTitle());
+            assertEquals("test", splittyCtrl.getPrimaryStage().getTitle());
         });
     }
 
@@ -119,7 +119,7 @@ public class SplittyCtrlTest {
         Platform.runLater(() -> {
             splittyCtrl.showExpOverview();
             assertNotNull(splittyCtrl.getPrimaryStage().getScene());
-            assertEquals("Add/Edit Expense", splittyCtrl.getPrimaryStage().getTitle());
+            assertEquals("Splitty", splittyCtrl.getPrimaryStage().getTitle());
         });
     }
 
@@ -129,7 +129,7 @@ public class SplittyCtrlTest {
             editEventTitleCtrl.oldTitle = new Label();
             splittyCtrl.showEditTitle(new Event("test"));
             assertNotNull(splittyCtrl.getPrimaryStage().getScene());
-            assertEquals("Edit Title", splittyCtrl.getPrimaryStage().getTitle());
+            assertEquals("Splitty", splittyCtrl.getPrimaryStage().getTitle());
         });
     }
 
@@ -138,7 +138,7 @@ public class SplittyCtrlTest {
         Platform.runLater(() -> {
             splittyCtrl.showAddParticipant(new Event("test"));
             assertNotNull(splittyCtrl.getPrimaryStage().getScene());
-            assertEquals("Add Participant", splittyCtrl.getPrimaryStage().getTitle());
+            assertEquals("Splitty", splittyCtrl.getPrimaryStage().getTitle());
         });
     }
 
@@ -147,7 +147,7 @@ public class SplittyCtrlTest {
         Platform.runLater(() -> {
             splittyCtrl.initExpShowOverview(new Event("test"), new Participant("a", "b", null, null, null, null));
             assertNotNull(splittyCtrl.getPrimaryStage().getScene());
-            assertEquals("Add/Edit Expense", splittyCtrl.getPrimaryStage().getTitle());
+            assertEquals("Splitty", splittyCtrl.getPrimaryStage().getTitle());
         });
     }
 
@@ -156,7 +156,7 @@ public class SplittyCtrlTest {
         Platform.runLater(() -> {
             splittyCtrl.showEditParticipantOverview();
             assertNotNull(splittyCtrl.getPrimaryStage().getScene());
-            assertEquals("Edit Participant", splittyCtrl.getPrimaryStage().getTitle());
+            assertEquals("Splitty", splittyCtrl.getPrimaryStage().getTitle());
         });
     }
 
@@ -174,7 +174,7 @@ public class SplittyCtrlTest {
         Platform.runLater(() -> {
             splittyCtrl.showAdminLogin();
             assertNotNull(splittyCtrl.getPrimaryStage().getScene());
-            assertEquals("Admin Login", splittyCtrl.getPrimaryStage().getTitle());
+            assertEquals("Splitty", splittyCtrl.getPrimaryStage().getTitle());
         });
     }
 
@@ -183,7 +183,7 @@ public class SplittyCtrlTest {
         Platform.runLater(() -> {
             splittyCtrl.showSettleDebts(new ArrayList<>(), new Event("Test"));
             assertNotNull(splittyCtrl.getPrimaryStage().getScene());
-            assertEquals("Settle Debts", splittyCtrl.getPrimaryStage().getTitle());
+            assertEquals("Splitty", splittyCtrl.getPrimaryStage().getTitle());
         });
     }
 
@@ -192,7 +192,7 @@ public class SplittyCtrlTest {
         Platform.runLater(() -> {
             splittyCtrl.showSetServer();
             assertNotNull(splittyCtrl.getPrimaryStage().getScene());
-            assertEquals("Set Server", splittyCtrl.getPrimaryStage().getTitle());
+            assertEquals("Splitty", splittyCtrl.getPrimaryStage().getTitle());
         });
     }
 
@@ -201,7 +201,7 @@ public class SplittyCtrlTest {
         Platform.runLater(() -> {
             splittyCtrl.initEditParticipantOverview(new Event("Test"));
             assertNotNull(splittyCtrl.getPrimaryStage().getScene());
-            assertEquals("Edit Participant", splittyCtrl.getPrimaryStage().getTitle());
+            assertEquals("Splitty", splittyCtrl.getPrimaryStage().getTitle());
         });
     }
 

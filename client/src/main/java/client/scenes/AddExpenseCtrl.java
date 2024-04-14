@@ -10,7 +10,6 @@ import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -36,6 +35,8 @@ public class AddExpenseCtrl implements Initializable {
     public Label whoPaidLabel;
     @FXML
     public Label addExpenseLabel;
+    @FXML
+    public Label notAllFilledLabel;
     @FXML
     public Button addButton;
     @FXML
@@ -127,6 +128,7 @@ public class AddExpenseCtrl implements Initializable {
     }
 
     public void ok() {
+        notAllFilledLabel.setVisible(false);
         Event updated;
         try {
             if (oldExpense != null) {
@@ -135,12 +137,13 @@ public class AddExpenseCtrl implements Initializable {
                     server.deleteExpense(oldExpense);
                     return;
                 }
-                //server.updateExpenseAmount(oldExpense.getAmount() * -1.0, oldExpense);
                 server.deleteExpense(oldExpense);
                 event = server.getByID(event.getId());
                 oldExpense = null;
                 oldExpensePayer = null;
             }
+
+            if (checkDetails()) return;
 
             expensePayer = event.getParticipantByName(whoPaid.getValue().getText());
             event = server.getByID(event.getId());
@@ -172,6 +175,25 @@ public class AddExpenseCtrl implements Initializable {
         clearFields();
         controller.showEventOverview(updated);
         server.send("/app/updated", updated);
+    }
+
+    private boolean checkDetails() {
+        if(whoPaid.getValue() == null || whatFor.getText().isEmpty() || howMuch.getText().isEmpty() || currency.getValue() == null
+            || date.getValue() == null) {
+            notAllFilledLabel.setVisible(true);
+            return true;
+        }
+        if(!(someHaveToPay.isSelected() || allHaveToPay.isSelected())) {
+            notAllFilledLabel.setVisible(true);
+            return true;
+        }
+        if(someHaveToPay.isSelected()) {
+            if(whoPays.getSelectionModel().getSelectedItems().isEmpty()) {
+                notAllFilledLabel.setVisible(true);
+                return true;
+            }
+        }
+        return false;
     }
 
     @FXML
@@ -283,15 +305,6 @@ public class AddExpenseCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        someHaveToPay.setFocusTraversable(false);
-        allHaveToPay.setFocusTraversable(false);
-        whoPays.setFocusTraversable(false);
-        whoPays.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                event.consume();
-            }
-        });
         List<Label> currencies = new ArrayList<>();
         Label l =new Label("USD");
         l.setStyle("-fx-text-fill: black");
@@ -342,6 +355,7 @@ public class AddExpenseCtrl implements Initializable {
             }
         });
         if (Main.isContrastMode()) {
+            notAllFilledLabel.setStyle(Main.changeUI(notAllFilledLabel));
             background.setStyle("-fx-background-color: #69e0ab;");
             addButton.setStyle(Main.changeUI(addButton));
             Main.buttonFeedback(addButton);
