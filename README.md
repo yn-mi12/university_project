@@ -58,8 +58,34 @@ AdminOverview:
 - To import an event, press Import Event and select a JSON file corresponding to an event.
 
 Technical Features:
-- websockets -> Almost everywhere inside the app. (They also use the REST Endpoints)
-- long polling -> StartScreen past events
-- config
-- RestController/Controller/Services
+- websockets -> Almost everywhere inside the app(They also use the REST Endpoints), for propagating almost any change in EventOverview between clients, as well as updating the AdminOverview to reflect any changes in the event by a client.
+- websockets -> ServerUtilsEvent (client/src/main/java/client/utils/ServerUtilsEvent.java) lines 233-268 + WebSocketConfig(server/src/main/java/server/WebsocketConfig.java) + EventController(server/src/main/java/server/api/EventController.java) for MessageMappings/SendTos.
+- long polling -> Used to update the title in the recent Events List (StartScreen) when another user changes it. Also does the same thing for deleting the event.
+- long polling -> ServerUtilsEvent (client/src/main/java/client/utils/ServerUtilsEvent.java) lines 269-314 + the listeners in the EventController(server/src/main/java/server/api/EventController.java)
+- config -> Used for persisting preferences (ServerURL, Current Language, ContrastSetting, PastEventIDs) - the one in the root directory.
+- config -> The one in client/src/main/resources/config.yml is used as a template if a config file is missing.
+- RestController - All controllers in api module(server/src/main/java/server/api), besides AdminController.
+- Controller - AdminController - server/src/main/java/server/api/AdminController.java
+- Services - AdminTokenService - server/src/main/java/server/service/AdminTokenService.java
+
+HCI:
+ 
+-Informative Feedback: 
+
+- Labels are used to inform the admin whenever an event is imported. (AdminOverview)
+- Labels are used to inform when Server has been set successfully, as well as when it is unsuccessful. (SetServerScreen)
+- Labels are used to inform the user when an invalid/empty token is used(AdminPopupScreen) to enter the AdminOverview.
+- Labels are used to inform the user when a participant is successfully deleted, as well as when it cannot be deleted (when part of an expense) (EditParticipantOverview).
+
+Confirmation for key actions:
+
+- When expenses are deleted in EventOverview.
+- When the current event is deleted from the EventOverview.
+- When participants are deleted in the EditParticipantOverview.
+
+-High Contrast:
+
+- Press the button on the StartScreen (bottom left) to turn on/off the High Contrast option.
+
+
 

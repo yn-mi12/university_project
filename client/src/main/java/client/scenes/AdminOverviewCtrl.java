@@ -70,6 +70,8 @@ public class AdminOverviewCtrl implements Initializable {
     public Button showButtonD;
     @FXML
     public Button showButtonE;
+    @FXML
+    public Label noEventsLabel;
     private Stage primaryStage;
     private ObservableList<Event> data;
 
@@ -169,6 +171,7 @@ public class AdminOverviewCtrl implements Initializable {
                         "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
                         "-fx-border-width: 1.5; -fx-border-insets: -1");
             });
+            noEventsLabel.setStyle("-fx-text-fill: white;-fx-font-weight: bolder;");
         }
     }
 

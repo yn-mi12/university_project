@@ -8,6 +8,8 @@ import commons.Expense;
 import commons.ExpenseParticipant;
 import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,6 +18,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -140,7 +143,12 @@ public class EditParticipantOverviewCtrl implements Initializable {
                         event.deleteParticipant(selectedParticipant);
                         server.send("/app/updated",event);
                         noDeleteParticipant.visibleProperty().setValue(false);
-                        deleteParticipant.visibleProperty().setValue(true);
+                        Timeline t = new Timeline(
+                                new KeyFrame(Duration.seconds(0), ae -> deleteParticipant.visibleProperty().setValue(true)),
+                                new KeyFrame(Duration.seconds(3), ae -> deleteParticipant.visibleProperty().setValue(false))
+                        );
+                        t.setCycleCount(1);
+                        t.play();
                         controller.showEditParticipantOverview();
                     }else{
                         controller.showEditParticipantOverview();
