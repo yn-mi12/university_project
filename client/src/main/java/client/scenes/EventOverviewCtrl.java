@@ -70,6 +70,8 @@ public class EventOverviewCtrl implements Initializable {
     @FXML
     public Label shareLabel;
     @FXML
+    public Label allLabel;
+    @FXML
     public Tab allTab;
 
     private Participant expensePayer;
@@ -392,15 +394,18 @@ public class EventOverviewCtrl implements Initializable {
         long id = 0;
         switch(viewChoice) {
             case "all" -> {
-                id = Long.valueOf(allExpenses.getSelectionModel().getSelectedItem().split(":")[0]);
+                String selected = allExpenses.getSelectionModel().getSelectedItem().split("\\[")[1];
+                id = Long.valueOf(selected.substring(0, selected.length() - 1));
                 allExpenses.getSelectionModel().clearSelection();
             }
             case "from" -> {
-                id = Long.valueOf(fromExpenses.getSelectionModel().getSelectedItem().split(":")[0]);
+                String selected = allExpenses.getSelectionModel().getSelectedItem().split("\\[")[1];
+                id = Long.valueOf(selected.substring(0, selected.length() - 1));
                 fromExpenses.getSelectionModel().clearSelection();
             }
             case "include" -> {
-                id = Long.valueOf(includingExpenses.getSelectionModel().getSelectedItem().split(":")[0]);
+                String selected = allExpenses.getSelectionModel().getSelectedItem().split("\\[")[1];
+                id = Long.valueOf(selected.substring(0, selected.length() - 1));
                 includingExpenses.getSelectionModel().clearSelection();
             }
         }
@@ -612,8 +617,9 @@ public class EventOverviewCtrl implements Initializable {
                             owner = expenseParticipant.getParticipant();
                         }
                     }
-                    String expenseString = expense.getId() + ": " + owner.getFirstName() + " " + owner.getLastName() + " "
-                            + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
+                    String expenseString = expense.getDate() + ": " + owner.getFirstName() + " " + owner.getLastName() + " "
+                            + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription()
+                                + " (" + getParts(expense) + ") [" + expense.getId() + "]";
                     titles.add(expenseString);
                     totalAmount += expense.getAmount();
                 }
@@ -648,8 +654,9 @@ public class EventOverviewCtrl implements Initializable {
                 }
             }
             for (Expense expense : expensesFromParticipant) {
-                String expenseString = expense.getId() + ": " +participant.getFirstName() + " " + participant.getLastName() +
-                        " " + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
+                String expenseString = expense.getDate() + ": " +participant.getFirstName() + " " + participant.getLastName() +
+                        " " + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription()
+                            + " (" + getParts(expense) + ") [" + expense.getId() + "]";
                 titles.add(expenseString);
             }
         }
@@ -689,10 +696,25 @@ public class EventOverviewCtrl implements Initializable {
                     owner = expenseParticipant.getParticipant();
                 }
             }
-            String expenseString = expense.getId() + ": " + owner.getFirstName() +  " " + owner.getLastName() +  " "
-                    + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
+            String expenseString = expense.getDate() + ": " + owner.getFirstName() +  " " + owner.getLastName() +  " "
+                    + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription()
+                        + " (" + getParts(expense) + ") [" + expense.getId() + "]";
             titles.add(expenseString);
         }
+    }
+
+    private String getParts(Expense e) {
+        String result = "";
+        int count = 0;
+        for(ExpenseParticipant ep : e.getDebtors()) {
+            if(ep.getShare() != 0) {
+                result += ep.getParticipant().getFirstName() + " " + ep.getParticipant().getLastName() + ", ";
+                count++;
+            }
+        }
+        if(count == server.getByID(event.getId()).getParticipants().size())
+            return allLabel.getText();
+        return result.substring(0, result.length() - 2);
     }
 
     public void hideTabPanes() {

@@ -268,15 +268,6 @@ public class ServerUtilsEvent {
                 });
     }
 
-    public Expense updateExpenseAmount(Double newAmount, Expense expense) {
-        expense.setAmount(newAmount);
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(getServer()).path("/api/expenses/" + expense.getId()+ "/amount")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .put(Entity.entity(newAmount, APPLICATION_JSON), Expense.class);
-    }
-
     private StompSession session = connect("ws://" + Config.get().getHost().substring(7) + "websocket");
 
     private StompSession connect(String url) {
