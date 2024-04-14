@@ -33,6 +33,8 @@ public class SetServerCtrl implements Initializable {
     private Label emptyLabel;
     @FXML
     private Label setLabel;
+    @FXML
+    private Label failedLabel;
 
     @Inject
     public SetServerCtrl(ServerUtilsEvent server, SplittyCtrl controller) {
@@ -41,6 +43,7 @@ public class SetServerCtrl implements Initializable {
     }
 
     public void setServerUrl() {
+        failedLabel.setVisible(false);
         String oldurl = Config.get().getHost();
         String url = serverUrl.getText();
         if(url.isEmpty()) {
@@ -51,7 +54,8 @@ public class SetServerCtrl implements Initializable {
         setLabel.setVisible(true);
         server.setServer(url);
         if(Config.get().getHost().equals(oldurl) && !oldurl.equals(url)) {
-
+            setLabel.setVisible(false);
+            failedLabel.setVisible(true);
         }
     }
 
@@ -59,6 +63,7 @@ public class SetServerCtrl implements Initializable {
         controller.showOverview();
         emptyLabel.setVisible(false);
         setLabel.setVisible(false);
+        failedLabel.setVisible(false);
         serverUrl.clear();
     }
 
@@ -74,6 +79,8 @@ public class SetServerCtrl implements Initializable {
             serverUrl.setStyle(Main.changeUI(serverUrl));
             emptyLabel.setStyle(Main.changeUI(emptyLabel));
             serverUrlLabel.setStyle(Main.changeUI(serverUrlLabel));
+            failedLabel.setStyle(Main.changeUI(failedLabel));
+            setLabel.setStyle("-fx-text-fill: #04530a;-fx-font-weight: bolder;");
         }
     }
 }
