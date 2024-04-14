@@ -7,8 +7,6 @@ import com.google.inject.Inject;
 import commons.*;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -26,7 +24,6 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
-//import java.math.RoundingMode;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -206,36 +203,27 @@ public class EventOverviewCtrl implements Initializable {
             }
         }));
 
-        allExpenses.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (allExpenses.getSelectionModel().getSelectedItem() != null) {
-                    viewButton.setDisable(false);
-                    deleteButton.setDisable(false);
-                    viewChoice = "all";
-                }
+        allExpenses.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            if (allExpenses.getSelectionModel().getSelectedItem() != null) {
+                viewButton.setDisable(false);
+                deleteButton.setDisable(false);
+                viewChoice = "all";
             }
         });
 
-        fromExpenses.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (fromExpenses.getSelectionModel().getSelectedItem() != null) {
-                    viewButton.setDisable(false);
-                    deleteButton.setDisable(false);
-                    viewChoice = "from";
-                }
+        fromExpenses.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            if (fromExpenses.getSelectionModel().getSelectedItem() != null) {
+                viewButton.setDisable(false);
+                deleteButton.setDisable(false);
+                viewChoice = "from";
             }
         });
 
-        includingExpenses.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (includingExpenses.getSelectionModel().getSelectedItem() != null) {
-                    viewButton.setDisable(false);
-                    deleteButton.setDisable(false);
-                    viewChoice = "include";
-                }
+        includingExpenses.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            if (includingExpenses.getSelectionModel().getSelectedItem() != null) {
+                viewButton.setDisable(false);
+                deleteButton.setDisable(false);
+                viewChoice = "include";
             }
         });
 
