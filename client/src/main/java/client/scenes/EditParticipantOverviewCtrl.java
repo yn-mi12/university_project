@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -90,10 +91,10 @@ public class EditParticipantOverviewCtrl implements Initializable {
             addCtrl.setFirstName(selectedParticipant.getFirstName());
             addCtrl.setLastName(selectedParticipant.getLastName());
 
-            if(selectedParticipant.getEmail() != null)
+            if (selectedParticipant.getEmail() != null)
                 addCtrl.setEmail(selectedParticipant.getEmail());
 
-            if(selectedParticipant.getAccountName() != null) {
+            if (selectedParticipant.getAccountName() != null) {
                 addCtrl.setAccountName(selectedParticipant.getAccountName());
                 addCtrl.setIban(selectedParticipant.getIban());
                 addCtrl.setBic(selectedParticipant.getBic());
@@ -144,6 +145,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
             }else{
                 noDeleteParticipant.visibleProperty().setValue(true);
             }
+
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -153,17 +155,17 @@ public class EditParticipantOverviewCtrl implements Initializable {
         }
     }
 
-    public boolean checkParticipantInExpenses(){
+    public boolean checkParticipantInExpenses() {
         List<Participant> participantsInExpenses = new ArrayList<>();
-        for (Expense expense : event.getExpenses()){
+        for (Expense expense : event.getExpenses()) {
             Set<ExpenseParticipant> debtors = expense.getDebtors();
             List<ExpenseParticipant> debtorsList = new ArrayList<>(debtors);
             for (ExpenseParticipant expenseParticipant : debtorsList) {
                 participantsInExpenses.add(expenseParticipant.getParticipant());
             }
         }
-        for (Participant participant: participantsInExpenses){
-            if (selectedParticipant.getId()==participant.getId()){
+        for (Participant participant : participantsInExpenses) {
+            if (selectedParticipant.getId() == participant.getId()) {
                 return true;
             }
         }
@@ -176,8 +178,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if(Main.isContrastMode())
-        {
+        if (Main.isContrastMode()) {
             background.setStyle("-fx-background-color: #69e0ab;");
             backButton.setStyle(Main.changeUI(backButton));
             Main.buttonFeedback(backButton);
@@ -191,6 +192,19 @@ public class EditParticipantOverviewCtrl implements Initializable {
                     "-fx-color-label-visible: #F0F3FF");
             allParticipantsLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
             noDeleteParticipant.setStyle(Main.changeUI(noDeleteParticipant));
+        }
+    }
+
+    public void keyPressed(KeyEvent e) {
+        switch (e.getCode()) {
+//            case ENTER:
+//                ok();
+//                break;
+            case ESCAPE:
+                cancel();
+                break;
+            default:
+                break;
         }
     }
 }

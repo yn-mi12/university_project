@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -78,7 +79,7 @@ public class SettleDebtsCtrl implements Initializable {
         settledPane.setVisible(true);
         settledDebtsLabel.setVisible(true);
         settledLabel.setVisible(false);
-        if(debts.isEmpty() && removed.isEmpty()) {
+        if (debts.isEmpty() && removed.isEmpty()) {
             openDebtBox.getChildren().clear();
             openDebtPane.setVisible(false);
             settledPane.setVisible(false);
@@ -115,10 +116,10 @@ public class SettleDebtsCtrl implements Initializable {
 
             Participant creditor = d.getCreditor();
             Label bankDetails;
-            if(creditor.getAccountName() != null) {
+            if (creditor.getAccountName() != null) {
                 bankDetails = new Label(bankAvail.getText() + creditor.getAccountName() + "\n" +
                         "IBAN: " + creditor.getIban() + "\n" +
-                        "BIC: " +creditor.getBic());
+                        "BIC: " + creditor.getBic());
             } else {
                 bankDetails = new Label(bankUnavail.getText());
             }
@@ -133,7 +134,7 @@ public class SettleDebtsCtrl implements Initializable {
     }
 
     private void setRemovedDebts(DecimalFormat df) {
-        for(Debt d : removed) {
+        for (Debt d : removed) {
             String dString = d.getDebtor().getFirstName() + " " + d.getDebtor().getLastName() + " " + give.getText()
                     + " " + d.getCreditor().getFirstName() + " " + d.getCreditor().getLastName()
                     + " " + df.format(d.getAmount());
@@ -154,7 +155,7 @@ public class SettleDebtsCtrl implements Initializable {
 
             Participant creditor = d.getCreditor();
             Label bankDetails;
-            if(creditor.getAccountName() != null) {
+            if (creditor.getAccountName() != null) {
                 bankDetails = new Label(bankAvail.getText() + creditor.getAccountName() + "\n" +
                         "IBAN: " + creditor.getIban() + "\n" +
                         "BIC: " + creditor.getBic());
@@ -189,7 +190,9 @@ public class SettleDebtsCtrl implements Initializable {
         eventCtrl.showEventOverview(event);
     }
 
-    public void setDebts(List<Debt> debts) { this.debts = debts; }
+    public void setDebts(List<Debt> debts) {
+        this.debts = debts;
+    }
 
     public void setEvent(Event event) {
         this.event = event;
@@ -197,8 +200,7 @@ public class SettleDebtsCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if(Main.isContrastMode())
-        {
+        if (Main.isContrastMode()) {
             background.setStyle("-fx-background-color: #69e0ab;");
             backButton.setStyle(Main.changeUI(backButton));
             Main.buttonFeedback(backButton);
@@ -217,6 +219,19 @@ public class SettleDebtsCtrl implements Initializable {
             settledLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
             openDebtsLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
             settledDebtsLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+        }
+    }
+
+    public void keyPressed(KeyEvent e) {
+        switch (e.getCode()) {
+            case ENTER:
+                //setOpenDebts();
+                break;
+            case ESCAPE:
+                goBack();
+                break;
+            default:
+                break;
         }
     }
 }

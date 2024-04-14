@@ -4,9 +4,9 @@ import client.Config;
 import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import commons.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -15,10 +15,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -325,6 +324,7 @@ public class AdminOverviewCtrl implements Initializable {
                 List<Debt> debts = event.getDebts();
                 event.setParticipants(null);
                 event.setExpenses(null);
+                event.setDebts(null);
                 Event find = server.getByID(event.getId());
 
                 if(find == null) {
@@ -364,7 +364,9 @@ public class AdminOverviewCtrl implements Initializable {
             e.setDebtors(debtors);
             e.setEvent(saved);
             server.addExpense(e, saved);
+
         }
+
         saved = server.getByID(saved.getId());
         server.send("/app/updated",saved);
     }
@@ -377,5 +379,17 @@ public class AdminOverviewCtrl implements Initializable {
                 eventCreationDateColumn.widthProperty().get() +
                 eventLastUpdateDateColumn.widthProperty().get();
         eventTitleColumn.prefWidthProperty().bind(eventList.widthProperty().subtract(w));
+    }
+    public void keyPressed(KeyEvent e) {
+        switch (e.getCode()) {
+            case ENTER:
+                showEvent();
+                break;
+            case ESCAPE:
+                goBack();
+                break;
+            default:
+                break;
+        }
     }
 }

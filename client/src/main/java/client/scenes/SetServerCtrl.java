@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
@@ -87,6 +88,18 @@ public class SetServerCtrl implements Initializable {
             serverUrlLabel.setStyle(Main.changeUI(serverUrlLabel));
             failedLabel.setStyle(Main.changeUI(failedLabel));
             setLabel.setStyle("-fx-text-fill: #04530a;-fx-font-weight: bolder;");
+        }
+    }
+    public void keyPressed(KeyEvent e) {
+        switch (e.getCode()) {
+            case ENTER:
+                setServerUrl();
+                break;
+            case ESCAPE:
+                goBack();
+                break;
+            default:
+                break;
         }
     }
 }
