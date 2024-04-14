@@ -408,42 +408,6 @@ public class StartScreenCtrl implements Initializable {
                 }
                 break;
         }
-//            case LEFT:
-//                if(createButton.contains(p.getX(), p.getY())) {
-//                    new Robot().mouseMove((int)titleField.getLayoutX(), (int)titleField.getLayoutY());
-//                }
-//                if(joinButton.contains(p.getX(), p.getY())) {
-//                    new Robot().mouseMove((int)codeField.getLayoutX(), (int)codeField.getLayoutY());
-//                }
-//                if(showButton.contains(p.getX(), p.getY())) {
-//                    new Robot().mouseMove((int)eventList.getLayoutX(), (int)eventList.getLayoutY());
-//                }
-////                if(languageBox.contains(p.getX(), p.getY())) {
-////                    new Robot().mouseMove((int)showAdminButton.getLayoutX(), (int)showAdminButton.getLayoutY());
-////                }
-//                if(downloadTemplateButton.contains(p.getX(), p.getY())) {
-//                    new Robot().mouseMove((int)languageBox.getLayoutX(), (int)languageBox.getLayoutY());
-//                }
-//                break;
-//            case RIGHT:
-//                if(titleField.contains(p.getX(), p.getY())) {
-//                    new Robot().mouseMove((int)createButton.getLayoutX(), (int)createButton.getLayoutY());
-//                }
-//                if(codeField.contains(p.getX(), p.getY())) {
-//                    new Robot().mouseMove((int)joinButton.getLayoutX(), (int)joinButton.getLayoutY());
-//                }
-//                if(eventList.contains(p.getX(), p.getY())) {
-//                    new Robot().mouseMove((int)showButton.getLayoutX(), (int)showButton.getLayoutY());
-//                }
-////                if(languageBox.contains(p.getX(), p.getY())) {
-////                    new Robot().mouseMove((int)showAdminButton.getLayoutX(), (int)showAdminButton.getLayoutY());
-////                }
-//                if(showAdminButton.contains(p.getX(), p.getY())) {
-//                    new Robot().mouseMove((int)languageBox.getLayoutX(), (int)languageBox.getLayoutY());
-//                }
-//                break;
-//        }
-        e.consume();
     }
 
     public void downloadTemplate() throws IOException {
