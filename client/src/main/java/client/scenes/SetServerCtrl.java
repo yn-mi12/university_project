@@ -50,6 +50,12 @@ public class SetServerCtrl implements Initializable {
             emptyLabel.setVisible(true);
             return;
         }
+        if(!url.startsWith("http://")) {
+            emptyLabel.setVisible(false);
+            setLabel.setVisible(false);
+            failedLabel.setVisible(true);
+            return;
+        }
         emptyLabel.setVisible(false);
         setLabel.setVisible(true);
         server.setServer(url);

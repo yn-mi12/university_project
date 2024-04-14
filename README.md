@@ -18,7 +18,7 @@ StartScreen:
 - The StartScreen also shows the past events that you created/joined, which are persisted on your local machine. (in the config file)
 - To view a past event, select one from the Past Event ListView and press Show Event.
 - To enter the AdminOverview, press the Here button at the bottom of the StartScreen and insert the token. (This token can be found in the Server console)
-- To change the URL of the server, press the Set Server button at the bottom of the StartScreen and insert your desired Splitty Server. Please make sure to put a '/' at the end of the URL.
+- To change the URL of the server, press the Set Server button at the bottom of the StartScreen and insert your desired Splitty Server. Please make sure that the URL starts with 'http://' and has a '/' at the end.
 - To download an empty language template, press the plus Button that is next to the language choice ComboBox.
 
 EventOverview:
@@ -47,7 +47,7 @@ Settle Debts:
 
 - To see the bank details of the receiver, press on the debt to open a dropdown menu that shows all information, if it exists.
 - To settle a debt, press the corresponding Mark Received Button.
-- To undo a settled debt in case of an error, press the corresponding Undo Button.
+- To undo a settled debt in case of an error, press the corresponding Undo Button. The undo option is not available anymore, if you go back and come back to the Settle Debts screen.
 
 AdminOverview:
 
@@ -55,7 +55,7 @@ AdminOverview:
 - To see an event, select it from the TableView and press Show Event.
 - To delete an event, select it from the TableView and press Delete Event.
 - To export an event, select it from the TableView and press Export Event.
-- To import an event, select it from the TableView and press Import Event.
+- To import an event, press Import Event and select a JSON file corresponding to an event.
 
 Technical Features:
 - websockets -> Almost everywhere inside the app. (They also use the REST Endpoints)
