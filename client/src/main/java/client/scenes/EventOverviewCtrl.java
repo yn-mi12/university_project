@@ -18,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -30,6 +31,8 @@ import org.jetbrains.annotations.NotNull;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
+
+import static javafx.scene.input.KeyCode.ENTER;
 
 public class EventOverviewCtrl implements Initializable {
     private final ServerUtilsEvent server;
@@ -724,5 +727,13 @@ public class EventOverviewCtrl implements Initializable {
                 });
             }
         });
+    }
+    public void keyPressed(KeyEvent e) {
+        //Point p = MouseInfo.getPointerInfo().getLocation();
+        switch (e.getCode()) {
+            case ESCAPE:
+                goBack();
+                break;
+        }
     }
 }

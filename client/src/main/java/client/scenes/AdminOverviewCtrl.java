@@ -17,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -386,5 +387,17 @@ public class AdminOverviewCtrl implements Initializable {
                 eventCreationDateColumn.widthProperty().get() +
                 eventLastUpdateDateColumn.widthProperty().get();
         eventTitleColumn.prefWidthProperty().bind(eventList.widthProperty().subtract(w));
+    }
+    public void keyPressed(KeyEvent e) {
+        switch (e.getCode()) {
+            case ENTER:
+                showEvent();
+                break;
+            case ESCAPE:
+                goBack();
+                break;
+            default:
+                break;
+        }
     }
 }

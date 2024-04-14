@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -76,6 +77,18 @@ public class AdminPopupCtrl implements Initializable {
             enterAdminLabel.setStyle(Main.changeUI(enterAdminLabel));
             insertedToken.setStyle(Main.changeUI(insertedToken));
             incorrectToken.setStyle(Main.changeUI(incorrectToken));
+        }
+    }
+    public void keyPressed(KeyEvent e) {
+        switch (e.getCode()) {
+            case ENTER:
+                login();
+                break;
+            case ESCAPE:
+                cancel();
+                break;
+            default:
+                break;
         }
     }
 }

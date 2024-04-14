@@ -95,6 +95,7 @@ public class SplittyCtrl {
         this.eventCtrl.setSelectedEvent(selectedEvent);
         this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
         primaryStage.setScene(event);
+        event.setOnKeyPressed(e -> eventCtrl.keyPressed(e));
         event.getWindow().centerOnScreen();
         eventCtrl.expensesNotSelectedPart();
         eventCtrl.expensesIncludingParticipant();
@@ -174,7 +175,7 @@ public class SplittyCtrl {
         primaryStage.setTitle("Admin Login");
         primaryStage.setScene(adminPopup);
         adminPopup.getWindow().centerOnScreen();
-        //adminPopup.setOnKeyPressed(e -> adminPopupCtrl.keyPressed(e));
+        adminPopup.setOnKeyPressed(e -> adminPopupCtrl.keyPressed(e));
         Main.setPosition("adminLoginScreen");
     }
 
@@ -188,6 +189,7 @@ public class SplittyCtrl {
         primaryStage.setScene(adminOverview);
         adminOverviewCtrl.refresh();
         adminOverview.getWindow().centerOnScreen();
+        adminOverview.setOnKeyPressed(e -> adminOverviewCtrl.keyPressed(e));
         Main.setPosition("adminOverviewScreen");
     }
 
