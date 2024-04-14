@@ -203,6 +203,7 @@ public class SplittyCtrl {
     public void showSetServer() {
         primaryStage.setTitle("Set Server");
         primaryStage.setScene(setServer);
+        setServer.setOnKeyPressed(e -> setServerCtrl.keyPressed(e));
         setServer.getWindow().centerOnScreen();
     }
 
