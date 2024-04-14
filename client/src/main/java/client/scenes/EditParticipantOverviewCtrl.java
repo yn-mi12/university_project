@@ -33,6 +33,14 @@ public class EditParticipantOverviewCtrl implements Initializable {
     public Button deleteButton;
     @FXML
     public Label allParticipantsLabel;
+    @FXML
+    public Label confirmLabel1;
+    @FXML
+    public Label confirmLabel2;
+    @FXML
+    public Label confirmButton;
+    @FXML
+    public Label confirmCancelButton;
     private Participant selectedParticipant;
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
@@ -111,15 +119,31 @@ public class EditParticipantOverviewCtrl implements Initializable {
         setParticipant();
         try {
             if (!checkParticipantInExpenses()){
-                server.deleteParticipant(server.getParticipantByID(selectedParticipant.getId()));
-                event.deleteParticipant(selectedParticipant);
-                server.send("/app/updated",event);
-                noDeleteParticipant.visibleProperty().setValue(false);
-                cancel();
+                Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmationDialog.setTitle("Confirmation");
+                confirmationDialog.setHeaderText(confirmLabel1.getText());
+                confirmationDialog.setContentText(confirmLabel2.getText());
+
+                ButtonType okButton = new ButtonType(confirmButton.getText(), ButtonBar.ButtonData.OK_DONE);
+                ButtonType cancelButton = new ButtonType(confirmCancelButton.getText(), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+                confirmationDialog.getButtonTypes().setAll(okButton, cancelButton);
+
+                confirmationDialog.showAndWait().ifPresent(response -> {
+                    if (response == okButton){
+                        System.out.println("Deleting participant: " + selectedParticipant.getId());
+                        server.deleteParticipant(server.getParticipantByID(selectedParticipant.getId()));
+                        event.deleteParticipant(selectedParticipant);
+                        server.send("/app/updated",event);
+                        noDeleteParticipant.visibleProperty().setValue(false);
+                        cancel();
+                    }else{
+                        controller.showEditParticipantOverview();
+                    }
+                });
             }else{
                 noDeleteParticipant.visibleProperty().setValue(true);
             }
-
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);

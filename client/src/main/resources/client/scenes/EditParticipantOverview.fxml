@@ -10,6 +10,10 @@
         <Button fx:id="editButton" layoutX="520.0" layoutY="66.0" mnemonicParsing="false" onAction="#editParticipant" text="%edit_button" />
         <Button fx:id="deleteButton" layoutX="520.0" layoutY="107.0" mnemonicParsing="false" onAction="#deleteParticipant" text="%delete" />
         <Label fx:id="allParticipantsLabel" layoutX="51.0" layoutY="5.0" text="%all_participants">
+        <Label fx:id="confirmLabel1" text="%confPartLabel1" visible="false"/>
+        <Label fx:id="confirmLabel2" text="%confPartLabel2" visible="false"/>
+        <Label fx:id="confirmButton" text="%ok" visible="false"/>
+        <Label fx:id="confirmCancelButton" text="%cancel" visible="false"/>
             <font>
                 <Font size="22.0" />
             </font>
