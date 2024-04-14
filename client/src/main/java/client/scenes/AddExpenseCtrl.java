@@ -42,6 +42,7 @@ public class AddExpenseCtrl implements Initializable {
     public Button cancelButton;
     @FXML
     public AnchorPane background;
+    public Label ctrlshiftLabel;
     private EventOverviewCtrl ctrl;
     private Event event;
     private final ServerUtilsEvent server;
@@ -276,16 +277,8 @@ public class AddExpenseCtrl implements Initializable {
         this.delete = delete;
     }
 
-    public void setExpensePayer(Participant expensePayer) {
-        this.expensePayer = expensePayer;
-    }
-
     public void setOldExpensePayer(Participant oldExpensePayer) {
         this.oldExpensePayer = oldExpensePayer;
-    }
-
-    public void setWhoPaid(String fullName) {
-        this.whoPaid.setValue(new Label(fullName));
     }
 
     @Override
@@ -300,9 +293,15 @@ public class AddExpenseCtrl implements Initializable {
             }
         });
         List<Label> currencies = new ArrayList<>();
-        currencies.add(new Label("USD"));
-        currencies.add(new Label("EUR"));
-        currencies.add(new Label("CHF"));
+        Label l =new Label("USD");
+        l.setStyle("-fx-text-fill: black");
+        currencies.add(l);
+        l =new Label("EUR");
+        l.setStyle("-fx-text-fill: black");
+        currencies.add(l);
+        l =new Label("CHF");
+        l.setStyle("-fx-text-fill: black");
+        currencies.add(l);
         currency.setItems(FXCollections.observableList(currencies));
         whoPaid.setCellFactory(new Callback<>() {
             @Override
@@ -375,6 +374,7 @@ public class AddExpenseCtrl implements Initializable {
             }));
             Main.languageFeedback(currency);
             Main.languageFeedback(whoPaid);
+            ctrlshiftLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
         }
     }
 }

@@ -46,6 +46,7 @@ public class StartScreenCtrl implements Initializable {
     private Control control;
     @FXML
     public Button downloadTemplateButton;
+    public Text highContrastLabel;
     private ObservableList<String> data;
     private final SplittyCtrl controller;
     @FXML
@@ -273,9 +274,10 @@ public class StartScreenCtrl implements Initializable {
         Main.buttonFeedback(setServers);
         downloadTemplateButton.setStyle(Main.changeUI(downloadTemplateButton));
         Main.buttonFeedback(downloadTemplateButton);
+        highContrastLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
     }
 
-        public void refresh() {
+    public void refresh() {
         emptyTitle.setVisible(false);
         emptyCode.setVisible(false);
         invalidCode.setVisible(false);

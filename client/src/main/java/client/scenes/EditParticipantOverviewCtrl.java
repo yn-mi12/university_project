@@ -11,10 +11,7 @@ import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
@@ -37,6 +34,14 @@ public class EditParticipantOverviewCtrl implements Initializable {
     public Button deleteButton;
     @FXML
     public Label allParticipantsLabel;
+    @FXML
+    public Label confirmLabel1;
+    @FXML
+    public Label confirmLabel2;
+    @FXML
+    public Label confirmButton;
+    @FXML
+    public Label confirmCancelButton;
     private Participant selectedParticipant;
     private final ServerUtilsEvent server;
     private final SplittyCtrl controller;
@@ -114,13 +119,30 @@ public class EditParticipantOverviewCtrl implements Initializable {
     public void deleteParticipant() {
         setParticipant();
         try {
-            if (!checkParticipantInExpenses()) {
-                server.deleteParticipant(server.getParticipantByID(selectedParticipant.getId()));
-                event.deleteParticipant(selectedParticipant);
-                server.send("/app/updated", event);
-                noDeleteParticipant.visibleProperty().setValue(false);
-                cancel();
-            } else {
+            if (!checkParticipantInExpenses()){
+                Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmationDialog.setTitle("Confirmation");
+                confirmationDialog.setHeaderText(confirmLabel1.getText());
+                confirmationDialog.setContentText(confirmLabel2.getText());
+
+                ButtonType okButton = new ButtonType(confirmButton.getText(), ButtonBar.ButtonData.OK_DONE);
+                ButtonType cancelButton = new ButtonType(confirmCancelButton.getText(), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+                confirmationDialog.getButtonTypes().setAll(okButton, cancelButton);
+
+                confirmationDialog.showAndWait().ifPresent(response -> {
+                    if (response == okButton){
+                        System.out.println("Deleting participant: " + selectedParticipant.getId());
+                        server.deleteParticipant(server.getParticipantByID(selectedParticipant.getId()));
+                        event.deleteParticipant(selectedParticipant);
+                        server.send("/app/updated",event);
+                        noDeleteParticipant.visibleProperty().setValue(false);
+                        cancel();
+                    }else{
+                        controller.showEditParticipantOverview();
+                    }
+                });
+            }else{
                 noDeleteParticipant.visibleProperty().setValue(true);
             }
 
@@ -168,6 +190,8 @@ public class EditParticipantOverviewCtrl implements Initializable {
                     "-fx-border-color: #211951; -fx-control-inner-background: #836FFF; " +
                     "-fx-control-inner-background-alt: derive(-fx-control-inner-background, 15%);" +
                     "-fx-color-label-visible: #F0F3FF");
+            allParticipantsLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+            noDeleteParticipant.setStyle(Main.changeUI(noDeleteParticipant));
         }
     }
 

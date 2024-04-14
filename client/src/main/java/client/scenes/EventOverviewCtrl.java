@@ -7,8 +7,6 @@ import com.google.inject.Inject;
 import commons.*;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -27,7 +25,7 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
-//import java.math.RoundingMode;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -43,6 +41,8 @@ public class EventOverviewCtrl implements Initializable {
     public Label participantsLabel;
     @FXML
     public Label forLabel;
+
+
     @FXML
     public AnchorPane background;
     @FXML
@@ -70,7 +70,23 @@ public class EventOverviewCtrl implements Initializable {
     @FXML
     public Label participantsLabel2;
     @FXML
+    public Label shareLabel;
+    @FXML
+    public Label allLabel;
+    @FXML
     public Tab allTab;
+    @FXML
+    public Label confirmLabelEvent1;
+    @FXML
+    public Label confirmLabelEvent2;
+    @FXML
+    public Label confirmLabelExpense1;
+    @FXML
+    public Label confirmLabelExpense2;
+    @FXML
+    public Label confirmButton;
+    @FXML
+    public Label confirmCancelButton;
 
     private Participant expensePayer;
 
@@ -93,6 +109,7 @@ public class EventOverviewCtrl implements Initializable {
     private Label trash;
     private Event event;
     public boolean isAdmin = false;
+    private double totalAmount = 0;
 
     @FXML
     private ListView<String> allExpenses;
@@ -135,12 +152,17 @@ public class EventOverviewCtrl implements Initializable {
         ObservableList<Label> names = FXCollections.observableArrayList();
         HashMap<Label, Participant> map = new HashMap<>();
         List<String> participantsArrayList = new ArrayList<>();
+        expensesNotSelectedPart();
+        allExpenses.refresh();
+        fromExpenses.refresh();
+        includingExpenses.refresh();
         for (Participant p : participants) {
             Label item = new Label(p.getFirstName() + " " + p.getLastName());
             item.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
             names.add(item);
             map.put(item, p);
-            participantsArrayList.add(p.getFirstName() + " " + p.getLastName());
+            participantsArrayList.add(p.getFirstName() + " " + p.getLastName() + ", " + shareLabel.getText()
+                    + " " + getShare(p));
         }
         part.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -156,10 +178,27 @@ public class EventOverviewCtrl implements Initializable {
         part.getItems().setAll(names);
         participantList.setItems(FXCollections.observableList(participantsArrayList));
         inviteCode.setText(event.getId());
-        expensesNotSelectedPart();
-        allExpenses.refresh();
-        fromExpenses.refresh();
-        includingExpenses.refresh();
+    }
+
+    private String getShare(Participant p) {
+        double share = 0.0;
+        List<Expense> expenses = server.getExpensesByEventId(event);
+        for(Expense e : expenses) {
+            for(ExpenseParticipant ep : e.getDebtors()) {
+                if(ep.isOwner() && ep.getParticipant().equals(p)) {
+                    share += e.getAmount();
+                }
+            }
+        }
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        String returned = "";
+        if(this.totalAmount != 0) {
+            returned = df.format(100.0 * share/this.totalAmount) + "%";
+        } else {
+            returned = "0.00%";
+        }
+        return returned;
     }
 
     @SuppressWarnings("java.lang.ClassCastException")
@@ -208,36 +247,27 @@ public class EventOverviewCtrl implements Initializable {
             }
         }));
 
-        allExpenses.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (allExpenses.getSelectionModel().getSelectedItem() != null) {
-                    viewButton.setDisable(false);
-                    deleteButton.setDisable(false);
-                    viewChoice = "all";
-                }
+        allExpenses.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            if (allExpenses.getSelectionModel().getSelectedItem() != null) {
+                viewButton.setDisable(false);
+                deleteButton.setDisable(false);
+                viewChoice = "all";
             }
         });
 
-        fromExpenses.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (fromExpenses.getSelectionModel().getSelectedItem() != null) {
-                    viewButton.setDisable(false);
-                    deleteButton.setDisable(false);
-                    viewChoice = "from";
-                }
+        fromExpenses.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            if (fromExpenses.getSelectionModel().getSelectedItem() != null) {
+                viewButton.setDisable(false);
+                deleteButton.setDisable(false);
+                viewChoice = "from";
             }
         });
 
-        includingExpenses.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (includingExpenses.getSelectionModel().getSelectedItem() != null) {
-                    viewButton.setDisable(false);
-                    deleteButton.setDisable(false);
-                    viewChoice = "include";
-                }
+        includingExpenses.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            if (includingExpenses.getSelectionModel().getSelectedItem() != null) {
+                viewButton.setDisable(false);
+                deleteButton.setDisable(false);
+                viewChoice = "include";
             }
         });
 
@@ -311,21 +341,29 @@ public class EventOverviewCtrl implements Initializable {
         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
                 "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
                 "-fx-border-width: 1.5; -fx-border-insets: -1");
-        deleteEventButton.setOnMouseEntered(e -> deleteEventButton.setStyle("-fx-background-color: #c70000; " +
+        deleteEventButton.setOnMouseEntered(e -> {deleteEventButton.setStyle("-fx-background-color: #c70000; " +
                 "-fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
-                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;"));
-        deleteEventButton.setOnMouseExited(e ->         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;" +
+                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;");
+            trash.setStyle("-fx-text-fill: #F0F3FF");
+        });
+        deleteEventButton.setOnMouseExited(e ->         {deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;" +
                 "-fx-font-weight: bolder;"+
                 "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
-                "-fx-border-width: 1.5; -fx-border-insets: -1"));
+                "-fx-border-width: 1.5; -fx-border-insets: -1");
+            trash.setStyle("-fx-text-fill: #ff3d3d");
+        });
         deleteEventButton.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 deleteEventButton.setStyle("-fx-background-color: #c70000; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
                         "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;");
+                trash.setStyle("-fx-text-fill: #F0F3FF");
             }
-            else         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
+            else {
+                deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
                     "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
                     "-fx-border-width: 1.5; -fx-border-insets: -1");
+                trash.setStyle("-fx-text-fill: #ff3d3d");
+            }
         });
         addExpenseButton.setStyle(Main.changeUI(addExpenseButton));
         Main.buttonFeedback(addExpenseButton);
@@ -359,6 +397,7 @@ public class EventOverviewCtrl implements Initializable {
                 "-fx-border-color: #211951; -fx-control-inner-background: #836FFF; " +
                 "-fx-control-inner-background-alt: derive(-fx-control-inner-background, 15%);" +
                 "-fx-color-label-visible: #F0F3FF");
+        inviteCode.setStyle("-fx-text-fill: black;-fx-font-weight: bolder");
     }
 
     public void addExpense() {
@@ -369,15 +408,18 @@ public class EventOverviewCtrl implements Initializable {
         long id = 0;
         switch(viewChoice) {
             case "all" -> {
-                id = Long.valueOf(allExpenses.getSelectionModel().getSelectedItem().split(":")[0]);
+                String selected = allExpenses.getSelectionModel().getSelectedItem().split("\\[")[1];
+                id = Long.valueOf(selected.substring(0, selected.length() - 1));
                 allExpenses.getSelectionModel().clearSelection();
             }
             case "from" -> {
-                id = Long.valueOf(fromExpenses.getSelectionModel().getSelectedItem().split(":")[0]);
+                String selected = allExpenses.getSelectionModel().getSelectedItem().split("\\[")[1];
+                id = Long.valueOf(selected.substring(0, selected.length() - 1));
                 fromExpenses.getSelectionModel().clearSelection();
             }
             case "include" -> {
-                id = Long.valueOf(includingExpenses.getSelectionModel().getSelectedItem().split(":")[0]);
+                String selected = allExpenses.getSelectionModel().getSelectedItem().split("\\[")[1];
+                id = Long.valueOf(selected.substring(0, selected.length() - 1));
                 includingExpenses.getSelectionModel().clearSelection();
             }
         }
@@ -426,22 +468,47 @@ public class EventOverviewCtrl implements Initializable {
         viewButton.setDisable(true);
         expenseCtrl.setDelete(true);
         Expense selected = getExpense();
+        //HERE
+        Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationDialog.setTitle("Confirmation");
+        confirmationDialog.setHeaderText(confirmLabelExpense1.getText());
+        confirmationDialog.setContentText(confirmLabelExpense2.getText());
 
-        Participant owner = null;
-        for(ExpenseParticipant ep : selected.getDebtors()) {
-            if(ep.isOwner())
-                owner = ep.getParticipant();
-        }
-        expenseCtrl.setEvent(owner, this);
-        expenseCtrl.setOldExpense(selected);
-        expenseCtrl.setOldExpensePayer(owner);
-        expenseCtrl.ok();
+        ButtonType okButton = new ButtonType(confirmButton.getText(), ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType(confirmCancelButton.getText(), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        confirmationDialog.getButtonTypes().setAll(okButton, cancelButton);
+
+        confirmationDialog.showAndWait().ifPresent(response -> {
+            if (response == okButton){
+                System.out.println("Deleting expense: " + selected.getId());
+                Participant owner = null;
+                for(ExpenseParticipant ep : selected.getDebtors()) {
+                    if(ep.isOwner())
+                        owner = ep.getParticipant();
+                }
+                expenseCtrl.setEvent(owner, this);
+                expenseCtrl.setOldExpense(selected);
+                expenseCtrl.setOldExpensePayer(owner);
+                expenseCtrl.ok();
+
+                event = server.getByID(event.getId());
+                server.send("/app/updated",event);
+                expensesNotSelectedPart();
+                expensesIncludingParticipant();
+                expensesNotSelectedPart();
+                expenseCtrl.setOldExpense(null);
+                expenseCtrl.setOldExpensePayer(null);
+            }else{
+                controller.showEventOverview(event);
+            }
+        });
 
         event = server.getByID(event.getId());
         server.send("/app/updated",event);
         expensesNotSelectedPart();
         expensesIncludingParticipant();
-        expensesNotSelectedPart();
+        expensesFromParticipant();
         expenseCtrl.setOldExpense(null);
         expenseCtrl.setOldExpensePayer(null);
     }
@@ -483,14 +550,6 @@ public class EventOverviewCtrl implements Initializable {
                     initial = partToAmount.get(ep.getParticipant());
                     partToAmount.put(ep.getParticipant(), initial + ((1.0 - (ep.getShare()) / 100.0) * e.getAmount()));
                 }
-            }
-        }
-
-        for(Participant p : participants) {
-            List<Debt> paid = server.getDebtsPaid(p);
-            for(Debt d : paid) {
-                double initial = partToAmount.get(p);
-                partToAmount.put(p, initial + d.getAmount());
             }
         }
         return partToAmount;
@@ -543,21 +602,37 @@ public class EventOverviewCtrl implements Initializable {
 
     public void deleteEvent() {
         try {
-            event.setId(server.getByID(event.getId()).getId());
-            server.send("/app/deleted", event);
-            if(!controller.getAdmin()) {
-                Config.get().removePastCode(event.getId());
-                Config.get().save();
-            }
+            Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationDialog.setTitle("Confirmation");
+            confirmationDialog.setHeaderText(confirmLabelEvent1.getText());
+            confirmationDialog.setContentText(confirmLabelEvent2.getText());
+
+            ButtonType okButton = new ButtonType(confirmButton.getText(), ButtonBar.ButtonData.OK_DONE);
+            ButtonType cancelButton = new ButtonType(confirmCancelButton.getText(), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            confirmationDialog.getButtonTypes().setAll(okButton, cancelButton);
+
+            confirmationDialog.showAndWait().ifPresent(response -> {
+                if (response == okButton){
+                    System.out.println("Deleting event: " + event.getId());
+                    event.setId(server.getByID(event.getId()).getId());
+                    server.send("/app/deleted", event);
+                    if(!controller.getAdmin()) {
+                        Config.get().removePastCode(event.getId());
+                        Config.get().save();
+                    }
+                    goBack();
+                }else{
+                    controller.showEventOverview(event);
+                }
+            });
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
-            return;
         }
-        goBack();
     }
 
     public void copyCode() {
@@ -575,6 +650,8 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void expensesNotSelectedPart() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
         List<Expense> expenses = server.getExpensesByEventId(event);
         List<String> titles = new ArrayList<>();
         double totalAmount = 0;
@@ -589,16 +666,15 @@ public class EventOverviewCtrl implements Initializable {
                             owner = expenseParticipant.getParticipant();
                         }
                     }
-                    String expenseString = expense.getId() + ": " + owner.getFirstName() + " " + owner.getLastName() + " "
-                            + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
+                    String expenseString = expense.getDate() + ": " + owner.getFirstName() + " " + owner.getLastName() + " "
+                            + paidLabel.getText() + " " + df.format(expense.getAmount()) + " " + forLabel.getText() + " " + expense.getDescription()
+                                + " (" + getParts(expense) + ") [" + expense.getId() + "]";
                     titles.add(expenseString);
                     totalAmount += expense.getAmount();
                 }
             }
         }
-
-        DecimalFormat df = new DecimalFormat("#.##");
-//        df.setRoundingMode(RoundingMode.HALF_UP);
+        this.totalAmount = totalAmount;
         String text = totalCost.getText().replaceAll("[0-9]", "").replace(".", "");
         if (text.charAt(text.length() - 1) == ' ')
             totalCost.setText(text + df.format(totalAmount));
@@ -608,6 +684,8 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void expensesFromParticipant() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
         String participantsName = part.getValue().getText();
         Participant participant = event.getParticipantByName(participantsName);
         List<Expense> expenses = server.getExpensesByEventId(event);
@@ -625,8 +703,9 @@ public class EventOverviewCtrl implements Initializable {
                 }
             }
             for (Expense expense : expensesFromParticipant) {
-                String expenseString = expense.getId() + ": " +participant.getFirstName() + " " + participant.getLastName() +
-                        " " + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
+                String expenseString = expense.getDate() + ": " +participant.getFirstName() + " " + participant.getLastName() +
+                        " " + paidLabel.getText() + " " + df.format(expense.getAmount()) + " " + forLabel.getText() + " " + expense.getDescription()
+                            + " (" + getParts(expense) + ") [" + expense.getId() + "]";
                 titles.add(expenseString);
             }
         }
@@ -647,6 +726,8 @@ public class EventOverviewCtrl implements Initializable {
 
     private void setIncludingExpenses(List<Expense> expenses, Participant participant,
                                       List<Expense> expensesIncludingParticipant, List<String> titles) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
         for (Expense expense : expenses) {
             if(expense.getAmount() > 0) {
                 List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
@@ -666,10 +747,25 @@ public class EventOverviewCtrl implements Initializable {
                     owner = expenseParticipant.getParticipant();
                 }
             }
-            String expenseString = expense.getId() + ": " + owner.getFirstName() +  " " + owner.getLastName() +  " "
-                    + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
+            String expenseString = expense.getDate() + ": " + owner.getFirstName() +  " " + owner.getLastName() +  " "
+                    + paidLabel.getText() + " " + df.format(expense.getAmount()) + " " + forLabel.getText() + " " + expense.getDescription()
+                        + " (" + getParts(expense) + ") [" + expense.getId() + "]";
             titles.add(expenseString);
         }
+    }
+
+    private String getParts(Expense e) {
+        String result = "";
+        int count = 0;
+        for(ExpenseParticipant ep : e.getDebtors()) {
+            if(ep.getShare() != 0) {
+                result += ep.getParticipant().getFirstName() + " " + ep.getParticipant().getLastName() + ", ";
+                count++;
+            }
+        }
+        if(count == server.getByID(event.getId()).getParticipants().size())
+            return allLabel.getText();
+        return result.substring(0, result.length() - 2);
     }
 
     public void hideTabPanes() {

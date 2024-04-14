@@ -3,9 +3,7 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-import commons.Debt;
-import commons.Event;
-import commons.Participant;
+import commons.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -19,11 +17,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+//import java.math.RoundingMode;
+import java.math.RoundingMode;
 import java.net.URL;
+import java.sql.Date;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.time.LocalDate;
+import java.util.*;
 
 public class SettleDebtsCtrl implements Initializable {
     @FXML
@@ -63,6 +63,8 @@ public class SettleDebtsCtrl implements Initializable {
     private Label undo;
     @FXML
     private Label settledDebtsLabel;
+    @FXML
+    private Label settledDesc;
 
     @Inject
     public SettleDebtsCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
@@ -87,15 +89,14 @@ public class SettleDebtsCtrl implements Initializable {
         }
 
         DecimalFormat df = new DecimalFormat("#.##");
-//        df.setRoundingMode(RoundingMode.HALF_UP);
+        df.setRoundingMode(RoundingMode.HALF_UP);
 
         setOpenDebts(df);
         setRemovedDebts(df);
     }
 
     private void setOpenDebts(DecimalFormat df) {
-        double groupAmount = 0;
-        for (Debt d : debts) {
+        for(Debt d : debts) {
             String dString = d.getDebtor().getFirstName() + " " + d.getDebtor().getLastName() + " " + give.getText()
                     + " " + d.getCreditor().getFirstName() + " " + d.getCreditor().getLastName()
                     + " " + df.format(d.getAmount());
@@ -129,7 +130,6 @@ public class SettleDebtsCtrl implements Initializable {
             creditorDetails.setExpanded(false);
             row.getChildren().addAll(creditorDetails, receivedButton);
             openDebtBox.getChildren().add(row);
-            groupAmount += d.getAmount();
         }
     }
 
@@ -173,13 +173,17 @@ public class SettleDebtsCtrl implements Initializable {
     }
 
     public void goBack() {
-        List<Debt> paid = new ArrayList<>();
-        for (Debt d : removed) {
-            paid.add(new Debt(d.getCreditor(), d.getDebtor(), d.getAmount()));
+        for(Debt d : removed) {
+            String description = settledDesc.getText().substring(0, settledDesc.getText().length() - 1);
+            Expense e = new Expense(description, "EUR", d.getAmount(), Date.valueOf(LocalDate.now()));
+            Set<ExpenseParticipant> debtors = new HashSet<>();
+            debtors.add(new ExpenseParticipant(e, d.getDebtor(), 0, true));
+            debtors.add(new ExpenseParticipant(e, d.getCreditor(), 100, false));
+            e.setDebtors(debtors);
+            server.addExpense(e, event);
+            event = server.getByID(event.getId());
         }
-        server.addAllDebts(paid, event);
-        event = server.getByID(event.getId());
-        server.send("/app/updated", event);
+        server.send("/app/updated",event);
         removed = new ArrayList<>();
         settledBox.getChildren().clear();
         openDebtBox.getChildren().clear();

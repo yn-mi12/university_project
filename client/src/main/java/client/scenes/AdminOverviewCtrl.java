@@ -269,9 +269,8 @@ public class AdminOverviewCtrl implements Initializable {
     }
     public void deleteEvent() {
         try {
-            Event event = getEvent();
-            event.setId(server.getByID(event.getId()).getId());
-            server.send("/app/deleted", event);
+            //server.deleteEvent(getEvent());
+            server.send("/app/deleted",getEvent());
             refresh();
         } catch (WebApplicationException e) {
 
@@ -334,7 +333,6 @@ public class AdminOverviewCtrl implements Initializable {
                     server.deleteEvent(find);
                     addJsonToServer(event, participants, expenses, debts);
                 }
-                // TODO tags when we have a proper system for those
                 refresh();
             } catch (FileNotFoundException | JsonProcessingException e) {
                 throw new RuntimeException(e);
@@ -370,13 +368,7 @@ public class AdminOverviewCtrl implements Initializable {
         }
 
         saved = server.getByID(saved.getId());
-        List<Debt> newDebts = new ArrayList<>();
-        for(Debt d : debts) {
-            Debt newDebt = new Debt(idToNewPart.get(d.getDebtor().getId()),
-                    idToNewPart.get(d.getCreditor().getId()), d.getAmount());
-            newDebts.add(newDebt);
-        }
-        server.addAllDebts(newDebts, saved);
+        server.send("/app/updated",saved);
     }
 
     private void formatTable() {
