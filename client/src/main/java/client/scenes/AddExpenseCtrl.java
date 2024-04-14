@@ -37,6 +37,8 @@ public class AddExpenseCtrl implements Initializable {
     @FXML
     public Label addExpenseLabel;
     @FXML
+    public Label notAllFilledLabel;
+    @FXML
     public Button addButton;
     @FXML
     public Button cancelButton;
@@ -127,6 +129,7 @@ public class AddExpenseCtrl implements Initializable {
     }
 
     public void ok() {
+        notAllFilledLabel.setVisible(false);
         Event updated;
         try {
             if (oldExpense != null) {
@@ -135,11 +138,17 @@ public class AddExpenseCtrl implements Initializable {
                     server.deleteExpense(oldExpense);
                     return;
                 }
-                //server.updateExpenseAmount(oldExpense.getAmount() * -1.0, oldExpense);
                 server.deleteExpense(oldExpense);
                 event = server.getByID(event.getId());
                 oldExpense = null;
                 oldExpensePayer = null;
+            }
+
+            if(whoPaid.getValue() == null || whatFor.getText().isEmpty() || howMuch.getText().isEmpty() ||
+                    currency.getValue().getText().isEmpty() || !(allHaveToPay.isSelected() || (someHaveToPay.isSelected()
+                        && whoPays.getSelectionModel().getSelectedItems() == null))) {
+                notAllFilledLabel.setVisible(true);
+                return;
             }
 
             expensePayer = event.getParticipantByName(whoPaid.getValue().getText());
@@ -342,6 +351,7 @@ public class AddExpenseCtrl implements Initializable {
             }
         });
         if (Main.isContrastMode()) {
+            notAllFilledLabel.setStyle(Main.changeUI(notAllFilledLabel));
             background.setStyle("-fx-background-color: #69e0ab;");
             addButton.setStyle(Main.changeUI(addButton));
             Main.buttonFeedback(addButton);
