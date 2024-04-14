@@ -147,13 +147,11 @@ public class AddParticipantCtrl implements Initializable {
     public void ok() {
         noNameLabel.setVisible(false);
         try {
+            if (firstName.getText().isEmpty() || lastName.getText().isEmpty()) {
+                noNameLabel.setVisible(true);
+                return;
+            }
             if (!editPart) {
-
-                if (firstName.getText().isEmpty() || lastName.getText().isEmpty()) {
-                    noNameLabel.setVisible(true);
-                    return;
-                }
-
                 participant = getParticipant();
                 participantExists.visibleProperty().setValue(false);
                 if (participant != null && !participantAlreadyExists()) {
