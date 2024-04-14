@@ -41,6 +41,8 @@ public class EventOverviewCtrl implements Initializable {
     public Label participantsLabel;
     @FXML
     public Label forLabel;
+
+
     @FXML
     public AnchorPane background;
     @FXML
@@ -69,6 +71,18 @@ public class EventOverviewCtrl implements Initializable {
     public Label participantsLabel2;
     @FXML
     public Tab allTab;
+    @FXML
+    public Label confirmLabelEvent1;
+    @FXML
+    public Label confirmLabelEvent2;
+    @FXML
+    public Label confirmLabelExpense1;
+    @FXML
+    public Label confirmLabelExpense2;
+    @FXML
+    public Label confirmButton;
+    @FXML
+    public Label confirmCancelButton;
 
     private Participant expensePayer;
 
@@ -427,10 +441,16 @@ public class EventOverviewCtrl implements Initializable {
         //HERE
         Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
         confirmationDialog.setTitle("Confirmation");
-        confirmationDialog.setHeaderText("Delete Expense");
-        confirmationDialog.setContentText("Are you sure you want to delete the expense?");
+        confirmationDialog.setHeaderText(confirmLabelExpense1.getText());
+        confirmationDialog.setContentText(confirmLabelExpense2.getText());
+
+        ButtonType okButton = new ButtonType(confirmButton.getText(), ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType(confirmCancelButton.getText(), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        confirmationDialog.getButtonTypes().setAll(okButton, cancelButton);
+
         confirmationDialog.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK){
+            if (response == okButton){
                 System.out.println("Deleting expense: " + selected.getId());
                 Participant owner = null;
                 for(ExpenseParticipant ep : selected.getDebtors()) {
@@ -555,8 +575,14 @@ public class EventOverviewCtrl implements Initializable {
         try {
             Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
             confirmationDialog.setTitle("Confirmation");
-            confirmationDialog.setHeaderText("Delete Event");
-            confirmationDialog.setContentText("Are you sure you want to delete the " + event.getTitle() + " event?");
+            confirmationDialog.setHeaderText(confirmLabelEvent1.getText());
+            confirmationDialog.setContentText(confirmLabelEvent2.getText());
+
+            ButtonType okButton = new ButtonType(confirmButton.getText(), ButtonBar.ButtonData.OK_DONE);
+            ButtonType cancelButton = new ButtonType(confirmCancelButton.getText(), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            confirmationDialog.getButtonTypes().setAll(okButton, cancelButton);
+
             confirmationDialog.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK){
                     System.out.println("Deleting event: " + event.getId());

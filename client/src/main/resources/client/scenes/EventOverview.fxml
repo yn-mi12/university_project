@@ -96,6 +96,12 @@
     <Label fx:id="paidLabel" text="%paid" visible="false" />
     <Label fx:id="participantsLabel" text="%participants" visible="false" />
     <Label fx:id="forLabel" text="%for" visible="false" />
+    <Label fx:id="confirmLabelEvent1" text="%confEventLabel1" visible="false"/>
+    <Label fx:id="confirmLabelEvent2" text="%confEventLabel2" visible="false"/>
+    <Label fx:id="confirmLabelExpense1" text="%confExpenseLabel1" visible="false"/>
+    <Label fx:id="confirmLabelExpense2" text="%confExpenseLabel2" visible="false"/>
+    <Label fx:id="confirmButton" text="%ok" visible="false"/>
+    <Label fx:id="confirmCancelButton" text="%cancel" visible="false"/>
         <Label fx:id="trash" layoutX="23.0" layoutY="537.0" mouseTransparent="true" prefHeight="30.0" prefWidth="26.0" text="🗑" textFill="#da0404">
             <font>
                 <Font size="35.0" />
