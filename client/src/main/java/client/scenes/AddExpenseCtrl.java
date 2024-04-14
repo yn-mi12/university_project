@@ -143,12 +143,7 @@ public class AddExpenseCtrl implements Initializable {
                 oldExpensePayer = null;
             }
 
-            if(whoPaid.getValue() == null || whatFor.getText().isEmpty() || howMuch.getText().isEmpty() ||
-                    currency.getValue().getText().isEmpty() || !(allHaveToPay.isSelected() || (someHaveToPay.isSelected()
-                        && whoPays.getSelectionModel().getSelectedItems() == null))) {
-                notAllFilledLabel.setVisible(true);
-                return;
-            }
+            if (checkDetails()) return;
 
             expensePayer = event.getParticipantByName(whoPaid.getValue().getText());
             event = server.getByID(event.getId());
@@ -180,6 +175,25 @@ public class AddExpenseCtrl implements Initializable {
         clearFields();
         controller.showEventOverview(updated);
         server.send("/app/updated", updated);
+    }
+
+    private boolean checkDetails() {
+        if(whoPaid.getValue() == null || whatFor.getText().isEmpty() || howMuch.getText().isEmpty() || currency.getValue() == null
+            || date.getValue() == null) {
+            notAllFilledLabel.setVisible(true);
+            return true;
+        }
+        if(!(someHaveToPay.isSelected() || allHaveToPay.isSelected())) {
+            notAllFilledLabel.setVisible(true);
+            return true;
+        }
+        if(someHaveToPay.isSelected()) {
+            if(whoPays.getSelectionModel().getSelectedItems().isEmpty()) {
+                notAllFilledLabel.setVisible(true);
+                return true;
+            }
+        }
+        return false;
     }
 
     @FXML
