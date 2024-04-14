@@ -138,19 +138,6 @@ public class ServerUtilsEvent {
         }
     }
 
-    public Event editEventTitle(String editedTitle, Event event) {
-        try {
-            return ClientBuilder.newClient(new ClientConfig())
-                    .target(getServer()).path("/api/events/" + event.getId()+ "/title")
-                    .request(APPLICATION_JSON)
-                    .accept(APPLICATION_JSON)
-                    .put(Entity.entity(editedTitle, APPLICATION_JSON), Event.class);
-        } catch (BadRequestException | NotFoundException e) {
-            System.out.println("NOT_FOUND || BAD_REQUEST: while changing title to: " + editedTitle + " at Event: " + event.getId());
-            return null;
-        }
-    }
-
     public Participant addParticipant(Participant participant, Event event) {
         try {
             return ClientBuilder.newClient(new ClientConfig()) //
@@ -234,21 +221,6 @@ public class ServerUtilsEvent {
             System.out.println("Failed to add all debts");
         }
         return savedDebts;
-    }
-
-    public List<Debt> getDebtsPaid(Participant participant) {
-        List<Debt> debts = new ArrayList<>();
-        try {
-            debts.addAll(ClientBuilder.newClient(new ClientConfig())
-                    .target(server).path("api/debts/paid/" + participant.getId())
-                    .request(APPLICATION_JSON)
-                    .accept(APPLICATION_JSON)
-                    .get(new GenericType<>() {
-                    }));
-        } catch(NotFoundException e) {
-            System.out.println("This participant does not have any debts where they are the creditor");
-        }
-        return debts;
     }
 
     public void deleteExpense(Expense expense) {

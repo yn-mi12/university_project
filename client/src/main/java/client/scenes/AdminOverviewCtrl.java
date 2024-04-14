@@ -324,7 +324,6 @@ public class AdminOverviewCtrl implements Initializable {
                 List<Debt> debts = event.getDebts();
                 event.setParticipants(null);
                 event.setExpenses(null);
-                event.setDebts(null);
                 Event find = server.getByID(event.getId());
 
                 if(find == null) {
@@ -364,17 +363,7 @@ public class AdminOverviewCtrl implements Initializable {
             e.setDebtors(debtors);
             e.setEvent(saved);
             server.addExpense(e, saved);
-
         }
-
-        saved = server.getByID(saved.getId());
-        List<Debt> newDebts = new ArrayList<>();
-        for(Debt d : debts) {
-            Debt newDebt = new Debt(idToNewPart.get(d.getDebtor().getId()),
-                    idToNewPart.get(d.getCreditor().getId()), d.getAmount());
-            newDebts.add(newDebt);
-        }
-        server.addAllDebts(newDebts, saved);
     }
 
     private void formatTable() {

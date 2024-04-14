@@ -513,14 +513,6 @@ public class EventOverviewCtrl implements Initializable {
                 }
             }
         }
-
-        for(Participant p : participants) {
-            List<Debt> paid = server.getDebtsPaid(p);
-            for(Debt d : paid) {
-                double initial = partToAmount.get(p);
-                partToAmount.put(p, initial + d.getAmount());
-            }
-        }
         return partToAmount;
     }
 
@@ -603,6 +595,8 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void expensesNotSelectedPart() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
         List<Expense> expenses = server.getExpensesByEventId(event);
         List<String> titles = new ArrayList<>();
         double totalAmount = 0;
@@ -618,7 +612,7 @@ public class EventOverviewCtrl implements Initializable {
                         }
                     }
                     String expenseString = expense.getDate() + ": " + owner.getFirstName() + " " + owner.getLastName() + " "
-                            + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription()
+                            + paidLabel.getText() + " " + df.format(expense.getAmount()) + " " + forLabel.getText() + " " + expense.getDescription()
                                 + " (" + getParts(expense) + ") [" + expense.getId() + "]";
                     titles.add(expenseString);
                     totalAmount += expense.getAmount();
@@ -626,8 +620,6 @@ public class EventOverviewCtrl implements Initializable {
             }
         }
         this.totalAmount = totalAmount;
-        DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.HALF_UP);
         String text = totalCost.getText().replaceAll("[0-9]", "").replace(".", "");
         if (text.charAt(text.length() - 1) == ' ')
             totalCost.setText(text + df.format(totalAmount));
@@ -637,6 +629,8 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void expensesFromParticipant() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
         String participantsName = part.getValue().getText();
         Participant participant = event.getParticipantByName(participantsName);
         List<Expense> expenses = server.getExpensesByEventId(event);
@@ -655,7 +649,7 @@ public class EventOverviewCtrl implements Initializable {
             }
             for (Expense expense : expensesFromParticipant) {
                 String expenseString = expense.getDate() + ": " +participant.getFirstName() + " " + participant.getLastName() +
-                        " " + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription()
+                        " " + paidLabel.getText() + " " + df.format(expense.getAmount()) + " " + forLabel.getText() + " " + expense.getDescription()
                             + " (" + getParts(expense) + ") [" + expense.getId() + "]";
                 titles.add(expenseString);
             }
@@ -677,6 +671,8 @@ public class EventOverviewCtrl implements Initializable {
 
     private void setIncludingExpenses(List<Expense> expenses, Participant participant,
                                       List<Expense> expensesIncludingParticipant, List<String> titles) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
         for (Expense expense : expenses) {
             if(expense.getAmount() > 0) {
                 List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
@@ -697,7 +693,7 @@ public class EventOverviewCtrl implements Initializable {
                 }
             }
             String expenseString = expense.getDate() + ": " + owner.getFirstName() +  " " + owner.getLastName() +  " "
-                    + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription()
+                    + paidLabel.getText() + " " + df.format(expense.getAmount()) + " " + forLabel.getText() + " " + expense.getDescription()
                         + " (" + getParts(expense) + ") [" + expense.getId() + "]";
             titles.add(expenseString);
         }
