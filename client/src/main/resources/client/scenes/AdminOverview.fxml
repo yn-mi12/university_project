@@ -8,7 +8,7 @@
 <AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminOverviewCtrl">
     <children>
         <Button fx:id="backButton" layoutX="14.0" layoutY="8.0" mnemonicParsing="false" onAction="#goBack" text="⬅" />
-        <TableView fx:id="eventList" layoutX="14.0" layoutY="92.0" prefHeight="390.0" prefWidth="582.0">
+        <TableView fx:id="eventList" layoutX="14.0" layoutY="77.0" prefHeight="396.0" prefWidth="582.0">
             <placeholder>
                 <Label text="%aNoEvents" />
             </placeholder>
@@ -38,33 +38,33 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-        <Button fx:id="showButton" disable="true" layoutX="616.0" layoutY="93.0" minWidth="100" mnemonicParsing="false" onAction="#showEvent" prefHeight="30.0" text="%show_event_button">
+        <Button fx:id="showButton" disable="true" layoutX="616.0" layoutY="77.0" minWidth="100" mnemonicParsing="false" onAction="#showEvent" prefHeight="30.0" text="%show_event_button">
             <font>
                 <Font size="14.0" />
             </font>
         </Button>
-        <Button fx:id="showButtonD" disable="true" layoutX="616.0" layoutY="143.0" minWidth="100" mnemonicParsing="false" onAction="#deleteEvent" text="%deleteEvent" textFill="RED">
+        <Button fx:id="showButtonD" disable="true" layoutX="616.0" layoutY="128.0" minWidth="100" mnemonicParsing="false" onAction="#deleteEvent" text="%deleteEvent" textFill="RED">
             <font>
                 <Font size="14.0" />
             </font>
         </Button>
-        <Button fx:id="importButton" layoutX="616.0" layoutY="354.0" minWidth="100" mnemonicParsing="false" onAction="#importEvent" text="%importEvent">
+        <Button fx:id="importButton" layoutX="616.0" layoutY="336.0" minWidth="100" mnemonicParsing="false" onAction="#importEvent" text="%importEvent">
             <font>
                 <Font size="14.0" />
             </font>
         </Button>
-        <Button fx:id="showButtonE" disable="true" layoutX="616.0" layoutY="404.0" minWidth="100" mnemonicParsing="false" onAction="#exportEvent" prefHeight="30.0" prefWidth="106.0" text="%exportEvent">
+        <Button fx:id="showButtonE" disable="true" layoutX="616.0" layoutY="387.0" minWidth="100" mnemonicParsing="false" onAction="#exportEvent" prefHeight="30.0" text="%exportEvent">
             <font>
                 <Font size="14.0" />
             </font>
         </Button>
-        <ComboBox fx:id="languageBox" layoutX="616.0" layoutY="457.0" prefWidth="150.0" />
-        <Label fx:id="adminOverviewLabel" layoutX="14.0" layoutY="35.0" text="%adminOverview">
+        <ComboBox fx:id="languageBox" layoutX="616.0" layoutY="447.0" prefWidth="150.0" />
+        <Label fx:id="adminOverviewLabel" layoutX="54.0" layoutY="5.0" text="%adminOverview">
             <font>
                 <Font size="22.0" />
             </font>
         </Label>
-        <Label fx:id="eventsLabel" layoutX="14.0" layoutY="72.0" text="%EVENTS">
+        <Label fx:id="eventsLabel" layoutX="24.0" layoutY="50.0" text="%EVENTS">
             <font>
                 <Font size="14.0" />
             </font>

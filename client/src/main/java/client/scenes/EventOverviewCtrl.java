@@ -309,21 +309,29 @@ public class EventOverviewCtrl implements Initializable {
         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
                 "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
                 "-fx-border-width: 1.5; -fx-border-insets: -1");
-        deleteEventButton.setOnMouseEntered(e -> deleteEventButton.setStyle("-fx-background-color: #c70000; " +
+        deleteEventButton.setOnMouseEntered(e -> {deleteEventButton.setStyle("-fx-background-color: #c70000; " +
                 "-fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
-                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;"));
-        deleteEventButton.setOnMouseExited(e ->         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;" +
+                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;");
+            trash.setStyle("-fx-text-fill: #F0F3FF");
+        });
+        deleteEventButton.setOnMouseExited(e ->         {deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;" +
                 "-fx-font-weight: bolder;"+
                 "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
-                "-fx-border-width: 1.5; -fx-border-insets: -1"));
+                "-fx-border-width: 1.5; -fx-border-insets: -1");
+            trash.setStyle("-fx-text-fill: #ff3d3d");
+        });
         deleteEventButton.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 deleteEventButton.setStyle("-fx-background-color: #c70000; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
                         "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;");
+                trash.setStyle("-fx-text-fill: #F0F3FF");
             }
-            else         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
+            else {
+                deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
                     "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
                     "-fx-border-width: 1.5; -fx-border-insets: -1");
+                trash.setStyle("-fx-text-fill: #ff3d3d");
+            }
         });
         addExpenseButton.setStyle(Main.changeUI(addExpenseButton));
         Main.buttonFeedback(addExpenseButton);
@@ -357,6 +365,7 @@ public class EventOverviewCtrl implements Initializable {
                 "-fx-border-color: #211951; -fx-control-inner-background: #836FFF; " +
                 "-fx-control-inner-background-alt: derive(-fx-control-inner-background, 15%);" +
                 "-fx-color-label-visible: #F0F3FF");
+        inviteCode.setStyle("-fx-text-fill: black;-fx-font-weight: bolder");
     }
 
     public void addExpense() {
