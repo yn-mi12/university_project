@@ -14,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -22,14 +23,17 @@ import javafx.stage.Modality;
 import javafx.util.Callback;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.List;
+
+import static javafx.scene.input.KeyCode.ENTER;
 
 
 public class StartScreenCtrl implements Initializable {
@@ -37,6 +41,9 @@ public class StartScreenCtrl implements Initializable {
     private final ServerUtilsEvent server;
     @FXML
     public Button setServers;
+    private boolean createFilled = false;
+    private boolean joinFilled = false;
+    private Control control;
     @FXML
     public Button downloadTemplateButton;
     private ObservableList<String> data;
@@ -137,6 +144,14 @@ public class StartScreenCtrl implements Initializable {
         else {
             highContrastButton = new ToggleButton();
         }
+
+        titleField.addEventHandler(KeyEvent.KEY_TYPED, ev-> {
+            createFilled = true;
+        });
+        codeField.addEventHandler(KeyEvent.KEY_TYPED, ev-> {
+            joinFilled = true;
+        });
+
         server.registerForDeleteUpdates(ev -> {
             Platform.runLater(new Runnable() {
                 @Override
@@ -295,6 +310,8 @@ public class StartScreenCtrl implements Initializable {
 
     private void clearFields() {
         titleField.clear();
+        createFilled = false;
+        joinFilled = false;
         codeField.clear();
     }
 
@@ -308,7 +325,6 @@ public class StartScreenCtrl implements Initializable {
             emptyTitle.setVisible(true);
             return;
         }
-
         clearFields();
         Event event;
         try {
@@ -375,6 +391,57 @@ public class StartScreenCtrl implements Initializable {
 
     public void changeContrast() {
         Main.changeContrast();
+    }
+    public void keyPressed(KeyEvent e) {
+        //Point p = MouseInfo.getPointerInfo().getLocation();
+        switch(e.getCode()) {
+            case ENTER:
+                if (e.getCode() == ENTER) {
+                    if (createFilled) {
+                        createEvent();
+                    }
+                    if (joinFilled) {
+                        viewEvent();
+                    }
+                }
+                break;
+        }
+//            case LEFT:
+//                if(createButton.contains(p.getX(), p.getY())) {
+//                    new Robot().mouseMove((int)titleField.getLayoutX(), (int)titleField.getLayoutY());
+//                }
+//                if(joinButton.contains(p.getX(), p.getY())) {
+//                    new Robot().mouseMove((int)codeField.getLayoutX(), (int)codeField.getLayoutY());
+//                }
+//                if(showButton.contains(p.getX(), p.getY())) {
+//                    new Robot().mouseMove((int)eventList.getLayoutX(), (int)eventList.getLayoutY());
+//                }
+////                if(languageBox.contains(p.getX(), p.getY())) {
+////                    new Robot().mouseMove((int)showAdminButton.getLayoutX(), (int)showAdminButton.getLayoutY());
+////                }
+//                if(downloadTemplateButton.contains(p.getX(), p.getY())) {
+//                    new Robot().mouseMove((int)languageBox.getLayoutX(), (int)languageBox.getLayoutY());
+//                }
+//                break;
+//            case RIGHT:
+//                if(titleField.contains(p.getX(), p.getY())) {
+//                    new Robot().mouseMove((int)createButton.getLayoutX(), (int)createButton.getLayoutY());
+//                }
+//                if(codeField.contains(p.getX(), p.getY())) {
+//                    new Robot().mouseMove((int)joinButton.getLayoutX(), (int)joinButton.getLayoutY());
+//                }
+//                if(eventList.contains(p.getX(), p.getY())) {
+//                    new Robot().mouseMove((int)showButton.getLayoutX(), (int)showButton.getLayoutY());
+//                }
+////                if(languageBox.contains(p.getX(), p.getY())) {
+////                    new Robot().mouseMove((int)showAdminButton.getLayoutX(), (int)showAdminButton.getLayoutY());
+////                }
+//                if(showAdminButton.contains(p.getX(), p.getY())) {
+//                    new Robot().mouseMove((int)languageBox.getLayoutX(), (int)languageBox.getLayoutY());
+//                }
+//                break;
+//        }
+        e.consume();
     }
 
     public void downloadTemplate() throws IOException {

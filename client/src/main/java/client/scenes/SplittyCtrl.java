@@ -83,6 +83,9 @@ public class SplittyCtrl {
         overviewCtrl.refresh();
         primaryStage.setTitle("Splitty");
         primaryStage.setScene(overview);
+        overview.setOnKeyPressed(e -> {
+                overviewCtrl.keyPressed(e);
+        });
         overview.getWindow().centerOnScreen();
         Main.setPosition("startScreen");
     }

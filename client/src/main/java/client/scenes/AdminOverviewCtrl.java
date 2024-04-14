@@ -4,9 +4,9 @@ import client.Config;
 import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import commons.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -15,8 +15,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -270,7 +268,9 @@ public class AdminOverviewCtrl implements Initializable {
     }
     public void deleteEvent() {
         try {
-            server.deleteEvent(getEvent());
+            Event event = getEvent();
+            event.setId(server.getByID(event.getId()).getId());
+            server.send("/app/deleted", event);
             refresh();
         } catch (WebApplicationException e) {
 
