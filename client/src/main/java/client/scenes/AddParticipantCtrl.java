@@ -42,6 +42,8 @@ public class AddParticipantCtrl implements Initializable {
     public Label ibanText;
     @FXML
     public Label bicText;
+    @FXML
+    public Label noNameLabel;
     private Event event;
     @FXML
     private TextField firstName;
@@ -98,8 +100,13 @@ public class AddParticipantCtrl implements Initializable {
     public void cancel() {
         clearFields();
         participant = null;
-        Main.reloadUIEvent(event);
-        mainCtrl.showEventOverview(event);
+        if(editPart) {
+            mainCtrl.showEditParticipantOverview();
+            editPart = false;
+        } else {
+            Main.reloadUIEvent(event);
+            mainCtrl.showEventOverview(event);
+        }
     }
 
     public Participant getParticipant() {
@@ -138,32 +145,38 @@ public class AddParticipantCtrl implements Initializable {
     }
 
     public void ok() {
+        noNameLabel.setVisible(false);
         try {
-            if(!editPart){
-            participant = getParticipant();
-            participantExists.visibleProperty().setValue(false);
-            if (participant != null && !participantAlreadyExists()) {
-                server.addParticipant(participant, event);
-                Event updated = server.getByID(event.getId());
-                clearFields();
-                mainCtrl.showEventOverview(updated);
-                server.send("/app/updated",updated);
+            if (!editPart) {
+
+                if (firstName.getText().isEmpty() || lastName.getText().isEmpty()) {
+                    noNameLabel.setVisible(true);
+                    return;
+                }
+
+                participant = getParticipant();
+                participantExists.visibleProperty().setValue(false);
+                if (participant != null && !participantAlreadyExists()) {
+                    server.addParticipant(participant, event);
+                    Event updated = server.getByID(event.getId());
+                    clearFields();
+                    mainCtrl.showEventOverview(updated);
+                    server.send("/app/updated", updated);
+                } else {
+                    participantExists.visibleProperty().setValue(true);
+                }
             } else {
-                participantExists.visibleProperty().setValue(true);
-            }
-            }
-            else {
                 participant.setFirstName(getParticipant().getFirstName());
                 participant.setLastName(getParticipant().getLastName());
                 participant.setEmail(getParticipant().getEmail());
                 participantExists.visibleProperty().setValue(false);
-                if(participant.getFirstName() != null && participant.getLastName()!=null) {
+                if (participant.getFirstName() != null && participant.getLastName() != null) {
                     server.updateParticipant(participant);
                     event = server.getByID(event.getId());
                     editPart = false;
                     mainCtrl.initEditParticipantOverview(event);
                     mainCtrl.showEditParticipantOverview();
-                    server.send("/app/updated",event);
+                    server.send("/app/updated", event);
                 }
                 participantExists.visibleProperty().setValue(true);
                 clearFields();
@@ -220,6 +233,7 @@ public class AddParticipantCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if(Main.isContrastMode()){
+            noNameLabel.setStyle(Main.changeUI(noNameLabel));
             background.setStyle("-fx-background-color: #69e0ab;");
             okButton.setStyle(Main.changeUI(okButton));
             Main.buttonFeedback(okButton);

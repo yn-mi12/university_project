@@ -114,7 +114,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
         clearFields();
         selectedParticipant = null;
         Main.reloadUIEvent(event);
-        controller.showEditParticipantOverview();
+        controller.showEventOverview(event);
         noDeleteParticipant.visibleProperty().setValue(false);
         deleteParticipant.visibleProperty().setValue(false);
     }

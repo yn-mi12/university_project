@@ -10,7 +10,6 @@ import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -292,15 +291,6 @@ public class AddExpenseCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        someHaveToPay.setFocusTraversable(false);
-        allHaveToPay.setFocusTraversable(false);
-        whoPays.setFocusTraversable(false);
-        whoPays.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                event.consume();
-            }
-        });
         List<Label> currencies = new ArrayList<>();
         Label l =new Label("USD");
         l.setStyle("-fx-text-fill: black");
