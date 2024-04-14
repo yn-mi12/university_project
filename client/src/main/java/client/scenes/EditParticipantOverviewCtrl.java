@@ -189,6 +189,8 @@ public class EditParticipantOverviewCtrl implements Initializable {
                     "-fx-border-color: #211951; -fx-control-inner-background: #836FFF; " +
                     "-fx-control-inner-background-alt: derive(-fx-control-inner-background, 15%);" +
                     "-fx-color-label-visible: #F0F3FF");
+            allParticipantsLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
+            noDeleteParticipant.setStyle(Main.changeUI(noDeleteParticipant));
         }
     }
 }

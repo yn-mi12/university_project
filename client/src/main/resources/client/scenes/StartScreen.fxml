@@ -26,14 +26,14 @@
          </font>
       </Text>
       <ComboBox fx:id="languageBox" layoutX="380.0" layoutY="391.0" prefHeight="25.0" prefWidth="171.0" />
-      <Button fx:id="downloadTemplateButton" layoutX="558.0" layoutY="391.0" mnemonicParsing="false" onAction="#downloadTemplate" text="➕" minWidth="32" minHeight="32"/>
+      <Button fx:id="downloadTemplateButton" layoutX="558.0" layoutY="391.0" minHeight="32" minWidth="32" mnemonicParsing="false" onAction="#downloadTemplate" text="➕" />
       <Button fx:id="showAdminButton" layoutX="245.0" layoutY="424.0" minWidth="40" onAction="#showAdminLogin" text="%here">
          <font>
          <Font size="13" />
           </font>
       </Button>
       <ToggleButton fx:id="highContrastButton" layoutX="509.0" layoutY="438.0" mnemonicParsing="false" onAction="#changeContrast" />
-      <Text layoutX="391.0" layoutY="463.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%highContrastMode" />
+      <Text fx:id="highContrastLabel" layoutX="381.0" layoutY="463.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%highContrastMode" />
       <Button fx:id="setServers" layoutX="128.0" layoutY="459.0" minWidth="40" onAction="#setServer" prefHeight="27.0" text="%set_server">
       <font>
          <Font size="13" />
