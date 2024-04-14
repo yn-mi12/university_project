@@ -32,7 +32,6 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
 
-import static javafx.scene.input.KeyCode.ENTER;
 
 public class EventOverviewCtrl implements Initializable {
     private final ServerUtilsEvent server;
