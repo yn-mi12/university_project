@@ -11,7 +11,11 @@ import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -82,10 +86,10 @@ public class EditParticipantOverviewCtrl implements Initializable {
             addCtrl.setFirstName(selectedParticipant.getFirstName());
             addCtrl.setLastName(selectedParticipant.getLastName());
 
-            if(selectedParticipant.getEmail() != null)
+            if (selectedParticipant.getEmail() != null)
                 addCtrl.setEmail(selectedParticipant.getEmail());
 
-            if(selectedParticipant.getAccountName() != null) {
+            if (selectedParticipant.getAccountName() != null) {
                 addCtrl.setAccountName(selectedParticipant.getAccountName());
                 addCtrl.setIban(selectedParticipant.getIban());
                 addCtrl.setBic(selectedParticipant.getBic());
@@ -110,13 +114,13 @@ public class EditParticipantOverviewCtrl implements Initializable {
     public void deleteParticipant() {
         setParticipant();
         try {
-            if (!checkParticipantInExpenses()){
+            if (!checkParticipantInExpenses()) {
                 server.deleteParticipant(server.getParticipantByID(selectedParticipant.getId()));
                 event.deleteParticipant(selectedParticipant);
-                server.send("/app/updated",event);
+                server.send("/app/updated", event);
                 noDeleteParticipant.visibleProperty().setValue(false);
                 cancel();
-            }else{
+            } else {
                 noDeleteParticipant.visibleProperty().setValue(true);
             }
 
@@ -129,17 +133,17 @@ public class EditParticipantOverviewCtrl implements Initializable {
         }
     }
 
-    public boolean checkParticipantInExpenses(){
+    public boolean checkParticipantInExpenses() {
         List<Participant> participantsInExpenses = new ArrayList<>();
-        for (Expense expense : event.getExpenses()){
+        for (Expense expense : event.getExpenses()) {
             Set<ExpenseParticipant> debtors = expense.getDebtors();
             List<ExpenseParticipant> debtorsList = new ArrayList<>(debtors);
             for (ExpenseParticipant expenseParticipant : debtorsList) {
                 participantsInExpenses.add(expenseParticipant.getParticipant());
             }
         }
-        for (Participant participant: participantsInExpenses){
-            if (selectedParticipant.getId()==participant.getId()){
+        for (Participant participant : participantsInExpenses) {
+            if (selectedParticipant.getId() == participant.getId()) {
                 return true;
             }
         }
@@ -152,8 +156,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if(Main.isContrastMode())
-        {
+        if (Main.isContrastMode()) {
             background.setStyle("-fx-background-color: #69e0ab;");
             backButton.setStyle(Main.changeUI(backButton));
             Main.buttonFeedback(backButton);
@@ -165,6 +168,19 @@ public class EditParticipantOverviewCtrl implements Initializable {
                     "-fx-border-color: #211951; -fx-control-inner-background: #836FFF; " +
                     "-fx-control-inner-background-alt: derive(-fx-control-inner-background, 15%);" +
                     "-fx-color-label-visible: #F0F3FF");
+        }
+    }
+
+    public void keyPressed(KeyEvent e) {
+        switch (e.getCode()) {
+//            case ENTER:
+//                ok();
+//                break;
+            case ESCAPE:
+                cancel();
+                break;
+            default:
+                break;
         }
     }
 }

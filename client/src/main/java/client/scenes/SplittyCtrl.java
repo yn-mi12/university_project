@@ -54,6 +54,7 @@ public class SplittyCtrl {
         this.addExpenseCtrl = addExp.getKey();
         this.expense = new Scene(addExp.getValue());
     }
+
     public void initPartUpdate(Pair<EditParticipantOverviewCtrl, Parent> updatePart) {
         this.editParticipantOverviewCtrl = updatePart.getKey();
         this.editParticipant = new Scene(updatePart.getValue());
@@ -84,13 +85,13 @@ public class SplittyCtrl {
         primaryStage.setTitle("Splitty");
         primaryStage.setScene(overview);
         overview.setOnKeyPressed(e -> {
-                overviewCtrl.keyPressed(e);
+            overviewCtrl.keyPressed(e);
         });
         overview.getWindow().centerOnScreen();
         Main.setPosition("startScreen");
     }
 
-    public void showEventOverview(Event selectedEvent){
+    public void showEventOverview(Event selectedEvent) {
         primaryStage.setTitle("Event: " + selectedEvent.getTitle());
         this.eventCtrl.setSelectedEvent(selectedEvent);
         this.eventCtrl.eventTitle.setText(selectedEvent.getTitle());
@@ -105,7 +106,7 @@ public class SplittyCtrl {
 
     public void initExpShowOverview(Event event,
                                     Participant paid) {
-        addExpenseCtrl.setEvent(paid,eventCtrl);
+        addExpenseCtrl.setEvent(paid, eventCtrl);
         showExpOverview();
         primaryStage.show();
     }
@@ -128,7 +129,7 @@ public class SplittyCtrl {
         primaryStage.setTitle("Edit Participant");
         primaryStage.setScene(editParticipant);
         editParticipant.getWindow().centerOnScreen();
-        //editParticipant.setOnKeyPressed(e -> editParticipantOverviewCtrl.keyPressed(e));
+        editParticipant.setOnKeyPressed(e -> editParticipantOverviewCtrl.keyPressed(e));
         Main.setPosition("editParticipantScreen");
     }
 
@@ -154,6 +155,7 @@ public class SplittyCtrl {
     public void showSettleDebts(List<Debt> debts, Event selectedEvent) {
         primaryStage.setTitle("Settle Debts");
         primaryStage.setScene(settleDebts);
+        settleDebts.setOnKeyPressed(e -> settleDebtsCtrl.keyPressed(e));
         settleDebts.getWindow().centerOnScreen();
         settleDebtsCtrl.setDebts(debts);
         settleDebtsCtrl.setEvent(selectedEvent);
@@ -204,12 +206,11 @@ public class SplittyCtrl {
         setServer.getWindow().centerOnScreen();
     }
 
-    public boolean getAdmin()
-    {
+    public boolean getAdmin() {
         return isAdmin;
     }
 
-    public void setAdmin(boolean isAdmin){
+    public void setAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
     }
 

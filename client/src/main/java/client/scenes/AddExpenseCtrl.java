@@ -3,10 +3,14 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtilsEvent;
 import com.google.inject.Inject;
-import commons.*;
+import commons.Event;
+import commons.Expense;
+import commons.ExpenseParticipant;
+import commons.Participant;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -15,8 +19,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 
-import java.time.LocalDate;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.*;
 
 public class AddExpenseCtrl implements Initializable {
@@ -76,7 +80,7 @@ public class AddExpenseCtrl implements Initializable {
         this.ctrl = ctrl;
         this.event = ctrl.getSelectedEvent();
         this.participants = event.getParticipants();
-        if(!delete) {
+        if (!delete) {
             ObservableList<Label> names = FXCollections.observableArrayList();
             HashMap<Label, Participant> map = new HashMap<>();
 
@@ -124,8 +128,8 @@ public class AddExpenseCtrl implements Initializable {
     public void ok() {
         Event updated;
         try {
-            if(oldExpense != null) {
-                if(delete) {
+            if (oldExpense != null) {
+                if (delete) {
                     delete = false;
                     server.deleteExpense(oldExpense);
                     return;
@@ -151,8 +155,8 @@ public class AddExpenseCtrl implements Initializable {
 
             updated = server.getByID(ctrl.getSelectedEvent().getId());
             participants = server.getEventParticipants(updated);
-            for(ExpenseParticipant ep : saved.getDebtors())
-                if(ep.isOwner())
+            for (ExpenseParticipant ep : saved.getDebtors())
+                if (ep.isOwner())
                     expensePayer = ep.getParticipant();
 
             updated = server.getByID(ctrl.getSelectedEvent().getId());
@@ -166,12 +170,12 @@ public class AddExpenseCtrl implements Initializable {
         }
         clearFields();
         controller.showEventOverview(updated);
-        server.send("/app/updated",updated);
+        server.send("/app/updated", updated);
     }
 
     @FXML
     private void handleCheckBoxAction() {
-        if (allHaveToPay.isSelected() && someHaveToPay.isSelected()){
+        if (allHaveToPay.isSelected() && someHaveToPay.isSelected()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Warning");
             alert.setHeaderText(null);
@@ -181,37 +185,38 @@ public class AddExpenseCtrl implements Initializable {
         }
     }
 
-    public HashSet<ExpenseParticipant> getDebtors(){
+    public HashSet<ExpenseParticipant> getDebtors() {
         HashSet<ExpenseParticipant> debtors = new HashSet<>();
-        if (allHaveToPay.isSelected()){
-            double share = 100.0/event.getParticipants().size();
-            for (int i = 0; i < event.getParticipants().size(); i++){
+        if (allHaveToPay.isSelected()) {
+            double share = 100.0 / event.getParticipants().size();
+            for (int i = 0; i < event.getParticipants().size(); i++) {
                 String fullName = this.event.getParticipants().get(i).getFirstName() + " " +
                         this.event.getParticipants().get(i).getLastName();
                 boolean isOwner = fullName.equals(whoPaid.getValue().getText());
                 ExpenseParticipant expenseParticipant =
-                        new ExpenseParticipant(expense, event.getParticipants().get(i),share, isOwner);
+                        new ExpenseParticipant(expense, event.getParticipants().get(i), share, isOwner);
                 debtors.add(expenseParticipant);
             }
             return debtors;
         }
         boolean check = false;
         ObservableList<String> selectedParticipants = whoPays.getSelectionModel().getSelectedItems();
-        for (int i = 0; i < selectedParticipants.size(); i++){
-            double share = 100.0/selectedParticipants.size();
+        for (int i = 0; i < selectedParticipants.size(); i++) {
+            double share = 100.0 / selectedParticipants.size();
             boolean isOwner = selectedParticipants.get(i).equals(whoPaid.getValue().getText());
-            if(isOwner)
+            if (isOwner)
                 check = true;
             ExpenseParticipant expenseParticipant = new
                     ExpenseParticipant(expense, event.getParticipantByName(selectedParticipants.get(i)), share, isOwner);
             debtors.add(expenseParticipant);
         }
-        if(!check)
+        if (!check)
             debtors.add(new ExpenseParticipant(expense, event.getParticipantByName(whoPaid.getValue().getText()), 0, true));
         return debtors;
     }
 
     public void keyPressed(KeyEvent e) {
+        addButton.setDefaultButton(true);
         switch (e.getCode()) {
             case ENTER:
                 ok();
@@ -285,6 +290,15 @@ public class AddExpenseCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        someHaveToPay.setFocusTraversable(false);
+        allHaveToPay.setFocusTraversable(false);
+        whoPays.setFocusTraversable(false);
+        whoPays.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                event.consume();
+            }
+        });
         List<Label> currencies = new ArrayList<>();
         currencies.add(new Label("USD"));
         currencies.add(new Label("EUR"));
@@ -300,8 +314,9 @@ public class AddExpenseCtrl implements Initializable {
                         if (item == null || empty) {
                         } else {
                             setItem(item);
-                            if(Main.isContrastMode())this.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;" +
-                                    "-fx-font-weight: bolder;-fx-border-color: #836FFF");
+                            if (Main.isContrastMode())
+                                this.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;" +
+                                        "-fx-font-weight: bolder;-fx-border-color: #836FFF");
                             setText(item.getText());
                         }
                     }
@@ -318,16 +333,16 @@ public class AddExpenseCtrl implements Initializable {
                         if (item == null || empty) {
                         } else {
                             setItem(item);
-                            if(Main.isContrastMode())this.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;" +
-                                    "-fx-font-weight: bolder;-fx-border-color: #836FFF");
+                            if (Main.isContrastMode())
+                                this.setStyle("-fx-background-color: #211951; -fx-text-fill: #F0F3FF;" +
+                                        "-fx-font-weight: bolder;-fx-border-color: #836FFF");
                             setText(item.getText());
                         }
                     }
                 };
             }
         });
-        if(Main.isContrastMode())
-        {
+        if (Main.isContrastMode()) {
             background.setStyle("-fx-background-color: #69e0ab;");
             addButton.setStyle(Main.changeUI(addButton));
             Main.buttonFeedback(addButton);
@@ -353,10 +368,10 @@ public class AddExpenseCtrl implements Initializable {
                     "-fx-control-inner-background-alt: derive(-fx-control-inner-background, 15%);" +
                     "-fx-color-label-visible: #F0F3FF");
             currency.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                if(Main.isContrastMode())newVal.setStyle(("-fx-text-fill: #F0F3FF"));
-                currency.setValue(newVal);
-            }
+                if (newVal != null) {
+                    if (Main.isContrastMode()) newVal.setStyle(("-fx-text-fill: #F0F3FF"));
+                    currency.setValue(newVal);
+                }
             }));
             Main.languageFeedback(currency);
             Main.languageFeedback(whoPaid);
