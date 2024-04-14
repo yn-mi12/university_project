@@ -18,7 +18,7 @@ StartScreen:
 - The StartScreen also shows the past events that you created/joined, which are persisted on your local machine. (in the config file)
 - To view a past event, select one from the Past Event ListView and press Show Event.
 - To enter the AdminOverview, press the Here button at the bottom of the StartScreen and insert the token. (This token can be found in the Server console)
-- To change the URL of the server, press the Set Server button at the bottom of the StartScreen and insert your desired Splitty Server.
+- To change the URL of the server, press the Set Server button at the bottom of the StartScreen and insert your desired Splitty Server. Please make sure to put a '/' at the end of the URL.
 - To download an empty language template, press the plus Button that is next to the language choice ComboBox.
 
 EventOverview:
