@@ -120,7 +120,7 @@ public class Main extends Application {
                     "-fx-border-width: 1.5; -fx-border-insets: -1";
         if(o.getClass() == TextField.class)
             return "-fx-background-color: #836FFF; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder; " +
-                    "-fx-prompt-text-fill: #BDBDBD; -fx-border-color: #211951;";
+                    "-fx-prompt-text-fill: #1b1d1c; -fx-border-color: #211951;";
         if(o.getClass() == ComboBox.class || o.getClass() == ToggleButton.class || o.getClass()== ChoiceBox.class)
             return "-fx-background-color: #211951; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;" +
                     "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +

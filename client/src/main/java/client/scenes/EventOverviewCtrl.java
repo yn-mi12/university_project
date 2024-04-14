@@ -7,8 +7,6 @@ import com.google.inject.Inject;
 import commons.*;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -41,6 +39,8 @@ public class EventOverviewCtrl implements Initializable {
     public Label participantsLabel;
     @FXML
     public Label forLabel;
+
+
     @FXML
     public AnchorPane background;
     @FXML
@@ -73,6 +73,18 @@ public class EventOverviewCtrl implements Initializable {
     public Label allLabel;
     @FXML
     public Tab allTab;
+    @FXML
+    public Label confirmLabelEvent1;
+    @FXML
+    public Label confirmLabelEvent2;
+    @FXML
+    public Label confirmLabelExpense1;
+    @FXML
+    public Label confirmLabelExpense2;
+    @FXML
+    public Label confirmButton;
+    @FXML
+    public Label confirmCancelButton;
 
     private Participant expensePayer;
 
@@ -233,36 +245,27 @@ public class EventOverviewCtrl implements Initializable {
             }
         }));
 
-        allExpenses.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (allExpenses.getSelectionModel().getSelectedItem() != null) {
-                    viewButton.setDisable(false);
-                    deleteButton.setDisable(false);
-                    viewChoice = "all";
-                }
+        allExpenses.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            if (allExpenses.getSelectionModel().getSelectedItem() != null) {
+                viewButton.setDisable(false);
+                deleteButton.setDisable(false);
+                viewChoice = "all";
             }
         });
 
-        fromExpenses.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (fromExpenses.getSelectionModel().getSelectedItem() != null) {
-                    viewButton.setDisable(false);
-                    deleteButton.setDisable(false);
-                    viewChoice = "from";
-                }
+        fromExpenses.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            if (fromExpenses.getSelectionModel().getSelectedItem() != null) {
+                viewButton.setDisable(false);
+                deleteButton.setDisable(false);
+                viewChoice = "from";
             }
         });
 
-        includingExpenses.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (includingExpenses.getSelectionModel().getSelectedItem() != null) {
-                    viewButton.setDisable(false);
-                    deleteButton.setDisable(false);
-                    viewChoice = "include";
-                }
+        includingExpenses.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            if (includingExpenses.getSelectionModel().getSelectedItem() != null) {
+                viewButton.setDisable(false);
+                deleteButton.setDisable(false);
+                viewChoice = "include";
             }
         });
 
@@ -336,21 +339,29 @@ public class EventOverviewCtrl implements Initializable {
         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
                 "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
                 "-fx-border-width: 1.5; -fx-border-insets: -1");
-        deleteEventButton.setOnMouseEntered(e -> deleteEventButton.setStyle("-fx-background-color: #c70000; " +
+        deleteEventButton.setOnMouseEntered(e -> {deleteEventButton.setStyle("-fx-background-color: #c70000; " +
                 "-fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
-                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;"));
-        deleteEventButton.setOnMouseExited(e ->         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;" +
+                "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;");
+            trash.setStyle("-fx-text-fill: #F0F3FF");
+        });
+        deleteEventButton.setOnMouseExited(e ->         {deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;" +
                 "-fx-font-weight: bolder;"+
                 "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
-                "-fx-border-width: 1.5; -fx-border-insets: -1"));
+                "-fx-border-width: 1.5; -fx-border-insets: -1");
+            trash.setStyle("-fx-text-fill: #ff3d3d");
+        });
         deleteEventButton.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 deleteEventButton.setStyle("-fx-background-color: #c70000; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;"+
                         "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; -fx-border-width: 1.5; -fx-border-insets: -1;");
+                trash.setStyle("-fx-text-fill: #F0F3FF");
             }
-            else         deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
+            else {
+                deleteEventButton.setStyle("-fx-background-color: #211951; -fx-text-fill: #ff3d3d;-fx-font-weight: bolder;"+
                     "-fx-border-color: #836FFF; -fx-border-radius: 20; -fx-background-radius:20; " +
                     "-fx-border-width: 1.5; -fx-border-insets: -1");
+                trash.setStyle("-fx-text-fill: #ff3d3d");
+            }
         });
         addExpenseButton.setStyle(Main.changeUI(addExpenseButton));
         Main.buttonFeedback(addExpenseButton);
@@ -384,6 +395,7 @@ public class EventOverviewCtrl implements Initializable {
                 "-fx-border-color: #211951; -fx-control-inner-background: #836FFF; " +
                 "-fx-control-inner-background-alt: derive(-fx-control-inner-background, 15%);" +
                 "-fx-color-label-visible: #F0F3FF");
+        inviteCode.setStyle("-fx-text-fill: black;-fx-font-weight: bolder");
     }
 
     public void addExpense() {
@@ -454,16 +466,41 @@ public class EventOverviewCtrl implements Initializable {
         viewButton.setDisable(true);
         expenseCtrl.setDelete(true);
         Expense selected = getExpense();
+        //HERE
+        Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationDialog.setTitle("Confirmation");
+        confirmationDialog.setHeaderText(confirmLabelExpense1.getText());
+        confirmationDialog.setContentText(confirmLabelExpense2.getText());
 
-        Participant owner = null;
-        for(ExpenseParticipant ep : selected.getDebtors()) {
-            if(ep.isOwner())
-                owner = ep.getParticipant();
-        }
-        expenseCtrl.setEvent(owner, this);
-        expenseCtrl.setOldExpense(selected);
-        expenseCtrl.setOldExpensePayer(owner);
-        expenseCtrl.ok();
+        ButtonType okButton = new ButtonType(confirmButton.getText(), ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType(confirmCancelButton.getText(), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        confirmationDialog.getButtonTypes().setAll(okButton, cancelButton);
+
+        confirmationDialog.showAndWait().ifPresent(response -> {
+            if (response == okButton){
+                System.out.println("Deleting expense: " + selected.getId());
+                Participant owner = null;
+                for(ExpenseParticipant ep : selected.getDebtors()) {
+                    if(ep.isOwner())
+                        owner = ep.getParticipant();
+                }
+                expenseCtrl.setEvent(owner, this);
+                expenseCtrl.setOldExpense(selected);
+                expenseCtrl.setOldExpensePayer(owner);
+                expenseCtrl.ok();
+
+                event = server.getByID(event.getId());
+                server.send("/app/updated",event);
+                expensesNotSelectedPart();
+                expensesIncludingParticipant();
+                expensesNotSelectedPart();
+                expenseCtrl.setOldExpense(null);
+                expenseCtrl.setOldExpensePayer(null);
+            }else{
+                controller.showEventOverview(event);
+            }
+        });
 
         event = server.getByID(event.getId());
         server.send("/app/updated",event);
@@ -563,21 +600,37 @@ public class EventOverviewCtrl implements Initializable {
 
     public void deleteEvent() {
         try {
-            event.setId(server.getByID(event.getId()).getId());
-            server.send("/app/deleted", event);
-            if(!controller.getAdmin()) {
-                Config.get().removePastCode(event.getId());
-                Config.get().save();
-            }
+            Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationDialog.setTitle("Confirmation");
+            confirmationDialog.setHeaderText(confirmLabelEvent1.getText());
+            confirmationDialog.setContentText(confirmLabelEvent2.getText());
+
+            ButtonType okButton = new ButtonType(confirmButton.getText(), ButtonBar.ButtonData.OK_DONE);
+            ButtonType cancelButton = new ButtonType(confirmCancelButton.getText(), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            confirmationDialog.getButtonTypes().setAll(okButton, cancelButton);
+
+            confirmationDialog.showAndWait().ifPresent(response -> {
+                if (response == okButton){
+                    System.out.println("Deleting event: " + event.getId());
+                    event.setId(server.getByID(event.getId()).getId());
+                    server.send("/app/deleted", event);
+                    if(!controller.getAdmin()) {
+                        Config.get().removePastCode(event.getId());
+                        Config.get().save();
+                    }
+                    goBack();
+                }else{
+                    controller.showEventOverview(event);
+                }
+            });
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
-            return;
         }
-        goBack();
     }
 
     public void copyCode() {

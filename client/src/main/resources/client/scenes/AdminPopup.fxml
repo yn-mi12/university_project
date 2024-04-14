@@ -17,7 +17,7 @@
             <Font size="14.0" />
          </font>
       </Button>
-      <Button fx:id="loginButton" layoutX="205.0" layoutY="113.0" mnemonicParsing="false" onAction="#login" text="%login">
+      <Button fx:id="loginButton" layoutX="185.0" layoutY="113.0" mnemonicParsing="false" onAction="#login" text="%login">
          <font>
             <Font size="14.0" />
          </font>

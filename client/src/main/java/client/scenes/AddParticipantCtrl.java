@@ -238,6 +238,7 @@ public class AddParticipantCtrl implements Initializable {
             iban.setStyle(Main.changeUI(iban));
             accountName.setStyle(Main.changeUI(accountName));
             participantExists.setStyle(Main.changeUI(participantExists));
+            bankDetailsText.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
         }
     }
 }
