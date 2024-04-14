@@ -24,8 +24,6 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
-import javafx.scene.control.Alert;
-import javafx.stage.Modality;
 import org.glassfish.jersey.client.ClientConfig;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -37,7 +35,6 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.lang.reflect.Type;
-import java.nio.channels.UnresolvedAddressException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -48,7 +45,7 @@ import java.util.function.Consumer;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtilsEvent {
-    private static String SERVER = Config.get().getHost();
+    private static String server = Config.get().getHost();
 
     private @NotNull String getServer() {
         return Config.get().getHost();
@@ -58,7 +55,7 @@ public class ServerUtilsEvent {
         if(session != null) {
             Config.get().setHost(server);
             Config.get().save();
-            SERVER = server;
+            this.server = server;
             return;
         }
         session = connect("ws://" + Config.get().getHost().substring(7) + "websocket");
@@ -68,7 +65,7 @@ public class ServerUtilsEvent {
     public Event getByID(String id) {
         try {
             return ClientBuilder.newClient(new ClientConfig()) //
-                    .target(SERVER).path("api/events/" + id) //
+                    .target(server).path("api/events/" + id) //
                     .request(APPLICATION_JSON) //
                     .accept(APPLICATION_JSON) //
                     .get(new GenericType<>() {
@@ -82,7 +79,7 @@ public class ServerUtilsEvent {
     public List<Expense> getExpensesByEventId(Event event){
         try{
            return ClientBuilder.newClient(new ClientConfig())
-                   .target(SERVER).path("api/expenses/event/" + event.getId())
+                   .target(server).path("api/expenses/event/" + event.getId())
                    .request(APPLICATION_JSON)
                    .accept(APPLICATION_JSON)
                    .get(new GenericType<>(){
@@ -98,7 +95,7 @@ public class ServerUtilsEvent {
     public Participant getParticipantByID(Long id) {
         try {
             return ClientBuilder.newClient(new ClientConfig()) //
-                    .target(SERVER).path("api/participants/" + id) //
+                    .target(server).path("api/participants/" + id) //
                     .request(APPLICATION_JSON) //
                     .accept(APPLICATION_JSON) //
                     .get(new GenericType<>() {
@@ -111,7 +108,7 @@ public class ServerUtilsEvent {
 
     public Event addEvent(Event event) {
         Event saved = ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/events") //
+                .target(server).path("api/events") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(event, APPLICATION_JSON), Event.class);
@@ -122,7 +119,7 @@ public class ServerUtilsEvent {
 
     public Event addJsonEvent(Event event) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/events") //
+                .target(server).path("api/events") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(event, APPLICATION_JSON), Event.class);
@@ -169,7 +166,7 @@ public class ServerUtilsEvent {
 
     public void deleteEvent(Event event) {
         ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/events/" + event.getId()) //
+                .target(server).path("api/events/" + event.getId()) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .delete();
@@ -177,7 +174,7 @@ public class ServerUtilsEvent {
 
     public void deleteParticipant(Participant participant) {
         ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/participants/" + participant.getId()) //
+                .target(server).path("api/participants/" + participant.getId()) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .delete();
@@ -194,7 +191,7 @@ public class ServerUtilsEvent {
     public List<Event> getAllEvents() {
         List<Event> events;
         events = ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/events/") //
+                .target(server).path("api/events/") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<>() {
@@ -204,7 +201,7 @@ public class ServerUtilsEvent {
     public List<Participant> getEventParticipants(Event event) {
         List<Participant> participants;
         participants = ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/participants/event/" + event.getId()) //
+                .target(server).path("api/participants/event/" + event.getId()) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<>() {
@@ -214,7 +211,7 @@ public class ServerUtilsEvent {
 
     public void updateParticipant(Participant participant) {
         ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/participants/" + participant.getId()) //
+                .target(server).path("api/participants/" + participant.getId()) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .put(Entity.entity(participant, APPLICATION_JSON), Participant.class);
@@ -226,7 +223,7 @@ public class ServerUtilsEvent {
             for(Debt d : debts) {
                 d.setEvent(event);
                 Debt saved = ClientBuilder.newClient(new ClientConfig()) //
-                        .target(SERVER).path("api/debts/event/" + event.getId()) //
+                        .target(server).path("api/debts/event/" + event.getId()) //
                         .request(APPLICATION_JSON) //
                         .accept(APPLICATION_JSON) //
                         .post(Entity.entity(d, APPLICATION_JSON), Debt.class);
@@ -243,7 +240,7 @@ public class ServerUtilsEvent {
         List<Debt> debts = new ArrayList<>();
         try {
             debts.addAll(ClientBuilder.newClient(new ClientConfig())
-                    .target(SERVER).path("api/debts/paid/" + participant.getId())
+                    .target(server).path("api/debts/paid/" + participant.getId())
                     .request(APPLICATION_JSON)
                     .accept(APPLICATION_JSON)
                     .get(new GenericType<>() {
@@ -256,7 +253,7 @@ public class ServerUtilsEvent {
 
     public void deleteExpense(Expense expense) {
         ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/expenses/" + expense.getId())
+                .target(server).path("api/expenses/" + expense.getId())
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .delete();
@@ -264,7 +261,7 @@ public class ServerUtilsEvent {
 
     public Expense getExpenseById(long id) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/expenses/" + id)
+                .target(server).path("api/expenses/" + id)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
@@ -324,7 +321,7 @@ public class ServerUtilsEvent {
         EXECdel.submit(() -> {
             while (!Thread.interrupted()) {
                 var res = ClientBuilder.newClient(new ClientConfig()) //
-                        .target(SERVER).path("api/events/deleteUpdates") //
+                        .target(server).path("api/events/deleteUpdates") //
                         .request(APPLICATION_JSON) //
                         .accept(APPLICATION_JSON) //
                         .get(Response.class);
@@ -343,7 +340,7 @@ public class ServerUtilsEvent {
         EXECed.submit(() -> {
             while (!Thread.interrupted()) {
                 var res = ClientBuilder.newClient(new ClientConfig()) //
-                        .target(SERVER).path("api/events/editUpdates") //
+                        .target(server).path("api/events/editUpdates") //
                         .request(APPLICATION_JSON) //
                         .accept(APPLICATION_JSON) //
                         .get(Response.class);
