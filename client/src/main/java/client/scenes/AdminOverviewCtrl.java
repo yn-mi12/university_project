@@ -325,7 +325,6 @@ public class AdminOverviewCtrl implements Initializable {
                 List<Debt> debts = event.getDebts();
                 event.setParticipants(null);
                 event.setExpenses(null);
-                event.setDebts(null);
                 Event find = server.getByID(event.getId());
 
                 if(find == null) {
@@ -334,7 +333,6 @@ public class AdminOverviewCtrl implements Initializable {
                     server.deleteEvent(find);
                     addJsonToServer(event, participants, expenses, debts);
                 }
-                // TODO tags when we have a proper system for those
                 refresh();
             } catch (FileNotFoundException | JsonProcessingException e) {
                 throw new RuntimeException(e);
@@ -366,17 +364,8 @@ public class AdminOverviewCtrl implements Initializable {
             e.setDebtors(debtors);
             e.setEvent(saved);
             server.addExpense(e, saved);
-
         }
-
         saved = server.getByID(saved.getId());
-        List<Debt> newDebts = new ArrayList<>();
-        for(Debt d : debts) {
-            Debt newDebt = new Debt(idToNewPart.get(d.getDebtor().getId()),
-                    idToNewPart.get(d.getCreditor().getId()), d.getAmount());
-            newDebts.add(newDebt);
-        }
-        server.addAllDebts(newDebts, saved);
         server.send("/app/updated",saved);
     }
 

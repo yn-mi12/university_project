@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="580.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SettleDebtsCtrl">
+<AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="580.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SettleDebtsCtrl">
    <children>
       <Label fx:id="openDebtsLabel" layoutX="51.0" layoutY="18.0" text="%open_debts">
          <font>
@@ -23,7 +26,7 @@
       <Label fx:id="received" layoutX="411.0" layoutY="260.0" text="%mark_received" visible="false" />
       <ScrollPane fx:id="openDebtPane" layoutX="50.0" layoutY="52.0" prefHeight="234.0" prefWidth="485.0">
          <content>
-            <AnchorPane fx:id="innerPane1" minWidth="0.0" minHeight="234" prefWidth="484.0">
+            <AnchorPane fx:id="innerPane1" minHeight="234" minWidth="0.0" prefWidth="484.0">
                <children>
                   <VBox fx:id="openDebtBox" prefHeight="100" prefWidth="486.0" spacing="10.0" />
                </children>
@@ -38,12 +41,13 @@
       <Label fx:id="undo" layoutX="452.0" layoutY="550.0" text="%undo" visible="false" />
       <ScrollPane fx:id="settledPane" layoutX="50.0" layoutY="316.0" prefHeight="234.0" prefWidth="485.0">
          <content>
-            <AnchorPane fx:id="innerPane2" minWidth="0.0" minHeight="234" prefWidth="484.0">
+            <AnchorPane fx:id="innerPane2" minHeight="234" minWidth="0.0" prefWidth="484.0">
                <children>
                   <VBox fx:id="settledBox" prefHeight="100" prefWidth="486.0" spacing="10.0" />
                </children>
             </AnchorPane>
          </content>
       </ScrollPane>
+      <Label fx:id="settledDesc" layoutX="1.0" layoutY="1.0" text="%settled_debts" visible="false" />
    </children>
 </AnchorPane>

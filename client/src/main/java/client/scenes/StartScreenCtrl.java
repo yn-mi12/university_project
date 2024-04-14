@@ -262,7 +262,7 @@ public class StartScreenCtrl implements Initializable {
         highContrastLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
     }
 
-        public void refresh() {
+    public void refresh() {
         emptyTitle.setVisible(false);
         emptyCode.setVisible(false);
         invalidCode.setVisible(false);

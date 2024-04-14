@@ -24,6 +24,7 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.RoundingMode;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -67,6 +68,10 @@ public class EventOverviewCtrl implements Initializable {
     @FXML
     public Label participantsLabel2;
     @FXML
+    public Label shareLabel;
+    @FXML
+    public Label allLabel;
+    @FXML
     public Tab allTab;
     @FXML
     public Label confirmLabelEvent1;
@@ -102,6 +107,7 @@ public class EventOverviewCtrl implements Initializable {
     private Label trash;
     private Event event;
     public boolean isAdmin = false;
+    private double totalAmount = 0;
 
     @FXML
     private ListView<String> allExpenses;
@@ -144,12 +150,17 @@ public class EventOverviewCtrl implements Initializable {
         ObservableList<Label> names = FXCollections.observableArrayList();
         HashMap<Label, Participant> map = new HashMap<>();
         List<String> participantsArrayList = new ArrayList<>();
+        expensesNotSelectedPart();
+        allExpenses.refresh();
+        fromExpenses.refresh();
+        includingExpenses.refresh();
         for (Participant p : participants) {
             Label item = new Label(p.getFirstName() + " " + p.getLastName());
             item.setStyle("-fx-background-color: transparent; -fx-text-fill: #F0F3FF;-fx-font-weight: bolder;");
             names.add(item);
             map.put(item, p);
-            participantsArrayList.add(p.getFirstName() + " " + p.getLastName());
+            participantsArrayList.add(p.getFirstName() + " " + p.getLastName() + ", " + shareLabel.getText()
+                    + " " + getShare(p));
         }
         part.getSelectionModel().selectedItemProperty().addListener(((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -165,10 +176,27 @@ public class EventOverviewCtrl implements Initializable {
         part.getItems().setAll(names);
         participantList.setItems(FXCollections.observableList(participantsArrayList));
         inviteCode.setText(event.getId());
-        expensesNotSelectedPart();
-        allExpenses.refresh();
-        fromExpenses.refresh();
-        includingExpenses.refresh();
+    }
+
+    private String getShare(Participant p) {
+        double share = 0.0;
+        List<Expense> expenses = server.getExpensesByEventId(event);
+        for(Expense e : expenses) {
+            for(ExpenseParticipant ep : e.getDebtors()) {
+                if(ep.isOwner() && ep.getParticipant().equals(p)) {
+                    share += e.getAmount();
+                }
+            }
+        }
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        String returned = "";
+        if(this.totalAmount != 0) {
+            returned = df.format(100.0 * share/this.totalAmount) + "%";
+        } else {
+            returned = "0.00%";
+        }
+        return returned;
     }
 
     @SuppressWarnings("java.lang.ClassCastException")
@@ -378,15 +406,18 @@ public class EventOverviewCtrl implements Initializable {
         long id = 0;
         switch(viewChoice) {
             case "all" -> {
-                id = Long.valueOf(allExpenses.getSelectionModel().getSelectedItem().split(":")[0]);
+                String selected = allExpenses.getSelectionModel().getSelectedItem().split("\\[")[1];
+                id = Long.valueOf(selected.substring(0, selected.length() - 1));
                 allExpenses.getSelectionModel().clearSelection();
             }
             case "from" -> {
-                id = Long.valueOf(fromExpenses.getSelectionModel().getSelectedItem().split(":")[0]);
+                String selected = allExpenses.getSelectionModel().getSelectedItem().split("\\[")[1];
+                id = Long.valueOf(selected.substring(0, selected.length() - 1));
                 fromExpenses.getSelectionModel().clearSelection();
             }
             case "include" -> {
-                id = Long.valueOf(includingExpenses.getSelectionModel().getSelectedItem().split(":")[0]);
+                String selected = allExpenses.getSelectionModel().getSelectedItem().split("\\[")[1];
+                id = Long.valueOf(selected.substring(0, selected.length() - 1));
                 includingExpenses.getSelectionModel().clearSelection();
             }
         }
@@ -471,6 +502,13 @@ public class EventOverviewCtrl implements Initializable {
             }
         });
 
+        event = server.getByID(event.getId());
+        server.send("/app/updated",event);
+        expensesNotSelectedPart();
+        expensesIncludingParticipant();
+        expensesFromParticipant();
+        expenseCtrl.setOldExpense(null);
+        expenseCtrl.setOldExpensePayer(null);
     }
 
     public void settleDebts() {
@@ -510,14 +548,6 @@ public class EventOverviewCtrl implements Initializable {
                     initial = partToAmount.get(ep.getParticipant());
                     partToAmount.put(ep.getParticipant(), initial + ((1.0 - (ep.getShare()) / 100.0) * e.getAmount()));
                 }
-            }
-        }
-
-        for(Participant p : participants) {
-            List<Debt> paid = server.getDebtsPaid(p);
-            for(Debt d : paid) {
-                double initial = partToAmount.get(p);
-                partToAmount.put(p, initial + d.getAmount());
             }
         }
         return partToAmount;
@@ -618,6 +648,8 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void expensesNotSelectedPart() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
         List<Expense> expenses = server.getExpensesByEventId(event);
         List<String> titles = new ArrayList<>();
         double totalAmount = 0;
@@ -632,16 +664,15 @@ public class EventOverviewCtrl implements Initializable {
                             owner = expenseParticipant.getParticipant();
                         }
                     }
-                    String expenseString = expense.getId() + ": " + owner.getFirstName() + " " + owner.getLastName() + " "
-                            + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
+                    String expenseString = expense.getDate() + ": " + owner.getFirstName() + " " + owner.getLastName() + " "
+                            + paidLabel.getText() + " " + df.format(expense.getAmount()) + " " + forLabel.getText() + " " + expense.getDescription()
+                                + " (" + getParts(expense) + ") [" + expense.getId() + "]";
                     titles.add(expenseString);
                     totalAmount += expense.getAmount();
                 }
             }
         }
-
-        DecimalFormat df = new DecimalFormat("#.##");
-//        df.setRoundingMode(RoundingMode.HALF_UP);
+        this.totalAmount = totalAmount;
         String text = totalCost.getText().replaceAll("[0-9]", "").replace(".", "");
         if (text.charAt(text.length() - 1) == ' ')
             totalCost.setText(text + df.format(totalAmount));
@@ -651,6 +682,8 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     public void expensesFromParticipant() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
         String participantsName = part.getValue().getText();
         Participant participant = event.getParticipantByName(participantsName);
         List<Expense> expenses = server.getExpensesByEventId(event);
@@ -668,8 +701,9 @@ public class EventOverviewCtrl implements Initializable {
                 }
             }
             for (Expense expense : expensesFromParticipant) {
-                String expenseString = expense.getId() + ": " +participant.getFirstName() + " " + participant.getLastName() +
-                        " " + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
+                String expenseString = expense.getDate() + ": " +participant.getFirstName() + " " + participant.getLastName() +
+                        " " + paidLabel.getText() + " " + df.format(expense.getAmount()) + " " + forLabel.getText() + " " + expense.getDescription()
+                            + " (" + getParts(expense) + ") [" + expense.getId() + "]";
                 titles.add(expenseString);
             }
         }
@@ -690,6 +724,8 @@ public class EventOverviewCtrl implements Initializable {
 
     private void setIncludingExpenses(List<Expense> expenses, Participant participant,
                                       List<Expense> expensesIncludingParticipant, List<String> titles) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
         for (Expense expense : expenses) {
             if(expense.getAmount() > 0) {
                 List<ExpenseParticipant> debtors = new ArrayList<>(expense.getDebtors());
@@ -709,10 +745,25 @@ public class EventOverviewCtrl implements Initializable {
                     owner = expenseParticipant.getParticipant();
                 }
             }
-            String expenseString = expense.getId() + ": " + owner.getFirstName() +  " " + owner.getLastName() +  " "
-                    + paidLabel.getText() + " " + expense.getAmount() + " " + forLabel.getText() + " " + expense.getDescription();
+            String expenseString = expense.getDate() + ": " + owner.getFirstName() +  " " + owner.getLastName() +  " "
+                    + paidLabel.getText() + " " + df.format(expense.getAmount()) + " " + forLabel.getText() + " " + expense.getDescription()
+                        + " (" + getParts(expense) + ") [" + expense.getId() + "]";
             titles.add(expenseString);
         }
+    }
+
+    private String getParts(Expense e) {
+        String result = "";
+        int count = 0;
+        for(ExpenseParticipant ep : e.getDebtors()) {
+            if(ep.getShare() != 0) {
+                result += ep.getParticipant().getFirstName() + " " + ep.getParticipant().getLastName() + ", ";
+                count++;
+            }
+        }
+        if(count == server.getByID(event.getId()).getParticipants().size())
+            return allLabel.getText();
+        return result.substring(0, result.length() - 2);
     }
 
     public void hideTabPanes() {

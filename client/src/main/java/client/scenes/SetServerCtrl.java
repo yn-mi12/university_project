@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.Config;
 import client.Main;
+import client.utils.ServerUtilsEvent;
 import jakarta.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +18,7 @@ import java.util.ResourceBundle;
 public class SetServerCtrl implements Initializable {
 
     private final SplittyCtrl controller;
+    private final ServerUtilsEvent server;
     @FXML
     public AnchorPane background;
     @FXML
@@ -31,28 +33,43 @@ public class SetServerCtrl implements Initializable {
     private Label emptyLabel;
     @FXML
     private Label setLabel;
+    @FXML
+    private Label failedLabel;
 
     @Inject
-    public SetServerCtrl(SplittyCtrl controller) {
+    public SetServerCtrl(ServerUtilsEvent server, SplittyCtrl controller) {
+        this.server = server;
         this.controller = controller;
     }
 
     public void setServerUrl() {
+        failedLabel.setVisible(false);
+        String oldurl = Config.get().getHost();
         String url = serverUrl.getText();
         if(url.isEmpty()) {
             emptyLabel.setVisible(true);
             return;
         }
+        if(!url.startsWith("http://")) {
+            emptyLabel.setVisible(false);
+            setLabel.setVisible(false);
+            failedLabel.setVisible(true);
+            return;
+        }
         emptyLabel.setVisible(false);
         setLabel.setVisible(true);
-        Config.get().setHost(url);
-        Config.get().save();
+        server.setServer(url);
+        if(Config.get().getHost().equals(oldurl) && !oldurl.equals(url)) {
+            setLabel.setVisible(false);
+            failedLabel.setVisible(true);
+        }
     }
 
     public void goBack() {
         controller.showOverview();
         emptyLabel.setVisible(false);
         setLabel.setVisible(false);
+        failedLabel.setVisible(false);
         serverUrl.clear();
     }
 
@@ -68,6 +85,8 @@ public class SetServerCtrl implements Initializable {
             serverUrl.setStyle(Main.changeUI(serverUrl));
             emptyLabel.setStyle(Main.changeUI(emptyLabel));
             serverUrlLabel.setStyle(Main.changeUI(serverUrlLabel));
+            failedLabel.setStyle(Main.changeUI(failedLabel));
+            setLabel.setStyle("-fx-text-fill: #04530a;-fx-font-weight: bolder;");
         }
     }
 }
