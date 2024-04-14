@@ -53,6 +53,8 @@ public class EditParticipantOverviewCtrl implements Initializable {
 
     @FXML
     private Label noDeleteParticipant;
+    @FXML
+    private Label deleteParticipant;
 
     @Inject
     public EditParticipantOverviewCtrl(ServerUtilsEvent server, SplittyCtrl eventCtrl) {
@@ -114,6 +116,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
         Main.reloadUIEvent(event);
         controller.showEventOverview(event);
         noDeleteParticipant.visibleProperty().setValue(false);
+        deleteParticipant.visibleProperty().setValue(false);
     }
 
     public void deleteParticipant() {
@@ -137,12 +140,14 @@ public class EditParticipantOverviewCtrl implements Initializable {
                         event.deleteParticipant(selectedParticipant);
                         server.send("/app/updated",event);
                         noDeleteParticipant.visibleProperty().setValue(false);
-                        cancel();
+                        deleteParticipant.visibleProperty().setValue(true);
+                        controller.showEditParticipantOverview();
                     }else{
                         controller.showEditParticipantOverview();
                     }
                 });
             }else{
+                deleteParticipant.visibleProperty().setValue(false);
                 noDeleteParticipant.visibleProperty().setValue(true);
             }
 
@@ -192,6 +197,7 @@ public class EditParticipantOverviewCtrl implements Initializable {
                     "-fx-color-label-visible: #F0F3FF");
             allParticipantsLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
             noDeleteParticipant.setStyle(Main.changeUI(noDeleteParticipant));
+            deleteParticipant.setStyle(Main.changeUI(deleteParticipant));
         }
     }
 

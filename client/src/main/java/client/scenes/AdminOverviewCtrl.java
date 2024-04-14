@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import commons.*;
 import jakarta.ws.rs.WebApplicationException;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -23,6 +25,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -50,13 +53,15 @@ public class AdminOverviewCtrl implements Initializable {
     @FXML
     public Label eventsLabel;
     @FXML
-    TableColumn<Event, String> eventIDColumn;
+    public Label successLabel;
     @FXML
-    TableColumn<Event, String> eventTitleColumn;
+    public TableColumn<Event, String> eventIDColumn;
     @FXML
-    TableColumn<Event, LocalDateTime> eventCreationDateColumn;
+    public TableColumn<Event, String> eventTitleColumn;
     @FXML
-    TableColumn<Event, LocalDateTime> eventLastUpdateDateColumn;
+    public TableColumn<Event, LocalDateTime> eventCreationDateColumn;
+    @FXML
+    public TableColumn<Event, LocalDateTime> eventLastUpdateDateColumn;
     @FXML
     public Button showButton;
     @FXML
@@ -128,6 +133,7 @@ public class AdminOverviewCtrl implements Initializable {
 
         if(Main.isContrastMode()){
             Main.languageFeedback(languageBox);
+            successLabel.setStyle("-fx-text-fill: #04530a;-fx-font-weight: bolder;");
             languageBox.setStyle(Main.changeUI(languageBox));
             adminOverviewLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
             eventsLabel.setStyle("-fx-text-fill: black;-fx-font-weight: bolder;");
@@ -333,6 +339,13 @@ public class AdminOverviewCtrl implements Initializable {
                     server.deleteEvent(find);
                     addJsonToServer(event, participants, expenses, debts);
                 }
+
+                Timeline t = new Timeline(
+                    new KeyFrame(Duration.seconds(0), ae -> successLabel.setVisible(true)),
+                    new KeyFrame(Duration.seconds(3), ae -> successLabel.setVisible(false))
+                );
+                t.setCycleCount(1);
+                t.play();
                 refresh();
             } catch (FileNotFoundException | JsonProcessingException e) {
                 throw new RuntimeException(e);
